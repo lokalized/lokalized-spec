@@ -1,0 +1,36 @@
+{
+  "id": "loading-limits-nodes-composition-fits",
+  "description": "One root entry that also carries one expression-fragment placeholder with two fragment alternatives and one whole-message alternative: 1 + 1 + 2 + 1 = 5 nodes, loaded with maximumTranslationNodes at exactly 5. Executed: admitted at 5, refused at 4, so the composition is measured rather than assumed.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumTranslationNodes": 5
+  },
+  "files": {
+    "en": {
+      "Key.A": {
+        "translation": "{{x}}",
+        "placeholders": {
+          "x": {
+            "translation": "default",
+            "alternatives": [
+              {
+                "count == 1": "one"
+              },
+              {
+                "count == 2": "two"
+              }
+            ]
+          }
+        },
+        "alternatives": [
+          {
+            "count == 0": {
+              "translation": "zero"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

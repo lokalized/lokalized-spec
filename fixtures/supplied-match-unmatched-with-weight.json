@@ -1,0 +1,34 @@
+{
+  "id": "supplied-match-unmatched-with-weight",
+  "description": "A fabrication with NO selected locale that nonetheless carries an effective weight. LocaleMatchResult.java:104-105 requires an unmatched result to use NONE and omit both range and weight, and this trips the weight half of that check. Authored after MEASURING that the earlier claim -- that a null-locale-with-match-implications shape cannot be expressed through the fixture format -- is false.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "localeMatchSupplier": {
+    "behavior": "fabricated",
+    "matchType": "NONE",
+    "weight": 0.5,
+    "ranges": [
+      {
+        "range": "de",
+        "weight": 1
+      }
+    ],
+    "fallbackLocale": "en",
+    "consideredLocales": [
+      "en",
+      "fr"
+    ]
+  },
+  "files": {
+    "fr": {
+      "Locale.Marker": "fr",
+      "Greeting.Hello": "Bonjour",
+      "Only.Fr": "fr-only"
+    },
+    "en": {
+      "Locale.Marker": "en",
+      "Greeting.Hello": "Hello",
+      "Only.En": "en-only"
+    }
+  }
+}

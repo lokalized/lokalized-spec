@@ -1,0 +1,25 @@
+{
+  "id": "warnings-control-range-driven",
+  "description": "Russian catalog whose cardinality placeholder is RANGE-driven and supplies only ONE and OTHER of Russian's four forms. LocalizedStringLoader skips range-driven placeholders on purpose (line 1995), so this must produce no warning despite being incomplete on its face.",
+  "fallbackLocale": "ru",
+  "tiebreakers": null,
+  "files": {
+    "ru": {
+      "Span": {
+        "translation": "{{h}}",
+        "placeholders": {
+          "h": {
+            "range": {
+              "start": "lo",
+              "end": "hi"
+            },
+            "translations": {
+              "CARDINALITY_ONE": "a",
+              "CARDINALITY_OTHER": "b"
+            }
+          }
+        }
+      }
+    }
+  }
+}

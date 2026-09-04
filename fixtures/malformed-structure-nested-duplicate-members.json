@@ -1,0 +1,15 @@
+{
+  "id": "malformed-structure-nested-duplicate-members",
+  "description": "Duplicate JSON member names nested BELOW the top level -- inside a localized-string object, inside a translations table, inside the placeholders map, and inside an alternatives array element. loader-smoke pins only top-level duplicates; these exercise the recursive check and its JSON-path reporting, and require verbatim text because JSON.stringify cannot emit a duplicate member.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {},
+  "rawFiles": {
+    "en": "{\"Key.A\":{\"translation\":\"first\",\"translation\":\"second\"}}",
+    "fr": "{\"Key.A\":{\"translation\":\"I read {{books}}\",\"placeholders\":{\"books\":{\"value\":\"count\",\"translations\":{\"CARDINALITY_ONE\":\"book\",\"CARDINALITY_ONE\":\"tome\",\"CARDINALITY_OTHER\":\"books\"}}}}}",
+    "de": "{\"Key.A\":{\"translation\":\"t\",\"alternatives\":[{\"count == 0\":{\"translation\":\"x\",\"translation\":\"y\"}}]}}",
+    "es": "{\"Key.A\":{\"translation\":\"I read {{books}}\",\"placeholders\":{\"books\":{\"value\":\"count\",\"translations\":{\"CARDINALITY_OTHER\":\"books\"}},\"books\":{\"value\":\"count\",\"translations\":{\"CARDINALITY_OTHER\":\"tomes\"}}}}}"
+  },
+  "rawFilesBase64": {}
+}

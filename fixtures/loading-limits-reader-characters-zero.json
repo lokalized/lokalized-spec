@@ -1,0 +1,15 @@
+{
+  "id": "loading-limits-reader-characters-zero",
+  "description": "A trivially loadable catalog whose loading options request maximumReaderCharacters 0, refused by the builder before any directory is listed.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumReaderCharacters": 0
+  },
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  }
+}

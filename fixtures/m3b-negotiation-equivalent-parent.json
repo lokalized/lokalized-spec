@@ -1,0 +1,14 @@
+{
+  "id": "m3b-negotiation-equivalent-parent",
+  "description": "A Moldavian catalog and nothing else Romanian. mo is canonically equivalent to ro but is loaded under its deprecated spelling, so a ro-MD request can only be satisfied by the SECOND pass of CLDR parent-locale fallback -- the one that matches by canonical equivalence rather than by exact tag.",
+  "fallbackLocale": "fr",
+  "tiebreakers": null,
+  "files": {
+    "fr": {
+      "Checkout.Title": "fr"
+    },
+    "mo": {
+      "Checkout.Title": "mo"
+    }
+  }
+}

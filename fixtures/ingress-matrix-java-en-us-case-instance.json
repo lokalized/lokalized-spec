@@ -1,0 +1,12 @@
+{
+  "id": "ingress-matrix-java-en-us-case-instance",
+  "description": "Seed row 5's lone loaded en with the mixed-case spelling EN-us as the instance locale.",
+  "fallbackLocale": "en",
+  "instanceLocale": "EN-us",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Checkout.Title": "Checkout"
+    }
+  }
+}

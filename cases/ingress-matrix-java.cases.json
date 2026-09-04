@@ -1,0 +1,1477 @@
+{
+  "formatVersion": 1,
+  "family": "ingress-matrix-java",
+  "description": "Plan v7 section 8.3 fixture family 'ingress-matrix-java'. Inputs only; the oracle emits expected.",
+  "skipped": [
+    {
+      "what": "localeResolver and localeMatchResolver ingresses named in plan section 8.3",
+      "why": "Not Java APIs. lokalized-java 3.0.0 has exactly two ambient ingresses on Strings.Builder — localeSupplier and localeMatchSupplier (DefaultStrings.java:240-241, mutual exclusion enforced at :254-256) — plus per-call TranslationOptions.locale and TranslationOptions.languageRanges. 'Resolver' is the plan's JS-surface naming for the same slots; there is nothing in the Java reference to author a vector against, so a case for it could not execute."
+    },
+    {
+      "what": "forLocale as an ingress axis separate from the per-call locale, and the builder().locale(...) construction path",
+      "why": "Verified in the oracle: VectorOracle.optionsFrom returns TranslationOptions.forLocale(...) whenever `locale` is the only per-call field, so every {\"locale\": ...} case in this family already IS the forLocale path. The builder-carrying-a-locale path is reached only when a second per-call field is present, and it is already pinned by an EXISTING corpus case — ingress-matrix.options.builder-with-locale-and-bidi-keeps-locale, alongside ingress-matrix.options.none-uses-instance-locale and ingress-matrix.options.for-locale-overrides-instance-locale. Re-authoring it here would duplicate the ingress-matrix family rather than add a proposition. (The builder path IS reached in this family, but only where it is load-bearing: ingress-matrix-java.zh-tw.per-call-ranges-displace-per-call-locale.)"
+    },
+    {
+      "what": "The deprecated spelling ji (Yiddish) in the legacy-alias arm",
+      "why": "ji sits in exactly the same two layers as iw and in — Locale.forLanguageTag rewrites it to yi, and the pinned IANA table lists ji and yi as equivalents (verified in generated/iana-language-range-equivalents.json). Every channel would restate the iw row on a different pair of tags, so it adds catalog and fixture weight without a new proposition. The arm keeps the four spellings that behave differently from one another: iw and in (JDK rewrite), mo and tl (CLDR canonicalization only), sh (neither)."
+    },
+    {
+      "what": "Fabricated (public-constructor) LocaleMatchResult anywhere in this family",
+      "why": "Deliberately none. ingress-smoke.fabricated.supplied-match-is-preserved-not-rederived already fabricates a match that CONTRADICTS reality in the fields it claims — EXACT on fr while naming de as its range, on a catalog where de is not loaded and a real negotiation of 'de' would return NONE — so it already measures both halves: the preserved diagnostics and the lookup starting at fr instead of at the fallback. validateSuppliedLocaleMatchResult (DefaultStrings.java:2461-2472) additionally pins a fabricated match's fallbackLocale and consideredLocales to the instance's own, so repeating it across five seed rows would restate one proposition five times rather than sweep an ingress. The verbatim-preservation property is measured here instead through match-locale and match-ranges suppliers, where it shows up as the lookup-locale difference against the per-call-locale route."
+    },
+    {
+      "what": "Classpath loading of the ingress fixtures",
+      "why": "Unsupported by the vector harness: fixtures are materialized to a temporary directory and read through LocalizedStringLoader.loadFromFilesystem. No ingress case can be expressed against loadFromClasspath."
+    },
+    {
+      "what": "JS-side delivery of the ingress matrix (SSR match serialization, Fetch/Node planning, digest capability, shard merges)",
+      "why": "Not observable through the Java oracle at all; these are requiredImplementationIds for a JS family and belong to whichever family authors the delivery vectors."
+    }
+  ],
+  "cases": [
+    {
+      "id": "ingress-matrix-java.und-latn.per-call-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-und-latn-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "locale": "und-Latn"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The per-call-locale ingress (TranslationOptions.forLocale), baseline for the row. lookupLocale must be the REQUESTED und-Latn and the chain must lead with it; every other ingress in this row resolves from the negotiated selection and produces a shorter chain."
+    },
+    {
+      "id": "ingress-matrix-java.und-latn.per-call-language-ranges",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-und-latn-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "languageRanges": "und-Latn"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same request as a per-call RANGE LIST. DefaultStrings.java:2444-2447 takes the lookup locale from matchFor(ranges).getLocale() falling back to the configured fallback locale, so with a NONE match the requested tag never appears in the chain at all. A port treating languageRanges as a synonym for locale emits the baseline's chain here."
+    },
+    {
+      "id": "ingress-matrix-java.und-latn.instance-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-und-latn-instance",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "No per-call locale: the ambient instance locale und-Latn decides. Agrees with the per-call-locale route on every channel, and supplierCalls is ABSENT because no caller-supplied function is installed. In Java this reaches the same branch as a constant localeSupplier; the assertion is that a port's separate instance-locale concept must land there too."
+    },
+    {
+      "id": "ingress-matrix-java.und-latn.locale-supplier-constant",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-und-latn-locale-supplier-constant",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A constant localeSupplier returning und-Latn. Same result and match as the per-call-locale and instance-locale routes, plus a supplierCalls record of kind localeSupplier with a null match type — the channel that proves WHICH ingress answered."
+    },
+    {
+      "id": "ingress-matrix-java.und-latn.locale-supplier-match-ranges",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-und-latn-locale-supplier-ranges",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A localeSupplier that negotiates 'und-Latn' itself and returns a bare Locale. Nothing matches, so it returns the FALLBACK fr, and DefaultStrings re-derives an EXACT/fr match — the only row here whose reported match is a match at all. Compare against locale-supplier-constant: same ingress kind, different lookup locale and a different diagnostic."
+    },
+    {
+      "id": "ingress-matrix-java.und-latn.match-supplier-match-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-und-latn-match-supplier-locale",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A localeMatchSupplier returning matchFor(Locale und-Latn). THE INTENTIONAL LOOKUP DIFFERENCE: DefaultStrings.java:2453 uses the match's locale — here absent, so the match's own fallbackLocale — as the lookup locale, so the NONE diagnostic is preserved verbatim while the chain collapses to [fr]. A port re-deriving the lookup from the requested tag reproduces the baseline instead."
+    },
+    {
+      "id": "ingress-matrix-java.und-latn.match-supplier-match-ranges",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-und-latn-match-supplier-ranges",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same supplied match produced by the whole-list solver on header 'und-Latn'. Must be identical to the match-supplier-match-locale case bar the supplierCalls record: the two solvers agree here, and a supplied match is carried through rather than re-derived."
+    },
+    {
+      "id": "ingress-matrix-java.fr-be.per-call-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-fr-be-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "locale": "fr-BE"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The per-call-locale ingress, baseline for the row. lookupLocale must be the requested fr-BE and the chain must lead with it, walking fr before reaching the tiebreaker-selected fr-FR."
+    },
+    {
+      "id": "ingress-matrix-java.fr-be.per-call-language-ranges",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-fr-be-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "languageRanges": "fr-BE"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same request as a per-call range list. The lookup locale becomes the SELECTED fr-FR, so the chain loses fr-BE and fr while the reported match block is identical to the baseline's. Match block equal, chain different — the pair the clause asks for."
+    },
+    {
+      "id": "ingress-matrix-java.fr-be.instance-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-fr-be-instance",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The ambient instance locale fr-BE decides; must agree with the per-call-locale route including the three-step chain, with supplierCalls absent."
+    },
+    {
+      "id": "ingress-matrix-java.fr-be.locale-supplier-constant",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-fr-be-locale-supplier-constant",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A constant localeSupplier returning fr-BE: agrees with the per-call-locale route and adds the supplierCalls record."
+    },
+    {
+      "id": "ingress-matrix-java.fr-be.locale-supplier-match-ranges",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-fr-be-locale-supplier-ranges",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A localeSupplier that negotiates 'fr-BE' and hands back the winning Locale fr-FR. The re-derived match reports EXACT/fr-FR with range fr-fr and isFallback false, where the match supplier on the same header reports LIKELY_SUBTAG/fr-FR with range fr-be and isFallback true. Identical selection, different diagnostics — the cost of collapsing a match to a Locale."
+    },
+    {
+      "id": "ingress-matrix-java.fr-be.match-supplier-match-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-fr-be-match-supplier-locale",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A localeMatchSupplier returning matchFor(Locale fr-BE). The lookup locale is the match's own fr-FR (DefaultStrings.java:2449-2453), so the chain is [fr-FR] while the per-call-locale route walks [fr-BE, fr, fr-FR] and both report the same LIKELY_SUBTAG match."
+    },
+    {
+      "id": "ingress-matrix-java.fr-be.match-supplier-match-ranges",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-fr-be-match-supplier-ranges",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same supplied match from the whole-list solver on header 'fr-BE'; must equal the single-locale-kernel case."
+    },
+    {
+      "id": "ingress-matrix-java.en-au.per-call-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-en-au-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "locale": "en-AU"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The per-call-locale ingress, baseline for the row: lookupLocale en-AU, chain [en-AU, en-001], CLDR_FALLBACK selecting en-001 over the tiebreaker-preferred en."
+    },
+    {
+      "id": "ingress-matrix-java.en-au.per-call-language-ranges",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-en-au-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "languageRanges": "en-AU"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same request as a per-call range list: the lookup starts at the selected en-001, so the en-AU step disappears while the match block stays identical to the baseline's."
+    },
+    {
+      "id": "ingress-matrix-java.en-au.instance-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-en-au-instance",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The ambient instance locale en-AU decides; must agree with the per-call-locale route, supplierCalls absent."
+    },
+    {
+      "id": "ingress-matrix-java.en-au.locale-supplier-constant",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-en-au-locale-supplier-constant",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A constant localeSupplier returning en-AU: agrees with the per-call-locale route and adds the supplierCalls record."
+    },
+    {
+      "id": "ingress-matrix-java.en-au.locale-supplier-match-ranges",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-en-au-locale-supplier-ranges",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A localeSupplier negotiating 'en-AU' and collapsing to Locale en-001: the re-derived match is EXACT/en-001 with isFallback false, against the match supplier's preserved CLDR_FALLBACK/en-001 with isFallback true."
+    },
+    {
+      "id": "ingress-matrix-java.en-au.match-supplier-match-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-en-au-match-supplier-locale",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A localeMatchSupplier returning matchFor(Locale en-AU): lookup begins at the selection en-001, so the chain loses the en-AU step while the CLDR_FALLBACK diagnostic is preserved."
+    },
+    {
+      "id": "ingress-matrix-java.en-au.match-supplier-match-ranges",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-en-au-match-supplier-ranges",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same supplied match from the whole-list solver on header 'en-AU'; must equal the single-locale-kernel case."
+    },
+    {
+      "id": "ingress-matrix-java.zh-tw.per-call-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-zh-tw-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "locale": "zh-TW"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The per-call-locale ingress on the plan's published chooser request. lookupLocale zh-TW, chain [zh-TW, zh-Hant, en]: the selected zh-Hant lacks this key, so resolution continues to the fallback. Baseline for the row."
+    },
+    {
+      "id": "ingress-matrix-java.zh-tw.per-call-language-ranges",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-zh-tw-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "languageRanges": "zh-TW"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same request as a per-call range list: identical LIKELY_SUBTAG/zh-Hant match block, chain [zh-Hant, en] instead of [zh-TW, zh-Hant, en]. The clause's 'agree on the match, differ on the chain' pair in its purest form."
+    },
+    {
+      "id": "ingress-matrix-java.zh-tw.instance-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-zh-tw-instance",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The ambient instance locale zh-TW decides; must agree with the per-call-locale route including the three-step chain, supplierCalls absent."
+    },
+    {
+      "id": "ingress-matrix-java.zh-tw.locale-supplier-constant",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-zh-tw-locale-supplier-constant",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A constant localeSupplier returning zh-TW: agrees with the per-call-locale route and adds the supplierCalls record."
+    },
+    {
+      "id": "ingress-matrix-java.zh-tw.locale-supplier-match-ranges",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-zh-tw-locale-supplier-ranges",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A localeSupplier negotiating 'zh-TW' and collapsing to Locale zh-Hant. Same selection and same chain as the match-supplier route, but the reported match is re-derived as EXACT/zh-Hant with range zh-hant instead of the negotiated LIKELY_SUBTAG/zh-Hant with range zh-tw. isFallback stays true on BOTH routes here, because resolution leaves zh-Hant either way — the flip seen in the other four seed rows does not happen in this one."
+    },
+    {
+      "id": "ingress-matrix-java.zh-tw.match-supplier-match-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-zh-tw-match-supplier-locale",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A localeMatchSupplier returning matchFor(Locale zh-TW): the LIKELY_SUBTAG/zh-Hant match is carried through verbatim while the lookup starts at zh-Hant, giving the chain [zh-Hant, en]."
+    },
+    {
+      "id": "ingress-matrix-java.zh-tw.match-supplier-match-ranges",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-zh-tw-match-supplier-ranges",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The plan's published browser-chooser negotiation moved into the ambient ingress. Must equal the single-locale-kernel case bar supplierCalls — the ingress-level restatement of ingress-smoke's two-solver agreement, on the resolution channel rather than on matchFor."
+    },
+    {
+      "id": "ingress-matrix-java.en-us.per-call-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-en-us-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "locale": "en-US"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The per-call-locale ingress against a lone loaded en: lookupLocale en-US, chain [en-US, en], CLDR_FALLBACK/en, isFallback true. Baseline for the row."
+    },
+    {
+      "id": "ingress-matrix-java.en-us.per-call-language-ranges",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-en-us-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "languageRanges": "en-US"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same request as a per-call range list: the lookup collapses to the selected en, so the chain loses the en-US entry the baseline asserts. The smallest possible demonstration that the two per-call ingresses are not interchangeable."
+    },
+    {
+      "id": "ingress-matrix-java.en-us.instance-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-en-us-instance",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The ambient instance locale en-US decides; must agree with the per-call-locale route, supplierCalls absent."
+    },
+    {
+      "id": "ingress-matrix-java.en-us.locale-supplier-constant",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-en-us-locale-supplier-constant",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A constant localeSupplier returning en-US: agrees with the per-call-locale route and adds the supplierCalls record."
+    },
+    {
+      "id": "ingress-matrix-java.en-us.locale-supplier-match-ranges",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-en-us-locale-supplier-ranges",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A localeSupplier negotiating 'en-US' and collapsing to Locale en. Same selection and same chain as the match-supplier route, but EXACT/en with isFallback FALSE against the match supplier's preserved CLDR_FALLBACK/en with isFallback TRUE. The clearest isFallback flip in the family."
+    },
+    {
+      "id": "ingress-matrix-java.en-us.match-supplier-match-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-en-us-match-supplier-locale",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A localeMatchSupplier returning matchFor(Locale en-US): CLDR_FALLBACK preserved, lookup at the selection en, chain [en]."
+    },
+    {
+      "id": "ingress-matrix-java.en-us.match-supplier-match-ranges",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-en-us-match-supplier-ranges",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same supplied match from the whole-list solver on header 'en-US'; must equal the single-locale-kernel case."
+    },
+    {
+      "id": "ingress-matrix-java.zh-tw.match-supplier-chain-starts-at-selection",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-zh-tw-match-supplier-locale",
+      "operation": "getResult",
+      "input": {
+        "key": "Unrelated.Key"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The zh-Hant-only key through the supplied match. MEASURED: the chain is exactly [zh-Hant] — the supplied match's own locale is where resolution BEGINS. Pairs with the per-call-locale half below, which reaches the same catalog but only after attempting zh-TW; both resolve to zh-Hant, so the difference is the chain and the lookup locale, not the serving catalog."
+    },
+    {
+      "id": "ingress-matrix-java.zh-tw.per-call-locale-reaches-zh-hant-only-key",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-zh-tw-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Unrelated.Key",
+        "locale": "zh-TW"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The paired half: the same zh-Hant-only key through the per-call locale, chain [zh-TW, zh-Hant]. Recording both routes is what lets the extra step be attributed to the ingress rather than to the key."
+    },
+    {
+      "id": "ingress-matrix-java.zh-tw.matchfor-ignores-ambient-match-supplier",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-zh-tw-match-supplier-locale",
+      "operation": "matchFor",
+      "input": {
+        "locale": "en-US"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "matchFor is a pure per-call negotiation: LocaleMatcher takes its ranges from the argument, so the ambient localeMatchSupplier must never be consulted. The assertion is the ABSENCE of supplierCalls together with a CLDR_FALLBACK match on en rather than the supplier's zh-Hant."
+    },
+    {
+      "id": "ingress-matrix-java.zh-tw.matchfor-ranges-ignores-ambient-match-supplier",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-zh-tw-match-supplier-ranges",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "en-US"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The range-list solver on a fixture whose ambient ingress is a range-negotiating match supplier. Same assertion: supplierCalls absent, so the ambient supplier contributes nothing to matchFor."
+    },
+    {
+      "id": "ingress-matrix-java.zh-tw.per-call-ranges-displace-per-call-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-zh-tw-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "locale": "zh-TW",
+        "languageRanges": "en",
+        "perCallOverrideOrder": [
+          "locale",
+          "languageRanges"
+        ]
+      },
+      "partition": "informationalIds",
+      "notes": "Both per-call ingresses at once, with the ORDER NOW STATED BY THE CASE rather than by the oracle. TranslationOptions.Builder.locale and .languageRanges each NULL the other when handed a non-null value (TranslationOptions.java:309-313, :330-333), so the survivor is whichever was applied LAST; the private constructor's both-present guard (:70-71) is dead by construction and no corpus row can ever record a both-present TranslationOptions. This row applies locale then languageRanges, so the ranges survive and the lookup is en-driven: chain [en], EXACT/en. It is NOT 'the' answer Java gives for a both-present call -- per-call-override-order.zh-tw.ranges-then-locale carries the identical key, locale and ranges under the opposite order and MEASURES the zh-TW-driven answer. Until the order was explicit this row read as though ranges always displace a locale, which was an artifact of VectorOracle.optionsFrom's hard-coded setter order and not a property of Java. The separate top-level match block is the oracle's own matchFor(zh-TW) probe, emitted whenever input.locale is present, and is not the lookup's match -- it is identical under both orders, showing the locale field was accepted in each and then kept or discarded by the order alone. PARTITION: informationalIds, not requiredPortableIds. What it records is the Java BUILDER's ordering, and coverage-dispositions.json already classifies that cross-clearing side-effect as nonportable (TranslationOptions$Builder :310/:312/:330/:332, 'a nullable setter on a MUTABLE BUILDER, which the port does not have'). A JS per-call options object literal has no application order -- spread order would be the same accident -- so plan 8.2's rule that every requiredPortableId passes with an EMPTY unsupported set could not be satisfied by any port once both orders are in the corpus. The port-side obligation is unchanged and lives where it belongs: the permanent `required` disposition on TranslationOptions#<init>:70."
+    },
+    {
+      "id": "ingress-matrix-java.zh-tw.per-call-ranges-displace-ambient-match-supplier",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-zh-tw-match-supplier-locale",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "languageRanges": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Branch precedence between the per-call RANGE list and an ambient match supplier: localeLookupFor tests languageRanges (2444) before localeMatchSupplier (2449), so the supplier is never even called. MEASURED lookup en, chain [en], and supplierCalls ABSENT. ingress-smoke pins per-call LOCALE over a supplier; this is the range-list branch, which no existing case reaches."
+    },
+    {
+      "id": "ingress-matrix-java.case.zh-hant-canonical-per-call-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-case-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "locale": "zh-Hant"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The canonical spelling, control for the whole mixed-case arm. Without it a port could pass every mixed-case case by being uniformly wrong."
+    },
+    {
+      "id": "ingress-matrix-java.case.zh-hant-mixed-per-call-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-case-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "locale": "ZH-hant"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ZH-hant as a per-call locale. Locale.forLanguageTag canonicalizes case, so every reported tag comes back canonically spelled and the zh-Hant catalog serves the key; a port echoing the requested spelling into lookupLocale diverges here and nowhere else."
+    },
+    {
+      "id": "ingress-matrix-java.case.zh-hant-mixed-per-call-language-ranges",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-case-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "languageRanges": "ZH-hant"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ZH-hant as a per-call range list. MEASURED: this does NOT differ from the per-call-locale route — matchFor(Locale) builds its LanguageRange from the locale's tag and LanguageRange lowercases, so BOTH routes report the range zh-hant while selecting the canonically spelled zh-Hant, and because the match is EXACT the lookup locale is the same tag either way. The case pins that agreement; a port lowercasing only on the header path, or echoing ZH-hant into either channel, breaks here."
+    },
+    {
+      "id": "ingress-matrix-java.case.zh-hant-mixed-instance-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-case-instance",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ZH-hant as the ambient instance locale, no per-call argument; must agree with the per-call-locale spelling case."
+    },
+    {
+      "id": "ingress-matrix-java.case.zh-hant-mixed-locale-supplier-constant",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-case-locale-supplier",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ZH-hant through a constant localeSupplier. supplierCalls records the tag the supplier actually handed over, already normalized to zh-Hant — where a port that normalizes late becomes visible."
+    },
+    {
+      "id": "ingress-matrix-java.case.zh-hant-mixed-locale-supplier-match-ranges",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-case-locale-supplier-ranges",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ZH-hant negotiated inside a localeSupplier and collapsed to a bare Locale. Because the selection is an EXACT match on the requested tag, the collapse loses nothing here — the negative control for the seed rows, where it loses the diagnostic."
+    },
+    {
+      "id": "ingress-matrix-java.case.zh-hant-mixed-match-supplier-match-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-case-match-supplier",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ZH-hant through the supplied-match ingress. MEASURED: identical to the per-call-locale route on every channel except supplierCalls, because zh-Hant is loaded and the match is EXACT, so the lookup locale the supplied match hands over is the tag the per-call route would have used anyway. This is the control showing the supplied-match lookup difference in the seed rows comes from the match SELECTING a different locale, not from the ingress itself."
+    },
+    {
+      "id": "ingress-matrix-java.case.zh-hant-mixed-match-supplier-match-ranges",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-case-match-supplier-ranges",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ZH-hant through the supplied-match ingress via the whole-list solver. The pinned IANA table has no entry for zh-hant, so the expanded list is a single range and this must be identical to the single-locale-kernel case — the negative control for the alias and extlang arms, where expansion does change the reported ranges."
+    },
+    {
+      "id": "ingress-matrix-java.case.en-us-mixed-per-call-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-en-us-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "locale": "EN-us"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "EN-us as a per-call locale against seed row 5's lone en. Must equal the canonical en-US case exactly, including the CLDR_FALLBACK diagnostic and the two-step chain."
+    },
+    {
+      "id": "ingress-matrix-java.case.en-us-mixed-per-call-language-ranges",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-en-us-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "languageRanges": "EN-us"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "EN-us as a per-call range list: the lookup becomes the selected en, so the chain loses the en-US entry — case normalization and the ingress difference measured in one call."
+    },
+    {
+      "id": "ingress-matrix-java.case.en-us-mixed-instance-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-en-us-case-instance",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "EN-us as the ambient instance locale; must agree with the per-call-locale spelling case on every channel."
+    },
+    {
+      "id": "ingress-matrix-java.case.en-us-mixed-locale-supplier-constant",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-en-us-case-locale-supplier",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "EN-us through a constant localeSupplier: the derived-match route, which keeps en-US as the lookup locale and so keeps the two-step chain."
+    },
+    {
+      "id": "ingress-matrix-java.case.en-us-mixed-match-supplier-match-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-en-us-case-match-supplier",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "EN-us through the supplied-match ingress: the lookup locale is the match's en, so the chain is [en] against the localeSupplier route's [en-US, en] on the identical catalog. Same requested spelling, same selection, different chain."
+    },
+    {
+      "id": "ingress-matrix-java.alias.iw-per-call-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-alias-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "locale": "iw"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Deprecated iw as a per-call locale against loaded he. Locale.forLanguageTag rewrites iw to he BEFORE the library sees it, so the request arrives already canonical: EXACT/he, range he, chain [he]. Identical to the he control below, which is the assertion."
+    },
+    {
+      "id": "ingress-matrix-java.alias.iw-per-call-language-ranges",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-alias-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "languageRanges": "iw"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same spelling as a parsed header, which goes through the pinned IANA equivalence table instead of through Locale.forLanguageTag. MEASURED: same EXACT/he selection and same chain, but requestedLanguageRanges carries BOTH iw and he. The ranges channel is the only place the two layers are distinguishable for this spelling."
+    },
+    {
+      "id": "ingress-matrix-java.alias.in-per-call-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-alias-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "locale": "in"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Deprecated in as a per-call locale against loaded id: rewritten to id by Locale.forLanguageTag, so EXACT/id with range id and chain [id]."
+    },
+    {
+      "id": "ingress-matrix-java.alias.in-per-call-language-ranges",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-alias-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "languageRanges": "in"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same spelling as a parsed header: identical selection and chain, but requestedLanguageRanges carries in and id. The IANA expansion is visible only in that channel."
+    },
+    {
+      "id": "ingress-matrix-java.alias.mo-per-call-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-alias-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "locale": "mo"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Deprecated mo as a per-call locale against loaded ro. Locale.forLanguageTag does NOT rewrite mo, so it arrives as the Locale mo and only CLDR canonicalization inside the matcher reaches ro: MEASURED lookupLocale mo, match CANONICAL/ro with range mo, chain [ro]. Compare the ro control, which is EXACT."
+    },
+    {
+      "id": "ingress-matrix-java.alias.mo-per-call-language-ranges",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-alias-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "languageRanges": "mo"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same spelling as a parsed header. MEASURED: the IANA table supplies ro as a second range, so the match is EXACT/ro with range ro (not CANONICAL/ro with range mo) and the lookup locale is ro rather than mo. This is the one spelling where the equivalence table changes the match TYPE, not just the reported ranges."
+    },
+    {
+      "id": "ingress-matrix-java.alias.sh-per-call-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-alias-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "locale": "sh"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Deprecated sh as a per-call locale against loaded sr. The matcher finds nothing — CLDR's alias target is sr-Latn and only sr is on disk — so the diagnostic channel reports NONE, yet the RESOLUTION channel still walks [sh, sr-Latn, en] and serves en. The two channels disagree completely here, which is what makes the spelling worth an ingress sweep."
+    },
+    {
+      "id": "ingress-matrix-java.alias.sh-per-call-language-ranges",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-alias-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "languageRanges": "sh"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "sh as a parsed header. sh has NO entry in the pinned IANA table, so the range list is the same single range as the Locale route's and the diagnostic is the same NONE — but the lookup locale comes from the empty match and collapses to the fallback, so the chain loses sh and sr-Latn. Same ranges, same diagnostic, different chain: the difference here is purely the ingress."
+    },
+    {
+      "id": "ingress-matrix-java.alias.tl-per-call-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-alias-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "locale": "tl"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Deprecated tl as a per-call locale against loaded fil. Locale.forLanguageTag leaves tl alone and the IANA table has no entry, so only CLDR's tl to fil alias can reach the catalog: MEASURED lookupLocale tl, CANONICAL/fil with range tl, chain [fil]."
+    },
+    {
+      "id": "ingress-matrix-java.alias.tl-per-call-language-ranges",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-alias-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "languageRanges": "tl"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "tl as a parsed header. With no IANA equivalent the ranges are identical to the Locale route's and so is the CANONICAL/fil match; the ONLY difference is the lookup locale (fil, not tl). Pairs with the mo header case, where the table does change the match — together they separate the equivalence table from the ingress rule."
+    },
+    {
+      "id": "ingress-matrix-java.alias.iw-per-call-language-ranges-constructor-form",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-alias-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "languageRanges": [
+          "iw"
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The SAME spelling as an explicitly constructed range rather than a parsed header. new LanguageRange('iw') adds no IANA equivalents, so this route offers only iw — and MEASURED the match degrades from EXACT/he (header form, which also offers he) to CANONICAL/he with range iw. If a port implements languageRanges by always parsing, this case and its header twin collapse into one and the distinction is lost."
+    },
+    {
+      "id": "ingress-matrix-java.alias.mo-per-call-language-ranges-constructor-form",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-alias-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "languageRanges": [
+          "mo"
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "mo as a constructed range with no equivalence expansion. MEASURED CANONICAL/ro with range mo, against the header form's EXACT/ro with range ro on the identical catalog — so whatever reaches ro here does so through the library's own canonicalization, not through the table."
+    },
+    {
+      "id": "ingress-matrix-java.alias.he-per-call-locale-control",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-alias-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "locale": "he"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The modern spelling as the control for the iw cases: without it a port could pass them by resolving everything to the fallback."
+    },
+    {
+      "id": "ingress-matrix-java.alias.ro-per-call-locale-control",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-alias-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "locale": "ro"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The modern spelling as the control for the mo cases: ro is loaded, so this is EXACT, and the CANONICAL the mo cases report is attributable to the alias rather than to the catalog."
+    },
+    {
+      "id": "ingress-matrix-java.alias.matchfor-locale-mo",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-alias-baseline",
+      "operation": "matchFor",
+      "input": {
+        "locale": "mo"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same alias question isolated from resolution: matchFor(Locale mo) yields CANONICAL/ro with languageRange mo and a single requested range. Paired with the header form below."
+    },
+    {
+      "id": "ingress-matrix-java.alias.matchfor-ranges-mo",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-alias-baseline",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "mo"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "matchFor('mo') yields EXACT/ro with languageRange ro and requested ranges mo, ro. MEASURED: the two solvers DISAGREE on this spelling. ingress-smoke establishes that the kernel and the list solver produce byte-identical blocks for zh-TW; this pair is the counterexample that stops a port from generalizing that to all inputs."
+    },
+    {
+      "id": "ingress-matrix-java.alias.iw-instance-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-alias-instance-iw",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Deprecated iw as the ambient instance locale; must agree with the per-call-locale route, which is what makes the instance ingress substitutable for it."
+    },
+    {
+      "id": "ingress-matrix-java.alias.iw-locale-supplier-constant",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-alias-locale-supplier-iw",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Deprecated iw through a constant localeSupplier. supplierCalls reports he — the tag AFTER Locale.forLanguageTag has had its say — which is where the JDK rewrite layer is separated from the library's own canonicalization."
+    },
+    {
+      "id": "ingress-matrix-java.alias.iw-match-supplier-match-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-alias-match-supplier-iw",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Deprecated iw through the supplied-match ingress. MEASURED identical to the per-call-locale route bar supplierCalls: the JDK rewrite happens before either route, so the request already IS the loaded locale and the supplied match's locale is the same tag. The negative control for the mo/sh rows, where the supplied match does move the lookup."
+    },
+    {
+      "id": "ingress-matrix-java.alias.iw-match-supplier-match-ranges",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-alias-match-supplier-ranges-iw",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Deprecated iw through the supplied-match ingress on the range-list solver. requestedLanguageRanges carries iw and he — the equivalence expansion the single-locale kernel never performs — proving the two solvers are fed differently even where they agree on the selection."
+    },
+    {
+      "id": "ingress-matrix-java.alias.in-instance-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-alias-instance-in",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Deprecated in as the ambient instance locale; must agree with the per-call-locale route."
+    },
+    {
+      "id": "ingress-matrix-java.alias.in-locale-supplier-constant",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-alias-locale-supplier-in",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Deprecated in through a constant localeSupplier; supplierCalls reports the rewritten id."
+    },
+    {
+      "id": "ingress-matrix-java.alias.in-match-supplier-match-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-alias-match-supplier-in",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Deprecated in through the supplied-match ingress: identical to the per-call-locale route bar supplierCalls, for the same reason as iw."
+    },
+    {
+      "id": "ingress-matrix-java.alias.in-match-supplier-match-ranges",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-alias-match-supplier-ranges-in",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Deprecated in through the supplied-match ingress on the range-list solver; requestedLanguageRanges carries in and id."
+    },
+    {
+      "id": "ingress-matrix-java.alias.mo-instance-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-alias-instance-mo",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Deprecated mo as the ambient instance locale; must agree with the per-call-locale route, lookupLocale mo and all."
+    },
+    {
+      "id": "ingress-matrix-java.alias.mo-locale-supplier-constant",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-alias-locale-supplier-mo",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Deprecated mo through a constant localeSupplier. supplierCalls reports mo UNCHANGED — Locale.forLanguageTag does not rewrite it — which is the direct contrast with the iw row's supplierCalls reporting he."
+    },
+    {
+      "id": "ingress-matrix-java.alias.mo-match-supplier-match-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-alias-match-supplier-mo",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Deprecated mo through the supplied-match ingress: the CANONICAL/ro match is preserved but the lookup locale becomes ro, where the per-call-locale route keeps mo. Same chain, different lookup locale."
+    },
+    {
+      "id": "ingress-matrix-java.alias.mo-match-supplier-match-ranges",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-alias-match-supplier-ranges-mo",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Deprecated mo through the supplied-match ingress on the range-list solver: EXACT/ro with ranges mo, ro, against the kernel route's CANONICAL/ro with range mo. The sharpest solver disagreement in the alias arm, carried onto the resolution channel."
+    },
+    {
+      "id": "ingress-matrix-java.alias.sh-instance-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-alias-instance-sh",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Deprecated sh as the ambient instance locale; must agree with the per-call-locale route, including the [sh, sr-Latn, en] chain."
+    },
+    {
+      "id": "ingress-matrix-java.alias.sh-locale-supplier-constant",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-alias-locale-supplier-sh",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Deprecated sh through a constant localeSupplier: supplierCalls reports sh unchanged, and the derived NONE match still leaves the three-step chain intact."
+    },
+    {
+      "id": "ingress-matrix-java.alias.sh-match-supplier-match-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-alias-match-supplier-sh",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "sh through the supplied-match ingress. The match is NONE, so DefaultStrings.java:2453 takes the lookup locale from the match's FALLBACK locale and the chain becomes just [en] — while the per-call-locale route walks sh and sr-Latn first. The sharpest attempted-chain divergence in the family."
+    },
+    {
+      "id": "ingress-matrix-java.alias.sh-match-supplier-match-ranges",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-alias-match-supplier-ranges-sh",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "sh through the supplied-match ingress on the range-list solver. sh has no IANA entry, so the expanded list is the single range sh — the negative control for iw/in/mo, where the same route reports two ranges — and the lookup still collapses to the fallback because the match is NONE."
+    },
+    {
+      "id": "ingress-matrix-java.alias.tl-instance-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-alias-instance-tl",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Deprecated tl as the ambient instance locale; must agree with the per-call-locale route, lookupLocale tl and all."
+    },
+    {
+      "id": "ingress-matrix-java.alias.tl-locale-supplier-constant",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-alias-locale-supplier-tl",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Deprecated tl through a constant localeSupplier: supplierCalls reports tl unchanged, and the derived match is CANONICAL/fil."
+    },
+    {
+      "id": "ingress-matrix-java.alias.tl-match-supplier-match-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-alias-match-supplier-tl",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Deprecated tl through the supplied-match ingress: CANONICAL/fil preserved, lookup locale becomes fil where the per-call-locale route keeps tl."
+    },
+    {
+      "id": "ingress-matrix-java.alias.tl-match-supplier-match-ranges",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-alias-match-supplier-ranges-tl",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "tl through the supplied-match ingress on the range-list solver. Like sh, tl has no IANA equivalent so the range list stays single; unlike sh it still reaches loaded fil as CANONICAL. The pair separates the JDK equivalence table from the library's own canonicalization in one comparison."
+    },
+    {
+      "id": "ingress-matrix-java.alias.iw-locale-supplier-match-ranges",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-alias-locale-supplier-ranges-iw",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Deprecated iw negotiated inside a localeSupplier. The result's match is DERIVED from the collapsed Locale, so the ranges reported are the selection's own tag (he) rather than the iw, he expansion the supplier actually used — the observable cost of the collapse, against the match-supplier route on the identical header."
+    },
+    {
+      "id": "ingress-matrix-java.alias.mo-locale-supplier-match-ranges",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-alias-locale-supplier-ranges-mo",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Deprecated mo negotiated inside a localeSupplier: MEASURED EXACT/ro with the single range ro, where the match supplier on the same header reports EXACT/ro with ranges mo, ro. The selection survives the collapse; the negotiation history does not."
+    },
+    {
+      "id": "ingress-matrix-java.alias.mo-file-per-call-locale-mo",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-alias-mo-on-disk",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "locale": "mo"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A request for mo against a FILE named mo: the exact-identity path, EXACT/mo, not the alias path. Pairs with ingress-matrix-java.alias.mo-per-call-locale, where the same request must travel through canonicalization to reach a file named ro."
+    },
+    {
+      "id": "ingress-matrix-java.alias.mo-file-per-call-locale-ro",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-alias-mo-on-disk",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "locale": "ro"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The canonical spelling against a catalog that exists only under the deprecated one. MEASURED: it DOES reach it — CANONICAL/mo, lookupLocale ro, chain [mo] — so canonicalization runs in both directions even though the loader applies no alias at all."
+    },
+    {
+      "id": "ingress-matrix-java.alias.mo-file-per-call-language-ranges-ro",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-alias-mo-on-disk",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "languageRanges": "ro"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same canonical request as a header. LanguageRange.parse('ro') emits ro and its equivalent mo, so the match is EXACT/mo with ranges ro, mo and the lookup locale is mo — not the CANONICAL/mo at lookupLocale ro the per-call-locale route reports. Both routes reach the catalog; they disagree on how they say so."
+    },
+    {
+      "id": "ingress-matrix-java.alias.mo-file-match-supplier-match-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-alias-mo-on-disk-match-supplier",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A file named mo, requested as mo through the supplied-match ingress: EXACT/mo, chain [mo], plus the supplierCalls record."
+    },
+    {
+      "id": "ingress-matrix-java.alias.mo-file-locale-supplier-constant-ro",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-alias-mo-on-disk-locale-supplier",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A file named mo, requested as canonical ro through a constant localeSupplier. Compare with the per-call-locale ro case on the same catalog: same question, same answer, and supplierCalls proves which ingress asked."
+    },
+    {
+      "id": "ingress-matrix-java.extlang.zh-cmn-per-call-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-extlang-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "locale": "zh-cmn"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Extlang zh-cmn as a per-call locale. Locale.forLanguageTag PROMOTES the extlang to the primary language cmn before the library sees it, so the lookup locale is cmn and the cmn catalog serves the key. A port preserving the extlang spelling diverges immediately."
+    },
+    {
+      "id": "ingress-matrix-java.extlang.zh-cmn-per-call-language-ranges",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-extlang-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "languageRanges": "zh-cmn"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same spelling as a header. MEASURED: this does not merely report different ranges, it RESOLVES TO A DIFFERENT CATALOG — the parsed list keeps zh-cmn (plus zh-guoyu, cmn) and matches loaded zh as CANONICAL, serving 'zh' where the Locale route serves 'cmn'. One spelling, two ingresses, two translations; a port normalizing headers through Locale.forLanguageTag loses this entirely."
+    },
+    {
+      "id": "ingress-matrix-java.extlang.zh-yue-per-call-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-extlang-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "locale": "zh-yue"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Extlang zh-yue as a per-call locale: promoted to yue, EXACT/yue, chain [yue]."
+    },
+    {
+      "id": "ingress-matrix-java.extlang.zh-yue-per-call-language-ranges",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-extlang-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "languageRanges": "zh-yue"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same spelling as a header. Unlike zh-cmn there is no macrolanguage catalog for the literal range to land on, so both routes reach yue and the observable difference is confined to requestedLanguageRanges (zh-yue and yue here, only yue on the Locale route). The controlled contrast that shows the zh-cmn divergence comes from the CATALOG SET, not from the spelling alone."
+    },
+    {
+      "id": "ingress-matrix-java.extlang.sgn-be-fr-per-call-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-extlang-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "locale": "sgn-BE-FR"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The grandfathered sgn-BE-FR as a per-call locale. Locale.forLanguageTag collapses the whole tag to the single language sfb, which is not loaded, so the match is NONE and the chain is [sfb, en] — it misses AT sfb rather than at the request."
+    },
+    {
+      "id": "ingress-matrix-java.extlang.sgn-be-fr-per-call-language-ranges",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-extlang-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "languageRanges": "sgn-BE-FR"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same tag as a header: four ranges (sgn-be-fr, sgn-sfb, sfb, sgn-be-fx), none naming a loaded catalog, so the match is NONE and the lookup collapses to the fallback with chain [en]. Both routes miss; the chains and the recorded ranges differ, which is the point."
+    },
+    {
+      "id": "ingress-matrix-java.extlang.zh-cmn-per-call-language-ranges-constructor-form",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-extlang-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "languageRanges": [
+          "zh-cmn"
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "zh-cmn as a single constructed range with no IANA expansion. MEASURED: the literal range alone reaches CANONICAL/cmn — a THIRD outcome for one spelling, distinct from both the Locale route (EXACT/cmn) and the parsed header (CANONICAL/zh). A port that always parses, or never parses, collapses two of the three."
+    },
+    {
+      "id": "ingress-matrix-java.extlang.cmn-per-call-locale-control",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-extlang-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "locale": "cmn"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The promoted tag requested directly, control for the zh-cmn cases."
+    },
+    {
+      "id": "ingress-matrix-java.extlang.yue-per-call-locale-control",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-extlang-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "locale": "yue"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The promoted tag requested directly, control for the zh-yue cases."
+    },
+    {
+      "id": "ingress-matrix-java.extlang.zh-per-call-locale-control",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-extlang-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "locale": "zh"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Bare zh where zh and cmn share a canonical language code: the tiebreaker list decides, and this is what the extlang header cases must be read against."
+    },
+    {
+      "id": "ingress-matrix-java.extlang.matchfor-locale-zh-cmn",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-extlang-baseline",
+      "operation": "matchFor",
+      "input": {
+        "locale": "zh-cmn"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The extlang question isolated from resolution: matchFor(Locale zh-cmn) yields EXACT/cmn with languageRange cmn and a single requested range — the promotion has already happened in Locale.forLanguageTag."
+    },
+    {
+      "id": "ingress-matrix-java.extlang.matchfor-ranges-zh-cmn",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-extlang-baseline",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "zh-cmn"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "matchFor('zh-cmn') yields CANONICAL/zh with languageRange zh-cmn and three requested ranges. MEASURED: the two solvers select DIFFERENT LOCALES for the same spelling. ingress-smoke pins their agreement on zh-TW; this pair is the boundary of that agreement, and a port that shares one code path for both solvers cannot satisfy both."
+    },
+    {
+      "id": "ingress-matrix-java.extlang.zh-cmn-instance-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-extlang-instance-zh-cmn",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Extlang zh-cmn as the ambient instance locale; must agree with the per-call-locale route, i.e. serve the cmn catalog."
+    },
+    {
+      "id": "ingress-matrix-java.extlang.zh-cmn-locale-supplier-constant",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-extlang-locale-supplier-zh-cmn",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Extlang zh-cmn through a constant localeSupplier: supplierCalls reports cmn, pinning the promotion to Locale.forLanguageTag rather than to anything inside the library."
+    },
+    {
+      "id": "ingress-matrix-java.extlang.zh-cmn-match-supplier-match-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-extlang-match-supplier-zh-cmn",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Extlang zh-cmn through the supplied-match ingress on the single-locale kernel, which also sees the promoted cmn: EXACT/cmn, chain [cmn]. Contrast with the range-list supplier below on the identical header."
+    },
+    {
+      "id": "ingress-matrix-java.extlang.zh-cmn-match-supplier-match-ranges",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-extlang-match-supplier-ranges-zh-cmn",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Extlang zh-cmn through the supplied-match ingress on the whole-list solver. MEASURED CANONICAL/zh serving the zh catalog, against the kernel supplier's EXACT/cmn serving cmn on the SAME fixture family — the two ambient supplied-match shapes reach different catalogs for one header."
+    },
+    {
+      "id": "ingress-matrix-java.extlang.zh-yue-instance-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-extlang-instance-zh-yue",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Extlang zh-yue as the ambient instance locale; must agree with the per-call-locale route."
+    },
+    {
+      "id": "ingress-matrix-java.extlang.zh-yue-locale-supplier-constant",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-extlang-locale-supplier-zh-yue",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Extlang zh-yue through a constant localeSupplier; supplierCalls reports the promoted yue."
+    },
+    {
+      "id": "ingress-matrix-java.extlang.zh-yue-match-supplier-match-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-extlang-match-supplier-zh-yue",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Extlang zh-yue through the supplied-match ingress on the single-locale kernel: EXACT/yue."
+    },
+    {
+      "id": "ingress-matrix-java.extlang.zh-yue-match-supplier-match-ranges",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-extlang-match-supplier-ranges-zh-yue",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Extlang zh-yue through the supplied-match ingress on the range-list solver: same yue selection, but requestedLanguageRanges carries zh-yue and yue. The controlled contrast to the zh-cmn supplier pair, which disagrees on the catalog itself."
+    },
+    {
+      "id": "ingress-matrix-java.extlang.sgn-be-fr-instance-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-extlang-instance-sgn-be-fr",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Grandfathered sgn-BE-FR as the ambient instance locale; must agree with the per-call-locale route, chain [sfb, en] included."
+    },
+    {
+      "id": "ingress-matrix-java.extlang.sgn-be-fr-locale-supplier-constant",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-extlang-locale-supplier-sgn-be-fr",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Grandfathered sgn-BE-FR through a constant localeSupplier: supplierCalls reports sfb, pinning where the whole tag collapses to one subtag."
+    },
+    {
+      "id": "ingress-matrix-java.extlang.sgn-be-fr-match-supplier-match-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-extlang-match-supplier-sgn-be-fr",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Grandfathered sgn-BE-FR through the supplied-match ingress: the match is NONE, so the lookup takes the match's fallback locale and the chain loses the sfb step the per-call-locale route walks."
+    },
+    {
+      "id": "ingress-matrix-java.extlang.sgn-be-fr-match-supplier-match-ranges",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-extlang-match-supplier-ranges-sgn-be-fr",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Grandfathered sgn-BE-FR through the supplied-match ingress on the range-list solver: still NONE and still chain [en], but with all four expanded ranges on the record — a failed negotiation whose inputs remain observable."
+    },
+    {
+      "id": "ingress-matrix-java.extlang.zh-cmn-locale-supplier-match-ranges",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-extlang-locale-supplier-ranges-zh-cmn",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "zh-cmn negotiated inside a localeSupplier. The selection zh survives, but the match is re-derived as EXACT/zh with the single range zh: both the CANONICAL diagnostic and the three-range expansion the supplier actually used are erased. That erasure is the whole difference from the match-supplier route on the identical header."
+    },
+    {
+      "id": "ingress-matrix-java.extlang.no-cmn-per-call-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-extlang-no-cmn-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "locale": "zh-cmn"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "zh-cmn promoted to the unloaded cmn with only zh and en on disk. MEASURED: cmn still reaches zh as CANONICAL with lookupLocale cmn — promotion does not strand the request."
+    },
+    {
+      "id": "ingress-matrix-java.extlang.no-cmn-per-call-language-ranges",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-extlang-no-cmn-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "languageRanges": "zh-cmn"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same request as a header against the same zh-only catalog: also CANONICAL/zh, but via the literal range zh-cmn and with lookupLocale zh. With cmn removed the two routes AGREE on the catalog and differ only in ranges and lookup locale — the controlled contrast proving the divergence in the full extlang catalog came from cmn being loaded."
+    },
+    {
+      "id": "ingress-matrix-java.extlang.no-cmn-match-supplier-match-ranges",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-extlang-no-cmn-match-supplier-ranges",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The header route moved into the ambient supplier. MEASURED byte-identical to the per-call header case, including the three expanded ranges and the CANONICAL match on zh — which is the assertion: a supplied match is carried through verbatim, so moving an identical negotiation from the call site to the supplier changes nothing but the supplierCalls record."
+    },
+    {
+      "id": "ingress-matrix-java.extlang.no-cmn-locale-supplier-constant",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-extlang-no-cmn-locale-supplier",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The promoted, unloaded cmn arriving as a constant localeSupplier value: the derived match is computed for cmn, so it agrees with the per-call-locale case (lookupLocale cmn) and disagrees with the header cases (lookupLocale zh)."
+    }
+  ]
+}

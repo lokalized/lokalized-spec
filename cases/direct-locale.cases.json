@@ -1,0 +1,53 @@
+{
+  "formatVersion": 1,
+  "family": "direct-locale",
+  "description": "The five direct-locale seed rows of plan v7 section 8.3. Inputs only: `expected` is produced by the Java oracle, never written by hand.",
+  "requirementIdsDeferred": "Production LJ-<AREA>-NNN identifiers are not minted yet (see M0-STATUS.md). Cases carry empty requirementIds until they are, and the corpus linter rejects empty lists once minting lands.",
+  "cases": [
+    {
+      "id": "resolution.direct.und-latn.falls-back-with-no-selection",
+      "requirementIds": [],
+      "fixture": "direct-und-latn",
+      "operation": "getResult",
+      "input": { "key": "Checkout.Title", "locale": "und-Latn" },
+      "partition": "requiredPortableIds",
+      "seedRow": 1
+    },
+    {
+      "id": "resolution.direct.fr-be.tiebreaker-prefers-fr-fr",
+      "requirementIds": [],
+      "fixture": "direct-fr-be",
+      "operation": "getResult",
+      "input": { "key": "Checkout.Title", "locale": "fr-BE" },
+      "partition": "requiredPortableIds",
+      "seedRow": 2
+    },
+    {
+      "id": "resolution.direct.en-au.reaches-en-001-through-parent-chain",
+      "requirementIds": [],
+      "fixture": "direct-en-au",
+      "operation": "getResult",
+      "input": { "key": "Checkout.Title", "locale": "en-AU" },
+      "partition": "requiredPortableIds",
+      "seedRow": 3
+    },
+    {
+      "id": "resolution.direct.zh-tw.selection-and-resolution-diverge",
+      "requirementIds": [],
+      "fixture": "direct-zh-tw",
+      "operation": "getResult",
+      "input": { "key": "Checkout.Title", "locale": "zh-TW" },
+      "partition": "requiredPortableIds",
+      "seedRow": 4
+    },
+    {
+      "id": "resolution.direct.en-us.reports-non-null-cldr-fallback-diagnostic",
+      "requirementIds": [],
+      "fixture": "direct-en-us",
+      "operation": "getResult",
+      "input": { "key": "Checkout.Title", "locale": "en-US" },
+      "partition": "requiredPortableIds",
+      "seedRow": 5
+    }
+  ]
+}

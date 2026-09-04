@@ -1,0 +1,35 @@
+{
+  "id": "locale-identity-region-alias-extlang-collapse",
+  "description": "The five multi-valued region aliases that are three ALPHA characters - ANT, NTZ, SCG, SUN, YUG. BCP 47 reads a three-letter subtag after a language as an extlang, and Locale.forLanguageTag promotes it to primary language, so these aliases can never reach the region-alias table. Catalogs for the resulting languages are loaded to make the collapse observable rather than merely absent; ru and sr are loaded as the languages the caller thought they were asking for.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "su": {
+      "Greeting": "wilujeng",
+      "Only.Su": "su only"
+    },
+    "ant": {
+      "Greeting": "g ant"
+    },
+    "ntz": {
+      "Greeting": "g ntz"
+    },
+    "scg": {
+      "Greeting": "g scg"
+    },
+    "yug": {
+      "Greeting": "g yug"
+    },
+    "ru": {
+      "Greeting": "privet"
+    },
+    "sr": {
+      "Greeting": "zdravo"
+    },
+    "en": {
+      "Greeting": "hello"
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

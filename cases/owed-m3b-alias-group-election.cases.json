@@ -1,0 +1,79 @@
+{
+  "formatVersion": 1,
+  "family": "owed-m3b-alias-group-election",
+  "description": "Plan v7 section 8.3 fixture family 'owed-m3b-alias-group-election'. Inputs only; the oracle emits expected.",
+  "cases": [
+    {
+      "id": "owed.m3b.aliasgroup.sgn-no-alone",
+      "requirementIds": [],
+      "fixture": "owed-m3b-alias-group-likely-subtag",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "sgn-NO",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Reference leg 1, and the row that makes the combined header below discriminating. 'sgn-NO' alone is a RECOGNIZED tag, so matchFor:1618 skips the election for it and it supplies its own derived matching: its likely language-script is nsi-Latn, so it selects the nsi catalog. Recorded rather than asserted -- this is the answer a port that elects the materialized alias would also give for the two-member header, which is why that answer would be wrong there and right here."
+    },
+    {
+      "id": "owed.m3b.aliasgroup.sgn-nsl-alone",
+      "requirementIds": [],
+      "fixture": "owed-m3b-alias-group-likely-subtag",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "sgn-nsl",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Reference leg 2. 'sgn-nsl' alone is UNRECOGNIZED; its lossless extlang equivalent nsl is its independently established semantic range, whose likely language-script is nsl-Latn, so it selects the nsl catalog. The two reference legs select DIFFERENT catalogs, which is what gives the two-member row below a decidable outcome."
+    },
+    {
+      "id": "owed.m3b.aliasgroup.unrecognized-representative-governs",
+      "requirementIds": [],
+      "fixture": "owed-m3b-alias-group-likely-subtag",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "sgn-nsl",
+            "weight": 1
+          },
+          {
+            "range": "sgn-NO",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings.matchFor:1621-1624, the semantic-member election, in the arm where the representative is RETAINED. The two members form one preference group -- their JDK identity sets both contain sgn-no -- so the later member joins the earlier as representative; the representative is unrecognized and its semantic range is nsl, but the later member's range is 'sgn-NO', which is NOT that semantic range, so the third conjunct is false and derived matching must stay with the representative. DISCRIMINATION: this row must answer the same catalog as owed.m3b.aliasgroup.sgn-nsl-alone and NOT the one owed.m3b.aliasgroup.sgn-no-alone answers. A port that handed derived matching to any materialized alias in the group would follow sgn-NO to nsi-Latn -- exactly the 'crossing conflicting JDK/CLDR alias data' the source comment forbids -- and would still pass both reference legs. Equal weights are deliberate: an unequal weight makes the later member inactive at matchFor:1612 and the election is never reached."
+    },
+    {
+      "id": "owed.m3b.aliasgroup.alias-elected-when-it-is-the-semantic-range",
+      "requirementIds": [],
+      "fixture": "owed-m3b-alias-group-likely-subtag",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "sgn-nsl",
+            "weight": 1
+          },
+          {
+            "range": "nsl",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The partner arm of the same guard: the later member's range IS the representative's semantic range, so the election fires and the materialized alias supplies derived matching. It differs from the row above in one subtag spelling only, which is what attributes any behavioral difference between them to the third conjunct rather than to how the preference group was formed."
+    }
+  ]
+}

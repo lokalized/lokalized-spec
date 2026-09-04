@@ -1,0 +1,21 @@
+{
+  "id": "loader-smoke-incomplete-cardinality",
+  "description": "A Russian catalog whose cardinality placeholder declares only CARDINALITY_ONE. Russian's CLDR set is one/few/many/other, so the validator should emit INCOMPLETE_CARDINALITY_TRANSLATIONS. Loading normally ignores warnings; the load operation captures them.",
+  "fallbackLocale": "ru",
+  "tiebreakers": null,
+  "files": {
+    "ru": {
+      "Items": {
+        "translation": "{{noun}}",
+        "placeholders": {
+          "noun": {
+            "value": "count",
+            "translations": {
+              "CARDINALITY_ONE": "книга"
+            }
+          }
+        }
+      }
+    }
+  }
+}

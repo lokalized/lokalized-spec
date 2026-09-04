@@ -1,0 +1,15 @@
+{
+  "id": "classpath-discovery-entry-budget",
+  "description": "One locale file under a discovery-entry budget of exactly 2, which is what a non-exhaustive classpath load of this package costs: one entry for the package URL and one for the directory entry. MEASURED to load successfully at that budget. The control half of the exhaustive-search pair. loadOnly because the budget is deliberately at the edge and nothing here needs a Strings.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumDiscoveryEntries": 2
+  },
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  }
+}

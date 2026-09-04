@@ -1,0 +1,25 @@
+{
+  "id": "ingress-matrix-java-extlang-baseline",
+  "description": "Extlang arm. Loaded zh, cmn, yue and en, each translated as its own tag. cmn canonicalizes to zh, so zh and cmn share a canonical language code and tiebreakers are MANDATORY and must be the exact permutation [zh, cmn]. The two per-call routes diverge sharply: Locale.forLanguageTag promotes the extlang, so zh-cmn becomes the Locale cmn, while LanguageRange.parse('zh-cmn') keeps zh-cmn and adds zh-guoyu and cmn. No ambient supplier.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "zh": [
+      "zh",
+      "cmn"
+    ]
+  },
+  "files": {
+    "zh": {
+      "Checkout.Title": "zh"
+    },
+    "cmn": {
+      "Checkout.Title": "cmn"
+    },
+    "yue": {
+      "Checkout.Title": "yue"
+    },
+    "en": {
+      "Checkout.Title": "en"
+    }
+  }
+}

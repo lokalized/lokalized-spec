@@ -1,0 +1,35 @@
+{
+  "id": "resolver-locale-ltr-request-rtl-donor",
+  "description": "The mirror image: ar is the fallback locale and owns the only Article, so an en request is served by an RTL donor. The default RTL_LOCALES must isolate the interpolated name AND the resolver must be handed ar. Together with resolver-locale-rtl-request-ltr-donor this pins, in BOTH directions, that bidi isolation and the resolver locale are decided by the same supplying locale, and — via the per-call NONE override — that changing the isolation mode does not move that locale.",
+  "fallbackLocale": "ar",
+  "tiebreakers": null,
+  "phoneticResolver": {
+    "behavior": "by-locale",
+    "mapping": {
+      "en": "PHONETIC_VOWEL",
+      "ar": "PHONETIC_SOLAR"
+    },
+    "default": "PHONETIC_OTHER"
+  },
+  "files": {
+    "ar": {
+      "Locale.Marker": "ar",
+      "Article": {
+        "translation": "{{article}}|{{name}}",
+        "placeholders": {
+          "article": {
+            "value": "nounTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "got:en",
+              "PHONETIC_SOLAR": "got:ar",
+              "PHONETIC_OTHER": "got:unmapped"
+            }
+          }
+        }
+      }
+    },
+    "en": {
+      "Locale.Marker": "en"
+    }
+  }
+}

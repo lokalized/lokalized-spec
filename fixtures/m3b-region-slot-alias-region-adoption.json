@@ -1,0 +1,22 @@
+{
+  "id": "m3b-region-slot-alias-region-adoption",
+  "description": "A Persian pair whose only difference is whether the language alias's region survives: fa-AF is loaded and fa is loaded, so a range that adopts prs's alias region AF selects a DIFFERENT catalog from one that does not. The unrelated fr fallback makes 'selected nothing' a third, distinguishable outcome.",
+  "fallbackLocale": "fr",
+  "tiebreakers": {
+    "fa": [
+      "fa",
+      "fa-AF"
+    ]
+  },
+  "files": {
+    "fr": {
+      "Checkout.Title": "fr"
+    },
+    "fa": {
+      "Checkout.Title": "fa"
+    },
+    "fa-AF": {
+      "Checkout.Title": "fa-AF"
+    }
+  }
+}

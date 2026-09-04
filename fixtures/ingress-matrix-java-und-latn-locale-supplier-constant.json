@@ -1,0 +1,18 @@
+{
+  "id": "ingress-matrix-java-und-latn-locale-supplier-constant",
+  "description": "Seed row 1 catalog with a constant localeSupplier returning und-Latn. localeLookupFor DERIVES the match with matchFor(suppliedLocale) and keeps the SUPPLIED tag as the lookup locale (DefaultStrings.java:2456-2458), so this must agree with the per-call-locale route on every channel except the supplierCalls record.",
+  "fallbackLocale": "fr",
+  "tiebreakers": null,
+  "localeSupplier": {
+    "behavior": "constant",
+    "locale": "und-Latn"
+  },
+  "files": {
+    "en": {
+      "Checkout.Title": "Checkout"
+    },
+    "fr": {
+      "Checkout.Title": "Paiement"
+    }
+  }
+}

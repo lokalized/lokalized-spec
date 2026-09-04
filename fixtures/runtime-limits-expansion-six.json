@@ -1,0 +1,65 @@
+{
+  "id": "runtime-limits-expansion-six",
+  "description": "Plan v7 section 8.3 runtime-limits clause: maximumGeneratedExpansionCharacters pinned exactly at 6. GeneratedExpansionBudget.consume is called once per generated placeholder expansion at depth > 0 with that expansion's own length, and interpolateTemplate memoizes by placeholder name, so the five keys separate three independently wrong billing models: 3+3 exactly spends the budget, 3+4 exceeds it, one 6-character placeholder referenced twice is billed once, and a two-link chain is billed at BOTH links (3+3 fits, 4+4 does not).",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "runtimeLimits": {
+    "maximumGeneratedExpansionCharacters": 6
+  },
+  "files": {
+    "en": {
+      "Expansion six": {
+        "translation": "{{x}}{{y}}",
+        "placeholders": {
+          "x": {
+            "translation": "abc"
+          },
+          "y": {
+            "translation": "def"
+          }
+        }
+      },
+      "Expansion seven": {
+        "translation": "{{x}}{{y}}",
+        "placeholders": {
+          "x": {
+            "translation": "abc"
+          },
+          "y": {
+            "translation": "defg"
+          }
+        }
+      },
+      "Expansion repeated": {
+        "translation": "{{x}}{{x}}",
+        "placeholders": {
+          "x": {
+            "translation": "abcdef"
+          }
+        }
+      },
+      "Expansion nested six": {
+        "translation": "{{n1}}",
+        "placeholders": {
+          "n1": {
+            "translation": "{{n2}}"
+          },
+          "n2": {
+            "translation": "abc"
+          }
+        }
+      },
+      "Expansion nested eight": {
+        "translation": "{{m1}}",
+        "placeholders": {
+          "m1": {
+            "translation": "{{m2}}"
+          },
+          "m2": {
+            "translation": "abcd"
+          }
+        }
+      }
+    }
+  }
+}

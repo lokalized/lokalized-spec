@@ -1,0 +1,15 @@
+{
+  "id": "classpath-filenames-trailing-dot",
+  "description": "A valid en catalog plus a file named 'de.' — a valid tag followed by a bare trailing dot and no extension. Neither the .json branch nor the tag pattern accepts it. MEASURED: skipped in silence on both paths.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "rawFiles": {
+    "de.": "{\"Key.dedot\":\"dedot\"}"
+  }
+}

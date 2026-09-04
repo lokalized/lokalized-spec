@@ -1,0 +1,469 @@
+{
+  "formatVersion": 1,
+  "family": "resolver-locale",
+  "description": "Plan v7 section 8.3 fixture family 'resolver-locale'. Inputs only; the oracle emits expected.",
+  "skipped": [
+    {
+      "what": "localeSupplier / localeMatchSupplier / localeMatchResolver as the ingress that seeds the candidate walk — in particular a localeMatchSupplier whose LocaleMatchResult names one locale while resolution supplies another, which is the sharpest possible form of 'which locale does the resolver receive'.",
+      "why": "Negotiation ingress is unsupported by the vector contract. The oracle installs a fixed localeSupplier of its own (VectorOracle.buildStrings, `.localeSupplier(matcher -> instanceLocale)`) so every fixture has exactly one ambient locale source, and neither the fixture schema nor the case input schema has a field for a caller-supplied supplier or match resolver. The nearest reachable approximation, the ambient-locale path at DefaultStrings.java:2456-2458, IS covered by resolver-locale-instance-locale."
+    },
+    {
+      "what": "The language-ranges ingress (an Accept-Language style weighted range list passed per call) as the seed of the candidate walk, to show the resolver is handed the RESOLVED supplying locale rather than the highest-weighted requested range.",
+      "why": "Verified unexpressible against the oracle as it stands: VectorOracle.optionsFrom (:409-426) reads only `locale`, `translationFailureHandler`, `translationFallbackPolicy` and `bidiIsolation` out of a case's input and never calls TranslationOptions.Builder.languageRanges, so a case carrying a languageRanges field would be silently ignored and would execute as the ambient-locale path instead — producing a vector that asserts something other than what it claims. DefaultStrings.java:2442-2446 shows this is a genuinely distinct third ingress, so it is a real gap in the clause, not a redundant one; it needs an oracle change before it can be authored."
+    },
+    {
+      "what": "A resolver-locale case whose catalogs are loaded from the classpath rather than the filesystem, to confirm the supplying locale is derived from the loaded catalog identity and not from the file's discovery path.",
+      "why": "Classpath loading is unsupported: the oracle materializes every fixture to a temporary directory and calls LocalizedStringLoader.loadFromFilesystem, and the fixture schema expresses files only as on-disk content keyed by locale tag."
+    },
+    {
+      "what": "The donor rule as it would be observed on the JS delivery side — that an SSR or Fetch planner fetching the DIAGNOSTICALLY SELECTED locale (zh-Hant in resolver-locale-divergent-selection) still has to hand the resolver the RESOLVED one (en), including the digest capability that would let a client verify it received the right catalog.",
+      "why": "JS-side delivery (SSR, Fetch planning, digest capability) is unsupported by this corpus. The divergence itself is captured on the Java side by resolver-locale.divergent-selection.zh-tw-request-served-by-en, whose match channel records the selection and whose resolverCalls channel records the resolution locale; the delivery-layer consequence is out of scope."
+    },
+    {
+      "what": "A per-call phoneticResolver override, to test whether a resolver supplied at the call site receives the same supplying locale as an instance-level one.",
+      "why": "There is no per-call form. TranslationOptions carries exactly five fields — locale, languageRanges, bidiIsolation, translationFailureHandler, translationFallbackPolicy (TranslationOptions.java:55-63, builder setters at :309-373) — and DefaultStrings.java:683-686 reads only those three overridable options; the phonetic resolver is instance-level only, and the fixture schema reflects that by placing phoneticResolver at fixture level alone."
+    }
+  ],
+  "cases": [
+    {
+      "id": "resolver-locale.own-catalog.en-request-served-by-en",
+      "requirementIds": [],
+      "fixture": "resolver-locale-own-catalog",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "nounTerm": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Control. Request and supplying locale coincide, so a port that passes the requested locale and one that passes the supplying locale agree here; its value is as the baseline for the de fallback case on the same fixture, without which 'got:en' there could be dismissed as a resolver pinned to en. VERIFIED against the oracle: resolverCalls [{term apple, locale en, returned VOWEL}], attempted [en], TRANSLATED, no policy call."
+    },
+    {
+      "id": "resolver-locale.own-catalog.fr-request-served-by-fr",
+      "requirementIds": [],
+      "fixture": "resolver-locale-own-catalog",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "fr",
+        "placeholders": {
+          "nounTerm": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Second control, on a locale that is neither the instance locale nor the fallback locale. Proves the by-locale resolver's answer genuinely tracks its locale argument rather than being pinned to en, which is what makes every donor case on this fixture meaningful. VERIFIED: resolverCalls [{locale fr, returned CONSONANT}], attempted [fr], no policy call."
+    },
+    {
+      "id": "resolver-locale.fallback.de-request-served-by-en-fallback",
+      "requirementIds": [],
+      "fixture": "resolver-locale-own-catalog",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "de",
+        "placeholders": {
+          "nounTerm": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The donor rule where the donor is the fallback locale and the requested locale IS loaded but lacks the key — a shape callback-smoke does not have, since there the requested locale had no catalog at all. de is a real loaded candidate, skipped for MISSING_TRANSLATION, then en supplies. VERIFIED: resolverCalls exactly one entry with locale en (not de), attempted [de, en], policyCalls [MISSING_TRANSLATION@de=true], isFallback true. A port passing the requested locale renders 'got:de'."
+    },
+    {
+      "id": "resolver-locale.cldr-parent.en-au-request-served-by-en-001",
+      "requirementIds": [],
+      "fixture": "resolver-locale-cldr-parent",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en-AU",
+        "placeholders": {
+          "nounTerm": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Three-way discrimination in one case. VERIFIED: resolverCalls [{locale en-001, returned CONSONANT}], attempted [en-AU, en-001], resolvedLocale en-001, match CLDR_FALLBACK/en-001, policyCalls [MISSING_TRANSLATION@en-AU=true]. A port that hands the resolver the REQUESTED locale renders 'got:en-AU'; a port that skips the CLDR parent chain and walks en-AU straight to the fallback renders 'got:en'; only walking the parent chain AND passing the supplying locale renders 'got:en-001'. The most likely thing for a JS port to get wrong, because en-AU is what the caller had in hand."
+    },
+    {
+      "id": "resolver-locale.cldr-parent.en-request-served-by-en",
+      "requirementIds": [],
+      "fixture": "resolver-locale-cldr-parent",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "nounTerm": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Control on the parent-chain fixture: a bare en request must be served by en itself on the FIRST candidate, never pulled onto the sibling en-001 that the tiebreaker list also names. VERIFIED: resolverCalls [{locale en, returned VOWEL}], attempted [en] alone, no policy call. (Review note: the authored rationale here was backwards — it claimed this guards against a port that 'always chose the first tiebreaker entry', but the first tiebreaker entry IS en, so such a port would fail the en-AU case, not pass it. The real proposition is that the tiebreaker list must not divert an exact match, and that this fixture's en catalog answers 'got:en' natively.)"
+    },
+    {
+      "id": "resolver-locale.cldr-parent.en-001-request-served-by-en-001",
+      "requirementIds": [],
+      "fixture": "resolver-locale-cldr-parent",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en-001",
+        "placeholders": {
+          "nounTerm": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The third leg: requesting the parent locale directly. VERIFIED: resolverCalls [{locale en-001}], attempted [en-001], match EXACT, no policy call. Pins that 'got:en-001' in the en-AU case is reachable by the resolver rather than an artifact of the catalog, and that the en-001 catalog is not silently normalized to en."
+    },
+    {
+      "id": "resolver-locale.divergent-selection.zh-tw-request-served-by-en",
+      "requirementIds": [],
+      "fixture": "resolver-locale-divergent-selection",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "zh-TW",
+        "placeholders": {
+          "nounTerm": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "THE FOUR-WAY CASE. The diagnostic channel selects zh-Hant (LIKELY_SUBTAG) while resolution lands on en. VERIFIED: match.locale zh-Hant, attempted [zh-TW, zh-Hant, en], resolvedLocale en, resolverCalls exactly one entry with locale en, policyCalls [MISSING@zh-TW=true, MISSING@zh-Hant=true] and none after the final candidate. The four branches distinguish every wrong answer: 'got:zh-TW' = passed the request, 'got:zh-Hant' = passed the DIAGNOSTIC SELECTION (the most seductive error, since a JS delivery layer fetches by that locale), 'got:zh' = visited the loaded zh that per-key resolution must not reach, 'got:en' = correct."
+    },
+    {
+      "id": "resolver-locale.divergent-selection.zh-request-served-by-zh",
+      "requirementIds": [],
+      "fixture": "resolver-locale-divergent-selection",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "zh",
+        "placeholders": {
+          "nounTerm": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Control proving the zh catalog is loaded, carries a working Article, and renders 'got:zh'. VERIFIED: resolverCalls [{locale zh, returned S_IMPURE}], attempted [zh], match EXACT. This is what makes the zh-TW case's absence of 'got:zh' an assertion about the candidate walk rather than about an unloadable catalog."
+    },
+    {
+      "id": "resolver-locale.divergent-selection.policy-consulted-with-candidate-not-selection",
+      "requirementIds": [],
+      "fixture": "resolver-locale-divergent-selection",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "zh-TW",
+        "placeholders": {
+          "nounTerm": "apple"
+        },
+        "translationFallbackPolicy": {
+          "behavior": "continue-for-locales",
+          "locales": [
+            "zh-Hant"
+          ]
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The policy channel asked the same question as the resolver channel: a per-call policy that continues only for zh-Hant. VERIFIED: policyCalls [MISSING_TRANSLATION@zh-TW=false], attempted [zh-TW] only, RETURNED_KEY with failureReason MISSING_TRANSLATION, and resolverCalls ABSENT. A port that hands the policy the diagnostically selected locale (zh-Hant) instead of the candidate locale would get true, walk on to en, and render 'got:en' with a resolver call — a different observation on both channels. Also pins that a per-call policy replaces the instance policy (DefaultStrings.java:685)."
+    },
+    {
+      "id": "resolver-locale.multi-step.each-candidate-gets-its-own-locale",
+      "requirementIds": [],
+      "fixture": "resolver-locale-multi-step-walk",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en-AU",
+        "placeholders": {
+          "nounTerm": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "THE MULTI-CALL CASE the family exists for. Under any-failure the en-001 candidate invokes the resolver, gets CONSONANT, and then fails at DefaultStrings.java:1181 ('Missing Phonetic translation for CONSONANT') because its catalog omits that branch; the walk continues and en invokes the resolver again. VERIFIED: resolverCalls has TWO entries, [{locale en-001, returned CONSONANT}, {locale en, returned VOWEL}], attempted [en-AU, en-001, en], policyCalls [MISSING@en-AU=true, RESOLUTION_FAILURE@en-001=true], translation 'got:en'. A port that resolves the phonetic ONCE up front emits one call; a port that passes the requested locale emits two identical en-AU entries. Both fail visibly."
+    },
+    {
+      "id": "resolver-locale.multi-step.default-policy-truncates-after-first-resolver-call",
+      "requirementIds": [],
+      "fixture": "resolver-locale-multi-step-walk",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en-AU",
+        "placeholders": {
+          "nounTerm": "apple"
+        },
+        "translationFallbackPolicy": "missing-or-no-match"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same walk with the library default policy supplied per call, overriding the fixture's any-failure. VERIFIED: policyCalls [MISSING@en-AU=true, RESOLUTION_FAILURE@en-001=false], attempted [en-AU, en-001], RETURNED_KEY with failureCause IllegalStateException 'Missing Phonetic translation for CONSONANT', and resolverCalls exactly ONE entry (locale en-001). The truncation is the assertion: the en candidate must never be reached, so its resolver call must not exist. Also pins that a per-call policy replaces the instance policy (DefaultStrings.java:685)."
+    },
+    {
+      "id": "resolver-locale.multi-step.tagged-value-skips-every-resolver-call",
+      "requirementIds": [],
+      "fixture": "resolver-locale-multi-step-walk",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en-AU",
+        "placeholders": {
+          "nounTerm": {
+            "$lokalized": "language-form",
+            "axis": "phonetic",
+            "name": "PHONETIC_CONSONANT"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The tagged-value bypass extended across a MULTI-CANDIDATE walk, which callback-smoke only shows on a single candidate. VERIFIED: resolverCalls entirely ABSENT, yet the walk still runs — en-001 fails on the missing CONSONANT branch (RESOLUTION_FAILURE) and en supplies; attempted [en-AU, en-001, en], resolvedLocale en, policyCalls [MISSING@en-AU=true, RESOLUTION_FAILURE@en-001=true]. The rendered text is 'got:en-001' because with a tagged value the branch labels no longer name a resolver locale — this is the CONSONANT branch of the en catalog. The bypass is falsifiable: a port that fell back to the resolver would get VOWEL at en and render 'got:en' plus a resolverCalls entry."
+    },
+    {
+      "id": "resolver-locale.multi-step.never-policy-suppresses-every-resolver-call",
+      "requirementIds": [],
+      "fixture": "resolver-locale-multi-step-walk",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en-AU",
+        "placeholders": {
+          "nounTerm": "apple"
+        },
+        "translationFallbackPolicy": "never"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The absence assertion at its strongest. VERIFIED: policyCalls [MISSING_TRANSLATION@en-AU=false], attempted [en-AU] alone, RETURNED_KEY, resolverCalls ABSENT. en-AU has no catalog at all, so no resolver call can be legitimate; a port that eagerly resolved phonetic placeholders before walking, or that ignored the policy's first false, emits calls Java does not — and the sibling case on this same fixture shows exactly what those calls would look like."
+    },
+    {
+      "id": "resolver-locale.throwing.every-candidate-records-its-locale",
+      "requirementIds": [],
+      "fixture": "resolver-locale-throwing-across-walk",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en-AU",
+        "placeholders": {
+          "nounTerm": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The locale channel on the FAILING path: a resolver that always raises, under any-failure. VERIFIED: resolverCalls [{locale en-001, returned null, threw java.lang.IllegalStateException}, {locale en, returned null, threw java.lang.IllegalStateException}], attempted [en-AU, en-001, en], RETURNED_KEY with failureReason RESOLUTION_FAILURE and the resolver's own message carried through the contextualized cause. Proves the locale argument is recorded per candidate even when nothing is returned, and that a throwing resolver does not abort the walk under any-failure. (Review note: the authored claim 'one RESOLUTION_FAILURE per candidate' was wrong — policyCalls are [MISSING@en-AU=true, RESOLUTION_FAILURE@en-001=true]; the loop breaks at DefaultStrings.java:730-731 before consulting the policy after the final candidate en, so the second resolver failure produces no policy call at all.)"
+    },
+    {
+      "id": "resolver-locale.rtl.ar-request-served-by-en-donor",
+      "requirementIds": [],
+      "fixture": "resolver-locale-rtl-request-ltr-donor",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "ar",
+        "placeholders": {
+          "nounTerm": "apple",
+          "name": "עברית"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "RTL request, LTR donor — the two donor-rule consumers checked for AGREEMENT in one observation. VERIFIED: translation 'got:en|עברית' with the Hebrew name NOT wrapped in isolates, resolverCalls [{locale en}], attempted [ar, en], policyCalls [MISSING@ar=true]. Both shouldApplyBidiIsolation (DefaultStrings.java:1367) and the resolver (:1167) were handed the same candidateLocale en that getResult passes into getInternal at :712. A port that passes the requested ar to either one diverges: the string gains U+2068/U+2069 around the name, or the article becomes 'got:ar'. Because both live in one string, a port cannot fix one and hide the other."
+    },
+    {
+      "id": "resolver-locale.rtl.en-request-served-by-ar-donor",
+      "requirementIds": [],
+      "fixture": "resolver-locale-ltr-request-rtl-donor",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "nounTerm": "apple",
+          "name": "עברית"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The mirror image, so neither channel can pass by defaulting one way. VERIFIED: translation 'got:ar|⁨עברית⁩' — isolation APPLIED — resolverCalls [{locale ar, returned SOLAR}], attempted [en, ar]. The requested locale is LTR, the supplying one RTL, and both the isolation decision and the resolver locale follow the supplier. Note the generated 'article' placeholder itself is not isolated: generated placeholders take the expansion branch at DefaultStrings.java:1344-1362, which never reaches the isolation call at :1367; only the caller-supplied 'name' is wrapped."
+    },
+    {
+      "id": "resolver-locale.rtl.ar-request-served-by-ar",
+      "requirementIds": [],
+      "fixture": "resolver-locale-ltr-request-rtl-donor",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "ar",
+        "placeholders": {
+          "nounTerm": "apple",
+          "name": "עברית"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Control on the RTL fixture: request and donor are both ar. VERIFIED: 'got:ar|⁨עברית⁩', resolverCalls [{locale ar}], attempted [ar], no policy call. Establishes that isolation and 'got:ar' are what ar produces natively, so the en-request case's identical string is an assertion about the DONOR rather than a coincidence of the ar catalog."
+    },
+    {
+      "id": "resolver-locale.rtl.per-call-always-isolates-without-moving-the-resolver-locale",
+      "requirementIds": [],
+      "fixture": "resolver-locale-rtl-request-ltr-donor",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "ar",
+        "placeholders": {
+          "nounTerm": "apple",
+          "name": "עברית"
+        },
+        "bidiIsolation": "ALWAYS"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED IN REVIEW. The two consumers of candidateLocale are independent knobs: a per-call bidiIsolation override must flip the isolation channel WITHOUT moving the evaluation locale. VERIFIED: 'got:en|⁨עברית⁩' — isolation now applied on a walk whose donor is LTR — while resolverCalls is still [{locale en}] and attempted is still [ar, en]. A port that threads one shared 'presentation locale' variable through both decisions, and lets ALWAYS imply 'treat the request as RTL', renders 'got:ar'. Distinguishes cleanly from resolver-locale.rtl.ar-request-served-by-en-donor, which differs only in this field."
+    },
+    {
+      "id": "resolver-locale.rtl.per-call-none-suppresses-isolation-without-moving-the-resolver-locale",
+      "requirementIds": [],
+      "fixture": "resolver-locale-ltr-request-rtl-donor",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "nounTerm": "apple",
+          "name": "עברית"
+        },
+        "bidiIsolation": "NONE"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED IN REVIEW. The mirror of the ALWAYS case, so the independence claim is pinned in both directions. VERIFIED: 'got:ar|עברית' — isolation suppressed even though the supplying locale is RTL — with resolverCalls still [{locale ar, returned SOLAR}] and attempted [en, ar]. A port that let NONE also collapse the evaluation locale back onto the request renders 'got:en'. Differs from resolver-locale.rtl.en-request-served-by-ar-donor in this field alone."
+    },
+    {
+      "id": "resolver-locale.equivalent.mo-request-served-by-ro-catalog",
+      "requirementIds": [],
+      "fixture": "resolver-locale-canonical-equivalent",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "mo",
+        "placeholders": {
+          "nounTerm": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The supplying locale differs from the request on the VERY FIRST candidate, with no fallback step at all — a shape no other case in this family has. localizedStringsFor (DefaultStrings.java:2506) maps mo onto the loaded ro catalog and localeFallbackCandidates keys the candidate by that RESOLVED locale (:2495-2500). VERIFIED: attempted [ro] — the requested 'mo' never appears in attemptedLocales at all — match type CANONICAL, isFallback false, resolverCalls [{locale ro, returned CONSONANT}], no policy call. A port that hands the resolver the tag the caller passed renders 'got:mo'."
+    },
+    {
+      "id": "resolver-locale.equivalent.ro-request-served-by-ro",
+      "requirementIds": [],
+      "fixture": "resolver-locale-canonical-equivalent",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "ro",
+        "placeholders": {
+          "nounTerm": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Control: requesting ro directly gives the same translation and the same resolver locale as requesting mo, but match type EXACT rather than CANONICAL. VERIFIED: resolverCalls [{locale ro}], attempted [ro]. Pins that the mo case's 'got:ro' comes from canonicalization rather than from the fallback path — the two differ in exactly one observed field, matchType."
+    },
+    {
+      "id": "resolver-locale.likely-subtag.fr-be-request-served-by-fr-fr",
+      "requirementIds": [],
+      "fixture": "resolver-locale-likely-subtag",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "fr-BE",
+        "placeholders": {
+          "nounTerm": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Seed row 2's shape carried into the callback channel. VERIFIED: attempted [fr-BE, fr, fr-FR] — the bare 'fr' is a real intermediate candidate that is never loaded and never reaches the resolver — resolverCalls exactly one entry with locale fr-FR, policyCalls [MISSING@fr-BE=true, MISSING@fr=true], match LIKELY_SUBTAG/fr-FR. Four branches distinguish 'got:fr-BE' (passed the request), 'got:fr' (passed a truncated language code), 'got:fr-CA' (picked the wrong tiebreaker) and the correct 'got:fr-FR'."
+    },
+    {
+      "id": "resolver-locale.likely-subtag.fr-ca-request-served-by-fr-ca",
+      "requirementIds": [],
+      "fixture": "resolver-locale-likely-subtag",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "fr-CA",
+        "placeholders": {
+          "nounTerm": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Control on the non-preferred tiebreaker entry: a direct fr-CA request must reach fr-CA, not be pulled to the preferred fr-FR. VERIFIED: resolverCalls [{locale fr-CA, returned CONSONANT}], attempted [fr-CA], match EXACT, no policy call. Without it, a port that always resolved the fr language to fr-FR would pass the fr-BE case for the wrong reason."
+    },
+    {
+      "id": "resolver-locale.instance-locale.ambient-de-request-served-by-en-fallback",
+      "requirementIds": [],
+      "fixture": "resolver-locale-instance-locale",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "placeholders": {
+          "nounTerm": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The donor rule reached through the AMBIENT locale ingress rather than a per-call one: the case passes no locale, so localeLookupFor falls through to the localeSupplier path at DefaultStrings.java:2456-2458. VERIFIED: attempted [de, en], resolverCalls [{locale en, returned VOWEL}], policyCalls [MISSING@de=true], and NO match channel at all (the oracle emits one only for an explicit per-call locale). A port that special-cases the ambient locale — reasonably, since there is no caller-supplied tag to pass — and hands the resolver the instance locale renders 'got:de'."
+    },
+    {
+      "id": "resolver-locale.instance-locale.per-call-locale-overrides-ambient",
+      "requirementIds": [],
+      "fixture": "resolver-locale-instance-locale",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "fr",
+        "placeholders": {
+          "nounTerm": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same instance with a per-call locale that is neither the ambient de nor the fallback en. VERIFIED: resolverCalls [{locale fr, returned CONSONANT}], attempted [fr], no policy call. Proves the per-call locale, not the ambient one, seeds the candidate walk the resolver locale is drawn from — so the previous case's 'got:en' is the donor rule and not the instance locale leaking through. Its expected block is byte-identical to resolver-locale.own-catalog.fr-request-served-by-fr; the discrimination lives in the fixture, whose ambient locale is de, so a port that ignored the per-call locale would walk de→en and render 'got:en' here while still passing there."
+    },
+    {
+      "id": "resolver-locale.no-match.matching-alternative-reaches-the-resolver-at-en-001",
+      "requirementIds": [],
+      "fixture": "resolver-locale-no-matching-alternative",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en-AU",
+        "placeholders": {
+          "nounTerm": "apple",
+          "count": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED IN REVIEW. The falsifying control for the NO_MATCHING_ALTERNATIVE case on this same fixture: with count 1 the en-001 alternative DOES match, so its phonetic placeholder is resolved and the resolver is handed en-001. VERIFIED: attempted [en-AU, en-001], resolvedLocale en-001, resolverCalls [{locale en-001, returned CONSONANT}], policyCalls [MISSING@en-AU=true], translation 'got:en-001'. Without this, the sibling case's missing en-001 resolver call would be unfalsifiable — it could mean 'en-001 never reaches the resolver under any input'."
+    },
+    {
+      "id": "resolver-locale.no-match.failed-alternative-never-reaches-the-resolver",
+      "requirementIds": [],
+      "fixture": "resolver-locale-no-matching-alternative",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en-AU",
+        "placeholders": {
+          "nounTerm": "apple",
+          "count": 7
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED IN REVIEW — a failure reason the authored family never produced, and a new absence assertion. en-001's Article is alternatives-only and its single predicate fails at count 7, so the candidate ends in NO_MATCHING_ALTERNATIVE without its phonetic placeholder ever being evaluated. VERIFIED: policyCalls [MISSING@en-AU=true, NO_MATCHING_ALTERNATIVE@en-001=true], attempted [en-AU, en-001, en], resolverCalls exactly ONE entry with locale en — the en-001 call the count-1 sibling shows is absent here. A port that resolves placeholder values before selecting the alternative emits an extra {locale en-001, returned CONSONANT} entry that Java never makes, even though its final string would still be 'got:en'."
+    },
+    {
+      "id": "resolver-locale.multi-placeholder.each-placeholder-calls-the-resolver-once-per-candidate",
+      "requirementIds": [],
+      "fixture": "resolver-locale-two-phonetic-placeholders",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en-AU",
+        "placeholders": {
+          "nounTerm": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED IN REVIEW. Call MULTIPLICITY crossed with the donor rule: two phonetic placeholders bound to the SAME term, over a two-donor walk. VERIFIED: resolverCalls has FOUR entries in order [{en-001, CONSONANT}, {en-001, CONSONANT}, {en, VOWEL}, {en, VOWEL}] — placeholder b's branch set at en-001 omits CONSONANT, so that candidate throws only AFTER both of its calls are made and recorded — attempted [en-AU, en-001, en], policyCalls [MISSING@en-AU=true, RESOLUTION_FAILURE@en-001=true], translation 'a:got:en+b:got:en'. This is the case that catches per-term or per-request memoization: a port that caches the resolver's answer by term emits two entries, one that caches per candidate emits two, and one that passes the requested locale emits four en-AU entries. The rendered string alone cannot tell these apart, so the assertion genuinely lives in the channel."
+    }
+  ]
+}

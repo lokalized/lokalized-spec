@@ -1,0 +1,777 @@
+{
+  "formatVersion": 1,
+  "family": "raw-vs-tagged",
+  "description": "Plan v7 section 8.3 fixture family 'raw-vs-tagged'. Inputs only; the oracle emits expected.",
+  "skipped": [
+    {
+      "what": "Asserting the distinct underlying failure CAUSE (exception type, message, cause chain) behind each raw-value case.",
+      "why": "Verified against VectorOracle.java: describeResult projects key, translation, status, lookupLocale, resolvedLocale, attemptedLocales, isFallback, failureReason, and localeMatchResult — not the cause. The `thrown` record is only populated when getResult itself throws, and DefaultStrings catches the per-candidate RuntimeException and, under the default TranslationFailureHandler.returnKey(), returns RETURNED_KEY / RESOLUTION_FAILURE instead. Distinguishing 'must be a Gender but was String' from 'No PhoneticResolver was configured' would require a translation-failure-handler fixture, which the oracle does not support. Compensated by the four failure-key cases and the new both-channels raw case, whose returned key text embeds the raw value verbatim and so differs observably from any string-sniffing port's output. Causes read from the source, for whoever activates handler fixtures later: gender/case/definiteness/classifier/formality/clusivity/animacy -> IllegalArgumentException \"Placeholder 'who' in key 'GenderLine' must be a Gender but was String\"; cardinality -> \"...must be a Number, PluralOperands, or Cardinality but was String\" (ordinality identically with Ordinality); phonetic placeholder and the gender EXPRESSION -> IllegalStateException \"No PhoneticResolver was configured. Provide one via Strings.Builder#phoneticResolver(...)\"; numeric expression -> ExpressionEvaluationException \"Numeric comparison 'count == 1' requires numeric operands supplied as Number or PluralOperands values, but placeholder 'count' resolved to String\". The placeholder paths are wrapped by contextualizePlaceholderFailure."
+    },
+    {
+      "what": "A raw string reaching a PHONETIC_* selector or a phonetic expression with a real resolver installed, so the resolver's classification (rather than a missing-resolver failure) is the observation.",
+      "why": "Phonetic resolver callbacks are explicitly out of oracle scope. The clause is still covered in the direction that matters — the raw string is NOT read as the constant it spells — but the affirmative half (a raw term being classified by a resolver, which is the only legitimate use of raw text on this axis) belongs to the phonetic-resolver family once callback fixtures exist. Note for that author: the raw-vs-tagged.phonetic-placeholder cases will change status once a resolver is present, so those propositions must be given new IDs rather than reusing these."
+    },
+    {
+      "what": "Raw-string cases for the remaining six axes (grammatical-case, definiteness, classifier, formality, clusivity, animacy).",
+      "why": "Re-verified line by line in DefaultStrings during this review: all seven strict-enum axes use character-for-character identical dispatch (`if (!(value instanceof X)) throw new IllegalArgumentException(\"Placeholder '%s' in key '%s' must be a %s but was %s\")`), so adding them would multiply case count without exercising a new branch. Gender stands in for the strict-enum group; phonetic is covered separately because it is the only axis with a genuinely different CharSequence path, and cardinality/ordinality are covered because they are the only axes that convert numbers, through two independent methods."
+    },
+    {
+      "what": "Raw-string non-equality between two raw CharSequence operands (e.g. 'a == b' with both supplied as strings).",
+      "why": "Plan 8.3 assigns 'raw-string non-equality' to the expressions family. Verified in ExpressionEvaluator: that path is a dedicated guard requiring BOTH operands to be caller-supplied CharSequences, and throws its own 'expressions do not support textual equality' / 'textual ordering' errors rather than demonstrating raw-versus-tagged dispatch. Left to the expressions author to avoid duplicate propositions on the same branch."
+    },
+    {
+      "what": "Cross-axis tagged operands (e.g. a tagged Gender supplied to a CARDINALITY_* selector or compared against an ORDINALITY_* literal).",
+      "why": "Plan 8.3 assigns 'missing/null/cross-axis operands' to the expressions family. Adjacent to this clause but a different proposition: it is about axis mismatch between two typed values, not about raw text failing to become a typed value."
+    }
+  ],
+  "cases": [
+    {
+      "id": "raw-vs-tagged.plain-slot.raw-gender-feminine-renders-as-itself",
+      "requirementIds": [],
+      "fixture": "raw-vs-tagged-plain-slot",
+      "operation": "getResult",
+      "input": {
+        "key": "PlainSlot",
+        "locale": "en",
+        "placeholders": {
+          "value": "GENDER_FEMININE"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The clause's headline string in the simplest possible position. StringInterpolator (verified, line ~193) takes the `value instanceof CharSequence` branch and appends the sequence unchanged. Oracle-verified output `[GENDER_FEMININE]`. Without this case a JS port could normalize or strip recognized constant spellings on the way into an ordinary slot and nothing would catch it."
+    },
+    {
+      "id": "raw-vs-tagged.plain-slot.tagged-gender-feminine-renders-its-render-name",
+      "requirementIds": [],
+      "fixture": "raw-vs-tagged-plain-slot",
+      "operation": "getResult",
+      "input": {
+        "key": "PlainSlot",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_FEMININE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The tagged half of the pair. Verified in source: Gender declares no toString override, so StringInterpolator's `String.valueOf(value)` branch yields the enum's renderName. Oracle-verified output `[FEMININE]`, which diverges from the raw case's `[GENDER_FEMININE]`. Without this a JS port could render a tagged form as its wire name and stay indistinguishable from raw text, collapsing exactly the distinction section 3.7 exists to protect."
+    },
+    {
+      "id": "raw-vs-tagged.plain-slot.raw-cardinality-one-renders-as-itself",
+      "requirementIds": [],
+      "fixture": "raw-vs-tagged-plain-slot",
+      "operation": "getResult",
+      "input": {
+        "key": "PlainSlot",
+        "locale": "en",
+        "placeholders": {
+          "value": "CARDINALITY_ONE"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Same proposition on the cardinality axis, whose constants are the ones a port is most tempted to sniff because they also name plural categories. Oracle-verified `[CARDINALITY_ONE]`. Absent this case, a port that mapped recognized CARDINALITY_* text to a form object would render the stripped name here and no vector would notice."
+    },
+    {
+      "id": "raw-vs-tagged.plain-slot.tagged-cardinality-one-renders-its-render-name",
+      "requirementIds": [],
+      "fixture": "raw-vs-tagged-plain-slot",
+      "operation": "getResult",
+      "input": {
+        "key": "PlainSlot",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "cardinality",
+            "name": "CARDINALITY_ONE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Tagged half. Oracle-verified `[ONE]`: a tagged cardinality used as plain text renders its renderName rather than its wire name or a number. Without it the raw case above has no counterpart and the pair proves nothing."
+    },
+    {
+      "id": "raw-vs-tagged.plain-slot.raw-phonetic-vowel-renders-as-itself",
+      "requirementIds": [],
+      "fixture": "raw-vs-tagged-plain-slot",
+      "operation": "getResult",
+      "input": {
+        "key": "PlainSlot",
+        "locale": "en",
+        "placeholders": {
+          "value": "PHONETIC_VOWEL"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Phonetic is the one axis where DefaultStrings accepts a raw CharSequence at all (verified at the `value instanceof CharSequence` branch of the phonetic selector), so it is the axis where a port is most likely to over-generalize and start recognizing constant text. Oracle-verified `[PHONETIC_VOWEL]`: even here, in a plain slot, the string is just text."
+    },
+    {
+      "id": "raw-vs-tagged.plain-slot.tagged-phonetic-vowel-renders-its-render-name",
+      "requirementIds": [],
+      "fixture": "raw-vs-tagged-plain-slot",
+      "operation": "getResult",
+      "input": {
+        "key": "PlainSlot",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "phonetic",
+            "name": "PHONETIC_VOWEL"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Tagged half for phonetic. Oracle-verified `[VOWEL]`. Without it, a port could render a tagged Phonetic identically to the raw string and pass the raw case while having no type distinction at all."
+    },
+    {
+      "id": "raw-vs-tagged.plain-slot.raw-one-point-zero-renders-as-itself",
+      "requirementIds": [],
+      "fixture": "raw-vs-tagged-plain-slot",
+      "operation": "getResult",
+      "input": {
+        "key": "PlainSlot",
+        "locale": "en",
+        "placeholders": {
+          "value": "1.0"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The clause's other headline literal. Oracle-verified `[1.0]`. A JS port that ran values through a number-ish coercion before interpolating would emit `1` here; this is the cheapest possible detector of that."
+    },
+    {
+      "id": "raw-vs-tagged.plain-slot.tagged-decimal-one-point-zero-renders-with-trailing-zero",
+      "requirementIds": [],
+      "fixture": "raw-vs-tagged-plain-slot",
+      "operation": "getResult",
+      "input": {
+        "key": "PlainSlot",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "decimal",
+            "value": "1.0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Deliberately records a COINCIDENCE, re-verified against the oracle in this review: in a plain slot a tagged BigDecimal renders through BigDecimal#toString and produces `[1.0]`, the same text as the raw string. Documenting the coincidence is what makes the divergence in the cardinality-placeholder and both-channels pairs meaningful — the two values are only distinguishable where dispatch happens, and a port must not 'fix' this slot to differ."
+    },
+    {
+      "id": "raw-vs-tagged.plain-slot.integer-one-renders-without-a-fraction",
+      "requirementIds": [],
+      "fixture": "raw-vs-tagged-plain-slot",
+      "operation": "getResult",
+      "input": {
+        "key": "PlainSlot",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "integer",
+            "value": "1"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Third leg of the raw-'1.0' / decimal-'1.0' / integer-1 triple in the plain slot, so the same three values can be compared here and at the cardinality selector. Oracle-verified `[1]`. Without it the integer leg is untested outside dispatch and a port could conflate integer 1 with decimal 1.0 at render time."
+    },
+    {
+      "id": "raw-vs-tagged.plain-slot.raw-one-point-five-zero-keeps-its-trailing-zero",
+      "requirementIds": [],
+      "fixture": "raw-vs-tagged-plain-slot",
+      "operation": "getResult",
+      "input": {
+        "key": "PlainSlot",
+        "locale": "en",
+        "placeholders": {
+          "value": "1.50"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Paired with the double below to give the plain slot a raw/typed pair that actually diverges. Oracle-verified `[1.50]`. If a JS port parses numeric-looking strings, the two trailing zeros collapse and this case fails, while the '1.0' pair (which coincides) would not have caught it."
+    },
+    {
+      "id": "raw-vs-tagged.plain-slot.tagged-double-one-point-five-zero-loses-its-trailing-zero",
+      "requirementIds": [],
+      "fixture": "raw-vs-tagged-plain-slot",
+      "operation": "getResult",
+      "input": {
+        "key": "PlainSlot",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "double",
+            "value": "1.50"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The typed half: a binary64 value has already lost the source trailing zero, so it renders `[1.5]` (oracle-verified) — different from the identical raw text. This is the case that makes 'a string is not a number' observable in a slot that does no dispatch at all."
+    },
+    {
+      "id": "raw-vs-tagged.gender-placeholder.raw-constant-name-does-not-select-a-branch",
+      "requirementIds": [],
+      "fixture": "raw-vs-tagged-language-form-placeholders",
+      "operation": "getResult",
+      "input": {
+        "key": "GenderLine",
+        "locale": "en",
+        "placeholders": {
+          "who": "GENDER_FEMININE"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The clause's central trap: a GENDER_* placeholder fed the exact text of one of its branch keys. Verified in DefaultStrings: the gender branch is `if (!(value instanceof Gender)) throw`, so this is oracle-recorded as RETURNED_KEY / RESOLUTION_FAILURE with translation `GenderLine`, not the 'She' branch. A JS port that looked the raw string up in the branch map — the single most natural wrong implementation — would return `[She]` and fail here."
+    },
+    {
+      "id": "raw-vs-tagged.gender-placeholder.raw-render-name-does-not-select-a-branch",
+      "requirementIds": [],
+      "fixture": "raw-vs-tagged-language-form-placeholders",
+      "operation": "getResult",
+      "input": {
+        "key": "GenderLine",
+        "locale": "en",
+        "placeholders": {
+          "who": "FEMININE"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Closes the second sniffing route: the renderName, which is exactly what a tagged form interpolates to (see the plain-slot pair, which renders `[FEMININE]`), so a port that round-trips rendered text back into a form would match here. Section 3.7 forbids prefix matching in either direction; without this case only the fully-prefixed spelling is guarded. Its oracle record is byte-identical to the previous case's, which is expected — the two exist to reject two different wrong implementations, not to be told apart from each other."
+    },
+    {
+      "id": "raw-vs-tagged.gender-placeholder.tagged-form-selects-the-feminine-branch",
+      "requirementIds": [],
+      "fixture": "raw-vs-tagged-language-form-placeholders",
+      "operation": "getResult",
+      "input": {
+        "key": "GenderLine",
+        "locale": "en",
+        "placeholders": {
+          "who": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_FEMININE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The positive control for the two cases above; oracle-verified `[She]`. Without it, a JS port could fail every gender dispatch and still pass the raw cases, since both halves would then look like failures — the pair only proves anything when one half succeeds."
+    },
+    {
+      "id": "raw-vs-tagged.gender-placeholder.tagged-masculine-form-selects-a-different-branch",
+      "requirementIds": [],
+      "fixture": "raw-vs-tagged-language-form-placeholders",
+      "operation": "getResult",
+      "input": {
+        "key": "GenderLine",
+        "locale": "en",
+        "placeholders": {
+          "who": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_MASCULINE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED IN REVIEW. The feminine positive control alone is satisfied by a port that returns whatever branch it encounters first, since 'She' is a plausible first entry; that port would pass every other case in this family. Oracle-verified `[He]`, which makes the tagged-gender control discriminating: the tagged form must select ITS branch, not A branch."
+    },
+    {
+      "id": "raw-vs-tagged.cardinality-placeholder.raw-one-point-zero-does-not-classify",
+      "requirementIds": [],
+      "fixture": "raw-vs-tagged-language-form-placeholders",
+      "operation": "getResult",
+      "input": {
+        "key": "CardinalityLine",
+        "locale": "en",
+        "placeholders": {
+          "bookCount": "1.0"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The clause's raw-'1.0' leg at a cardinality selector. Verified in DefaultStrings#cardinalityForValue: it accepts only Cardinality, PluralOperands, or Number and throws on anything else, so a String fails outright (oracle: RETURNED_KEY / RESOLUTION_FAILURE). A JS port that coerced numeric-looking strings would classify OTHER and render `[books]` — a plausible-looking success that this case turns into a failure."
+    },
+    {
+      "id": "raw-vs-tagged.cardinality-placeholder.raw-one-does-not-classify",
+      "requirementIds": [],
+      "fixture": "raw-vs-tagged-language-form-placeholders",
+      "operation": "getResult",
+      "input": {
+        "key": "CardinalityLine",
+        "locale": "en",
+        "placeholders": {
+          "bookCount": "1"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The integer-shaped string, which is the coercion a port is likeliest to perform silently (`Number(value)`), and the one whose wrong answer (`[book]`) is most convincing to a human reviewer. Without it, only the fractional spelling is guarded."
+    },
+    {
+      "id": "raw-vs-tagged.cardinality-placeholder.raw-constant-name-does-not-classify",
+      "requirementIds": [],
+      "fixture": "raw-vs-tagged-language-form-placeholders",
+      "operation": "getResult",
+      "input": {
+        "key": "CardinalityLine",
+        "locale": "en",
+        "placeholders": {
+          "bookCount": "CARDINALITY_ONE"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Guards the form-name sniffing route on the cardinality axis specifically, where the raw text names a branch key that is present in this definition. Without it a port could pass the numeric-string cases by rejecting non-numeric strings while still resolving constant-named ones."
+    },
+    {
+      "id": "raw-vs-tagged.cardinality-placeholder.tagged-decimal-one-point-zero-classifies-other",
+      "requirementIds": [],
+      "fixture": "raw-vs-tagged-language-form-placeholders",
+      "operation": "getResult",
+      "input": {
+        "key": "CardinalityLine",
+        "locale": "en",
+        "placeholders": {
+          "bookCount": {
+            "$lokalized": "decimal",
+            "value": "1.0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Middle leg of the clause's explicit raw-'1.0' / decimal-'1.0' / integer-1 triple. The visible decimal place makes v=1, so en classifies OTHER and the branch is `[books]` (oracle-verified) — a different branch from integer 1. Without it, a port could treat every tagged numeric as an integer and never expose that decimals carry visible-decimal-place state."
+    },
+    {
+      "id": "raw-vs-tagged.cardinality-placeholder.integer-one-classifies-one",
+      "requirementIds": [],
+      "fixture": "raw-vs-tagged-language-form-placeholders",
+      "operation": "getResult",
+      "input": {
+        "key": "CardinalityLine",
+        "locale": "en",
+        "placeholders": {
+          "bookCount": {
+            "$lokalized": "integer",
+            "value": "1"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Third leg of the triple: same mathematical value as the decimal above, different branch (`[book]`, oracle-verified). This is the case that proves the triple's three members are genuinely three behaviors and not two, and it is the discriminating positive control the two raw numeric-string cases need."
+    },
+    {
+      "id": "raw-vs-tagged.cardinality-placeholder.tagged-form-passes-through-without-classification",
+      "requirementIds": [],
+      "fixture": "raw-vs-tagged-language-form-placeholders",
+      "operation": "getResult",
+      "input": {
+        "key": "CardinalityLine",
+        "locale": "en",
+        "placeholders": {
+          "bookCount": {
+            "$lokalized": "language-form",
+            "axis": "cardinality",
+            "name": "CARDINALITY_ONE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A tagged Cardinality supplied where a number is expected short-circuits classification entirely — verified as the first branch of cardinalityForValue, `if (value instanceof Cardinality) return (Cardinality) value;` — so no plural rule runs and no locale data is consulted. Oracle-verified `[book]`. Without this case a JS port could implement the selector as 'always run the plural rules', which would throw or misclassify on a caller-supplied form; it is also the direct contrast to the raw 'CARDINALITY_ONE' string that spells the same thing and fails."
+    },
+    {
+      "id": "raw-vs-tagged.ordinality-placeholder.raw-two-does-not-classify",
+      "requirementIds": [],
+      "fixture": "raw-vs-tagged-language-form-placeholders",
+      "operation": "getResult",
+      "input": {
+        "key": "OrdinalityLine",
+        "locale": "en",
+        "placeholders": {
+          "rank": "2"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Extends the raw-string rejection to the ordinal selector, which reaches Java through DefaultStrings#ordinalityForValue — verified as a separate method with its own independent type check. Without it a port could get cardinality right and still coerce strings on the ordinal path."
+    },
+    {
+      "id": "raw-vs-tagged.ordinality-placeholder.raw-constant-name-does-not-classify",
+      "requirementIds": [],
+      "fixture": "raw-vs-tagged-language-form-placeholders",
+      "operation": "getResult",
+      "input": {
+        "key": "OrdinalityLine",
+        "locale": "en",
+        "placeholders": {
+          "rank": "ORDINALITY_TWO"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED IN REVIEW. The cardinality axis had a constant-name sniffing case but the ordinal axis did not, even though the family's own justification for the raw-'2' case is that ordinalityForValue is independent code. A port that rejects non-numeric strings in cardinalityForValue but resolves constant names in ordinalityForValue passed the original set; oracle-verified RETURNED_KEY here closes that."
+    },
+    {
+      "id": "raw-vs-tagged.ordinality-placeholder.integer-two-classifies-two",
+      "requirementIds": [],
+      "fixture": "raw-vs-tagged-language-form-placeholders",
+      "operation": "getResult",
+      "input": {
+        "key": "OrdinalityLine",
+        "locale": "en",
+        "placeholders": {
+          "rank": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Positive control for the ordinal path: oracle-verified `[nd]`, a different branch from the definition's first entry `st`, so it discriminates. Proves the fixture's ordinal branch set is reachable and that the raw-string failures above are attributable to the value's type rather than to a broken definition."
+    },
+    {
+      "id": "raw-vs-tagged.ordinality-placeholder.tagged-form-passes-through-without-classification",
+      "requirementIds": [],
+      "fixture": "raw-vs-tagged-language-form-placeholders",
+      "operation": "getResult",
+      "input": {
+        "key": "OrdinalityLine",
+        "locale": "en",
+        "placeholders": {
+          "rank": {
+            "$lokalized": "language-form",
+            "axis": "ordinality",
+            "name": "ORDINALITY_TWO"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Ordinal counterpart of the cardinality pass-through: a caller-supplied Ordinality bypasses the ordinal rules (verified as the first branch of ordinalityForValue). Reaching the same `[nd]` branch as integer 2 by a different route is what shows the port must accept a tagged form here at all, rather than demanding a number."
+    },
+    {
+      "id": "raw-vs-tagged.phonetic-placeholder.raw-constant-name-is-an-opaque-resolver-term",
+      "requirementIds": [],
+      "fixture": "raw-vs-tagged-language-form-placeholders",
+      "operation": "getResult",
+      "input": {
+        "key": "PhoneticLine",
+        "locale": "en",
+        "placeholders": {
+          "noun": "PHONETIC_VOWEL"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The sharpest case in the family. Verified in DefaultStrings' phonetic selector: `value instanceof Phonetic` first, `else if (value instanceof CharSequence)` hands the text to PhoneticResolver#resolve as an opaque term — it is never read as the constant it spells. With no resolver configured the DEFAULT_PHONETIC_RESOLVER throws IllegalStateException, so the oracle records RETURNED_KEY / RESOLUTION_FAILURE. A port that short-circuited recognized PHONETIC_* text would return `[an]` and never call the resolver at all — passing a case it should fail, and silently diverging on every real resolver deployment."
+    },
+    {
+      "id": "raw-vs-tagged.phonetic-placeholder.tagged-form-selects-the-vowel-branch",
+      "requirementIds": [],
+      "fixture": "raw-vs-tagged-language-form-placeholders",
+      "operation": "getResult",
+      "input": {
+        "key": "PhoneticLine",
+        "locale": "en",
+        "placeholders": {
+          "noun": {
+            "$lokalized": "language-form",
+            "axis": "phonetic",
+            "name": "PHONETIC_VOWEL"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Tagged half: a Phonetic value selects its branch directly and never consults the resolver, which is why it succeeds (`[an]`) in a fixture that has no resolver. Without it, the raw case's failure could be read as 'phonetic placeholders never work here' rather than as the raw/tagged split it actually is."
+    },
+    {
+      "id": "raw-vs-tagged.phonetic-placeholder.tagged-consonant-form-selects-a-different-branch",
+      "requirementIds": [],
+      "fixture": "raw-vs-tagged-language-form-placeholders",
+      "operation": "getResult",
+      "input": {
+        "key": "PhoneticLine",
+        "locale": "en",
+        "placeholders": {
+          "noun": {
+            "$lokalized": "language-form",
+            "axis": "phonetic",
+            "name": "PHONETIC_CONSONANT"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED IN REVIEW. The vowel control alone is satisfied by a port that returns the first phonetic branch it finds, since 'an' is the first entry in this definition. Oracle-verified `[a]` makes the tagged-phonetic control discriminating, the same repair applied to the gender axis."
+    },
+    {
+      "id": "raw-vs-tagged.both-channels.raw-gender-constant-name-fails-the-selector-on-a-key-that-also-renders-it",
+      "requirementIds": [],
+      "fixture": "raw-vs-tagged-language-form-placeholders",
+      "operation": "getResult",
+      "input": {
+        "key": "BothChannelsGender",
+        "locale": "en",
+        "placeholders": {
+          "who": "GENDER_FEMININE"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED IN REVIEW. Raw half of the family's strongest observation. `BothChannelsGender` renders the caller value as text AND dispatches on it in one translation, so a string-sniffing port emits `GENDER_FEMININE|She` here; Java oracle-records RETURNED_KEY with translation `BothChannelsGender`. Distinct from the GenderLine raw case because it proves the raw value's failure at the selector is not excused by the fact that the same value renders perfectly well as text two characters earlier in the same string."
+    },
+    {
+      "id": "raw-vs-tagged.both-channels.tagged-gender-form-renders-as-text-and-dispatches",
+      "requirementIds": [],
+      "fixture": "raw-vs-tagged-language-form-placeholders",
+      "operation": "getResult",
+      "input": {
+        "key": "BothChannelsGender",
+        "locale": "en",
+        "placeholders": {
+          "who": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_FEMININE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED IN REVIEW; the single case that states the whole clause. Oracle-verified `FEMININE|She`: one tagged value, observed on both channels at once — interpolated as its renderName in a plain slot and simultaneously dispatched to its branch by the generated placeholder that references it. The original set split these two channels across two fixtures, so no vector pinned that they happen together for the same value; a port that got one channel right per key would have passed."
+    },
+    {
+      "id": "raw-vs-tagged.both-channels.tagged-decimal-renders-its-trailing-zero-and-classifies-other",
+      "requirementIds": [],
+      "fixture": "raw-vs-tagged-language-form-placeholders",
+      "operation": "getResult",
+      "input": {
+        "key": "BothChannelsCardinality",
+        "locale": "en",
+        "placeholders": {
+          "bookCount": {
+            "$lokalized": "decimal",
+            "value": "1.0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED IN REVIEW. Numeric counterpart: oracle-verified `1.0|books`. Proves in one string that a tagged decimal preserves its source trailing zero when rendered AND carries the visible decimal place into plural classification. A port that normalized the decimal for display would emit `1|books`; one that dropped the visible decimal place would emit `1.0|book`. Neither failure was detectable from the original split cases."
+    },
+    {
+      "id": "raw-vs-tagged.both-channels.integer-renders-without-a-fraction-and-classifies-one",
+      "requirementIds": [],
+      "fixture": "raw-vs-tagged-language-form-placeholders",
+      "operation": "getResult",
+      "input": {
+        "key": "BothChannelsCardinality",
+        "locale": "en",
+        "placeholders": {
+          "bookCount": {
+            "$lokalized": "integer",
+            "value": "1"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED IN REVIEW. Oracle-verified `1|book`, the direct contrast to the decimal above: same mathematical value, different text AND different branch, in a single observation. This is the strongest available statement that JSON's one number type would have erased the distinction the tagged records exist to carry."
+    },
+    {
+      "id": "raw-vs-tagged.expression.raw-gender-constant-name-is-not-the-gender-constant",
+      "requirementIds": [],
+      "fixture": "raw-vs-tagged-expressions",
+      "operation": "getResult",
+      "input": {
+        "key": "GenderAlternative",
+        "locale": "en",
+        "placeholders": {
+          "who": "GENDER_FEMININE"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "`who == GENDER_FEMININE` fed the literal text 'GENDER_FEMININE'. Re-verified against ExpressionEvaluator in this review: operandType() types a caller-supplied CharSequence as OperandType.PHONETIC (its last VARIABLE branch), and the phonetic comparison branch fires when EITHER side is phonetic (`lhs == PHONETIC || rhs == PHONETIC`), unlike the gender/case/definiteness branches which require both. So Java routes the string to phoneticFromOperand and thence to the PhoneticResolver instead of comparing it to the Gender constant or to itself; with no resolver the throw propagates and the oracle records RETURNED_KEY — the default `[default]` translation is not reached either. A JS port doing `String(value) === 'GENDER_FEMININE'` would take the feminine branch; without this case that port passes the whole corpus."
+    },
+    {
+      "id": "raw-vs-tagged.expression.tagged-gender-form-matches-the-alternative",
+      "requirementIds": [],
+      "fixture": "raw-vs-tagged-expressions",
+      "operation": "getResult",
+      "input": {
+        "key": "GenderAlternative",
+        "locale": "en",
+        "placeholders": {
+          "who": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_FEMININE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Positive control: the tagged form makes the same alternative match, oracle-verified `[feminine branch]`. Proves the raw case's failure comes from the value's type and not from an unmatchable expression, and pins that alternatives dispatch on tagged forms."
+    },
+    {
+      "id": "raw-vs-tagged.expression.tagged-masculine-form-falls-through-to-the-default",
+      "requirementIds": [],
+      "fixture": "raw-vs-tagged-expressions",
+      "operation": "getResult",
+      "input": {
+        "key": "GenderAlternative",
+        "locale": "en",
+        "placeholders": {
+          "who": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_MASCULINE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED IN REVIEW, and the most important addition on the expression path. The fixture description claimed the default translation exists so a non-matching alternative stays observable, but no case ever exercised a non-match — a port that takes the first alternative unconditionally passed every original expression case, including the positive control. Oracle-verified `[default]` makes `tagged-gender-form-matches-the-alternative` mean something."
+    },
+    {
+      "id": "raw-vs-tagged.expression.raw-one-is-not-the-number-one",
+      "requirementIds": [],
+      "fixture": "raw-vs-tagged-expressions",
+      "operation": "getResult",
+      "input": {
+        "key": "NumericAlternative",
+        "locale": "en",
+        "placeholders": {
+          "count": "1"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "`count == 1` fed the string '1'. Verified in ExpressionEvaluator: with `rhsOperandType == NUMBER && lhsIsCallerSuppliedCharacterSequence`, the evaluator sets characterSequenceOperand and throws an ExpressionEvaluationException rather than parsing the string. Oracle-recorded as RETURNED_KEY. Without this case a port could make expressions numeric-coercing while keeping placeholders strict, passing every other case in this family."
+    },
+    {
+      "id": "raw-vs-tagged.expression.raw-one-point-zero-is-not-the-number-one",
+      "requirementIds": [],
+      "fixture": "raw-vs-tagged-expressions",
+      "operation": "getResult",
+      "input": {
+        "key": "NumericAlternative",
+        "locale": "en",
+        "placeholders": {
+          "count": "1.0"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The clause's literal '1.0' on the expression path. Kept alongside the '1' case because a port might parse only integer-shaped strings; both spellings must be refused identically."
+    },
+    {
+      "id": "raw-vs-tagged.expression.integer-one-matches-the-alternative",
+      "requirementIds": [],
+      "fixture": "raw-vs-tagged-expressions",
+      "operation": "getResult",
+      "input": {
+        "key": "NumericAlternative",
+        "locale": "en",
+        "placeholders": {
+          "count": {
+            "$lokalized": "integer",
+            "value": "1"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Positive control for the numeric expression: oracle-verified `[one branch]`, so the alternative is reachable and the two raw-string failures above are attributable to the value's type."
+    },
+    {
+      "id": "raw-vs-tagged.expression.tagged-decimal-one-point-zero-matches-the-alternative",
+      "requirementIds": [],
+      "fixture": "raw-vs-tagged-expressions",
+      "operation": "getResult",
+      "input": {
+        "key": "NumericAlternative",
+        "locale": "en",
+        "placeholders": {
+          "count": {
+            "$lokalized": "decimal",
+            "value": "1.0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Completes the contrast: the same characters that are inert as a raw string compare numerically equal to 1 when tagged (oracle-verified `[one branch]`), because ordinary expression comparison goes through BigDecimal#compareTo and ignores visible decimal places — unlike plural classification, where the same decimal chose the OTHER branch. Without it, the raw-'1.0' failure could be misread as '1.0 never equals 1'."
+    },
+    {
+      "id": "raw-vs-tagged.expression.integer-two-falls-through-to-the-default",
+      "requirementIds": [],
+      "fixture": "raw-vs-tagged-expressions",
+      "operation": "getResult",
+      "input": {
+        "key": "NumericAlternative",
+        "locale": "en",
+        "placeholders": {
+          "count": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED IN REVIEW. The numeric-expression counterpart of the masculine fall-through: without a non-matching numeric case, a port that matches every alternative unconditionally satisfied both numeric positive controls. Oracle-verified `[default]`."
+    },
+    {
+      "id": "raw-vs-tagged.failure-key.raw-gender-constant-name-is-echoed-verbatim",
+      "requirementIds": [],
+      "fixture": "raw-vs-tagged-language-form-placeholders",
+      "operation": "getResult",
+      "input": {
+        "key": "{{who}} needs a pronoun",
+        "locale": "en",
+        "placeholders": {
+          "who": "GENDER_FEMININE"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Makes the raw/tagged divergence visible in the returned STRING, not only in status: the gender dispatch fails, the key is returned, and the key's own placeholder is interpolated leniently with the raw value. Oracle-verified translation `GENDER_FEMININE needs a pronoun`. The oracle's result projection records status and failureReason but not the failure cause, so without a case like this the raw halves of this family are only distinguishable as 'some failure'; here a string-sniffing port produces `[She]` instead and the difference is unmistakable."
+    },
+    {
+      "id": "raw-vs-tagged.failure-key.tagged-gender-form-never-reaches-the-failure-key",
+      "requirementIds": [],
+      "fixture": "raw-vs-tagged-language-form-placeholders",
+      "operation": "getResult",
+      "input": {
+        "key": "{{who}} needs a pronoun",
+        "locale": "en",
+        "placeholders": {
+          "who": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_FEMININE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Tagged half on the same key: dispatch succeeds (`[She]`), so the failure-key interpolation path is never entered. Without it the echo case above has no counterpart and cannot show that the echo is a consequence of the raw value's type."
+    },
+    {
+      "id": "raw-vs-tagged.failure-key.raw-one-point-zero-is-echoed-verbatim",
+      "requirementIds": [],
+      "fixture": "raw-vs-tagged-language-form-placeholders",
+      "operation": "getResult",
+      "input": {
+        "key": "{{bookCount}} books read",
+        "locale": "en",
+        "placeholders": {
+          "bookCount": "1.0"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Same visible-echo technique for the clause's numeric literal: the cardinality dispatch fails and the oracle-verified translation is `1.0 books read`, proving in the output text that no numeric coercion occurred anywhere on the path — neither at the selector nor in the failure-key interpolation."
+    },
+    {
+      "id": "raw-vs-tagged.failure-key.tagged-decimal-one-point-zero-never-reaches-the-failure-key",
+      "requirementIds": [],
+      "fixture": "raw-vs-tagged-language-form-placeholders",
+      "operation": "getResult",
+      "input": {
+        "key": "{{bookCount}} books read",
+        "locale": "en",
+        "placeholders": {
+          "bookCount": {
+            "$lokalized": "decimal",
+            "value": "1.0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Tagged counterpart: the decimal classifies and the definition resolves to `[books]`, so the failure-key path is never reached. Anchors the echo case above as a type-driven divergence rather than a property of that key."
+    }
+  ]
+}

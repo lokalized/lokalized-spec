@@ -1,0 +1,16 @@
+{
+  "id": "ingress-matrix-handler-return-string",
+  "description": "Failure-handler ingress matrix, instance leg pinned to a return-string handler with a distinctive payload. Identical catalog to ingress-matrix-handler-default. The payload text is what makes an instance-versus-per-call return-string pair discriminating even though both sides share a behavior name. Cases on this fixture use `get` wherever the responding handler returns a string, because DefaultStrings.java:758 sets TranslationResultStatus.RETURNED_STRING and the corpus schema's translationResult.status enum admits only TRANSLATED and RETURNED_KEY.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "translationFailureHandler": {
+    "behavior": "return-string",
+    "text": "INSTANCE-HANDLER-TEXT"
+  },
+  "files": {
+    "en": {
+      "Locale.Marker": "en",
+      "Greeting.Named": "en:Hello, {{name}}"
+    }
+  }
+}

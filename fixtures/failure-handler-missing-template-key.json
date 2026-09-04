@@ -1,0 +1,12 @@
+{
+  "id": "failure-handler-missing-template-key",
+  "description": "Serves section 8.3's 'missing keys containing placeholders and failure-key fail-soft behavior' and the handler half of 'callback exceptions'. Every library option is left at its default (DefaultStrings.java:472-477: returnKey handler, MISSING_OR_NO_MATCH policy, RTL_LOCALES bidi -- DEFAULT_BIDI_ISOLATION at DefaultStrings.java:80), so each case's per-call translationFailureHandler is the only variable and DefaultStrings.java:684 (per-call REPLACES instance) is exercised against a known baseline. The catalog deliberately contains exactly one resolvable key, Greeting.Present, so a control case can show the handler is consulted only on failure; every key the failure cases look up is absent from every loaded locale, which forces MISSING_TRANSLATION with no cause. One loaded locale, so tiebreakers are null.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Locale.Marker": "en",
+      "Greeting.Present": "Hello there."
+    }
+  }
+}

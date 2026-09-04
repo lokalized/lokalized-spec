@@ -1,0 +1,15 @@
+{
+  "id": "classpath-smoke-basic",
+  "description": "A well-formed two-locale catalog, loaded both ways. The classpath and filesystem discovery paths must agree on identical inputs; this fixture is the paired control that makes any later divergence attributable to the input rather than the path.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Key.A": "a",
+      "Key.B": "b"
+    },
+    "fr": {
+      "Key.A": "a-fr"
+    }
+  }
+}

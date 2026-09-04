@@ -1,0 +1,1465 @@
+{
+  "formatVersion": 1,
+  "family": "runtime-limits",
+  "description": "Plan v7 section 8.3 fixture family 'runtime-limits'. Inputs only; the oracle emits expected.",
+  "skipped": [
+    {
+      "what": "The exceeding side of maximumExpressionCharacters, maximumExpressionTokens and maximumExpressionNestingDepth — an expression one character, one token, or one group past the configured limit.",
+      "why": "STRUCTURALLY UNAUTHORABLE in this corpus, and this remains the family's main finding after re-verification against the source. DefaultStrings compiles EVERY expression of EVERY loaded locale eagerly in its constructor (the per-locale loop calls compileExpressions, which calls getExpressionEvaluator().compile at DefaultStrings.java:576 for generated-fragment predicates and 594 for whole-message alternatives), and ExpressionEvaluator.parseAndValidateExpressionTokens runs validateExpressionSourceLength (line 1812) and validateInfixTokens (line 1820) at compile time. An over-limit expression therefore throws while the Strings instance is being BUILT, not while a case runs. VectorOracle builds one Strings per fixture up front and exits 3 if any fixture cannot be constructed, so such a fixture would abort the entire oracle run rather than record a case; the same is true at load time for the hard ceilings, since LocalizedStringLoader validates with TranslationRuntimeLimits.hardCeilings(). This is not merely an authoring inconvenience: plan section 4.6 states 'Construction-time expression violations make createStrings fail', so the JS port has a required behavior that the corpus currently cannot check at all. I ran the three over-limit fixtures against the real library to confirm the mechanism and the exact measurements — at limit 16 'Expression length 17 exceeds maximum supported length 16', at limit 8 'Expression contains 9 tokens', at nesting 0 'Expression grouping depth exceeds maximum supported depth 0', each naming both the whole-message and the fragment expression. Only the at-limit side is observable, and this family authors it exactly (17 characters / 9 tokens / depth 1, with BOTH the whole-message alternative and the generated-fragment predicate measured at the limit, each fixture's limit set to its catalog's exact measurement) plus the permitted zero for nesting depth. Capturing the over side needs a new oracle channel that constructs a fixture inside a try/catch and records the construction throw."
+    },
+    {
+      "what": "maximumExpressionCharacters, maximumExpressionTokens and maximumExpressionNestingDepth pinned at their DEFAULTS (2,048 / 256 / 32) from the just-inside side.",
+      "why": "Authorable in principle but not safely by hand here. The fits case needs an expression measured to the exact default — 2,048 UTF-16 units, or 255 tokens (the token grammar only produces odd counts, since every comparison is 3 tokens and every operator or parenthesis pair adds an even number, so 256 itself is unreachable), or 32 balanced nested groups. Each is a long mechanical repetition, and an overshoot of even one unit does not merely weaken the claim: it pushes the expression past the default, fails fixture construction, and takes the whole oracle run down (see the previous entry). These three should be emitted by a generator in the ingest pipeline, where the length, token count and paren balance can be asserted before the fixture is written."
+    },
+    {
+      "what": "maximumNumberPrecision pinned at its DEFAULT of 1,024 (a 1,024-digit value that fits and a 1,025-digit value that does not).",
+      "why": "Both sides are runtime-observable and the pair is worth having, but it requires two hand-written literals of 1,024 and 1,025 significant digits, and precision is the count of significant digits, so there is no shorter encoding (1E+1023 has precision 1, which is why the absolute-scale default could be pinned compactly and this one cannot). A miscounted run would silently invert the boundary claim. The precision LIMIT itself is fully covered here from both sides at a lowered value (4 versus 5) through all three ingress paths — the language-form value, the expression operand, and a tagged bigint — and runtime-limits-ceilings proves it is configurable upward; only the default's numeric value is unpinned. Recommend generating this pair mechanically."
+    },
+    {
+      "what": "Zero for maximumNumberPrecision, maximumExpressionCharacters, maximumExpressionTokens and maximumInterpolatedOutputCharacters (section 8.3's 'rejection of zero for each positive-only limit').",
+      "why": "TranslationRuntimeLimits.Builder.build calls validatePositive for exactly these four (lines 419, 423, 424, 427) while the other six go through validateNonNegative, and validatePositive throws IllegalArgumentException before the limits object exists. A fixture declaring any of them at zero cannot be constructed and would abort the oracle run. The four limits that validateNonNegative permits at zero — maximumAbsoluteNumberScale, maximumVisibleDecimalPlaces, maximumCompactExponent, maximumExpressionNestingDepth — plus maximumGeneratedPlaceholderDepth and maximumGeneratedExpansionCharacters ARE authored at zero here, from both sides each, so the positive/non-negative split is pinned everywhere it can be observed. Recording the four rejections needs the same construction-throw channel as the over-limit expression cases."
+    },
+    {
+      "what": "Any limit set above its hard ceiling (for example maximumExpressionTokens 513 or maximumGeneratedPlaceholderDepth 65).",
+      "why": "validateCeiling throws at builder time, so the fixture cannot be constructed and the run would abort. runtime-limits-ceilings covers the observable half by setting all ten limits to their exact ceilings, which pins the ceilings from below — a port with a lower ceiling refuses that fixture and fails all of its cases."
+    },
+    {
+      "what": "Raising maximumVisibleDecimalPlaces or maximumCompactExponent above their defaults and then exercising a caller value that uses the raised headroom end to end.",
+      "why": "Unreachable through the vector format rather than through the library. PluralOperands.Builder carries its own TranslationRuntimeLimits, seeded from TranslationRuntimeLimits.defaults(), and only Builder.runtimeLimits(...) changes it; the oracle's `plural-operands` decoder never calls that setter, so a caller operand can never exceed 1,024 visible decimal places or exponent 64 no matter what the Strings instance is configured with. runtime-limits.ceilings.operand-builder-still-rejects-visible-decimal-places-1025 records exactly this — the value still throws at construction under a ceilings instance — so the asymmetry is pinned even though the raised-headroom path is not. Exercising it would need a `runtimeLimits` field on the tagged plural-operands record and a matching decoder change."
+    },
+    {
+      "what": "maximumGeneratedPlaceholderDepth pinned at its DEFAULT of 32 (a 32-link chain that resolves and a 33-link chain that does not).",
+      "why": "Already in the corpus and not duplicated here: generated-placeholders.limits.depth-32-chain-resolves and generated-placeholders.limits.depth-33-chain-exceeds-maximum on fixture generated-placeholders-depth-limit. This family instead pins the same limit at a lowered value of 2 and at zero, where the boundary is readable, adds the per-locale-attempt reset that plan section 4.6 requires, and adds runtime-limits.ceilings.generated-depth-33-is-accepted-above-the-default, which reuses the 33-link shape to prove the limit is configurable upward — something the existing pair cannot show."
+    },
+    {
+      "what": "maximumInterpolatedOutputCharacters as a bound on caller-supplied PHONETIC input (TranslationRuntimeLimits javadoc and plan section 4.6: 'Interpolated message, generated fragment, or phonetic input').",
+      "why": "Reaching that code path requires a registered PhoneticResolver, and phonetic resolver callbacks are listed as still unsupported by the vector format. The bidi-isolation cases in runtime-limits-interpolated-output-eight and runtime-limits-interpolated-output-eight-isolating exercise the sibling bounded-CharSequence path (BidiUtils.BoundedIsolatedValue) that the same limit governs, and the Fragment cases exercise the generated-fragment third of the same sentence, so only the phonetic third is unpinned."
+    },
+    {
+      "what": "Loader-side limits (maximumJsonNestingDepth, maximumTranslationNodes, maximumWarnings, maximumLocalizedStringsFiles, maximumInputBytes) and warning-set capture.",
+      "why": "Out of scope for this clause, which covers TranslationRuntimeLimits only, and warning capture has no oracle channel. Every fixture here leaves loadingOptions null so a loader limit cannot silently decide any of these cases."
+    },
+    {
+      "what": "A case proving the limits object is shared safely between Strings instances and threads (TranslationRuntimeLimits is documented as immutable and shareable).",
+      "why": "Not observable through the vector operations, which execute one call at a time against one instance per fixture. It is a Java-level concurrency property with no behavioral projection the oracle can record."
+    }
+  ],
+  "cases": [
+    {
+      "id": "runtime-limits.generated-depth.limit-two.depth-zero",
+      "requirementIds": [],
+      "fixture": "runtime-limits-generated-depth-two",
+      "operation": "getResult",
+      "input": {
+        "key": "Depth zero",
+        "locale": "en",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Baseline for the depth ladder: a template with no generated placeholder never recurses, so depth stays 0 and the limit is irrelevant. Without it a port that failed the whole fixture for an unrelated reason would look the same as one that got the depth arithmetic wrong."
+    },
+    {
+      "id": "runtime-limits.generated-depth.limit-two.depth-one",
+      "requirementIds": [],
+      "fixture": "runtime-limits-generated-depth-two",
+      "operation": "getResult",
+      "input": {
+        "key": "Depth one",
+        "locale": "en",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "One generated placeholder is entered at depth 1, inside a limit of 2. Fixes the low end of the ladder so the depth-three failure cannot be read as 'generated placeholders are broken under a lowered limit'."
+    },
+    {
+      "id": "runtime-limits.generated-depth.limit-two.depth-two",
+      "requirementIds": [],
+      "fixture": "runtime-limits-generated-depth-two",
+      "operation": "getResult",
+      "input": {
+        "key": "Depth two",
+        "locale": "en",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The at-limit side of the boundary: a two-link chain reaches depth 2 and the check at DefaultStrings.java:1321 is depth > limit, so it must still resolve. A port using >=, or counting the top-level template as depth 1, fails here while passing depth-one."
+    },
+    {
+      "id": "runtime-limits.generated-depth.limit-two.depth-three",
+      "requirementIds": [],
+      "fixture": "runtime-limits-generated-depth-two",
+      "operation": "getResult",
+      "input": {
+        "key": "Depth three",
+        "locale": "en",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The just-over side: a three-link chain reaches depth 3 and must fail. Paired with depth-two this pins the boundary to a single link, and the recorded cause identity pins that it fails as a depth violation contextualized by the OUTERMOST generated placeholder (r1) rather than the innermost, as a cycle, or as a missing value."
+    },
+    {
+      "id": "runtime-limits.generated-depth.limit-two.depth-three-throws-through-get",
+      "requirementIds": [],
+      "fixture": "runtime-limits-generated-depth-two",
+      "operation": "get",
+      "input": {
+        "key": "Depth three",
+        "locale": "en",
+        "placeholders": {},
+        "translationFailureHandler": {
+          "behavior": "throw"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Same breach through get() with a per-call throwing handler, which REPLACES the instance handler (DefaultStrings.java:684). Proves a runtime-limit breach is an ordinary RESOLUTION_FAILURE that flows through the failure handler rather than propagating out of resolution on its own, and records the thrown identity. Without it a port could satisfy the getResult case by swallowing the error and still throw the wrong thing from get()."
+    },
+    {
+      "id": "runtime-limits.generated-depth.limit-zero.depth-zero",
+      "requirementIds": [],
+      "fixture": "runtime-limits-generated-depth-zero",
+      "operation": "getResult",
+      "input": {
+        "key": "Depth zero",
+        "locale": "en",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Zero is an accepted value for this non-negative limit (TranslationRuntimeLimits.Builder.build:426 uses validateNonNegative), and at zero a plain template still renders. Without this case a port could 'implement' zero by rejecting the limit at build time and nothing would notice."
+    },
+    {
+      "id": "runtime-limits.generated-depth.limit-zero.depth-one",
+      "requirementIds": [],
+      "fixture": "runtime-limits-generated-depth-zero",
+      "operation": "getResult",
+      "input": {
+        "key": "Depth one",
+        "locale": "en",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "At zero, a single generated placeholder is entered at depth 1 and must fail. This is the exact-zero boundary the clause asks for; it also proves the depth counter starts at 0 for the top-level template, which no other case can show."
+    },
+    {
+      "id": "runtime-limits.expansion.limit-six.six",
+      "requirementIds": [],
+      "fixture": "runtime-limits-expansion-six",
+      "operation": "getResult",
+      "input": {
+        "key": "Expansion six",
+        "locale": "en",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Two sibling fragments of three characters each spend exactly the 6-character budget; GeneratedExpansionBudget.consume throws only when consumed > maximum, so this must resolve. The at-limit half of the boundary, and it also shows the budget is shared across siblings within one message."
+    },
+    {
+      "id": "runtime-limits.expansion.limit-six.seven",
+      "requirementIds": [],
+      "fixture": "runtime-limits-expansion-six",
+      "operation": "getResult",
+      "input": {
+        "key": "Expansion seven",
+        "locale": "en",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "3 + 4 = 7 exceeds the same budget by one character. Paired with the six case this pins the cumulative budget to a single character and rules out an off-by-one or a >= comparison."
+    },
+    {
+      "id": "runtime-limits.expansion.limit-six.repeated",
+      "requirementIds": [],
+      "fixture": "runtime-limits-expansion-six",
+      "operation": "getResult",
+      "input": {
+        "key": "Expansion repeated",
+        "locale": "en",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "One six-character fragment referenced twice: StringInterpolator.placeholderNamesIn returns a LinkedHashSet so each name is visited once, and interpolateTemplate memoizes the expansion in expandedGeneratedValues, so the budget is charged once even though twelve characters reach the output. A port that billed per occurrence, or per output character, would exceed the budget and fail this case while passing every other one in the fixture."
+    },
+    {
+      "id": "runtime-limits.expansion.limit-six.seven-reaches-the-failure-handler",
+      "requirementIds": [],
+      "fixture": "runtime-limits-expansion-six",
+      "operation": "get",
+      "input": {
+        "key": "Expansion seven",
+        "locale": "en",
+        "placeholders": {},
+        "translationFailureHandler": {
+          "behavior": "return-string",
+          "text": "handler text"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same budget breach through get() with a per-call return-string handler. Proves the handler is consulted for a runtime-limit failure and that its RESPONSE (not the key) is what get() returns, and records what the handler was handed — reason, attempted locales, and the cause chain — for a limit breach specifically."
+    },
+    {
+      "id": "runtime-limits.expansion.limit-six.nested-six",
+      "requirementIds": [],
+      "fixture": "runtime-limits-expansion-six",
+      "operation": "getResult",
+      "input": {
+        "key": "Expansion nested six",
+        "locale": "en",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A two-link chain whose leaf is three characters: the leaf expansion is billed at depth 2 and the intermediate expansion is billed again at depth 1, for 3 + 3 = 6. Fits exactly."
+    },
+    {
+      "id": "runtime-limits.expansion.limit-six.nested-eight",
+      "requirementIds": [],
+      "fixture": "runtime-limits-expansion-six",
+      "operation": "getResult",
+      "input": {
+        "key": "Expansion nested eight",
+        "locale": "en",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same chain with a four-character leaf costs 4 + 4 = 8 and must fail. This is what makes the nested pair discriminating: a port that billed only the final materialized value would see 4, stay under 6, and wrongly resolve — while still passing nested-six."
+    },
+    {
+      "id": "runtime-limits.expansion.limit-zero.no-generated",
+      "requirementIds": [],
+      "fixture": "runtime-limits-expansion-zero",
+      "operation": "getResult",
+      "input": {
+        "key": "No generated",
+        "locale": "en",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Zero is accepted for this non-negative limit and a template with no generated placeholder is never billed, because interpolateTemplate consumes only when depth > 0. Pins that a zero budget does not disable ordinary translation."
+    },
+    {
+      "id": "runtime-limits.expansion.limit-zero.one-generated",
+      "requirementIds": [],
+      "fixture": "runtime-limits-expansion-zero",
+      "operation": "getResult",
+      "input": {
+        "key": "One generated",
+        "locale": "en",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A single one-character generated fragment costs 1 > 0 and must fail. The exact-zero boundary for the cumulative budget; paired with no-generated it also proves depth-0 output is not charged."
+    },
+    {
+      "id": "runtime-limits.expansion.default.at-the-budget",
+      "requirementIds": [],
+      "fixture": "runtime-limits-expansion-default",
+      "operation": "getResult",
+      "input": {
+        "key": "Expansion at the default budget",
+        "locale": "en",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Exactly 1,048,576 characters of cumulative expansion (262,143 for the doubling chain, 786,432 for the six passthrough levels, 1 for the sibling) under no override; the rendered message is 131,073 characters. Pins DEFAULT_MAXIMUM_GENERATED_EXPANSION_CHARACTERS from below to the character: a port that shipped any smaller default fails here."
+    },
+    {
+      "id": "runtime-limits.expansion.default.one-past-the-budget",
+      "requirementIds": [],
+      "fixture": "runtime-limits-expansion-default",
+      "operation": "getResult",
+      "input": {
+        "key": "Expansion one past the default budget",
+        "locale": "en",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same structure with a two-character sibling totals 1,048,577 and must fail, and the recorded cause names placeholder 'z' — proving everything before it consumed exactly 1,048,575 and that this pair really straddles the boundary. Together the two cases fix the default at exactly 1,048,576, which no existing case does: generated-placeholders.limits.cumulative-expansion-exceeds-character-budget only proves the default is below 1,572,858."
+    },
+    {
+      "id": "runtime-limits.expansion.fallback.fr-under-default-policy-halts",
+      "requirementIds": [],
+      "fixture": "runtime-limits-expansion-fallback-budget",
+      "operation": "getResult",
+      "input": {
+        "key": "Budget",
+        "locale": "fr",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Under the library-default policy a budget breach is a RESOLUTION_FAILURE that halts the walk, so en is never attempted and the attempted-locale list stops at fr. Establishes the contrast the fresh-budget case depends on."
+    },
+    {
+      "id": "runtime-limits.expansion.fallback.fr-under-any-failure-reaches-en-on-a-fresh-budget",
+      "requirementIds": [],
+      "fixture": "runtime-limits-expansion-fallback-budget",
+      "operation": "getResult",
+      "input": {
+        "key": "Budget",
+        "locale": "fr",
+        "placeholders": {},
+        "translationFallbackPolicy": "any-failure"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The per-call permissive policy keeps walking after fr blows the 6-character budget, and en then spends exactly 6. DefaultStrings.java:1203 builds a NEW GeneratedExpansionBudget inside each per-candidate attempt, so an implementation that carried one budget across the fallback walk would have nothing left and would return the key instead of the English translation. Plan section 4.6 states this reset explicitly; nothing else in the corpus tests budget lifetime."
+    },
+    {
+      "id": "runtime-limits.expansion.fallback.fr-under-never-policy",
+      "requirementIds": [],
+      "fixture": "runtime-limits-expansion-fallback-budget",
+      "operation": "getResult",
+      "input": {
+        "key": "Budget",
+        "locale": "fr",
+        "placeholders": {},
+        "translationFallbackPolicy": "never"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The third policy on the same breach. It is observationally identical to the default-policy case here, which is the point: it rules out a port that walks to en under neverFallback, and shows a limit breach is not special-cased into always-fatal or always-continuing behavior."
+    },
+    {
+      "id": "runtime-limits.expansion.fallback.en-direct-spends-the-whole-budget",
+      "requirementIds": [],
+      "fixture": "runtime-limits-expansion-fallback-budget",
+      "operation": "getResult",
+      "input": {
+        "key": "Budget",
+        "locale": "en",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Requesting en directly spends exactly the 6-character budget on the first attempt. Proves the English entry is genuinely at the limit, which is what makes the any-failure case a fresh-budget test rather than a spare-capacity test."
+    },
+    {
+      "id": "runtime-limits.interpolated-output.limit-eight.output-at-the-limit",
+      "requirementIds": [],
+      "fixture": "runtime-limits-interpolated-output-eight",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting",
+        "locale": "en",
+        "placeholders": {
+          "name": "Bobby"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'Hi ' plus a five-character value is exactly 8 output characters against a limit of 8; StringInterpolator.appendChecked rejects only when the append would take the builder past the maximum, so this must render. The at-limit half of the per-output boundary. It also proves the 11-character TEMPLATE is not what is measured, and — since the fixture leaves bidiIsolation at the library default of RTL_LOCALES and en is an LTR locale — that the default does not isolate here."
+    },
+    {
+      "id": "runtime-limits.interpolated-output.limit-eight.output-one-past-the-limit",
+      "requirementIds": [],
+      "fixture": "runtime-limits-interpolated-output-eight",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting",
+        "locale": "en",
+        "placeholders": {
+          "name": "Bobbys"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "One more character in the caller value makes 9 and must fail. Paired with the previous case this pins the output cap to a single character and rules out measuring the template, the value alone, or a >= comparison. The cause is the bare interpolator overflow, with no placeholder contextualization — unlike the Fragment cases below."
+    },
+    {
+      "id": "runtime-limits.interpolated-output.limit-eight.isolation-markers-are-charged-to-the-limit",
+      "requirementIds": [],
+      "fixture": "runtime-limits-interpolated-output-eight",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting",
+        "locale": "en",
+        "placeholders": {
+          "name": "Bobby"
+        },
+        "bidiIsolation": "ALWAYS"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Byte-for-byte the same input as output-at-the-limit, with only the per-call bidiIsolation override changed. StringInterpolator hands a BoundedReplacementValue the REMAINING budget (maximumOutputCharacters minus the builder length) and BidiUtils.BoundedIsolatedValue wraps the value in FSI and PDI, so the two added markers push the same value past the limit. A port that isolated values outside the output budget would render 10 characters and pass both cases; this pair is the only thing that catches it."
+    },
+    {
+      "id": "runtime-limits.interpolated-output.limit-eight.isolated-value-at-the-limit",
+      "requirementIds": [],
+      "fixture": "runtime-limits-interpolated-output-eight",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting",
+        "locale": "en",
+        "placeholders": {
+          "name": "Bob"
+        },
+        "bidiIsolation": "ALWAYS"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "With isolation forced on, a three-character value plus two markers reaches exactly 8 and must render, markers included. Fixes the isolated boundary from below so the previous case cannot be satisfied by refusing isolation altogether, and the emitted translation shows the U+2068/U+2069 pair actually present."
+    },
+    {
+      "id": "runtime-limits.interpolated-output.limit-eight.isolated-value-one-past-the-limit",
+      "requirementIds": [],
+      "fixture": "runtime-limits-interpolated-output-eight",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting",
+        "locale": "en",
+        "placeholders": {
+          "name": "Bobb"
+        },
+        "bidiIsolation": "ALWAYS"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "One character more under forced isolation makes 9 and must fail from inside BidiUtils.isolate rather than from the interpolator's own append check. DefaultStrings passes the FULL maximum to BidiUtils.isolatedValue while the interpolator passes the REMAINING budget to render(), and isolate() reports reportedMaximumCharacters, so the recorded message must name 8 — the original maximum — not the 5 characters that were actually left."
+    },
+    {
+      "id": "runtime-limits.interpolated-output.limit-eight.fragment-at-the-limit",
+      "requirementIds": [],
+      "fixture": "runtime-limits-interpolated-output-eight",
+      "operation": "getResult",
+      "input": {
+        "key": "Fragment",
+        "locale": "en",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "An eight-character generated fragment is interpolated at depth 1 against the same per-output cap and must render. Pins that the cap applies to each expansion independently, not only to the final message."
+    },
+    {
+      "id": "runtime-limits.interpolated-output.limit-eight.fragment-one-past-the-limit",
+      "requirementIds": [],
+      "fixture": "runtime-limits-interpolated-output-eight",
+      "operation": "getResult",
+      "input": {
+        "key": "Fragment over",
+        "locale": "en",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A nine-character fragment trips the cap inside the nested expansion, and the failure is wrapped by contextualizePlaceholderFailure so the cause names the placeholder — a different recorded identity from the bare overflow in output-one-past-the-limit. Without it a port could bound only the outermost interpolation and still pass every Greeting case."
+    },
+    {
+      "id": "runtime-limits.interpolated-output.limit-eight.fragment-one-past-the-limit-throws-through-get",
+      "requirementIds": [],
+      "fixture": "runtime-limits-interpolated-output-eight",
+      "operation": "get",
+      "input": {
+        "key": "Fragment over",
+        "locale": "en",
+        "placeholders": {},
+        "translationFailureHandler": {
+          "behavior": "throw"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The nested overflow through get() with a throwing per-call handler, recording the thrown type, message and cause chain. getResult never throws for a translation failure, so only this case can pin what a limit breach looks like on the throwing path."
+    },
+    {
+      "id": "runtime-limits.interpolated-output.default.at-the-maximum",
+      "requirementIds": [],
+      "fixture": "runtime-limits-interpolated-output-default",
+      "operation": "getResult",
+      "input": {
+        "key": "Output at the default maximum",
+        "locale": "en",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Exactly 262,144 output characters under no override. Pins DEFAULT_MAXIMUM_INTERPOLATED_OUTPUT_CHARACTERS (256 * 1_024) from below to the character; a port that shipped a smaller default fails here. The doubling chain reaches that size from a one-character leaf, so the fixture stays small."
+    },
+    {
+      "id": "runtime-limits.interpolated-output.default.one-past-the-maximum",
+      "requirementIds": [],
+      "fixture": "runtime-limits-interpolated-output-default",
+      "operation": "getResult",
+      "input": {
+        "key": "Output one past the default maximum",
+        "locale": "en",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same chain plus one literal character makes 262,145 and must fail, at the TOP-LEVEL interpolation (the nested chain itself still fits at exactly 262,144), which the uncontextualized cause message confirms. Together with the previous case this fixes the default to exactly 262,144 and shows the depth-1 expansion and the depth-0 message are measured against the same cap."
+    },
+    {
+      "id": "runtime-limits.interpolated-output.isolating-instance.instance-always-overflows-the-limit",
+      "requirementIds": [],
+      "fixture": "runtime-limits-interpolated-output-eight-isolating",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting",
+        "locale": "en",
+        "placeholders": {
+          "name": "Bobby"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Same key, value and output limit as runtime-limits.interpolated-output.limit-eight.output-at-the-limit, but the INSTANCE declares bidiIsolation ALWAYS, so the two markers push the render past 8 and it fails. This is the case that proves the instance-level bidi setting is genuinely in force, and — read against the other fixture, where the same input renders — that the library default is not ALWAYS."
+    },
+    {
+      "id": "runtime-limits.interpolated-output.isolating-instance.per-call-none-overrides-and-fits",
+      "requirementIds": [],
+      "fixture": "runtime-limits-interpolated-output-eight-isolating",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting",
+        "locale": "en",
+        "placeholders": {
+          "name": "Bobby"
+        },
+        "bidiIsolation": "NONE"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The per-call override REPLACES the instance's ALWAYS (DefaultStrings.java:683), so the value is not isolated and the same input that just failed now renders at exactly 8. This replaces an earlier authored case that set NONE on a default-configured instance, where NONE and the RTL_LOCALES default are indistinguishable for an LTR locale and the case proved nothing."
+    },
+    {
+      "id": "runtime-limits.interpolated-output.isolating-instance.per-call-rtl-locales-overrides-and-fits",
+      "requirementIds": [],
+      "fixture": "runtime-limits-interpolated-output-eight-isolating",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting",
+        "locale": "en",
+        "placeholders": {
+          "name": "Bobby"
+        },
+        "bidiIsolation": "RTL_LOCALES"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Overriding an ALWAYS instance down to RTL_LOCALES also renders at 8, because shouldApplyBidiIsolation consults BidiUtils.localeUsesRightToLeftScript and en is LTR. Distinguishes RTL_LOCALES from ALWAYS at the same output limit — a port that collapsed the two modes passes the NONE case and fails this one."
+    },
+    {
+      "id": "runtime-limits.failure-key.limit-eight.interpolated-key-at-the-limit",
+      "requirementIds": [],
+      "fixture": "runtime-limits-failure-key-eight",
+      "operation": "getResult",
+      "input": {
+        "key": "Hey {{name}}",
+        "locale": "en",
+        "placeholders": {
+          "name": "Bobb"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A missing key that itself contains a placeholder: DefaultStrings.interpolateFailureKey interpolates the KEY under the same maximumInterpolatedOutputCharacters, and 'Hey Bobb' is exactly 8 so the returned key is the interpolated form. The at-limit half of the failure-key boundary; nothing in the corpus previously measured the failure key against the output cap."
+    },
+    {
+      "id": "runtime-limits.failure-key.limit-eight.overflowing-key-falls-back-to-the-raw-key",
+      "requirementIds": [],
+      "fixture": "runtime-limits-failure-key-eight",
+      "operation": "getResult",
+      "input": {
+        "key": "Hey {{name}}",
+        "locale": "en",
+        "placeholders": {
+          "name": "Bobby"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "One character more makes 'Hey Bobby' 9, and interpolateFailureKey's catch(RuntimeException) returns the RAW, uninterpolated key 'Hey {{name}}'. This fail-soft behavior is required by section 8.3's 'missing keys containing placeholders and failure-key fail-soft behavior' clause and is exactly what a port is likely to get wrong: propagating the overflow, truncating, or emitting a partially interpolated string. Paired with the previous case the boundary is pinned to one character."
+    },
+    {
+      "id": "runtime-limits.failure-key.limit-eight.overflowing-key-through-get-with-a-throwing-handler",
+      "requirementIds": [],
+      "fixture": "runtime-limits-failure-key-eight",
+      "operation": "get",
+      "input": {
+        "key": "Hey {{name}}",
+        "locale": "en",
+        "placeholders": {
+          "name": "Bobby"
+        },
+        "translationFailureHandler": {
+          "behavior": "throw"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same overflow on the throwing path. The failure reason is MISSING_TRANSLATION with no cause — the output-limit breach inside the failure key is swallowed and never becomes the failure's cause — and the thrown MissingTranslationException's message quotes the RAW key. A port that let the interpolation overflow escape would throw a different type here."
+    },
+    {
+      "id": "runtime-limits.expression-characters.limit-seventeen.alternative-matches",
+      "requirementIds": [],
+      "fixture": "runtime-limits-expression-characters-seventeen",
+      "operation": "getResult",
+      "input": {
+        "key": "Bag",
+        "locale": "en",
+        "placeholders": {
+          "a": 5,
+          "b": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A whole-message alternative whose source is exactly 17 characters, evaluated under maximumExpressionCharacters 17. Because DefaultStrings compiles every loaded expression in its constructor, an implementation that measured the source as 18, or rejected at equality, would fail to construct the whole fixture rather than merely mis-evaluate. Verified against Java by probe: the same catalog at limit 16 is rejected with 'Expression length 17 exceeds maximum supported length 16'. The matching branch proves the expression was not just accepted but actually compiled and evaluated."
+    },
+    {
+      "id": "runtime-limits.expression-characters.limit-seventeen.alternative-misses",
+      "requirementIds": [],
+      "fixture": "runtime-limits-expression-characters-seventeen",
+      "operation": "getResult",
+      "input": {
+        "key": "Bag",
+        "locale": "en",
+        "placeholders": {
+          "a": 0,
+          "b": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same 17-character expression evaluating false. Without a miss case the fixture could be satisfied by an implementation that treated any at-limit expression as unconditionally true."
+    },
+    {
+      "id": "runtime-limits.expression-characters.limit-seventeen.fragment-alternative-matches",
+      "requirementIds": [],
+      "fixture": "runtime-limits-expression-characters-seventeen",
+      "operation": "getResult",
+      "input": {
+        "key": "Frag",
+        "locale": "en",
+        "placeholders": {
+          "a": 2
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The generated-fragment predicate '(a > 1) && a == 2' is also exactly 17 characters, so the fragment path sits on the same boundary as the whole-message path rather than merely somewhere inside it (the earlier authored version used a 6-character predicate, which measured nothing). Compiled at DefaultStrings.java:576; probe-verified that the same fragment at limit 16 aborts construction with 'Unable to compile generated-fragment alternative 0 expression'."
+    },
+    {
+      "id": "runtime-limits.expression-characters.limit-seventeen.fragment-alternative-misses",
+      "requirementIds": [],
+      "fixture": "runtime-limits-expression-characters-seventeen",
+      "operation": "getResult",
+      "input": {
+        "key": "Frag",
+        "locale": "en",
+        "placeholders": {
+          "a": 3
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The at-limit fragment predicate evaluating false falls through to the fragment's default translation, proving it was compiled and evaluated under the lowered character limit rather than skipped or short-cut to a constant."
+    },
+    {
+      "id": "runtime-limits.expression-tokens.limit-nine.alternative-matches",
+      "requirementIds": [],
+      "fixture": "runtime-limits-expression-tokens-nine",
+      "operation": "getResult",
+      "input": {
+        "key": "Bag",
+        "locale": "en",
+        "placeholders": {
+          "a": 5,
+          "b": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same expression under maximumExpressionTokens 9, its exact infix token count: GROUP_START, a, >, 0, GROUP_END, &&, b, ==, 1. ExpressionEvaluator.validateInfixTokens runs on the infix list inside convertTokensToReversePolishNotation, before shunting-yard output is produced, and whitespace yields no token — so a port that counted RPN output (7 tokens, parentheses dropped) or counted whitespace would disagree and, because the check happens at construction, would take the whole fixture with it. Probe-verified: the same catalog at limit 8 reports 'Expression contains 9 tokens'."
+    },
+    {
+      "id": "runtime-limits.expression-tokens.limit-nine.alternative-misses",
+      "requirementIds": [],
+      "fixture": "runtime-limits-expression-tokens-nine",
+      "operation": "getResult",
+      "input": {
+        "key": "Bag",
+        "locale": "en",
+        "placeholders": {
+          "a": 0,
+          "b": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The at-limit token expression evaluating false, so the case pair cannot be passed by an implementation that short-cuts an at-limit expression to a constant."
+    },
+    {
+      "id": "runtime-limits.expression-tokens.limit-nine.fragment-alternative-matches",
+      "requirementIds": [],
+      "fixture": "runtime-limits-expression-tokens-nine",
+      "operation": "getResult",
+      "input": {
+        "key": "Frag",
+        "locale": "en",
+        "placeholders": {
+          "a": 2
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Token counting on the generated-fragment predicate path, which is also exactly 9 infix tokens, so a port that bounded only whole-message alternatives — or counted fragment tokens differently — cannot construct this fixture."
+    },
+    {
+      "id": "runtime-limits.expression-tokens.limit-nine.fragment-alternative-misses",
+      "requirementIds": [],
+      "fixture": "runtime-limits-expression-tokens-nine",
+      "operation": "getResult",
+      "input": {
+        "key": "Frag",
+        "locale": "en",
+        "placeholders": {
+          "a": 3
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The at-limit fragment predicate false under the token limit, falling through to the fragment default."
+    },
+    {
+      "id": "runtime-limits.expression-nesting.limit-one.alternative-matches",
+      "requirementIds": [],
+      "fixture": "runtime-limits-expression-nesting-one",
+      "operation": "getResult",
+      "input": {
+        "key": "Bag",
+        "locale": "en",
+        "placeholders": {
+          "a": 5,
+          "b": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A single parenthesised group under maximumExpressionNestingDepth 1. validateInfixTokens increments groupDepth on GROUP_START and throws when the running depth exceeds the limit, decrementing on GROUP_END, so a port that seeded the counter at 1 or never decremented would refuse this fixture at construction. Probe-verified: the same catalog at limit 0 reports 'Expression grouping depth exceeds maximum supported depth 0'."
+    },
+    {
+      "id": "runtime-limits.expression-nesting.limit-one.alternative-misses",
+      "requirementIds": [],
+      "fixture": "runtime-limits-expression-nesting-one",
+      "operation": "getResult",
+      "input": {
+        "key": "Bag",
+        "locale": "en",
+        "placeholders": {
+          "a": 0,
+          "b": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The at-limit grouped expression evaluating false, so grouping is shown to be evaluated rather than merely tolerated."
+    },
+    {
+      "id": "runtime-limits.expression-nesting.limit-one.fragment-alternative-matches",
+      "requirementIds": [],
+      "fixture": "runtime-limits-expression-nesting-one",
+      "operation": "getResult",
+      "input": {
+        "key": "Frag",
+        "locale": "en",
+        "placeholders": {
+          "a": 2
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The fragment predicate is also depth 1, so the nesting cap is measured on the generated-fragment path at the same boundary — matching the TranslationRuntimeLimits javadoc's claim that the three expression limits apply equally to both predicate kinds."
+    },
+    {
+      "id": "runtime-limits.expression-nesting.limit-one.fragment-alternative-misses",
+      "requirementIds": [],
+      "fixture": "runtime-limits-expression-nesting-one",
+      "operation": "getResult",
+      "input": {
+        "key": "Frag",
+        "locale": "en",
+        "placeholders": {
+          "a": 3
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The at-limit grouped fragment predicate false under the nesting limit, falling through to the fragment default."
+    },
+    {
+      "id": "runtime-limits.expression-nesting.limit-zero.ungrouped-alternative-matches",
+      "requirementIds": [],
+      "fixture": "runtime-limits-expression-nesting-zero",
+      "operation": "getResult",
+      "input": {
+        "key": "Bag",
+        "locale": "en",
+        "placeholders": {
+          "a": 5,
+          "b": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The exact-zero boundary for the only expression limit that permits zero (validateNonNegative at TranslationRuntimeLimits.java:425): with no parentheses anywhere in the catalog the group counter never leaves 0, so the fixture must construct and the ungrouped conjunction must still evaluate with normal precedence. A port that charged an implicit top-level group would reject the fixture outright."
+    },
+    {
+      "id": "runtime-limits.expression-nesting.limit-zero.ungrouped-alternative-misses",
+      "requirementIds": [],
+      "fixture": "runtime-limits-expression-nesting-zero",
+      "operation": "getResult",
+      "input": {
+        "key": "Bag",
+        "locale": "en",
+        "placeholders": {
+          "a": 0,
+          "b": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The ungrouped conjunction evaluating false at nesting limit zero, so the pair shows real evaluation rather than a degenerate constant. Read against runtime-limits.expression-nesting.limit-one.alternative-misses it also shows the grouped and ungrouped forms agree, so the parentheses in the limit-one fixture are not changing the semantics being observed."
+    },
+    {
+      "id": "runtime-limits.expression-nesting.limit-zero.ungrouped-fragment-alternative-matches",
+      "requirementIds": [],
+      "fixture": "runtime-limits-expression-nesting-zero",
+      "operation": "getResult",
+      "input": {
+        "key": "Frag",
+        "locale": "en",
+        "placeholders": {
+          "a": 2
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "An ungrouped fragment predicate at nesting limit zero, confirming the zero setting does not disable generated-fragment predicates."
+    },
+    {
+      "id": "runtime-limits.numeric.lowered.precision-four",
+      "requirementIds": [],
+      "fixture": "runtime-limits-numeric-lowered",
+      "operation": "getResult",
+      "input": {
+        "key": "Counted",
+        "locale": "en",
+        "placeholders": {
+          "n": {
+            "$lokalized": "decimal",
+            "value": "1234"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A tagged decimal of precision 4 and scale 0 against maximumNumberPrecision 4. PluralOperands.validateNumericValue rejects only precision > limit, so this must classify normally. The at-limit half of the precision boundary."
+    },
+    {
+      "id": "runtime-limits.numeric.lowered.precision-five",
+      "requirementIds": [],
+      "fixture": "runtime-limits-numeric-lowered",
+      "operation": "getResult",
+      "input": {
+        "key": "Counted",
+        "locale": "en",
+        "placeholders": {
+          "n": {
+            "$lokalized": "decimal",
+            "value": "12345"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "One significant digit more is precision 5 and must fail with a RESOLUTION_FAILURE whose cause is an IllegalArgumentException naming the precision check, contextualized by the LanguageFormTranslation placeholder. Paired with precision-four this pins the precision limit to a single digit and rules out counting characters or scale instead of significant digits."
+    },
+    {
+      "id": "runtime-limits.numeric.lowered.scale-three",
+      "requirementIds": [],
+      "fixture": "runtime-limits-numeric-lowered",
+      "operation": "getResult",
+      "input": {
+        "key": "Counted",
+        "locale": "en",
+        "placeholders": {
+          "n": {
+            "$lokalized": "decimal",
+            "value": "0.001"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Scale 3 against maximumAbsoluteNumberScale 3 with precision 1, so only the scale check can decide it. The at-limit half of the scale boundary, deliberately chosen so it cannot be confused with the precision limit also lowered in this fixture."
+    },
+    {
+      "id": "runtime-limits.numeric.lowered.scale-four",
+      "requirementIds": [],
+      "fixture": "runtime-limits-numeric-lowered",
+      "operation": "getResult",
+      "input": {
+        "key": "Counted",
+        "locale": "en",
+        "placeholders": {
+          "n": {
+            "$lokalized": "decimal",
+            "value": "0.0001"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Scale 4 exceeds the limit while precision stays at 1, so a port that conflated precision with scale would wrongly accept it. The just-over half of the scale boundary."
+    },
+    {
+      "id": "runtime-limits.numeric.lowered.negative-scale-three",
+      "requirementIds": [],
+      "fixture": "runtime-limits-numeric-lowered",
+      "operation": "getResult",
+      "input": {
+        "key": "Counted",
+        "locale": "en",
+        "placeholders": {
+          "n": {
+            "$lokalized": "decimal",
+            "value": "1E+3"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "BigDecimal 1E+3 has scale -3; validateNumericValue compares Math.abs((long) number.scale()), so this sits exactly at 3 and must resolve. A port that stored numbers as plain strings or normalised away the exponent would lose the negative scale entirely and could not reproduce this case or its twin."
+    },
+    {
+      "id": "runtime-limits.numeric.lowered.negative-scale-four",
+      "requirementIds": [],
+      "fixture": "runtime-limits-numeric-lowered",
+      "operation": "getResult",
+      "input": {
+        "key": "Counted",
+        "locale": "en",
+        "placeholders": {
+          "n": {
+            "$lokalized": "decimal",
+            "value": "1E+4"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Scale -4 exceeds an absolute-scale limit of 3 and must fail, while its precision is still 1, and the recorded message quotes the signed scale -4. Pins that the check is on the absolute value of the scale, which nothing else in the corpus shows."
+    },
+    {
+      "id": "runtime-limits.numeric.lowered.visible-decimal-places-two",
+      "requirementIds": [],
+      "fixture": "runtime-limits-numeric-lowered",
+      "operation": "getResult",
+      "input": {
+        "key": "Counted",
+        "locale": "en",
+        "placeholders": {
+          "n": {
+            "$lokalized": "plural-operands",
+            "value": "1.5",
+            "visibleDecimalPlaces": 2
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Explicit visible decimal places 2 against maximumVisibleDecimalPlaces 2, checked by DefaultStrings.validatePluralOperands (defined at DefaultStrings.java:1494, called at 1451 and 1479) against the INSTANCE limits after the operands were built under the library defaults. The at-limit half of that boundary."
+    },
+    {
+      "id": "runtime-limits.numeric.lowered.visible-decimal-places-three",
+      "requirementIds": [],
+      "fixture": "runtime-limits-numeric-lowered",
+      "operation": "getResult",
+      "input": {
+        "key": "Counted",
+        "locale": "en",
+        "placeholders": {
+          "n": {
+            "$lokalized": "plural-operands",
+            "value": "1.5",
+            "visibleDecimalPlaces": 3
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Three explicit visible decimal places exceed the instance limit and must fail even though the operands object constructs fine under the defaults, and the message says 'exceeds the configured maximum' — the DefaultStrings wording, not the builder's. Pins that Strings re-validates caller-supplied operands against ITS limits rather than trusting the operands' own construction."
+    },
+    {
+      "id": "runtime-limits.numeric.lowered.compact-exponent-two",
+      "requirementIds": [],
+      "fixture": "runtime-limits-numeric-lowered",
+      "operation": "getResult",
+      "input": {
+        "key": "Counted",
+        "locale": "en",
+        "placeholders": {
+          "n": {
+            "$lokalized": "plural-operands",
+            "value": "1",
+            "compactExponent": 2
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Compact exponent 2 against maximumCompactExponent 2 must resolve. At-limit half of the compact-exponent boundary, driven through getResult so the instance-level check is what is being observed."
+    },
+    {
+      "id": "runtime-limits.numeric.lowered.compact-exponent-three",
+      "requirementIds": [],
+      "fixture": "runtime-limits-numeric-lowered",
+      "operation": "getResult",
+      "input": {
+        "key": "Counted",
+        "locale": "en",
+        "placeholders": {
+          "n": {
+            "$lokalized": "plural-operands",
+            "value": "1",
+            "compactExponent": 3
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Compact exponent 3 exceeds the instance limit while remaining legal for the operands builder under the defaults, so the failure can only come from DefaultStrings.validatePluralOperands. Distinguishes an implementation that only enforces exponent bounds at operand construction."
+    },
+    {
+      "id": "runtime-limits.numeric.lowered.expression-operand-precision-four",
+      "requirementIds": [],
+      "fixture": "runtime-limits-numeric-lowered",
+      "operation": "getResult",
+      "input": {
+        "key": "Positive",
+        "locale": "en",
+        "placeholders": {
+          "n": {
+            "$lokalized": "decimal",
+            "value": "1234"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same at-limit precision value reaching an EXPRESSION operand instead of a language-form value. ExpressionEvaluator validates numeric operands with the same instance limits on the numericValueFromOperand path (ExpressionEvaluator.java:1290-1293), and this case fixes the passing side of that separate code path."
+    },
+    {
+      "id": "runtime-limits.numeric.lowered.expression-operand-precision-five",
+      "requirementIds": [],
+      "fixture": "runtime-limits-numeric-lowered",
+      "operation": "getResult",
+      "input": {
+        "key": "Positive",
+        "locale": "en",
+        "placeholders": {
+          "n": {
+            "$lokalized": "decimal",
+            "value": "12345"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The over-limit value through the expression path fails as a com.lokalized.ExpressionEvaluationException ('Unable to extract numeric value from...'), a different type and message from the java.lang.IllegalArgumentException on the language-form path in precision-five. Without this pair a port could bound numbers only where cardinality is computed and leave expression operands unbounded."
+    },
+    {
+      "id": "runtime-limits.numeric.lowered.literal-at-precision-four-and-scale-three-matches",
+      "requirementIds": [],
+      "fixture": "runtime-limits-numeric-lowered",
+      "operation": "getResult",
+      "input": {
+        "key": "Literal",
+        "locale": "en",
+        "placeholders": {
+          "n": {
+            "$lokalized": "decimal",
+            "value": "1.234"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Plan section 4.6 says the numeric limits apply to expression numeric LITERALS as well as to values. ExpressionEvaluator.validateNumericLiteralTokens runs numericLiteralValue on every NUMBER token at compile time, routing it through PluralOperands.validateNumericValue with the instance limits, so the literal 1.234 — precision 4, scale 3 — sits exactly on both lowered limits and the fixture only constructs if a port measures literals identically. Probe-verified: the same catalog at precision 3 reports 'Numeric literal 1.234 precision 4 exceeds the maximum of 3' and at absolute scale 2 reports the scale violation. Nothing else in the corpus measures a literal."
+    },
+    {
+      "id": "runtime-limits.numeric.lowered.literal-at-precision-four-and-scale-three-misses",
+      "requirementIds": [],
+      "fixture": "runtime-limits-numeric-lowered",
+      "operation": "getResult",
+      "input": {
+        "key": "Literal",
+        "locale": "en",
+        "placeholders": {
+          "n": {
+            "$lokalized": "decimal",
+            "value": "1.235"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The at-limit literal comparison evaluating false, so the pair shows the literal was really compiled and compared rather than accepted and ignored."
+    },
+    {
+      "id": "runtime-limits.numeric.lowered.bigint-precision-four",
+      "requirementIds": [],
+      "fixture": "runtime-limits-numeric-lowered",
+      "operation": "getResult",
+      "input": {
+        "key": "Counted",
+        "locale": "en",
+        "placeholders": {
+          "n": {
+            "$lokalized": "bigint",
+            "value": "1234"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Plan section 4.6 states the numeric limits apply to 'numbers, bigint, tagged decimals/operands, and expression numeric literals'. A BigInteger of precision 4 must classify at maximumNumberPrecision 4, proving the bound is applied after conversion rather than only to BigDecimal-typed inputs."
+    },
+    {
+      "id": "runtime-limits.numeric.lowered.bigint-precision-five",
+      "requirementIds": [],
+      "fixture": "runtime-limits-numeric-lowered",
+      "operation": "getResult",
+      "input": {
+        "key": "Counted",
+        "locale": "en",
+        "placeholders": {
+          "n": {
+            "$lokalized": "bigint",
+            "value": "12345"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The BigInteger one digit past the limit fails with the same precision message as the tagged-decimal case, pinning that integral types are not exempt. A port that bounded only its decimal type would pass every other numeric case here and fail this one."
+    },
+    {
+      "id": "runtime-limits.visible-decimal-places.limit-zero.implicit-decimal-place-is-not-checked",
+      "requirementIds": [],
+      "fixture": "runtime-limits-visible-decimal-places-zero",
+      "operation": "getResult",
+      "input": {
+        "key": "Counted",
+        "locale": "en",
+        "placeholders": {
+          "n": {
+            "$lokalized": "decimal",
+            "value": "1.5"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "At maximumVisibleDecimalPlaces 0 a plain decimal with one implied visible decimal place still resolves, because validatePluralOperands guards its check with explicitVisibleDecimalPlaces().isPresent(). A port that applied the limit to the derived v operand would reject this and pass the explicit case, so this is the discriminator for 'explicit only'."
+    },
+    {
+      "id": "runtime-limits.visible-decimal-places.limit-zero.explicit-zero-places",
+      "requirementIds": [],
+      "fixture": "runtime-limits-visible-decimal-places-zero",
+      "operation": "getResult",
+      "input": {
+        "key": "Counted",
+        "locale": "en",
+        "placeholders": {
+          "n": {
+            "$lokalized": "plural-operands",
+            "value": "2",
+            "visibleDecimalPlaces": 0
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "An explicit zero against a limit of zero must be accepted, since the comparison is strictly greater-than. Fixes the at-limit side of the zero boundary."
+    },
+    {
+      "id": "runtime-limits.visible-decimal-places.limit-zero.explicit-one-place",
+      "requirementIds": [],
+      "fixture": "runtime-limits-visible-decimal-places-zero",
+      "operation": "getResult",
+      "input": {
+        "key": "Counted",
+        "locale": "en",
+        "placeholders": {
+          "n": {
+            "$lokalized": "plural-operands",
+            "value": "1.5",
+            "visibleDecimalPlaces": 1
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same 1.5 as the implicit case, but with one visible decimal place requested explicitly, must fail at a limit of zero. The pair isolates 'explicitly requested' from 'materially present' with the value held constant."
+    },
+    {
+      "id": "runtime-limits.absolute-number-scale.limit-zero.integer-scale-zero",
+      "requirementIds": [],
+      "fixture": "runtime-limits-absolute-number-scale-zero",
+      "operation": "getResult",
+      "input": {
+        "key": "Counted",
+        "locale": "en",
+        "placeholders": {
+          "n": {
+            "$lokalized": "decimal",
+            "value": "15"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Zero is accepted for this non-negative limit and admits scale-0 values, so integer-valued decimals still classify. Establishes that a zero scale limit does not disable numeric placeholders altogether."
+    },
+    {
+      "id": "runtime-limits.absolute-number-scale.limit-zero.positive-scale-one",
+      "requirementIds": [],
+      "fixture": "runtime-limits-absolute-number-scale-zero",
+      "operation": "getResult",
+      "input": {
+        "key": "Counted",
+        "locale": "en",
+        "placeholders": {
+          "n": {
+            "$lokalized": "decimal",
+            "value": "1.5"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Scale 1 must fail at a limit of zero. The exact-zero boundary on the positive-scale side."
+    },
+    {
+      "id": "runtime-limits.absolute-number-scale.limit-zero.negative-scale-one",
+      "requirementIds": [],
+      "fixture": "runtime-limits-absolute-number-scale-zero",
+      "operation": "getResult",
+      "input": {
+        "key": "Counted",
+        "locale": "en",
+        "placeholders": {
+          "n": {
+            "$lokalized": "decimal",
+            "value": "1E+1"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Scale -1 must fail identically, because the limit bounds Math.abs(scale). A port that compared the signed scale would accept 1E+1 at limit zero and still pass the other two cases in this fixture."
+    },
+    {
+      "id": "runtime-limits.compact-exponent.limit-zero.exponent-zero",
+      "requirementIds": [],
+      "fixture": "runtime-limits-compact-exponent-zero",
+      "operation": "getResult",
+      "input": {
+        "key": "Counted",
+        "locale": "en",
+        "placeholders": {
+          "n": {
+            "$lokalized": "plural-operands",
+            "value": "2",
+            "compactExponent": 0
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "An explicit zero exponent at a limit of zero must be accepted. The at-limit side of the zero boundary for compact exponents."
+    },
+    {
+      "id": "runtime-limits.compact-exponent.limit-zero.exponent-absent",
+      "requirementIds": [],
+      "fixture": "runtime-limits-compact-exponent-zero",
+      "operation": "getResult",
+      "input": {
+        "key": "Counted",
+        "locale": "en",
+        "placeholders": {
+          "n": {
+            "$lokalized": "plural-operands",
+            "value": "2"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Absent and explicit-zero exponents must behave identically, because PluralOperands.Builder.build treats an unset exponent as an effective 0 and getCompactExponent then returns 0. Pins that a zero limit does not accidentally reject every operands value that simply did not ask for compaction."
+    },
+    {
+      "id": "runtime-limits.compact-exponent.limit-zero.exponent-one",
+      "requirementIds": [],
+      "fixture": "runtime-limits-compact-exponent-zero",
+      "operation": "getResult",
+      "input": {
+        "key": "Counted",
+        "locale": "en",
+        "placeholders": {
+          "n": {
+            "$lokalized": "plural-operands",
+            "value": "2",
+            "compactExponent": 1
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Exponent 1 must fail at a limit of zero, from the instance-level check ('exceeds the configured maximum') rather than the operands builder, whose own limit is still the default 64. The just-over half of the zero boundary."
+    },
+    {
+      "id": "runtime-limits.numeric.default.absolute-scale-1024",
+      "requirementIds": [],
+      "fixture": "runtime-limits-numeric-defaults",
+      "operation": "getResult",
+      "input": {
+        "key": "Counted",
+        "locale": "en",
+        "placeholders": {
+          "n": {
+            "$lokalized": "decimal",
+            "value": "1E+1024"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Scale -1024 sits exactly at DEFAULT_MAXIMUM_ABSOLUTE_NUMBER_SCALE with no override, and must classify. Pins the shipped default from below; a port that defaulted to, say, 512 fails here."
+    },
+    {
+      "id": "runtime-limits.numeric.default.absolute-scale-1025",
+      "requirementIds": [],
+      "fixture": "runtime-limits-numeric-defaults",
+      "operation": "getResult",
+      "input": {
+        "key": "Counted",
+        "locale": "en",
+        "placeholders": {
+          "n": {
+            "$lokalized": "decimal",
+            "value": "1E+1025"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Scale -1025 is one past the default and must fail as a RESOLUTION_FAILURE. With the previous case this fixes DEFAULT_MAXIMUM_ABSOLUTE_NUMBER_SCALE at exactly 1024 using two short literals."
+    },
+    {
+      "id": "runtime-limits.numeric.default.visible-decimal-places-1024",
+      "requirementIds": [],
+      "fixture": "runtime-limits-numeric-defaults",
+      "operation": "getResult",
+      "input": {
+        "key": "Counted",
+        "locale": "en",
+        "placeholders": {
+          "n": {
+            "$lokalized": "plural-operands",
+            "value": "1.5",
+            "visibleDecimalPlaces": 1024
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Exactly DEFAULT_MAXIMUM_VISIBLE_DECIMAL_PLACES, accepted by both the operands builder and the Strings instance, and still inside PluralOperands.MAXIMUM_MATERIALIZED_PRECISION (12,288), so that separate cap cannot be what decides it. Pins that default from below."
+    },
+    {
+      "id": "runtime-limits.numeric.default.visible-decimal-places-1025",
+      "requirementIds": [],
+      "fixture": "runtime-limits-numeric-defaults",
+      "operation": "getResult",
+      "input": {
+        "key": "Counted",
+        "locale": "en",
+        "placeholders": {
+          "n": {
+            "$lokalized": "plural-operands",
+            "value": "1.5",
+            "visibleDecimalPlaces": 1025
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "One past the default. Because PluralOperands.Builder seeds itself with TranslationRuntimeLimits.defaults() and only Builder.runtimeLimits(...) changes that, this is rejected while the operands are being CONSTRUCTED, so it surfaces as a throw ('Visible decimal places 1025 exceeds the maximum of 1024') from the caller's own value construction rather than as a translation failure. That asymmetry is real library behavior and a port that only enforced the bound inside Strings would produce a translation failure here instead."
+    },
+    {
+      "id": "runtime-limits.numeric.default.compact-exponent-64",
+      "requirementIds": [],
+      "fixture": "runtime-limits-numeric-defaults",
+      "operation": "getResult",
+      "input": {
+        "key": "Counted",
+        "locale": "en",
+        "placeholders": {
+          "n": {
+            "$lokalized": "plural-operands",
+            "value": "1",
+            "compactExponent": 64
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Exactly DEFAULT_MAXIMUM_COMPACT_EXPONENT, carried all the way through getResult rather than through the standalone classifier entry points, so the instance-level path is pinned too."
+    },
+    {
+      "id": "runtime-limits.numeric.default.compact-exponent-65",
+      "requirementIds": [],
+      "fixture": "runtime-limits-numeric-defaults",
+      "operation": "getResult",
+      "input": {
+        "key": "Counted",
+        "locale": "en",
+        "placeholders": {
+          "n": {
+            "$lokalized": "plural-operands",
+            "value": "1",
+            "compactExponent": 65
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "One past the default, rejected at operands construction for the same reason as visible-decimal-places-1025. Pins where in the pipeline the default is enforced, which the existing numeric-boundaries classifier cases cannot show for the translation path."
+    },
+    {
+      "id": "runtime-limits.ceilings.absolute-scale-1025-is-accepted-above-the-default",
+      "requirementIds": [],
+      "fixture": "runtime-limits-ceilings",
+      "operation": "getResult",
+      "input": {
+        "key": "Counted",
+        "locale": "en",
+        "placeholders": {
+          "n": {
+            "$lokalized": "decimal",
+            "value": "1E+1025"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The exact value that fails in runtime-limits-numeric-defaults resolves here, because this instance raised maximumAbsoluteNumberScale toward its ceiling. Proves the configured limit rather than a hardcoded constant governs at runtime; a port that validated against its defaults regardless of configuration passes the defaults fixture and fails this one."
+    },
+    {
+      "id": "runtime-limits.ceilings.generated-depth-33-is-accepted-above-the-default",
+      "requirementIds": [],
+      "fixture": "runtime-limits-ceilings",
+      "operation": "getResult",
+      "input": {
+        "key": "Depth thirty three",
+        "locale": "en",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A 33-link generated chain — the exact shape that fails under the default limit of 32 in the existing generated-placeholders family — resolves once maximumGeneratedPlaceholderDepth is raised to its ceiling of 64. Pins that the depth limit is configurable upward and that the hard ceiling of 64 is genuinely accepted by the builder."
+    },
+    {
+      "id": "runtime-limits.ceilings.operand-builder-still-rejects-visible-decimal-places-1025",
+      "requirementIds": [],
+      "fixture": "runtime-limits-ceilings",
+      "operation": "getResult",
+      "input": {
+        "key": "Counted",
+        "locale": "en",
+        "placeholders": {
+          "n": {
+            "$lokalized": "plural-operands",
+            "value": "1.5",
+            "visibleDecimalPlaces": 1025
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The counterexample to the two cases above, and the sharpest thing in this family: raising maximumVisibleDecimalPlaces to 4096 on the Strings instance does NOT let a caller build such operands. PluralOperands.Builder carries its own TranslationRuntimeLimits, defaulted to TranslationRuntimeLimits.defaults(), and nothing in Strings reaches back into it — so this still throws 'Visible decimal places 1025 exceeds the maximum of 1024' at value construction, byte-identical to the defaults fixture. A port that threaded the instance limits into its operand constructor would resolve here and diverge."
+    },
+    {
+      "id": "runtime-limits.generated-depth.fallback.fr-under-default-policy-halts",
+      "requirementIds": [],
+      "fixture": "runtime-limits-generated-depth-fallback",
+      "operation": "getResult",
+      "input": {
+        "key": "Deep",
+        "locale": "fr",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Plan section 4.6: 'Generated depth and cumulative expansion budgets reset for each locale attempt.' Only the expansion half of that sentence was covered. This is the depth half's baseline: fr's three-link chain breaches the limit of 2 and, under the library-default policy, the walk halts at fr."
+    },
+    {
+      "id": "runtime-limits.generated-depth.fallback.fr-under-any-failure-reaches-en-on-a-fresh-depth-counter",
+      "requirementIds": [],
+      "fixture": "runtime-limits-generated-depth-fallback",
+      "operation": "getResult",
+      "input": {
+        "key": "Deep",
+        "locale": "fr",
+        "placeholders": {},
+        "translationFallbackPolicy": "any-failure"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Under the permissive policy the walk continues to en, whose two-link chain sits exactly at the limit and resolves. The depth counter is a call parameter seeded to 0 in each per-candidate getInternal, so an implementation that made it a mutable instance or per-request field would arrive at en already at depth 3 and return the key. Nothing else in the corpus tests depth lifetime across a fallback walk."
+    },
+    {
+      "id": "runtime-limits.generated-depth.fallback.en-direct-uses-the-whole-depth",
+      "requirementIds": [],
+      "fixture": "runtime-limits-generated-depth-fallback",
+      "operation": "getResult",
+      "input": {
+        "key": "Deep",
+        "locale": "en",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Requesting en directly consumes the full permitted depth on the first attempt, proving the English entry is genuinely at the limit and that the any-failure case is a counter-reset test rather than a spare-headroom test."
+    }
+  ]
+}

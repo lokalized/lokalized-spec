@@ -1,0 +1,15 @@
+{
+  "id": "dedup-and-candidates-fallback-alias",
+  "description": "The configured fallback locale is itself subject to equivalence resolution, through the single-equivalent branch at DefaultStrings.java:448-449. fallbackLocale is mo, but only ro and en are loaded; exactly one loaded locale is canonically equivalent to mo, so the instance adopts it and its effective fallback is ro. Every candidate chain therefore terminates at ro, the en catalog is unreachable from a request that does not select it, and the emitted match.fallbackLocale is ro rather than the configured mo. The ingest linter warns that fallbackLocale is not among the loaded files; that is the point of the fixture.",
+  "fallbackLocale": "mo",
+  "instanceLocale": "ro",
+  "tiebreakers": null,
+  "files": {
+    "ro": {
+      "FallbackAlias.OnlyInRo": "ro: only here"
+    },
+    "en": {
+      "FallbackAlias.OnlyInEn": "en: only here"
+    }
+  }
+}

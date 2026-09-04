@@ -1,0 +1,1641 @@
+{
+  "formatVersion": 1,
+  "family": "expressions-owed",
+  "description": "Plan v7 section 8.3 fixture family 'expressions-owed'. Inputs only; the oracle emits expected.",
+  "cases": [
+    {
+      "id": "expressions-owed.gender.neq-differs-matches",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Neq.GenderConst",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_MASCULINE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'value != GENDER_FEMININE' with a MASCULINE binding must MATCH. Gender inequality is completely unexercised in the corpus (ExpressionEvaluator:714-715 never execute), so a port that aliased '!=' onto '==' for gender -- the exact hazard the expressions family flags for the numeric axis and fixed only there -- passes everything today and fails this pair."
+    },
+    {
+      "id": "expressions-owed.gender.neq-same-does-not-match",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Neq.GenderConst",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_FEMININE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The negative half of the gender '!=' pair: a binding EQUAL to the constant must NOT match, falling through to the default translation. Read with the matching sibling it pins the sign of ExpressionEvaluator:715, which an aliased '!=' inverts in both directions."
+    },
+    {
+      "id": "expressions-owed.gender.ordering-operator-refused",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Order.Pair",
+        "locale": "en",
+        "placeholders": {
+          "left": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_MASCULINE"
+          },
+          "right": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_FEMININE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'left > right' with two Gender bindings. Statically legal (both operands are UNKNOWN_VARIABLE), so it reaches the runtime gender block and must be refused there with 'You may only use the == and != operators when performing gender comparisons'. The guard at ExpressionEvaluator:701 has never rejected anything; a port admitting ordering on genders would compare enum ordinals and silently answer true or false."
+    },
+    {
+      "id": "expressions-owed.grammatical-case.constant-eq-matches",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Eq.CaseConst",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "grammatical-case",
+            "name": "CASE_GENITIVE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The FIRST CASE_* literal anywhere in the corpus. It pins operandType's isGrammaticalCase arm (ExpressionEvaluator:1143), expressionValueTypeForToken's (1893), and grammaticalCaseFromOperand's constant path (1371) with its CASE_*-to-GrammaticalCase name mapping -- the fixture family's own notes call that mapping 'an easy place to build a wrong name table', and until now nothing executed it."
+    },
+    {
+      "id": "expressions-owed.grammatical-case.constant-eq-differs-does-not-match",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Eq.CaseConst",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "grammatical-case",
+            "name": "CASE_DATIVE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The negative control the axis never had: the corpus's single grammatical-case comparison binds BOTH sides to CASE_GENITIVE and matches, so a port whose grammatical-case '==' always returned true passed. A DATIVE binding against the GENITIVE constant must not match."
+    },
+    {
+      "id": "expressions-owed.grammatical-case.constant-neq-differs-matches",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Neq.CaseConst",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "grammatical-case",
+            "name": "CASE_DATIVE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Grammatical-case '!=' has never been evaluated. A DATIVE binding differs from CASE_GENITIVE and must match."
+    },
+    {
+      "id": "expressions-owed.grammatical-case.constant-neq-same-does-not-match",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Neq.CaseConst",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "grammatical-case",
+            "name": "CASE_GENITIVE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The negative half of the grammatical-case '!=' pair."
+    },
+    {
+      "id": "expressions-owed.grammatical-case.ordering-operator-refused",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Order.Pair",
+        "locale": "en",
+        "placeholders": {
+          "left": {
+            "$lokalized": "language-form",
+            "axis": "grammatical-case",
+            "name": "CASE_GENITIVE"
+          },
+          "right": {
+            "$lokalized": "language-form",
+            "axis": "grammatical-case",
+            "name": "CASE_DATIVE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'left > right' over two GrammaticalCase bindings must be refused by the grammatical-case operator guard (ExpressionEvaluator:722), which has only ever seen '=='."
+    },
+    {
+      "id": "expressions-owed.grammatical-case.against-gender-constant-is-incompatible",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Eq.GenderConst",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "grammatical-case",
+            "name": "CASE_GENITIVE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A grammatical-case binding on the LEFT against a GENDER constant. The paired branch at ExpressionEvaluator:721 must NOT claim it -- the comparison has to fall through to 'Operand runtime types GrammaticalCase and Gender are incompatible'. Nothing pinned that the pairing rule is a conjunction rather than an either-operand test on this axis."
+    },
+    {
+      "id": "expressions-owed.grammatical-case.constant-against-gender-binding-names-the-type",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Eq.CaseConst",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_FEMININE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A Gender binding against a CASE_* constant, asserted on the incompatible-runtime-types message. runtimeTypeName's GRAMMATICAL_CASE arm (ExpressionEvaluator:1207) supplies the name in that diagnostic and has never executed; a port with a wrong or missing entry there produces a plausible-looking wrong message no existing case can see."
+    },
+    {
+      "id": "expressions-owed.definiteness.constant-eq-matches",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Eq.DefinitenessConst",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "definiteness",
+            "name": "DEFINITENESS_DEFINITE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The first definiteness comparison in the corpus. No expression in any of the 280 distinct fixture expressions mentioned this axis, so the whole block at ExpressionEvaluator:742 was dead: a port that omitted definiteness entirely, or wired it to a neighbouring axis's value table, passed everything. This drives the constant arm of operandType, of expressionValueTypeForToken, and of definitenessFromOperand, plus the bound-value 'instanceof Definiteness' arm, all at once."
+    },
+    {
+      "id": "expressions-owed.definiteness.constant-eq-differs-does-not-match",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Eq.DefinitenessConst",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "definiteness",
+            "name": "DEFINITENESS_INDEFINITE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The non-matching half on the same expression, so a port whose definiteness '==' always returns true (or always false) fails one of the pair rather than neither."
+    },
+    {
+      "id": "expressions-owed.definiteness.constant-neq-differs-matches",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Neq.DefinitenessConst",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "definiteness",
+            "name": "DEFINITENESS_INDEFINITE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "definiteness '!=' with a differing binding must match. A port that aliased '!=' onto '==' on this axis passes today because the axis is never used at all."
+    },
+    {
+      "id": "expressions-owed.definiteness.constant-neq-same-does-not-match",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Neq.DefinitenessConst",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "definiteness",
+            "name": "DEFINITENESS_DEFINITE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The negative half of the definiteness '!=' pair."
+    },
+    {
+      "id": "expressions-owed.definiteness.ordering-operator-refused",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Order.Pair",
+        "locale": "en",
+        "placeholders": {
+          "left": {
+            "$lokalized": "language-form",
+            "axis": "definiteness",
+            "name": "DEFINITENESS_DEFINITE"
+          },
+          "right": {
+            "$lokalized": "language-form",
+            "axis": "definiteness",
+            "name": "DEFINITENESS_INDEFINITE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'left > right' over two Definiteness bindings. Statically legal, so it reaches the definiteness operator guard at ExpressionEvaluator:743, which must refuse it by name. Nothing pinned that ordering operators are refused on this axis."
+    },
+    {
+      "id": "expressions-owed.definiteness.left-against-gender-constant-is-incompatible",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Eq.GenderConst",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "definiteness",
+            "name": "DEFINITENESS_DEFINITE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A Definiteness binding on the LEFT against a GENDER constant: the definiteness paired branch must not claim it, so the comparison falls through to the incompatible-runtime-types diagnostic. Pins that ExpressionEvaluator:742 is a conjunction over BOTH operands, not an either-operand test."
+    },
+    {
+      "id": "expressions-owed.definiteness.constant-against-gender-binding-names-the-type",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Eq.DefinitenessConst",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_FEMININE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A Gender binding against a DEFINITENESS_DEFINITE constant, asserted on the incompatible-runtime-types message, whose right-hand type name comes from runtimeTypeName's Definiteness arm (ExpressionEvaluator:1207) -- never executed until now."
+    },
+    {
+      "id": "expressions-owed.classifier.constant-eq-matches",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Eq.ClassifierConst",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "classifier",
+            "name": "CLASSIFIER_PERSON"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The first classifier comparison in the corpus. No expression in any of the 280 distinct fixture expressions mentioned this axis, so the whole block at ExpressionEvaluator:763 was dead: a port that omitted classifier entirely, or wired it to a neighbouring axis's value table, passed everything. This drives the constant arm of operandType, of expressionValueTypeForToken, and of classifierFromOperand, plus the bound-value 'instanceof Classifier' arm, all at once."
+    },
+    {
+      "id": "expressions-owed.classifier.constant-eq-differs-does-not-match",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Eq.ClassifierConst",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "classifier",
+            "name": "CLASSIFIER_MACHINE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The non-matching half on the same expression, so a port whose classifier '==' always returns true (or always false) fails one of the pair rather than neither."
+    },
+    {
+      "id": "expressions-owed.classifier.constant-neq-differs-matches",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Neq.ClassifierConst",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "classifier",
+            "name": "CLASSIFIER_MACHINE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "classifier '!=' with a differing binding must match. A port that aliased '!=' onto '==' on this axis passes today because the axis is never used at all."
+    },
+    {
+      "id": "expressions-owed.classifier.constant-neq-same-does-not-match",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Neq.ClassifierConst",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "classifier",
+            "name": "CLASSIFIER_PERSON"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The negative half of the classifier '!=' pair."
+    },
+    {
+      "id": "expressions-owed.classifier.ordering-operator-refused",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Order.Pair",
+        "locale": "en",
+        "placeholders": {
+          "left": {
+            "$lokalized": "language-form",
+            "axis": "classifier",
+            "name": "CLASSIFIER_PERSON"
+          },
+          "right": {
+            "$lokalized": "language-form",
+            "axis": "classifier",
+            "name": "CLASSIFIER_MACHINE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'left > right' over two Classifier bindings. Statically legal, so it reaches the classifier operator guard at ExpressionEvaluator:764, which must refuse it by name. Nothing pinned that ordering operators are refused on this axis."
+    },
+    {
+      "id": "expressions-owed.classifier.left-against-gender-constant-is-incompatible",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Eq.GenderConst",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "classifier",
+            "name": "CLASSIFIER_PERSON"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A Classifier binding on the LEFT against a GENDER constant: the classifier paired branch must not claim it, so the comparison falls through to the incompatible-runtime-types diagnostic. Pins that ExpressionEvaluator:763 is a conjunction over BOTH operands, not an either-operand test."
+    },
+    {
+      "id": "expressions-owed.classifier.constant-against-gender-binding-names-the-type",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Eq.ClassifierConst",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_FEMININE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A Gender binding against a CLASSIFIER_PERSON constant, asserted on the incompatible-runtime-types message, whose right-hand type name comes from runtimeTypeName's Classifier arm (ExpressionEvaluator:1207) -- never executed until now."
+    },
+    {
+      "id": "expressions-owed.clusivity.constant-eq-matches",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Eq.ClusivityConst",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "clusivity",
+            "name": "CLUSIVITY_INCLUSIVE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The first clusivity comparison in the corpus. No expression in any of the 280 distinct fixture expressions mentioned this axis, so the whole block at ExpressionEvaluator:805 was dead: a port that omitted clusivity entirely, or wired it to a neighbouring axis's value table, passed everything. This drives the constant arm of operandType, of expressionValueTypeForToken, and of clusivityFromOperand, plus the bound-value 'instanceof Clusivity' arm, all at once."
+    },
+    {
+      "id": "expressions-owed.clusivity.constant-eq-differs-does-not-match",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Eq.ClusivityConst",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "clusivity",
+            "name": "CLUSIVITY_EXCLUSIVE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The non-matching half on the same expression, so a port whose clusivity '==' always returns true (or always false) fails one of the pair rather than neither."
+    },
+    {
+      "id": "expressions-owed.clusivity.constant-neq-differs-matches",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Neq.ClusivityConst",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "clusivity",
+            "name": "CLUSIVITY_EXCLUSIVE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "clusivity '!=' with a differing binding must match. A port that aliased '!=' onto '==' on this axis passes today because the axis is never used at all."
+    },
+    {
+      "id": "expressions-owed.clusivity.constant-neq-same-does-not-match",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Neq.ClusivityConst",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "clusivity",
+            "name": "CLUSIVITY_INCLUSIVE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The negative half of the clusivity '!=' pair."
+    },
+    {
+      "id": "expressions-owed.clusivity.ordering-operator-refused",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Order.Pair",
+        "locale": "en",
+        "placeholders": {
+          "left": {
+            "$lokalized": "language-form",
+            "axis": "clusivity",
+            "name": "CLUSIVITY_INCLUSIVE"
+          },
+          "right": {
+            "$lokalized": "language-form",
+            "axis": "clusivity",
+            "name": "CLUSIVITY_EXCLUSIVE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'left > right' over two Clusivity bindings. Statically legal, so it reaches the clusivity operator guard at ExpressionEvaluator:806, which must refuse it by name. Nothing pinned that ordering operators are refused on this axis."
+    },
+    {
+      "id": "expressions-owed.clusivity.left-against-gender-constant-is-incompatible",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Eq.GenderConst",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "clusivity",
+            "name": "CLUSIVITY_INCLUSIVE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A Clusivity binding on the LEFT against a GENDER constant: the clusivity paired branch must not claim it, so the comparison falls through to the incompatible-runtime-types diagnostic. Pins that ExpressionEvaluator:805 is a conjunction over BOTH operands, not an either-operand test."
+    },
+    {
+      "id": "expressions-owed.clusivity.constant-against-gender-binding-names-the-type",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Eq.ClusivityConst",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_FEMININE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A Gender binding against a CLUSIVITY_INCLUSIVE constant, asserted on the incompatible-runtime-types message, whose right-hand type name comes from runtimeTypeName's Clusivity arm (ExpressionEvaluator:1207) -- never executed until now."
+    },
+    {
+      "id": "expressions-owed.animacy.constant-eq-matches",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Eq.AnimacyConst",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "animacy",
+            "name": "ANIMACY_ANIMATE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The first animacy comparison in the corpus. No expression in any of the 280 distinct fixture expressions mentioned this axis, so the whole block at ExpressionEvaluator:826 was dead: a port that omitted animacy entirely, or wired it to a neighbouring axis's value table, passed everything. This drives the constant arm of operandType, of expressionValueTypeForToken, and of animacyFromOperand, plus the bound-value 'instanceof Animacy' arm, all at once."
+    },
+    {
+      "id": "expressions-owed.animacy.constant-eq-differs-does-not-match",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Eq.AnimacyConst",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "animacy",
+            "name": "ANIMACY_INANIMATE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The non-matching half on the same expression, so a port whose animacy '==' always returns true (or always false) fails one of the pair rather than neither."
+    },
+    {
+      "id": "expressions-owed.animacy.constant-neq-differs-matches",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Neq.AnimacyConst",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "animacy",
+            "name": "ANIMACY_INANIMATE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "animacy '!=' with a differing binding must match. A port that aliased '!=' onto '==' on this axis passes today because the axis is never used at all."
+    },
+    {
+      "id": "expressions-owed.animacy.constant-neq-same-does-not-match",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Neq.AnimacyConst",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "animacy",
+            "name": "ANIMACY_ANIMATE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The negative half of the animacy '!=' pair."
+    },
+    {
+      "id": "expressions-owed.animacy.ordering-operator-refused",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Order.Pair",
+        "locale": "en",
+        "placeholders": {
+          "left": {
+            "$lokalized": "language-form",
+            "axis": "animacy",
+            "name": "ANIMACY_ANIMATE"
+          },
+          "right": {
+            "$lokalized": "language-form",
+            "axis": "animacy",
+            "name": "ANIMACY_INANIMATE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'left > right' over two Animacy bindings. Statically legal, so it reaches the animacy operator guard at ExpressionEvaluator:827, which must refuse it by name. Nothing pinned that ordering operators are refused on this axis."
+    },
+    {
+      "id": "expressions-owed.animacy.left-against-gender-constant-is-incompatible",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Eq.GenderConst",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "animacy",
+            "name": "ANIMACY_ANIMATE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A Animacy binding on the LEFT against a GENDER constant: the animacy paired branch must not claim it, so the comparison falls through to the incompatible-runtime-types diagnostic. Pins that ExpressionEvaluator:826 is a conjunction over BOTH operands, not an either-operand test."
+    },
+    {
+      "id": "expressions-owed.animacy.constant-against-gender-binding-names-the-type",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Eq.AnimacyConst",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_FEMININE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A Gender binding against a ANIMACY_ANIMATE constant, asserted on the incompatible-runtime-types message, whose right-hand type name comes from runtimeTypeName's Animacy arm (ExpressionEvaluator:1207) -- never executed until now."
+    },
+    {
+      "id": "expressions-owed.formality.constant-neq-differs-matches",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Neq.FormalityConst",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "formality",
+            "name": "FORMALITY_CASUAL"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Formality '!=' with a differing binding. The formality block IS entered by the corpus, but only ever with '==', so ExpressionEvaluator:798-799 never execute."
+    },
+    {
+      "id": "expressions-owed.formality.constant-neq-same-does-not-match",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Neq.FormalityConst",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "formality",
+            "name": "FORMALITY_HONORIFIC"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The negative half of the formality '!=' pair."
+    },
+    {
+      "id": "expressions-owed.formality.ordering-operator-refused",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Order.Pair",
+        "locale": "en",
+        "placeholders": {
+          "left": {
+            "$lokalized": "language-form",
+            "axis": "formality",
+            "name": "FORMALITY_HONORIFIC"
+          },
+          "right": {
+            "$lokalized": "language-form",
+            "axis": "formality",
+            "name": "FORMALITY_CASUAL"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'left > right' over two Formality bindings, refused by the formality operator guard at ExpressionEvaluator:785 -- never reached by any corpus expression."
+    },
+    {
+      "id": "expressions-owed.formality.constant-against-gender-binding-names-the-type",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Eq.FormalityConst",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_FEMININE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A Gender binding against FORMALITY_HONORIFIC, asserted on the incompatible-runtime-types message; the right-hand name comes from runtimeTypeName's FORMALITY arm (ExpressionEvaluator:1207)."
+    },
+    {
+      "id": "expressions-owed.cardinality.constant-neq-differs-matches",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Neq.CardinalityConst",
+        "locale": "en",
+        "placeholders": {
+          "value": 5
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'value != CARDINALITY_ONE' with 5, whose en cardinality is 'other', must MATCH. Cardinality is the most heavily exercised axis in the corpus and yet not one case uses '!=' on it (ExpressionEvaluator:862-863 never execute), so a port that aliased '!=' to '==' on the plural axes passes everything."
+    },
+    {
+      "id": "expressions-owed.cardinality.constant-neq-same-does-not-match",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Neq.CardinalityConst",
+        "locale": "en",
+        "placeholders": {
+          "value": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The negative half: 1 classifies as 'one' in en, so '!= CARDINALITY_ONE' must NOT match. Aliasing '!=' to '==' inverts both halves of this pair."
+    },
+    {
+      "id": "expressions-owed.ordinality.constant-eq-differs-does-not-match",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Eq.OrdinalityConst",
+        "locale": "en",
+        "placeholders": {
+          "value": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The negative control the ordinal axis never had: both existing ordinality cases MATCH, so a port whose ordinal '==' always returned true passed. 1 is ORDINALITY_ONE in en, so 'value == ORDINALITY_TWO' must not match."
+    },
+    {
+      "id": "expressions-owed.ordinality.constant-neq-differs-matches",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Neq.OrdinalityConst",
+        "locale": "en",
+        "placeholders": {
+          "value": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Ordinality '!=' with a non-two binding must match (ExpressionEvaluator:884-885, never executed)."
+    },
+    {
+      "id": "expressions-owed.ordinality.constant-neq-same-does-not-match",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Neq.OrdinalityConst",
+        "locale": "en",
+        "placeholders": {
+          "value": 2
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The negative half of the ordinality '!=' pair."
+    },
+    {
+      "id": "expressions-owed.ordinality.ordering-operator-refused",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Order.Pair",
+        "locale": "en",
+        "placeholders": {
+          "left": {
+            "$lokalized": "language-form",
+            "axis": "ordinality",
+            "name": "ORDINALITY_TWO"
+          },
+          "right": {
+            "$lokalized": "language-form",
+            "axis": "ordinality",
+            "name": "ORDINALITY_ONE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'left > right' over two Ordinality bindings, refused by the ordinality operator guard (ExpressionEvaluator:870). NOTE the disposition's suggested spelling 'value > ORDINALITY_TWO' cannot reach this guard at all -- it is refused at LOAD by validateOperatorOperands, since ORDINALITY is not a numeric expression value. The two-variable form is the only shape that gets an ordering operator past static validation and into the ordinal block. The cardinal twin of this rejection IS covered; the ordinal one is the asymmetry the family warns about."
+    },
+    {
+      "id": "expressions-owed.ordinality.plural-operands-binding-classifies",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Eq.OrdinalityConst",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "plural-operands",
+            "value": "2"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A PluralOperands binding compared against an ORDINALITY_* constant. PluralOperands bindings are used in the corpus, but only against numbers and cardinality, so ordinalityFromOperand's PluralOperands arm (ExpressionEvaluator:1652) and its revalidation of visible decimals and compact exponent are untested."
+    },
+    {
+      "id": "expressions-owed.ordinality.gender-binding-fails-in-the-ordinal-branch",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Eq.OrdinalityConst",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_FEMININE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A Gender binding against ORDINALITY_TWO. The ordinality block is an EITHER-operand test, so it claims the comparison and must fail converting the GENDER operand with the axis-specific 'Unable to extract Ordinality value from value'. The cardinal twin of this blame path is pinned; the ordinal one was not."
+    },
+    {
+      "id": "expressions-owed.ordinality.binding-against-foreign-constant-blames-the-constant",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Eq.GenderConst",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "ordinality",
+            "name": "ORDINALITY_ONE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "AUDIT REVERSAL from the M3b review (ExpressionEvaluator:1644, previously excluded). The ordinality typing here comes from the runtime BINDING while the other operand is a foreign language-form constant: 'value == GENDER_FEMININE' with value bound to Ordinality.ONE passes static validation (the variable side is UNKNOWN_VARIABLE), skips the gender block (which needs BOTH operands GENDER) and the cardinality block, enters the ordinality block, and hands GENDER_FEMININE to ordinalityFromOperand, whose isOrdinality/NUMBER/VARIABLE tests are all false. The axis-specific \"Unable to extract Ordinality value from 'GENDER_FEMININE'\" is what must come out -- not the generic incompatible-runtime-types message, and not a silent coercion."
+    },
+    {
+      "id": "expressions-owed.phonetic.constant-neq-differs-matches",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Neq.PhoneticConst",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "phonetic",
+            "name": "PHONETIC_CONSONANT"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Phonetic '!=' against a PHONETIC_* constant with an explicit Phonetic binding. The corpus refuses '!=' between two raw CharSequences but never evaluates it between a resolved phonetic value and a constant (ExpressionEvaluator:905-906)."
+    },
+    {
+      "id": "expressions-owed.phonetic.constant-neq-same-does-not-match",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Neq.PhoneticConst",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "phonetic",
+            "name": "PHONETIC_VOWEL"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The negative half of the phonetic '!=' pair."
+    },
+    {
+      "id": "expressions-owed.phonetic.ordering-operator-refused",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Order.Pair",
+        "locale": "en",
+        "placeholders": {
+          "left": {
+            "$lokalized": "language-form",
+            "axis": "phonetic",
+            "name": "PHONETIC_VOWEL"
+          },
+          "right": {
+            "$lokalized": "language-form",
+            "axis": "phonetic",
+            "name": "PHONETIC_CONSONANT"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'left > right' over two explicit Phonetic bindings. The raw-CharSequence ordering refusal is covered, but it fires EARLIER and only when both operands are caller strings; the guard that refuses ordering on a RESOLVED phonetic comparison (ExpressionEvaluator:892) is a different message on a different path and has never fired."
+    },
+    {
+      "id": "expressions-owed.phonetic.gender-binding-on-the-left-is-claimed-by-the-phonetic-branch",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Eq.PhoneticConst",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_FEMININE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Every phonetic comparison in the corpus carries the phonetic-typed operand on the LEFT, so the either-operand entry test at ExpressionEvaluator:891 always short-circuits on the left disjunct. Here the PHONETIC typing arrives on the RIGHT: the phonetic branch must still claim the comparison and fail converting the LEFT operand ('Unable to extract Phonetic value from value'), not report incompatible runtime types. This also drives phoneticFromOperand's non-CharSequence fall-through (1743)."
+    },
+    {
+      "id": "expressions-owed.phonetic.binding-against-number-literal-blames-the-literal",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Eq.NumberLiteral",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "phonetic",
+            "name": "PHONETIC_VOWEL"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "AUDIT REVERSAL from the M3b review (ExpressionEvaluator:1734, previously excluded). 'value == 1' with an explicit Phonetic binding types as PHONETIC/NUMBER, matches none of the eight paired axis blocks and neither plural block, and so falls into the phonetic block -- which is last in the chain and either-operand. phoneticFromOperand then receives the NUMBER literal token, whose VARIABLE test is false, and must emit \"Unable to extract Phonetic value from '1'\". The binding must be an explicit Phonetic and NOT a raw string: a raw string would be diverted by the numeric-vs-string guard first, which is why this shape looked unreachable on the first pass."
+    },
+    {
+      "id": "expressions-owed.operand.unsupported-runtime-type-on-the-right",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Eq.Pair",
+        "locale": "en",
+        "placeholders": {
+          "left": 5,
+          "right": true
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The mirror of the corpus's only unsupported-operand case. Every UNKNOWN operand the corpus produces arrives on the LEFT, so the right-hand disjunct of the guard at ExpressionEvaluator:632 has never been true; a port testing only the left operand would fall through to the incompatible-types message, or to a typed branch, for this input."
+    },
+    {
+      "id": "expressions-owed.operand.raw-string-on-the-right-of-a-number",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Eq.Pair",
+        "locale": "en",
+        "placeholders": {
+          "left": 5,
+          "right": "five"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A numeric LEFT operand against a raw CharSequence RIGHT operand. The corpus supplies only the mirrored orientation, so ExpressionEvaluator:661 is unexercised and a port implementing one orientation would send this comparison to the phonetic resolver instead of failing with the numeric-operand diagnostic naming the RIGHT placeholder."
+    },
+    {
+      "id": "expressions-owed.number.less-than-below-bound-matches",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Lt.Five",
+        "locale": "en",
+        "placeholders": {
+          "count": 4
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Half of a matched pair on one '<' expression. No pair of corpus cases makes the same '<' comparison come out both ways, so the sign of the comparison is unpinned in one direction."
+    },
+    {
+      "id": "expressions-owed.number.less-than-at-bound-does-not-match",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Lt.Five",
+        "locale": "en",
+        "placeholders": {
+          "count": 5
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The other half: 5 < 5 is false. Together with the sibling, a port that inverted or ignored the comparison sign fails at least one."
+    },
+    {
+      "id": "expressions-owed.number.less-or-equal-below-bound-matches",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Lte.Five",
+        "locale": "en",
+        "placeholders": {
+          "count": 4
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'<=' appears in NO expression anywhere in the corpus -- not one of the 280 distinct fixture expressions -- so a port that mapped '<=' to '<', or dropped it from its operator table so it lexed as '<' followed by '=', passed everything. This is the strictly-below arm of the boundary triple."
+    },
+    {
+      "id": "expressions-owed.number.less-or-equal-at-bound-matches",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Lte.Five",
+        "locale": "en",
+        "placeholders": {
+          "count": 5
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The discriminating member of the '<=' triple: 5 <= 5 must MATCH. A port that aliased '<=' to '<' fails exactly here, and nowhere else."
+    },
+    {
+      "id": "expressions-owed.number.less-or-equal-above-bound-does-not-match",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Lte.Five",
+        "locale": "en",
+        "placeholders": {
+          "count": 6
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The above-bound arm, which separates '<=' from '=='-style always-true readings and pins ExpressionEvaluator:684 in both directions."
+    },
+    {
+      "id": "expressions-owed.constants.gender-equals-gender-evaluates-false",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Const.GenderEqGender",
+        "locale": "en",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'GENDER_MASCULINE == GENDER_FEMININE' -- two constants of the SAME axis. It must LOAD (canBeEqualExpressionValue's same-type rule at ExpressionEvaluator:1983, which has never executed because line 1981 always short-circuits on a left-hand variable) and then evaluate FALSE. Nothing pinned that two same-axis constants may be compared, nor that this rule is what permits it."
+    },
+    {
+      "id": "expressions-owed.constants.gender-constant-on-the-left-matches",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Const.GenderEqVariable",
+        "locale": "en",
+        "placeholders": {
+          "who": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_MASCULINE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The constant on the LEFT and the variable on the RIGHT. Every '==' and '!=' expression in all 280 distinct fixture expressions puts its variable on the left, so canBeEqualExpressionValue (ExpressionEvaluator:1981) has only ever returned true by its LEFT disjunct -- the same shape as the tiebreaker defect found by hand in M5b: reached constantly, discriminated never."
+    },
+    {
+      "id": "expressions-owed.constants.gender-constant-on-the-left-does-not-match",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Const.GenderEqVariable",
+        "locale": "en",
+        "placeholders": {
+          "who": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_FEMININE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The negative half of the constant-on-the-left pair, so the orientation is shown to be evaluated rather than merely accepted."
+    },
+    {
+      "id": "expressions-owed.constants.number-eq-cardinality.en",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Const.NumberEqCardinality",
+        "locale": "en",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'1 == CARDINALITY_ONE' as a CONSTANT PAIR. It is legal only because of canBeEqualExpressionValue's NUMBER/CARDINALITY and NUMBER/ORDINALITY allowances (ExpressionEvaluator:1986, 12 branches, none of them ever executed): the corpus states this cross-axis rule only through bound variables, which line 1981 waves through as UNKNOWN_VARIABLE, so a port permitting every cross-axis constant pair and a port permitting none are indistinguishable today. In 'en' the numeric literal classifies to the named category and the alternative must match, which also drives the NUMBER-literal arm of cardinalityFromOperand (1600) -- the corpus's number/plural mixing always puts the number in a BINDING, never as a literal."
+    },
+    {
+      "id": "expressions-owed.constants.number-eq-cardinality.ja",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Const.NumberEqCardinality",
+        "locale": "ja",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same constant pair evaluated in 'ja', where the literal does not classify to the named category, so the alternative must NOT match. This is what pins the classification of the LITERAL to the EVALUATION LOCALE; without it a port could hard-code the English answer."
+    },
+    {
+      "id": "expressions-owed.constants.cardinality-eq-number.en",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Const.CardinalityEqNumber",
+        "locale": "en",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'CARDINALITY_ONE == 1' as a CONSTANT PAIR. It is legal only because of canBeEqualExpressionValue's NUMBER/CARDINALITY and NUMBER/ORDINALITY allowances (ExpressionEvaluator:1986, 12 branches, none of them ever executed): the corpus states this cross-axis rule only through bound variables, which line 1981 waves through as UNKNOWN_VARIABLE, so a port permitting every cross-axis constant pair and a port permitting none are indistinguishable today. In 'en' the numeric literal classifies to the named category and the alternative must match, which also drives the NUMBER-literal arm of cardinalityFromOperand (1600) -- the corpus's number/plural mixing always puts the number in a BINDING, never as a literal."
+    },
+    {
+      "id": "expressions-owed.constants.cardinality-eq-number.ja",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Const.CardinalityEqNumber",
+        "locale": "ja",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same constant pair evaluated in 'ja', where the literal does not classify to the named category, so the alternative must NOT match. This is what pins the classification of the LITERAL to the EVALUATION LOCALE; without it a port could hard-code the English answer."
+    },
+    {
+      "id": "expressions-owed.constants.number-eq-ordinality.en",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Const.NumberEqOrdinality",
+        "locale": "en",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'2 == ORDINALITY_TWO' as a CONSTANT PAIR. It is legal only because of canBeEqualExpressionValue's NUMBER/CARDINALITY and NUMBER/ORDINALITY allowances (ExpressionEvaluator:1986, 12 branches, none of them ever executed): the corpus states this cross-axis rule only through bound variables, which line 1981 waves through as UNKNOWN_VARIABLE, so a port permitting every cross-axis constant pair and a port permitting none are indistinguishable today. In 'en' the numeric literal classifies to the named category and the alternative must match, which also drives the NUMBER-literal arm of ordinalityFromOperand (1641) -- the corpus's number/plural mixing always puts the number in a BINDING, never as a literal."
+    },
+    {
+      "id": "expressions-owed.constants.number-eq-ordinality.ja",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Const.NumberEqOrdinality",
+        "locale": "ja",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same constant pair evaluated in 'ja', where the literal does not classify to the named category, so the alternative must NOT match. This is what pins the classification of the LITERAL to the EVALUATION LOCALE; without it a port could hard-code the English answer."
+    },
+    {
+      "id": "expressions-owed.constants.ordinality-eq-number.en",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Const.OrdinalityEqNumber",
+        "locale": "en",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'ORDINALITY_TWO == 2' as a CONSTANT PAIR. It is legal only because of canBeEqualExpressionValue's NUMBER/CARDINALITY and NUMBER/ORDINALITY allowances (ExpressionEvaluator:1986, 12 branches, none of them ever executed): the corpus states this cross-axis rule only through bound variables, which line 1981 waves through as UNKNOWN_VARIABLE, so a port permitting every cross-axis constant pair and a port permitting none are indistinguishable today. In 'en' the numeric literal classifies to the named category and the alternative must match, which also drives the NUMBER-literal arm of ordinalityFromOperand (1641) -- the corpus's number/plural mixing always puts the number in a BINDING, never as a literal."
+    },
+    {
+      "id": "expressions-owed.constants.ordinality-eq-number.ja",
+      "requirementIds": [],
+      "fixture": "expressions-owed-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Const.OrdinalityEqNumber",
+        "locale": "ja",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same constant pair evaluated in 'ja', where the literal does not classify to the named category, so the alternative must NOT match. This is what pins the classification of the LITERAL to the EVALUATION LOCALE; without it a port could hard-code the English answer."
+    },
+    {
+      "id": "expressions-owed.static.bare-operand",
+      "requirementIds": [],
+      "fixture": "expressions-owed-static-rejections",
+      "operation": "parse",
+      "input": {
+        "file": "en",
+        "locale": "en",
+        "source": "expressions-owed-bare-operand"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "An alternative keyed by a bare operand. The corpus rejects an empty expression, a two-operand expression and a dangling operator, but never a LONE operand -- the only input that reaches validateReversePolishNotationTokens' 'Expression must evaluate to a boolean result but ended with operand' diagnostic (ExpressionEvaluator:1869). A port that treated a lone variable as a truthy predicate -- the natural JavaScript reading -- would accept it and then decide the alternative on the value's truthiness."
+    },
+    {
+      "id": "expressions-owed.static.non-boolean-left-conjunct",
+      "requirementIds": [],
+      "fixture": "expressions-owed-static-rejections",
+      "operation": "parse",
+      "input": {
+        "file": "fr",
+        "locale": "fr",
+        "source": "expressions-owed-non-boolean-left-conjunct"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'alpha && alpha == 1': the JavaScript-truthiness trap, with the non-boolean operand on the LEFT of '&&'. validateOperatorOperands' boolean-operand check (ExpressionEvaluator:1924) has NEVER rejected anything in the corpus, and its dead-ness is load-bearing -- a neighbouring throw is dispositioned 'excluded' precisely because this check fires first. A port omitting it decides a bare conjunct by JavaScript truthiness."
+    },
+    {
+      "id": "expressions-owed.static.non-boolean-right-conjunct",
+      "requirementIds": [],
+      "fixture": "expressions-owed-static-rejections",
+      "operation": "parse",
+      "input": {
+        "file": "de",
+        "locale": "de",
+        "source": "expressions-owed-non-boolean-right-conjunct"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'alpha == 1 && beta': the same boolean-operand rule with the non-boolean operand on the RIGHT, so a port that checked only one side is caught. The message must name BOOLEAN and UNKNOWN_VARIABLE in that order."
+    },
+    {
+      "id": "expressions-owed.static.chained-comparison-boolean-on-right",
+      "requirementIds": [],
+      "fixture": "expressions-owed-static-rejections",
+      "operation": "parse",
+      "input": {
+        "file": "es",
+        "locale": "es",
+        "source": "expressions-owed-chained-comparison-boolean-on-right"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'count == (count == 0)'. The corpus's chained-comparison case ('count == 0 == 1') puts the BOOLEAN on the left of the second comparison, so only the left disjunct of ExpressionEvaluator:1934 has ever fired. Producing a boolean on the RIGHT requires an explicit group; a port checking only the left operand would accept this expression and then compare a number against a comparison result at runtime."
+    },
+    {
+      "id": "expressions-owed.static.ordering-non-numeric-right",
+      "requirementIds": [],
+      "fixture": "expressions-owed-static-rejections",
+      "operation": "parse",
+      "input": {
+        "file": "it",
+        "locale": "it",
+        "source": "expressions-owed-ordering-non-numeric-right"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'value > CARDINALITY_ONE': the ordering-operator type check (ExpressionEvaluator:1941) with the non-numeric operand on the RIGHT. Its rejection has never fired -- every ordering comparison in the corpus has a variable or a number on both sides. The runtime cardinality guard is NOT a substitute: different diagnostic, different time (lookup, not load), and it does not cover ordering against a GENDER or PHONETIC constant at all."
+    },
+    {
+      "id": "expressions-owed.static.ordering-non-numeric-left",
+      "requirementIds": [],
+      "fixture": "expressions-owed-static-rejections",
+      "operation": "parse",
+      "input": {
+        "file": "nl",
+        "locale": "nl",
+        "source": "expressions-owed-ordering-non-numeric-left"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'CARDINALITY_ONE < value': the mirrored orientation, which short-circuits canBeNumericExpressionValue on the LEFT operand and is the only input that makes that helper return false (ExpressionEvaluator:1972)."
+    },
+    {
+      "id": "expressions-owed.static.gender-constant-equals-number",
+      "requirementIds": [],
+      "fixture": "expressions-owed-static-rejections",
+      "operation": "parse",
+      "input": {
+        "file": "pt",
+        "locale": "pt",
+        "source": "expressions-owed-gender-constant-equals-number"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'GENDER_MASCULINE == 1' must be refused at LOAD with \"Operator '==' cannot compare GENDER and NUMBER operands\". This is the false arm of canBeEqualExpressionValue at the call site (ExpressionEvaluator:1950), which has never fired: a port whose canBeEqualExpressionValue always returned true passes the entire corpus, and cross-axis constant comparisons Java refuses at load would instead survive to lookup."
+    },
+    {
+      "id": "expressions-owed.static.number-equals-gender-constant",
+      "requirementIds": [],
+      "fixture": "expressions-owed-static-rejections",
+      "operation": "parse",
+      "input": {
+        "file": "ru",
+        "locale": "ru",
+        "source": "expressions-owed-number-equals-gender-constant"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'1 == GENDER_MASCULINE': the mirrored refusal. Together with its sibling and the four constant pairs that DO load, it pins ExpressionEvaluator:1986 as an exact allowance for NUMBER-against-CARDINALITY and NUMBER-against-ORDINALITY rather than a general cross-axis permission."
+    },
+    {
+      "id": "expressions-owed.static.less-or-equal-non-numeric",
+      "requirementIds": [],
+      "fixture": "expressions-owed-static-rejections",
+      "operation": "parse",
+      "input": {
+        "file": "pl",
+        "locale": "pl",
+        "source": "expressions-owed-less-or-equal-non-numeric"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'count <= CARDINALITY_ONE'. '<=' appears in no corpus expression at all, so isOrderingOperator's LESS_THAN_OR_EQUAL_TO arm (ExpressionEvaluator:1965) has never been true; this confirms '<=' is treated as an ORDERING operator at validation time, which is what gates the numeric-operand check. A port that lexed '<=' as '<' followed by '=' would fail earlier and differently."
+    },
+    {
+      "id": "expressions-owed.static.expression-characters-over-ceiling",
+      "requirementIds": [],
+      "fixture": "expressions-owed-static-rejections",
+      "operation": "parse",
+      "input": {
+        "file": "sv",
+        "locale": "sv",
+        "source": "expressions-owed-expression-characters-over-ceiling"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "An expression of exactly 4097 characters, one over TranslationRuntimeLimits.hardCeilings()'s maximumExpressionCharacters of 4096, which is the limit LocalizedStringLoader validates with. The existing runtime-limits fixture pins the character cap only from BELOW (both its expressions sit exactly AT a limit of 17), so an implementation that never enforced the cap at all passed. This is the over-limit arm of ExpressionEvaluator:1815."
+    },
+    {
+      "id": "expressions-owed.static.expression-tokens-over-ceiling",
+      "requirementIds": [],
+      "fixture": "expressions-owed-static-rejections",
+      "operation": "parse",
+      "input": {
+        "file": "tr",
+        "locale": "tr",
+        "source": "expressions-owed-expression-tokens-over-ceiling"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "515 infix tokens against a hard ceiling of 512. Same asymmetry as the character case: runtime-limits-expression-tokens-nine sits exactly at its limit, so a port that dropped the token cap entirely passed. Note the count is of INFIX tokens, before shunting-yard output, so a port counting RPN output would report a different number."
+    },
+    {
+      "id": "expressions-owed.static.expression-nesting-over-ceiling",
+      "requirementIds": [],
+      "fixture": "expressions-owed-static-rejections",
+      "operation": "parse",
+      "input": {
+        "file": "fi",
+        "locale": "fi",
+        "source": "expressions-owed-expression-nesting-over-ceiling"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Grouping depth 65 against a hard ceiling of 64. Both existing nesting fixtures sit at their limit (depth 1 under 1, depth 0 under 0), so a port that counted depth but never compared, or never counted, passed both. The message names the limit, not the depth reached."
+    },
+    {
+      "id": "expressions-owed.static.control-loads",
+      "requirementIds": [],
+      "fixture": "expressions-owed-static-rejections",
+      "operation": "parse",
+      "input": {
+        "file": "cs",
+        "locale": "cs",
+        "source": "expressions-owed-control"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The control for this fixture: an ordinary 'count == 0' alternative in the same shape loads cleanly. Without it every rejection above could be satisfied by a port that refused all alternatives outright."
+    },
+    {
+      "id": "expressions-owed.loader-ceiling.characters-above-default-below-ceiling",
+      "requirementIds": [],
+      "fixture": "expressions-owed-loader-ceilings",
+      "operation": "parse",
+      "input": {
+        "file": "en",
+        "locale": "en",
+        "source": "expressions-owed-characters-above-default-below-ceiling"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A 3000-character alternative expression: over the DEFAULT maximumExpressionCharacters of 2048, under the hard ceiling of 4096. LocalizedStringLoader builds its validating evaluator with TranslationRuntimeLimits.hardCeilings() (LocalizedStringLoader.java:115), so this catalog LOADS; only Strings construction, which applies the configured limits, would refuse it. Without this case the over-ceiling sibling can be satisfied by an implementation that validates the loader against the DEFAULTS -- it would still reject, just at the wrong boundary and with the wrong number in the message, and every catalog between the two limits would stop loading."
+    },
+    {
+      "id": "expressions-owed.loader-ceiling.tokens-above-default-below-ceiling",
+      "requirementIds": [],
+      "fixture": "expressions-owed-loader-ceilings",
+      "operation": "parse",
+      "input": {
+        "file": "fr",
+        "locale": "fr",
+        "source": "expressions-owed-tokens-above-default-below-ceiling"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "399 infix tokens: over the DEFAULT maximumExpressionTokens of 256, under the hard ceiling of 512, and well under the character limit so the token cap is the only one in play. Must LOAD."
+    },
+    {
+      "id": "expressions-owed.loader-ceiling.nesting-above-default-below-ceiling",
+      "requirementIds": [],
+      "fixture": "expressions-owed-loader-ceilings",
+      "operation": "parse",
+      "input": {
+        "file": "de",
+        "locale": "de",
+        "source": "expressions-owed-nesting-above-default-below-ceiling"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Grouping depth 48: over the DEFAULT maximumExpressionNestingDepth of 32, under the hard ceiling of 64, with token count and length far below their caps so depth is the only axis under test. Must LOAD."
+    },
+    {
+      "id": "expressions-owed.plural-operands.compact-exponent-at-limit-evaluates",
+      "requirementIds": [],
+      "fixture": "expressions-owed-plural-operand-limits",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Limits.CardinalityConst",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "plural-operands",
+            "value": "1",
+            "compactExponent": 1
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A PluralOperands expression operand whose compact exponent sits exactly AT the instance's lowered maximumCompactExponent. It must evaluate normally, which is what proves the over-limit sibling is measuring the ceiling rather than rejecting compact exponents outright."
+    },
+    {
+      "id": "expressions-owed.plural-operands.compact-exponent-over-limit-fails",
+      "requirementIds": [],
+      "fixture": "expressions-owed-plural-operand-limits",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Limits.CardinalityConst",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "plural-operands",
+            "value": "1",
+            "compactExponent": 2
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "One over the lowered maximumCompactExponent. ExpressionEvaluator.validatePluralOperands (:1683) enforces the ceiling on an EXPRESSION OPERAND; every compact-exponent limit case in the corpus drives the PLURAL-FORM path instead, so a port that enforced this at the placeholder boundary and not inside the evaluator passes the whole corpus."
+    },
+    {
+      "id": "expressions-owed.plural-operands.visible-decimal-places-at-limit-evaluates",
+      "requirementIds": [],
+      "fixture": "expressions-owed-plural-operand-limits",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Limits.OrdinalityConst",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "plural-operands",
+            "value": "2.00",
+            "visibleDecimalPlaces": 2
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Explicit visible decimal places exactly AT the instance's lowered maximumVisibleDecimalPlaces, on an expression operand, evaluating normally."
+    },
+    {
+      "id": "expressions-owed.plural-operands.visible-decimal-places-over-limit-fails",
+      "requirementIds": [],
+      "fixture": "expressions-owed-plural-operand-limits",
+      "operation": "getResult",
+      "input": {
+        "key": "Owed.Limits.OrdinalityConst",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "plural-operands",
+            "value": "2.00",
+            "visibleDecimalPlaces": 3
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "One over the lowered maximumVisibleDecimalPlaces. ExpressionEvaluator.validatePluralOperands (:1688) is the evaluator's own copy of the check; its over-limit arm never fires on the expression path in the existing corpus."
+    }
+  ]
+}

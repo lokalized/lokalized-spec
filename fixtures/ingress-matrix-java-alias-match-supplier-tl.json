@@ -1,0 +1,30 @@
+{
+  "id": "ingress-matrix-java-alias-match-supplier-tl",
+  "description": "Alias arm catalog with a localeMatchSupplier negotiating tl through the single-locale kernel.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "localeMatchSupplier": {
+    "behavior": "match-locale",
+    "locale": "tl"
+  },
+  "files": {
+    "he": {
+      "Checkout.Title": "he"
+    },
+    "id": {
+      "Checkout.Title": "id"
+    },
+    "ro": {
+      "Checkout.Title": "ro"
+    },
+    "sr": {
+      "Checkout.Title": "sr"
+    },
+    "fil": {
+      "Checkout.Title": "fil"
+    },
+    "en": {
+      "Checkout.Title": "en"
+    }
+  }
+}

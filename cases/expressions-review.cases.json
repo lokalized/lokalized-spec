@@ -1,0 +1,111 @@
+{
+  "formatVersion": 1,
+  "family": "expressions-review",
+  "description": "Plan v7 section 8.3 fixture family 'expressions-review'. Inputs only; the oracle emits expected.",
+  "cases": [
+    {
+      "id": "expressions-review.static-type.grammatical-case-constant-is-not-numeric-compatible",
+      "requirementIds": [],
+      "fixture": "expressions-review-static-axis-types",
+      "operation": "parse",
+      "input": {
+        "file": "en",
+        "locale": "en",
+        "source": "expressions-review-grammatical-case-constant"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'1 == CASE_GENITIVE'. ExpressionEvaluator:1893 gives a CASE_* token the GRAMMATICAL_CASE static type; canBeEqualExpressionValue then refuses NUMBER against it and the diagnostic names the type. expressions-owed closed line 1893 with 'value == CASE_GENITIVE', which loads whether the constant types as GRAMMATICAL_CASE or as UNKNOWN_VARIABLE -- so that case reaches the arm without observing it. This one does not load at all under the wrong typing."
+    },
+    {
+      "id": "expressions-review.static-type.definiteness-constant-is-not-numeric-compatible",
+      "requirementIds": [],
+      "fixture": "expressions-review-static-axis-types",
+      "operation": "parse",
+      "input": {
+        "file": "fr",
+        "locale": "fr",
+        "source": "expressions-review-definiteness-constant"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'1 == DEFINITENESS_DEFINITE'. Pins ExpressionEvaluator:1895's DEFINITENESS static type by the load-time refusal that names it. A port that typed DEFINITENESS_* as UNKNOWN_VARIABLE would LOAD this catalog."
+    },
+    {
+      "id": "expressions-review.static-type.classifier-constant-is-not-numeric-compatible",
+      "requirementIds": [],
+      "fixture": "expressions-review-static-axis-types",
+      "operation": "parse",
+      "input": {
+        "file": "de",
+        "locale": "de",
+        "source": "expressions-review-classifier-constant"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'1 == CLASSIFIER_PERSON'. Pins ExpressionEvaluator:1897's CLASSIFIER static type."
+    },
+    {
+      "id": "expressions-review.static-type.clusivity-constant-is-not-numeric-compatible",
+      "requirementIds": [],
+      "fixture": "expressions-review-static-axis-types",
+      "operation": "parse",
+      "input": {
+        "file": "es",
+        "locale": "es",
+        "source": "expressions-review-clusivity-constant"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'1 == CLUSIVITY_INCLUSIVE'. Pins ExpressionEvaluator:1901's CLUSIVITY static type."
+    },
+    {
+      "id": "expressions-review.static-type.animacy-constant-is-not-numeric-compatible",
+      "requirementIds": [],
+      "fixture": "expressions-review-static-axis-types",
+      "operation": "parse",
+      "input": {
+        "file": "it",
+        "locale": "it",
+        "source": "expressions-review-animacy-constant"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'1 == ANIMACY_ANIMATE'. Pins ExpressionEvaluator:1903's ANIMACY static type."
+    },
+    {
+      "id": "expressions-review.static-type.formality-constant-is-not-numeric-compatible",
+      "requirementIds": [],
+      "fixture": "expressions-review-static-axis-types",
+      "operation": "parse",
+      "input": {
+        "file": "nl",
+        "locale": "nl",
+        "source": "expressions-review-formality-constant"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'1 == FORMALITY_HONORIFIC'. ExpressionEvaluator:1899 was already covered before M3b, but by the same shape of expression that cannot observe the result, so the FORMALITY static type was equally unpinned. Included because the blind spot is identical, not because a disposition owed it."
+    },
+    {
+      "id": "expressions-review.static-type.phonetic-constant-is-not-numeric-compatible",
+      "requirementIds": [],
+      "fixture": "expressions-review-static-axis-types",
+      "operation": "parse",
+      "input": {
+        "file": "pt",
+        "locale": "pt",
+        "source": "expressions-review-phonetic-constant"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'1 == PHONETIC_VOWEL'. Pins ExpressionEvaluator:1905's PHONETIC static type; same argument as the formality entry."
+    },
+    {
+      "id": "expressions-review.static-type.ordinality-constant-is-not-orderable",
+      "requirementIds": [],
+      "fixture": "expressions-review-static-axis-types",
+      "operation": "parse",
+      "input": {
+        "file": "ru",
+        "locale": "ru",
+        "source": "expressions-review-ordinality-constant"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'ORDINALITY_TWO < 1'. ORDINALITY needs the ORDERING form, not the equality form: canBeEqualExpressionValue deliberately permits NUMBER against ORDINALITY, so '1 == ORDINALITY_TWO' loads and observes nothing. Under an ordering operator canBeNumericExpressionValue refuses ORDINALITY and the diagnostic names it (ExpressionEvaluator:1889)."
+    }
+  ]
+}

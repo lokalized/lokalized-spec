@@ -1,0 +1,11 @@
+{
+  "id": "manifest-loads-hidden-files-only",
+  "description": "A non-empty directory whose only entry is hidden. The load succeeds and returns an EMPTY manifest with no warnings; loadOnly because a zero-locale catalog cannot build a Strings. The extreme end of 'deliberately partial'.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {},
+  "rawFiles": {
+    ".en": "{\"Greeting\":\"Hello\"}"
+  }
+}

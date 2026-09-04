@@ -1,0 +1,15 @@
+{
+  "id": "loader-smoke-clean",
+  "description": "A well-formed two-locale catalog. The control: proves the load observation reports locales and keys for a load that succeeds.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Key.A": "a",
+      "Key.B": "b"
+    },
+    "fr": {
+      "Key.A": "a-fr"
+    }
+  }
+}

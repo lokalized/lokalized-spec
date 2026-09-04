@@ -1,0 +1,42 @@
+{
+  "id": "evaluation-locale-fallback-pl",
+  "description": "Polish is the fallback donor for en, ru, ar, fr and pt requests. Polish is the sharpest donor against Russian: verified against GeneratedCldrPluralData, the two rule sets agree at every integer except where i%10 = 1 and i != 1 and i%100 != 11 (21, 31, ..., 101, 1001), where pl says MANY and ru says ONE. Six loaded locales, six distinct primary language codes, so tiebreakers are null.",
+  "fallbackLocale": "pl",
+  "tiebreakers": null,
+  "files": {
+    "pl": {
+      "Locale.Marker": "pl",
+      "Items.Fallback": {
+        "translation": "{{noun}}",
+        "placeholders": {
+          "noun": {
+            "value": "itemCount",
+            "translations": {
+              "CARDINALITY_ZERO": "pl:ZERO",
+              "CARDINALITY_ONE": "pl:ONE",
+              "CARDINALITY_TWO": "pl:TWO",
+              "CARDINALITY_FEW": "pl:FEW",
+              "CARDINALITY_MANY": "pl:MANY",
+              "CARDINALITY_OTHER": "pl:OTHER"
+            }
+          }
+        }
+      }
+    },
+    "en": {
+      "Locale.Marker": "en"
+    },
+    "ru": {
+      "Locale.Marker": "ru"
+    },
+    "ar": {
+      "Locale.Marker": "ar"
+    },
+    "fr": {
+      "Locale.Marker": "fr"
+    },
+    "pt": {
+      "Locale.Marker": "pt"
+    }
+  }
+}

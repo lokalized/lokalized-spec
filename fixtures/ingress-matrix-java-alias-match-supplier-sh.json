@@ -1,0 +1,30 @@
+{
+  "id": "ingress-matrix-java-alias-match-supplier-sh",
+  "description": "Alias arm catalog with a localeMatchSupplier negotiating sh through the single-locale kernel. The match is NONE, so the lookup locale comes from the match's fallbackLocale.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "localeMatchSupplier": {
+    "behavior": "match-locale",
+    "locale": "sh"
+  },
+  "files": {
+    "he": {
+      "Checkout.Title": "he"
+    },
+    "id": {
+      "Checkout.Title": "id"
+    },
+    "ro": {
+      "Checkout.Title": "ro"
+    },
+    "sr": {
+      "Checkout.Title": "sr"
+    },
+    "fil": {
+      "Checkout.Title": "fil"
+    },
+    "en": {
+      "Checkout.Title": "en"
+    }
+  }
+}

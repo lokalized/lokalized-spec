@@ -1,0 +1,15 @@
+{
+  "id": "classpath-filenames-legacy-tag",
+  "description": "A valid en catalog plus a file named 'i-klingon.json' — a grandfathered/legacy IETF tag. LANGUAGE_TAG_PATTERN admits it, Locale.Builder accepts it, and Locale.forLanguageTag REWRITES it. MEASURED: the loaded locale key is 'tlh', not 'i-klingon'. Plan section 8.3 requires legacy tags; this is the filename-discovery instance of that rule.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "rawFiles": {
+    "i-klingon.json": "{\"Key.iklingon\":\"iklingon\"}"
+  }
+}

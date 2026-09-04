@@ -1,0 +1,15 @@
+{
+  "id": "loading-limits-depth-zero",
+  "description": "A trivially loadable catalog whose loading options request maximumJsonNestingDepth 0, which the builder refuses before any file is opened.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumJsonNestingDepth": 0
+  },
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "id": "evaluation-locale-fallback-pt-pt",
+  "description": "NEW IN THIS REVIEW. pt-PT as a donor for requesters outside its own language -- the last unexercised role in the clause's seven-locale list. pt-PT's cardinal rule set is one:'i = 1 and v = 0' (identical to English), many:'e = 0 and i != 0 and i%1000000 = 0 and v = 0 or e != 0..5', other:everything else. So it is discriminated from en only at a millions count, and from fr/ru/ar at 0. Only pt-PT is loaded for the 'pt' language code, so DefaultStrings installs it as its own identity tiebreaker and no explicit tiebreakers entry is required; five loaded locales, five distinct primary language codes.",
+  "fallbackLocale": "pt-PT",
+  "tiebreakers": null,
+  "files": {
+    "pt-PT": {
+      "Locale.Marker": "pt-PT",
+      "Items.Fallback": {
+        "translation": "{{noun}}",
+        "placeholders": {
+          "noun": {
+            "value": "itemCount",
+            "translations": {
+              "CARDINALITY_ZERO": "pt-PT:ZERO",
+              "CARDINALITY_ONE": "pt-PT:ONE",
+              "CARDINALITY_TWO": "pt-PT:TWO",
+              "CARDINALITY_FEW": "pt-PT:FEW",
+              "CARDINALITY_MANY": "pt-PT:MANY",
+              "CARDINALITY_OTHER": "pt-PT:OTHER"
+            }
+          }
+        }
+      }
+    },
+    "en": {
+      "Locale.Marker": "en"
+    },
+    "ru": {
+      "Locale.Marker": "ru"
+    },
+    "ar": {
+      "Locale.Marker": "ar"
+    },
+    "fr": {
+      "Locale.Marker": "fr"
+    }
+  }
+}

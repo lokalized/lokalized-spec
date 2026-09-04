@@ -1,0 +1,27 @@
+{
+  "name": "lokalized-spec-tools",
+  "private": true,
+  "type": "module",
+  "description": "Tooling for the Lokalized cross-implementation specification. Not published.",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "check:snapshot": "node scripts/java-snapshot.mjs --check",
+    "check:allowlist": "node scripts/symbol-allowlist.mjs --check",
+    "check:surface": "node scripts/java-surface-audit.mjs",
+    "check:schemas": "node scripts/validate-artifacts.mjs",
+    "check": "npm run check:snapshot && npm run check:allowlist && npm run check:surface && npm run check:schemas && npm run check:registry && npm run check:iana && npm run check:datalock && npm run check:archive && npm run check:vectors && npm run check:coverage",
+    "check:registry": "node pre-m0/registry-linter.mjs",
+    "check:m0": "node scripts/check-m0.mjs",
+    "check:iana": "node tools/iana-oracle/build.mjs --check",
+    "check:datalock": "node tools/data-lock.mjs --check",
+    "check:archive": "node tools/data-archive.mjs --check",
+    "check:vectors": "node tools/vector-oracle/build.mjs --check",
+    "coverage": "node tools/coverage/run.mjs",
+    "check:coverage": "node tools/coverage/check.mjs"
+  },
+  "devDependencies": {
+    "ajv": "^8.17.1"
+  }
+}

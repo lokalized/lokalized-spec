@@ -1,0 +1,501 @@
+{
+  "formatVersion": 1,
+  "family": "owed-define",
+  "description": "Plan v7 section 8.3 fixture family 'owed-define'. Inputs only; the oracle emits expected.",
+  "skipped": [
+    {
+      "what": "Two shapes the scouting report proposed, and two claims it made, that MEASUREMENT contradicted.",
+      "why": "(1) The report predicted that a probe whose TOP-LEVEL key differs from every catalog key would be a discriminating row. It is not, and it is now refused at ingest: DefaultStrings$LocalizedStringSet.contains looks the candidate up by the probe's key, so an absent key yields a null candidate and LocalizedString#equals returns at :140 without comparing a single field. The row would answer contains=false for a reason unrelated to equality while reading exactly like discrimination. (2) The report stated that a differing placeholder NAME invokes no nested equals because map equality compares key sets first. False: java.util.AbstractMap.equals looks each key up and compares the value against what it finds -- null -- so LanguageFormTranslation.equals(null) is invoked, and owed-define.differs.placeholder-name is measured load-bearing for that guard's null arm. (3) The report called the placeholder-name and placeholder-kind rows individually redundant with each other. Measured, they reach DIFFERENT arms of the same four-branch guard and removing either takes it to 3/4, so both are kept. (4) SIX rows -- plain-equal, commented-equal, forms-equal, alternatives-equal, differs.translation and control.alternatives-only-builds -- close NO branch another row does not already close. The first five were verified by single-row ablation over this family; the sixth was MISSED by that ablation and found later, because the family-isolated run showed it load-bearing for LocalizedString#<init>:110 while the pre-slice corpus already had :110 at 3/4 -- a family-local ablation cannot see coverage the rest of the corpus already supplies, and that is the reading error to carry forward. They are kept deliberately and their notes now say so: coverage redundancy is not behavioral redundancy, and without the equal rows every row in this family answers false, which a port whose equality returned false unconditionally would satisfy completely."
+    },
+    {
+      "what": "toString and hashCode observations.",
+      "why": "Deliberately not added to the `define` operation. LocalizedString.toString runs DiagnosticRenderer, which carries a whole-class nonportable disposition the port does not reproduce, and LocalizedString#hashCode's four branch points are all dispositioned nonportable. Observing either would cascade stale dispositions for no required-branch gain. DefaultStrings$LocalizedStringSet deliberately overrides contains with a key lookup rather than a hash probe, so no LocalizedString is ever hashed on this path."
+    },
+    {
+      "what": "Nine mistyped probes that the decoder used to BANK as construction refusals, and now refuses loudly.",
+      "why": "The decoder's own contract -- 'EVERY authoring mistake throws an Error, never a RuntimeException' -- was a claim nobody had measured, and it was false. Measured on the pinned JDK before the fix, all of these exited 0 and were written into the corpus as plausible `built: false` rows: a numeric `translation`, an object `alternatives`, a numeric language-form branch text, a numeric placeholder `value`, a numeric `placeholders`, a numeric fragment-alternative body, an array `translations`, a string `range`, and -- worst -- a `range` missing its `end`, which banked java.lang.NullPointerException with a NULL failureMessage because getString('end', null) defaulted before LanguageFormTranslationRange's requireNonNull saw it. MinimalJson's bare asString/asArray/asObject raise UnsupportedOperationException, which is a RuntimeException, which the `define` clause catches by design. ingest.mjs does not catch any of them either: its constructible() predicate judges {key:'Plain', translation:5} constructible. Every accessor now goes through a typed defineString/defineObject/defineArray/defineNullableString helper, and `range` must carry both a string start and a string end. Re-measured after the fix: all nine exit 1 with an AssertionError naming the offending node, and the control probe {key:'Plain', translation:'Hello'} still exits 0 and banks built/contains/catalogKeyPresent true -- the control matters, because a decoder that refused everything would 'pass' this test too."
+    }
+  ],
+  "cases": [
+    {
+      "id": "owed-define.control.plain-equal",
+      "requirementIds": [],
+      "fixture": "owed-define-catalog",
+      "operation": "define",
+      "input": {
+        "locale": "en",
+        "localizedString": {
+          "key": "Plain",
+          "translation": "Hello"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "THE SIMPLEST OF THE SIX EQUAL ROWS, and its value is behavioral rather than coverage. MEASURED BY SINGLE-ROW ABLATION: removing it regresses no branch point, because every other row in the family also compares key, translation, commentary and placeholderDefinitions EQUAL at the top level before diverging somewhere deeper, so the not-unequal arms have many sources. What it does supply is an answer of TRUE: without the six equal rows every row here answers contains=false and a port whose equality returned false unconditionally would pass all of them. It also settles a question the corpus could not previously ask -- a LocalizedString built entirely through the public Builder CAN be exactly equal to one the loader produced, so neither the loader nor DefaultStrings' constructor applies hidden normalization."
+    },
+    {
+      "id": "owed-define.control.commented-equal",
+      "requirementIds": [],
+      "fixture": "owed-define-catalog",
+      "operation": "define",
+      "input": {
+        "locale": "en",
+        "localizedString": {
+          "key": "Commented",
+          "translation": "Hi",
+          "commentary": "note"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The commentary control. owed-define.control.plain-equal compares null commentary to null commentary, which a port that ignores commentary entirely also satisfies; this row compares a PRESENT commentary to an equal one, so a port that declared any non-null commentary unequal passes that row and fails this one. Ablation-measured: removing it regresses no branch (the equal arm of :167 has other sources), so the case is kept for what it discriminates, not for what it covers."
+    },
+    {
+      "id": "owed-define.control.forms-equal",
+      "requirementIds": [],
+      "fixture": "owed-define-catalog",
+      "operation": "define",
+      "input": {
+        "locale": "en",
+        "localizedString": {
+          "key": "Forms",
+          "translation": "{{books}}",
+          "placeholders": {
+            "books": {
+              "value": "n",
+              "translations": {
+                "CARDINALITY_ONE": "book",
+                "CARDINALITY_OTHER": "books"
+              }
+            }
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The value-based LanguageFormTranslation control: two non-empty placeholder maps, and two non-empty form maps, that ARE equal. ABLATION CORRECTION -- an earlier draft of this note claimed it was the only source of the form-map equal arm; measured, removing it regresses nothing, because owed-define.differs.language-form-value keeps the form maps equal and owed-define.differs.language-form-branch-text keeps the selector value equal. It is kept because it is the only row that answers TRUE for a VALUE-BASED LanguageFormTranslation placeholder: a port that declared any value-based form definition unequal would pass every differs row and fail only here. An earlier closing sentence over-reached to 'any non-empty placeholder map', which owed-define.control.ranged-equal and owed-define.control.fragment-equal also answer true for -- they cover the range-based and generated-fragment kinds."
+    },
+    {
+      "id": "owed-define.control.ranged-equal",
+      "requirementIds": [],
+      "fixture": "owed-define-catalog",
+      "operation": "define",
+      "input": {
+        "locale": "en",
+        "localizedString": {
+          "key": "Ranged",
+          "translation": "{{hours}}",
+          "placeholders": {
+            "hours": {
+              "range": {
+                "start": "lo",
+                "end": "hi"
+              },
+              "translations": {
+                "CARDINALITY_ONE": "hour",
+                "CARDINALITY_OTHER": "hours"
+              }
+            }
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The range-based control. MEASURED LOAD-BEARING: removing it takes LanguageFormTranslationRange#equals:1090 from covered to 1/2 -- the range END's equal arm has no other source, because owed-define.differs.range-end is the only other row that reaches the end comparison and it takes the unequal arm. A value-based placeholder compares Optional.empty to Optional.empty for the range and never enters the range's own equals at all, so owed-define.control.forms-equal is not a substitute."
+    },
+    {
+      "id": "owed-define.control.fragment-equal",
+      "requirementIds": [],
+      "fixture": "owed-define-catalog",
+      "operation": "define",
+      "input": {
+        "locale": "en",
+        "localizedString": {
+          "key": "Fragment",
+          "translation": "{{f}}",
+          "placeholders": {
+            "f": {
+              "translation": "few",
+              "alternatives": [
+                {
+                  "count > 5": "many"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The generated-fragment control. MEASURED LOAD-BEARING: removing it takes ExpressionAlternative#equals:1002 and ExpressionTranslation#equals:912 to 1/2 -- the equal arms of the alternative's translation and of the fragment's alternatives list have no other source here. It is ALSO the control for owed-define.refusal.fragment-empty-alternatives: this row reaches the same two-argument ExpressionTranslation constructor with a ONE-element list and builds, so that refusal is attributable to the empty list rather than to the constructor being used at all."
+    },
+    {
+      "id": "owed-define.control.alternatives-equal",
+      "requirementIds": [],
+      "fixture": "owed-define-catalog",
+      "operation": "define",
+      "input": {
+        "locale": "en",
+        "localizedString": {
+          "key": "Alts",
+          "translation": "base",
+          "alternatives": [
+            {
+              "count > 1": "plural"
+            }
+          ]
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The only row where equals descends into the alternative worklist and returns TRUE. Ablation-measured: removing it regresses no branch, because owed-define.differs.alternative-expression also enters the descent at :172. It is kept for the proposition, which coverage cannot express -- a port that declared any string with a non-empty alternatives list unequal would pass every other row in this family and fail only here."
+    },
+    {
+      "id": "owed-define.differs.translation",
+      "requirementIds": [],
+      "fixture": "owed-define-catalog",
+      "operation": "define",
+      "input": {
+        "locale": "en",
+        "localizedString": {
+          "key": "Plain",
+          "translation": "Goodbye"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "LocalizedString#equals:166. ABLATION CORRECTION: removing it regresses no branch, because owed-define.control.alternatives-only-builds also takes :166's unequal arm (null translation against 'base'). It is kept because the two rows discriminate DIFFERENT defects: this one compares two PRESENT and different translations, so a port that compared translations only for presence -- 'both have a translation' rather than 'the text is the same' -- passes that row and fails this one. Read against owed-define.control.plain-equal, which differs in this one field and answers true. catalogKeyPresent is true on both, which is what separates 'the fields differed' from 'the catalog has no such key'; the latter never reaches a field comparison at all."
+    },
+    {
+      "id": "owed-define.differs.commentary",
+      "requirementIds": [],
+      "fixture": "owed-define-catalog",
+      "operation": "define",
+      "input": {
+        "locale": "en",
+        "localizedString": {
+          "key": "Commented",
+          "translation": "Hi",
+          "commentary": "other"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "LocalizedString#equals:167, MEASURED as the only source of its unequal arm: removing this row takes :167 to 1/2. Read against owed-define.control.commented-equal, which differs in this one field. Commentary is TRANSLATOR-FACING metadata that changes no rendered output, so a port that omitted it from equality would be invisible in every other case in the corpus -- and plan v7 section 4.1 names commentary explicitly as part of the model that mergeParsedStringsFiles compares."
+    },
+    {
+      "id": "owed-define.differs.language-form-value",
+      "requirementIds": [],
+      "fixture": "owed-define-catalog",
+      "operation": "define",
+      "input": {
+        "locale": "en",
+        "localizedString": {
+          "key": "Forms",
+          "translation": "{{books}}",
+          "placeholders": {
+            "books": {
+              "value": "m",
+              "translations": {
+                "CARDINALITY_ONE": "book",
+                "CARDINALITY_OTHER": "books"
+              }
+            }
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "LanguageFormTranslation#equals:785, MEASURED as the only source of its unequal arm. Reached through LocalizedString#equals:168. Read against owed-define.control.forms-equal, which differs only in the selector value. The selector NAME decides which caller placeholder drives the branch, so two definitions differing only here render differently for the same input; a port comparing only the branch texts would call them equal."
+    },
+    {
+      "id": "owed-define.differs.language-form-branch-text",
+      "requirementIds": [],
+      "fixture": "owed-define-catalog",
+      "operation": "define",
+      "input": {
+        "locale": "en",
+        "localizedString": {
+          "key": "Forms",
+          "translation": "{{books}}",
+          "placeholders": {
+            "books": {
+              "value": "n",
+              "translations": {
+                "CARDINALITY_ONE": "tome",
+                "CARDINALITY_OTHER": "books"
+              }
+            }
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "LanguageFormTranslation#equals:787, MEASURED as the only source of its unequal arm. Read against owed-define.control.forms-equal: same selector, same form set, one branch TEXT changed. This is the row that says the form map's VALUES are compared and not merely its key set."
+    },
+    {
+      "id": "owed-define.differs.range-start",
+      "requirementIds": [],
+      "fixture": "owed-define-catalog",
+      "operation": "define",
+      "input": {
+        "locale": "en",
+        "localizedString": {
+          "key": "Ranged",
+          "translation": "{{hours}}",
+          "placeholders": {
+            "hours": {
+              "range": {
+                "start": "lower",
+                "end": "hi"
+              },
+              "translations": {
+                "CARDINALITY_ONE": "hour",
+                "CARDINALITY_OTHER": "hours"
+              }
+            }
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "LanguageFormTranslationRange#equals:1089, MEASURED as the only source of its unequal arm. LanguageFormTranslation#equals:786's unequal arm is supplied by this row AND by owed-define.differs.range-end -- neither is individually load-bearing for it, and the slice's own ablation data says so: removing this row regresses :1089 alone. (An earlier note claimed sole ownership of :786. The reason it gave rules out only the VALUE-based rows, which compare Optional.empty to Optional.empty there and can never take that arm; it does not rule out the other range row.) Read against owed-define.control.ranged-equal, which differs only in the range start."
+    },
+    {
+      "id": "owed-define.differs.range-end",
+      "requirementIds": [],
+      "fixture": "owed-define-catalog",
+      "operation": "define",
+      "input": {
+        "locale": "en",
+        "localizedString": {
+          "key": "Ranged",
+          "translation": "{{hours}}",
+          "placeholders": {
+            "hours": {
+              "range": {
+                "start": "lo",
+                "end": "higher"
+              },
+              "translations": {
+                "CARDINALITY_ONE": "hour",
+                "CARDINALITY_OTHER": "hours"
+              }
+            }
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "LanguageFormTranslationRange#equals:1090, MEASURED as the only source of its unequal arm. Deliberately NOT interchangeable with owed-define.differs.range-start: the start comparison short-circuits, so a port that compared only the start would pass that row and fail this one. The end is what the pair exists to reach."
+    },
+    {
+      "id": "owed-define.differs.fragment-translation",
+      "requirementIds": [],
+      "fixture": "owed-define-catalog",
+      "operation": "define",
+      "input": {
+        "locale": "en",
+        "localizedString": {
+          "key": "Fragment",
+          "translation": "{{f}}",
+          "placeholders": {
+            "f": {
+              "translation": "some",
+              "alternatives": [
+                {
+                  "count > 5": "many"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ExpressionTranslation#equals:911, MEASURED as the only source of its unequal arm. Read against owed-define.control.fragment-equal: the fragment's DEFAULT translation differs while its alternatives are identical."
+    },
+    {
+      "id": "owed-define.differs.fragment-alternative-expression",
+      "requirementIds": [],
+      "fixture": "owed-define-catalog",
+      "operation": "define",
+      "input": {
+        "locale": "en",
+        "localizedString": {
+          "key": "Fragment",
+          "translation": "{{f}}",
+          "placeholders": {
+            "f": {
+              "translation": "few",
+              "alternatives": [
+                {
+                  "count > 6": "many"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ExpressionAlternative#equals:1001, MEASURED as the only source of its unequal arm; and ONE OF TWO rows that drive ExpressionTranslation#equals:912's unequal arm -- the other is owed-define.differs.fragment-alternative-translation, whose alternatives list is unequal too. An earlier note read as sole ownership of :912; ablation shows this row load-bearing for :1001 only. The expression decides WHEN the alternative fires, so two fragments differing only here render differently for the same input."
+    },
+    {
+      "id": "owed-define.differs.fragment-alternative-translation",
+      "requirementIds": [],
+      "fixture": "owed-define-catalog",
+      "operation": "define",
+      "input": {
+        "locale": "en",
+        "localizedString": {
+          "key": "Fragment",
+          "translation": "{{f}}",
+          "placeholders": {
+            "f": {
+              "translation": "few",
+              "alternatives": [
+                {
+                  "count > 5": "lots"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ExpressionAlternative#equals:1002, MEASURED as the only source of its unequal arm. Not interchangeable with owed-define.differs.fragment-alternative-expression: the expression comparison short-circuits, so a port comparing only expressions passes that row and fails this one."
+    },
+    {
+      "id": "owed-define.differs.alternative-count",
+      "requirementIds": [],
+      "fixture": "owed-define-catalog",
+      "operation": "define",
+      "input": {
+        "locale": "en",
+        "localizedString": {
+          "key": "Alts",
+          "translation": "base",
+          "alternatives": [
+            {
+              "count > 1": "plural"
+            },
+            {
+              "count > 2": "extra"
+            }
+          ]
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "LocalizedString#equals:169, MEASURED as the only source of its unequal arm. The extra alternative is APPENDED, so every element the catalog entry has is present and identical and only the arity differs. A port that compared alternatives pairwise up to the shorter list would call these equal, and alternative array order is first-match precedence, so a silently truncated list changes rendering."
+    },
+    {
+      "id": "owed-define.differs.alternative-expression",
+      "requirementIds": [],
+      "fixture": "owed-define-catalog",
+      "operation": "define",
+      "input": {
+        "locale": "en",
+        "localizedString": {
+          "key": "Alts",
+          "translation": "base",
+          "alternatives": [
+            {
+              "count > 2": "plural"
+            }
+          ]
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "LocalizedString#equals:165 -- THE KEY COMPARISON. MEASURED as the only source of its unequal arm: with this row removed, :165 sits at 1/2 no matter what else the family contains. The arm cannot be reached at the top level at all, and that is the reason the obvious case does not work: DefaultStrings$LocalizedStringSet.contains looks the candidate up BY the probe's key, so the two keys are equal by construction there, and a probe with a DIFFERENT top-level key gets a null candidate and returns at LocalizedString:140 without comparing anything (ingest.mjs refuses that shape for exactly this reason). But an ALTERNATIVE's key is its expression string -- LocalizedStringLoader.java:2272-2275 passes member.getName() as the child's key -- so a probe whose alternative expression differs descends at :172 and compares unequal keys on the second worklist iteration. Read against owed-define.control.alternatives-equal, which differs only in that expression."
+    },
+    {
+      "id": "owed-define.differs.placeholder-name",
+      "requirementIds": [],
+      "fixture": "owed-define-catalog",
+      "operation": "define",
+      "input": {
+        "locale": "en",
+        "localizedString": {
+          "key": "Forms",
+          "translation": "{{books}}",
+          "placeholders": {
+            "tomes": {
+              "value": "n",
+              "translations": {
+                "CARDINALITY_ONE": "book",
+                "CARDINALITY_OTHER": "books"
+              }
+            }
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The placeholder map's KEY set, at equal size, and MEASURED load-bearing: removing it takes LanguageFormTranslation#equals:780 to 3/4. It reaches the NULL-ARGUMENT arm of that guard, which no other row takes. CORRECTS A PRIOR CLAIM that a differing placeholder name invokes no nested equals because map equality compares key sets first: java.util.AbstractMap.equals does no such thing -- it looks each of the probe's keys up in the candidate's map and compares the value against what it finds, which is null here, so LanguageFormTranslation.equals(null) IS invoked. A port that compared placeholder definitions positionally, or as a bag of values, would call these equal even though the definition is bound to a different name and therefore drives a different placeholder."
+    },
+    {
+      "id": "owed-define.differs.placeholder-kind",
+      "requirementIds": [],
+      "fixture": "owed-define-catalog",
+      "operation": "define",
+      "input": {
+        "locale": "en",
+        "localizedString": {
+          "key": "Fragment",
+          "translation": "{{f}}",
+          "placeholders": {
+            "f": {
+              "value": "few",
+              "translations": {
+                "CARDINALITY_ONE": "few",
+                "CARDINALITY_OTHER": "many"
+              }
+            }
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Same placeholder name, same field TEXTS, different placeholder KIND: the catalog's 'f' is a generated ExpressionTranslation and the probe's is a LanguageFormTranslation. MEASURED load-bearing and NOT interchangeable with owed-define.differs.placeholder-name -- each takes LanguageFormTranslation#equals:780 to 3/4 on its own, because they reach different arms of it: that row reaches the null-argument arm, this one the class-mismatch arm. This is the one shape where a port comparing definitions structurally by their common field names -- both carry a default text and a list-ish tail -- would answer equal. The two kinds are resolved by entirely different code, so calling them equal is a real defect."
+    },
+    {
+      "id": "owed-define.control.alternatives-only-builds",
+      "requirementIds": [],
+      "fixture": "owed-define-catalog",
+      "operation": "define",
+      "input": {
+        "locale": "en",
+        "localizedString": {
+          "key": "Alts",
+          "alternatives": [
+            {
+              "count > 1": "plural"
+            }
+          ]
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "THE CONTROL FOR owed-define.refusal.no-translation-no-alternatives. A LocalizedString with NO translation but at least one alternative is legal and builds; the refusal is caused by the CONJUNCTION of both being absent, not by a missing translation on its own. Without this row that refusal could be satisfied by a port that rejected every translation-less string, which would reject the alternatives-only shape the loader accepts -- and that proposition, not coverage, is why the row exists. ABLATION CORRECTION, and the correction is about SCOPE: an earlier note claimed 'removing EITHER row takes LocalizedString#<init>:110 to 3/4, so the two are a matched pair'. That measurement was taken with the owed-define family running in ISOLATION and is false corpus-wide. Re-measured: the pre-slice corpus already had :110 at 3/4 (both arms of `translation == null` and the `isEmpty() == false` arm are covered by loader-built alternatives-only strings elsewhere), so the refusal row alone closes :110 and THIS row is coverage-neutral corpus-wide. Verified by deleting this row from a full-corpus copy and re-running tools/coverage/run.mjs -- 2,817/3,967, byte-identical uncovered set -- with the control ablation firing as it should: deleting the refusal row instead gives 2,816 and puts :110 back at 3/4. It is also an observation in its own right: built true, contains false, because a null translation is not equal to 'base'."
+    },
+    {
+      "id": "owed-define.refusal.no-translation-no-alternatives",
+      "requirementIds": [],
+      "fixture": "owed-define-catalog",
+      "operation": "define",
+      "input": {
+        "locale": "en",
+        "localizedString": {
+          "key": "Plain"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "LocalizedString#<init>:110 -- 'You must provide either a translation or at least one alternative expression', with the offending key quoted. MEASURED as the only source of that throw arm. contains is never reached, so it and catalogKeyPresent are null; the discriminator is the refusal IDENTITY, so a port that accepts this input, or refuses it with a different exception or message, differs here and nowhere else. Read against owed-define.control.alternatives-only-builds and owed-define.control.plain-equal, which supply each half of the conjunction on its own and both build. This is a PROGRAMMATIC construction path: the loader pre-empts it with its own differently-worded message, so no strings file can reach it, and a JS port that exposes a LocalizedString builder must refuse here on its own."
+    },
+    {
+      "id": "owed-define.refusal.fragment-empty-alternatives",
+      "requirementIds": [],
+      "fixture": "owed-define-catalog",
+      "operation": "define",
+      "input": {
+        "locale": "en",
+        "localizedString": {
+          "key": "Fragment",
+          "translation": "{{f}}",
+          "placeholders": {
+            "f": {
+              "translation": "few",
+              "alternatives": []
+            }
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ExpressionTranslation#<init>:871 -- 'alternatives must not be empty; use ExpressionTranslation(String) for a translation-only fragment'. MEASURED as the only source of that throw arm. The empty list is routed to the TWO-argument constructor deliberately; sending an empty list to the one-argument constructor would build a valid object and close this branch with a passing case that observes nothing. owed-define.control.fragment-equal is the control: it reaches the same constructor with one element and builds, so the refusal is attributable to the empty list rather than to the constructor choice."
+    }
+  ]
+}

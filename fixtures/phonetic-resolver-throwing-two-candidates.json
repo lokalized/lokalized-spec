@@ -1,0 +1,44 @@
+{
+  "id": "phonetic-resolver-throwing-two-candidates",
+  "description": "A throwing resolver against two COMPLETE catalogs, so the throw rather than a missing branch is what fails each candidate. Under any-failure both candidates are attempted, so the resolver is invoked once per candidate with a different locale each time and both invocations are recorded as throwing. A tagged value on the same fixture must render without reaching the resolver at all -- and because the resolver would have thrown, that absence is falsifiable by exception rather than only by the channel.",
+  "fallbackLocale": "fr",
+  "instanceLocale": "en",
+  "tiebreakers": null,
+  "translationFallbackPolicy": "any-failure",
+  "phoneticResolver": {
+    "behavior": "throw",
+    "message": "resolver refuses"
+  },
+  "files": {
+    "en": {
+      "Article": {
+        "translation": "en:[{{a}}]",
+        "placeholders": {
+          "a": {
+            "value": "term",
+            "translations": {
+              "PHONETIC_VOWEL": "an",
+              "PHONETIC_CONSONANT": "a"
+            }
+          }
+        }
+      }
+    },
+    "fr": {
+      "Article": {
+        "translation": "fr:[{{a}}]",
+        "placeholders": {
+          "a": {
+            "value": "term",
+            "translations": {
+              "PHONETIC_VOWEL": "un",
+              "PHONETIC_CONSONANT": "une"
+            }
+          }
+        }
+      }
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

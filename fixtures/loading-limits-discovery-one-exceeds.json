@@ -1,0 +1,18 @@
+{
+  "id": "loading-limits-discovery-one-exceeds",
+  "description": "A directory with two children -- one locale file and one file whose name is not a language tag -- loaded with maximumDiscoveryEntries at 1. readme.txt has no .json extension, so languageTagForFileName returns null rather than throwing, and the file is silently skipped after being charged.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumDiscoveryEntries": 1
+  },
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "rawFiles": {
+    "readme.txt": "not a localized strings file"
+  }
+}

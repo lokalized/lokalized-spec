@@ -1,0 +1,31 @@
+{
+  "id": "failure-handler-no-matching-alternative",
+  "description": "Serves the NO_MATCHING_ALTERNATIVE reason, which the clause needs in order to tell the two causeless reasons apart from the one that carries a cause. Both entries are alternatives-only roots with no default translation, which LocalizedStringLoader permits when at least one alternative is present (the shape the existing gender-multi-axis-alternatives-only fixture already proves loadable), so a miss returns Optional.empty from getInternal and DefaultStrings.java:719-720 records NO_MATCHING_ALTERNATIVE with no throwable. The second entry's KEY is itself a placeholder template and is PRESENT in the catalog, so the returned-key path can be observed under a reason other than MISSING_TRANSLATION. One loaded locale, so tiebreakers are null.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Locale.Marker": "en",
+      "Guest.Welcome": {
+        "commentary": "Alternatives-only root: a masculine guest matches nothing and there is no default translation.",
+        "alternatives": [
+          {
+            "guestGender == GENDER_FEMININE": {
+              "translation": "Welcome back, madam."
+            }
+          }
+        ]
+      },
+      "Hello {{name}}": {
+        "commentary": "A key that is itself a template AND exists in the catalog, so a miss is NO_MATCHING_ALTERNATIVE rather than MISSING_TRANSLATION while the returned key still interpolates.",
+        "alternatives": [
+          {
+            "visitCount > 5": {
+              "translation": "Hello again, {{name}}!"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

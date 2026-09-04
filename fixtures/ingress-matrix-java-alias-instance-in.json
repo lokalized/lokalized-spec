@@ -1,0 +1,27 @@
+{
+  "id": "ingress-matrix-java-alias-instance-in",
+  "description": "Alias arm catalog with the deprecated spelling in as the INSTANCE locale.",
+  "fallbackLocale": "en",
+  "instanceLocale": "in",
+  "tiebreakers": null,
+  "files": {
+    "he": {
+      "Checkout.Title": "he"
+    },
+    "id": {
+      "Checkout.Title": "id"
+    },
+    "ro": {
+      "Checkout.Title": "ro"
+    },
+    "sr": {
+      "Checkout.Title": "sr"
+    },
+    "fil": {
+      "Checkout.Title": "fil"
+    },
+    "en": {
+      "Checkout.Title": "en"
+    }
+  }
+}

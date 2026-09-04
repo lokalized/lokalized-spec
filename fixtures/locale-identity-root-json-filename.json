@@ -1,0 +1,16 @@
+{
+  "id": "locale-identity-root-json-filename",
+  "description": "root.json: the same name that is silently skipped without an extension becomes a hard load failure with one, because a .json file MUST be named with a valid tag. rawFiles is required to write a name carrying the extension. Deliberately unloadable, so loadOnly.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Greeting": "hello"
+    }
+  },
+  "rawFiles": {
+    "root.json": "{\"Greeting\":\"g\"}"
+  },
+  "rawFilesBase64": {}
+}

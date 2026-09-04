@@ -1,0 +1,26 @@
+{
+  "id": "manifest-loads-complete",
+  "description": "A complete four-locale manifest: en (the fallback, carrying an extra en-only key), de, de-AT, and fr, all well-formed. Serves the 'complete manifest loads' clause of section 8.3 and anchors the partial fixtures that follow. Two German locales share a primary language, so the exact tiebreaker permutation is mandatory.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "de": [
+      "de",
+      "de-AT"
+    ]
+  },
+  "files": {
+    "en": {
+      "Greeting": "Hello",
+      "Only.En": "English only"
+    },
+    "de": {
+      "Greeting": "Hallo"
+    },
+    "de-AT": {
+      "Greeting": "Servus"
+    },
+    "fr": {
+      "Greeting": "Bonjour"
+    }
+  }
+}

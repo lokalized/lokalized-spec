@@ -1,0 +1,23 @@
+{
+  "id": "locale-identity-explicit-canonicalization",
+  "description": "The three canonicalizations section 8.3 names explicitly - hy-SU to hy-AM, ru-SU to ru-RU, pap-AN to pap-CW - with only the canonical targets on disk, so a requested alias tag can only arrive by being canonicalized. Three distinct primary languages plus en, so no tiebreakers are needed.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "hy-AM": {
+      "Greeting": "barev"
+    },
+    "ru-RU": {
+      "Greeting": "privet"
+    },
+    "pap-CW": {
+      "Greeting": "bon dia"
+    },
+    "en": {
+      "Greeting": "hello",
+      "Only.En": "en only"
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

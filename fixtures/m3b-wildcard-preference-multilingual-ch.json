@@ -1,0 +1,29 @@
+{
+  "id": "m3b-wildcard-preference-multilingual-ch",
+  "description": "Two languages that both have a Swiss regional catalog, so a LEADING wildcard range ('*-CH') survives into a candidate list spanning two primary languages, and an ANCHORED wildcard ('de-*') survives into a two-locale list whose configured tiebreaker order is deliberately NOT list order. preferredLocaleForWildcard consults the FALLBACK LANGUAGE's tiebreaker list and then falls to the first candidate; preferredLocaleForRange consults the RANGE's primary-language tiebreaker list and then the fallback locale and then the first candidate. Here those two rules pick different locales for both shapes, which is what makes DefaultStrings.matchFor:1845 observable.",
+  "fallbackLocale": "fr",
+  "tiebreakers": {
+    "de": [
+      "de-DE",
+      "de-CH"
+    ],
+    "fr": [
+      "fr-CH",
+      "fr"
+    ]
+  },
+  "files": {
+    "fr": {
+      "Checkout.Title": "fr"
+    },
+    "fr-CH": {
+      "Checkout.Title": "fr-CH"
+    },
+    "de-CH": {
+      "Checkout.Title": "de-CH"
+    },
+    "de-DE": {
+      "Checkout.Title": "de-DE"
+    }
+  }
+}

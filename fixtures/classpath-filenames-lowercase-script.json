@@ -1,0 +1,15 @@
+{
+  "id": "classpath-filenames-lowercase-script",
+  "description": "A valid en catalog plus a file named 'zh-hant.json' — a lowercase SCRIPT subtag. Script canonicalization is title-case where region canonicalization is upper-case, so this is a separate transform from the de-de fixture and a port could get one right and the other wrong. MEASURED: loads as 'zh-Hant'.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "rawFiles": {
+    "zh-hant.json": "{\"Key.zhhant\":\"zhhant\"}"
+  }
+}

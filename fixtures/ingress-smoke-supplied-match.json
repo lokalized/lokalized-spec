@@ -1,0 +1,18 @@
+{
+  "id": "ingress-smoke-supplied-match",
+  "description": "An instance whose ambient locale comes from a localeMatchSupplier negotiating an Accept-Language header, rather than from a constant. The supplied match is what getResult reports, so the negotiation is observable end to end.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "localeMatchSupplier": {
+    "behavior": "match-ranges",
+    "ranges": "fr-CA,fr;q=0.9,en;q=0.5"
+  },
+  "files": {
+    "fr": {
+      "Checkout.Title": "Paiement"
+    },
+    "en": {
+      "Checkout.Title": "Checkout"
+    }
+  }
+}

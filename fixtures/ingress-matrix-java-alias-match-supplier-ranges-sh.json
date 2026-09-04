@@ -1,0 +1,30 @@
+{
+  "id": "ingress-matrix-java-alias-match-supplier-ranges-sh",
+  "description": "Alias arm catalog with a localeMatchSupplier negotiating the header 'sh' through the whole-list solver. sh has NO entry in the pinned IANA equivalence table, so the expanded list stays a single range.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "localeMatchSupplier": {
+    "behavior": "match-ranges",
+    "ranges": "sh"
+  },
+  "files": {
+    "he": {
+      "Checkout.Title": "he"
+    },
+    "id": {
+      "Checkout.Title": "id"
+    },
+    "ro": {
+      "Checkout.Title": "ro"
+    },
+    "sr": {
+      "Checkout.Title": "sr"
+    },
+    "fil": {
+      "Checkout.Title": "fil"
+    },
+    "en": {
+      "Checkout.Title": "en"
+    }
+  }
+}

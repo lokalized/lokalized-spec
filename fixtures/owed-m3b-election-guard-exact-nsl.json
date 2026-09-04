@@ -1,0 +1,14 @@
+{
+  "id": "owed-m3b-election-guard-exact-nsl",
+  "description": "The alias-group semantic-member election's 'already elected' guard (DefaultStrings.matchFor:1622), made observable. The catalog for nsl is spelled EXACTLY 'nsl' rather than nsl-Latn-DE, and that is the load-bearing choice: the guard is only observable when the elected member governs its locale through a SYNTACTIC relationship, because matchFor:1772 sends a locale to the group's representative position when its governor is the elected semantic member and to the governor's own position otherwise. A likely-subtag (non-syntactic) catalog such as nsl-Latn-DE takes the representative position either way, which is why the sibling fixture owed-m3b-alias-group-likely-subtag cannot discriminate this branch -- measured, not assumed. The second catalog is en so that a member unrelated to the nsl group occupies an index between the representative and the elected member; without it there is no position for the answer to move to. en and nsl have distinct primary languages, so construction needs no tiebreakers and nothing here is attributable to tiebreaker order.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Checkout.Title": "en"
+    },
+    "nsl": {
+      "Checkout.Title": "nsl"
+    }
+  }
+}

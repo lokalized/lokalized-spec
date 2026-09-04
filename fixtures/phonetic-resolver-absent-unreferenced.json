@@ -1,0 +1,24 @@
+{
+  "id": "phonetic-resolver-absent-unreferenced",
+  "description": "No resolver configured, and a phonetic definition the template never interpolates. Because the fail-fast default throws the moment it is reached, a successful render is a HARD proof that an unreferenced definition is never evaluated -- an eager port explodes here rather than merely showing an extra resolver call.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Unreferenced": {
+        "translation": "no placeholder here",
+        "placeholders": {
+          "x": {
+            "value": "t1",
+            "translations": {
+              "PHONETIC_VOWEL": "xv",
+              "PHONETIC_CONSONANT": "xc"
+            }
+          }
+        }
+      }
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

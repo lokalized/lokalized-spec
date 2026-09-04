@@ -1,0 +1,29 @@
+{
+  "id": "ingress-matrix-java-extlang-match-supplier-zh-cmn",
+  "description": "Extlang arm catalog with a localeMatchSupplier negotiating zh-cmn through the single-locale kernel, which sees the PROMOTED Locale cmn.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "zh": [
+      "zh",
+      "cmn"
+    ]
+  },
+  "localeMatchSupplier": {
+    "behavior": "match-locale",
+    "locale": "zh-cmn"
+  },
+  "files": {
+    "zh": {
+      "Checkout.Title": "zh"
+    },
+    "cmn": {
+      "Checkout.Title": "cmn"
+    },
+    "yue": {
+      "Checkout.Title": "yue"
+    },
+    "en": {
+      "Checkout.Title": "en"
+    }
+  }
+}

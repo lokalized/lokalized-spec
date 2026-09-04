@@ -1,0 +1,33 @@
+{
+  "id": "owed-loader-unexpected-code-point",
+  "description": "A whole-message alternative expression containing '?', a character no token pattern can match and which is NOT '='. The corpus's only lexer failure is 'count =? 0', which fails on '=' and therefore always carries the did-you-mean hint; this one must not. A second file uses a NO-BREAK SPACE between tokens, which the tokenizer's ASCII-only whitespace class rejects.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": {
+        "translation": "t",
+        "alternatives": [
+          {
+            "count ? 0": {
+              "translation": "x"
+            }
+          }
+        ]
+      }
+    },
+    "fr": {
+      "Key.A": {
+        "translation": "t",
+        "alternatives": [
+          {
+            "count == 0": {
+              "translation": "x"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "id": "malformed-structure-invalid-expressions",
+  "description": "Alternative keys that are syntactically valid JSON member names but not parseable expressions: empty, operand-only, an unclosed and an unopened parenthesis, a dangling logical operator, an unknown operator symbol, and a chained comparison. Each pins a DISTINCT evaluator diagnostic surfaced at load time; the last file is an alternatives-only control that loads.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": {
+        "translation": "t",
+        "alternatives": [
+          {
+            "": {
+              "translation": "none"
+            }
+          }
+        ]
+      }
+    },
+    "fr": {
+      "Key.A": {
+        "translation": "t",
+        "alternatives": [
+          {
+            "count 0": {
+              "translation": "none"
+            }
+          }
+        ]
+      }
+    },
+    "de": {
+      "Key.A": {
+        "translation": "t",
+        "alternatives": [
+          {
+            "(count == 0": {
+              "translation": "none"
+            }
+          }
+        ]
+      }
+    },
+    "ru": {
+      "Key.A": {
+        "translation": "t",
+        "alternatives": [
+          {
+            "count == 0)": {
+              "translation": "none"
+            }
+          }
+        ]
+      }
+    },
+    "es": {
+      "Key.A": {
+        "translation": "t",
+        "alternatives": [
+          {
+            "count == 0 &&": {
+              "translation": "none"
+            }
+          }
+        ]
+      }
+    },
+    "it": {
+      "Key.A": {
+        "translation": "t",
+        "alternatives": [
+          {
+            "count =? 0": {
+              "translation": "none"
+            }
+          }
+        ]
+      }
+    },
+    "nl": {
+      "Key.A": {
+        "translation": "t",
+        "alternatives": [
+          {
+            "count == 0 == 1": {
+              "translation": "none"
+            }
+          }
+        ]
+      }
+    },
+    "pt": {
+      "Key.A": {
+        "alternatives": [
+          {
+            "count == 0": {
+              "translation": "none"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

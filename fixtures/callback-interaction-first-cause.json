@@ -1,0 +1,148 @@
+{
+  "id": "callback-interaction-first-cause",
+  "description": "Three fallback candidates (en-US, en, fr) whose failures are structurally DIFFERENT, so the retained cause is identifiable by type and by message. The en-US entries fail through the PhoneticResolver (which always throws the sentinel 'sentinel-resolver-alpha'); the en entries fail either through a library-generated type mismatch (a String where Gender is required) or through the same resolver under a DIFFERENTLY NAMED generated placeholder, so a same-type pair is still distinguishable by the contextualized message. Fragment.First adds a third failure kind: an en-US expression-fragment placeholder over a poisoned operand, which raises the library's own ExpressionEvaluationException, paired against an en entry that fails through the resolver. Two keys pair an alternatives-only entry (NO_MATCHING_ALTERNATIVE, no cause) with a resolver-failing entry in both orders, so the policy is consulted once with a null cause and once with one. The instance policy is any-failure so every candidate is reached by default and a per-call override can narrow it. Two loaded locales share 'en', so tiebreakers is mandatory and lists exactly en-US and en.",
+  "fallbackLocale": "fr",
+  "tiebreakers": {
+    "en": [
+      "en-US",
+      "en"
+    ]
+  },
+  "translationFallbackPolicy": "any-failure",
+  "phoneticResolver": {
+    "behavior": "throw",
+    "message": "sentinel-resolver-alpha"
+  },
+  "files": {
+    "en-US": {
+      "Locale.Marker": "en-US",
+      "Article": {
+        "translation": "{{article}}",
+        "placeholders": {
+          "article": {
+            "value": "nounTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "an (en-US)",
+              "PHONETIC_CONSONANT": "a (en-US)"
+            }
+          }
+        }
+      },
+      "Article.Two": {
+        "translation": "{{article}}",
+        "placeholders": {
+          "article": {
+            "value": "nounTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "an (en-US)",
+              "PHONETIC_CONSONANT": "a (en-US)"
+            }
+          }
+        }
+      },
+      "Fragment.First": {
+        "commentary": "An expression-fragment placeholder. With a non-numeric badCount the comparison raises ExpressionEvaluationException, a library type that contextualization preserves rather than converting.",
+        "translation": "[{{frag}}]",
+        "placeholders": {
+          "frag": {
+            "translation": "few (en-US)",
+            "alternatives": [
+              {
+                "badCount > 5": "many (en-US)"
+              }
+            ]
+          }
+        }
+      },
+      "Mixed.NoMatchFirst": {
+        "commentary": "Alternatives-only with a false predicate: NO_MATCHING_ALTERNATIVE with NO cause, so the first policy consultation carries a null cause.",
+        "alternatives": [
+          {
+            "visitCount > 5": {
+              "translation": "en-US many visits"
+            }
+          }
+        ]
+      },
+      "Mixed.ResolverFirst": {
+        "translation": "{{article}}",
+        "placeholders": {
+          "article": {
+            "value": "nounTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "an (en-US)",
+              "PHONETIC_CONSONANT": "a (en-US)"
+            }
+          }
+        }
+      }
+    },
+    "en": {
+      "Locale.Marker": "en",
+      "Article": {
+        "commentary": "Fails with IllegalArgumentException when personGender is a String, giving the en candidate a cause of a different TYPE from the resolver's.",
+        "translation": "{{subject}}",
+        "placeholders": {
+          "subject": {
+            "value": "personGender",
+            "translations": {
+              "GENDER_MASCULINE": "him",
+              "GENDER_FEMININE": "her"
+            }
+          }
+        }
+      },
+      "Article.Two": {
+        "translation": "{{determiner}}",
+        "placeholders": {
+          "determiner": {
+            "value": "nounTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "an (en)",
+              "PHONETIC_CONSONANT": "a (en)"
+            }
+          }
+        }
+      },
+      "Fragment.First": {
+        "translation": "{{determiner}}",
+        "placeholders": {
+          "determiner": {
+            "value": "nounTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "an (en)",
+              "PHONETIC_CONSONANT": "a (en)"
+            }
+          }
+        }
+      },
+      "Mixed.NoMatchFirst": {
+        "translation": "{{determiner}}",
+        "placeholders": {
+          "determiner": {
+            "value": "nounTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "an (en)",
+              "PHONETIC_CONSONANT": "a (en)"
+            }
+          }
+        }
+      },
+      "Mixed.ResolverFirst": {
+        "alternatives": [
+          {
+            "visitCount > 5": {
+              "translation": "en many visits"
+            }
+          }
+        ]
+      }
+    },
+    "fr": {
+      "Locale.Marker": "fr",
+      "Unrelated": "fr unrelated"
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

@@ -1,0 +1,30 @@
+{
+  "id": "ingress-matrix-java-alias-match-supplier-in",
+  "description": "Alias arm catalog with a localeMatchSupplier negotiating the deprecated spelling in through the single-locale kernel.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "localeMatchSupplier": {
+    "behavior": "match-locale",
+    "locale": "in"
+  },
+  "files": {
+    "he": {
+      "Checkout.Title": "he"
+    },
+    "id": {
+      "Checkout.Title": "id"
+    },
+    "ro": {
+      "Checkout.Title": "ro"
+    },
+    "sr": {
+      "Checkout.Title": "sr"
+    },
+    "fil": {
+      "Checkout.Title": "fil"
+    },
+    "en": {
+      "Checkout.Title": "en"
+    }
+  }
+}

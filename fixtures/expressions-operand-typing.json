@@ -1,0 +1,102 @@
+{
+  "id": "expressions-operand-typing",
+  "description": "Serves the plan v7 section 8.3 expression clause for missing/null/cross-axis operands, raw-string non-equality (both '==' and '!='), and runtime operand typing. Deliberately generic keys and variable names ('value', 'left', 'right') so one compiled expression can be driven with many runtime operand types -- integer, decimal, plural operands, raw CharSequence, JSON boolean, and each language-form axis -- entirely from the case file. Static operand typing is NOT exercised here because lokalized-java rejects it at load/construction time (verified; see the skipped list); canBeEqualExpressionValue treats every VARIABLE as UNKNOWN_VARIABLE, which is compatible with everything, and that deferral is precisely what makes these runtime cases authorable while their bare-constant twins are not. Only 'en' is loaded, so tiebreakers is null.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Expr.Operand.ValueVsNumber": {
+        "translation": "no alternative",
+        "alternatives": [
+          {
+            "value == 5": {
+              "translation": "equals five"
+            }
+          }
+        ]
+      },
+      "Expr.Operand.ValueOrdersAgainstNumber": {
+        "translation": "no alternative",
+        "alternatives": [
+          {
+            "value < 5": {
+              "translation": "less than five"
+            }
+          }
+        ]
+      },
+      "Expr.Operand.LeftEqualsRight": {
+        "translation": "no alternative",
+        "alternatives": [
+          {
+            "left == right": {
+              "translation": "left equals right"
+            }
+          }
+        ]
+      },
+      "Expr.Operand.LeftNotEqualsRight": {
+        "translation": "no alternative",
+        "commentary": "The non-equality operator, so a port cannot pass the raw-string rule by special-casing '==' alone.",
+        "alternatives": [
+          {
+            "left != right": {
+              "translation": "left differs from right"
+            }
+          }
+        ]
+      },
+      "Expr.Operand.LeftOrdersRight": {
+        "translation": "no alternative",
+        "alternatives": [
+          {
+            "left < right": {
+              "translation": "left below right"
+            }
+          }
+        ]
+      },
+      "Expr.Operand.ValueVsCardinalityConstant": {
+        "translation": "no alternative",
+        "alternatives": [
+          {
+            "value == CARDINALITY_ONE": {
+              "translation": "cardinality one"
+            }
+          }
+        ]
+      },
+      "Expr.Operand.ValueVsOrdinalityConstant": {
+        "translation": "no alternative",
+        "alternatives": [
+          {
+            "value == ORDINALITY_TWO": {
+              "translation": "ordinality two"
+            }
+          }
+        ]
+      },
+      "Expr.Operand.ValueVsGenderConstant": {
+        "translation": "no alternative",
+        "alternatives": [
+          {
+            "value == GENDER_FEMININE": {
+              "translation": "gender feminine"
+            }
+          }
+        ]
+      },
+      "Expr.Operand.ValueVsPhoneticConstant": {
+        "translation": "no alternative",
+        "commentary": "Bounds the 'a caller string is PHONETIC' rule: an explicit Phonetic value compares without a resolver, a raw string does not.",
+        "alternatives": [
+          {
+            "value == PHONETIC_VOWEL": {
+              "translation": "phonetic vowel"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

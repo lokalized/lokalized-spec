@@ -1,0 +1,23 @@
+{
+  "id": "ingress-matrix-java-fr-be-match-supplier-locale",
+  "description": "Seed row 2 catalog with a localeMatchSupplier returning matchFor(Locale fr-BE). The lookup locale comes from the match (fr-FR), so the attempted chain loses fr-BE and fr.",
+  "fallbackLocale": "fr-FR",
+  "tiebreakers": {
+    "fr": [
+      "fr-FR",
+      "fr-CA"
+    ]
+  },
+  "localeMatchSupplier": {
+    "behavior": "match-locale",
+    "locale": "fr-BE"
+  },
+  "files": {
+    "fr-FR": {
+      "Checkout.Title": "Paiement (FR)"
+    },
+    "fr-CA": {
+      "Checkout.Title": "Paiement (CA)"
+    }
+  }
+}

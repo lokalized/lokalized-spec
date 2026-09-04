@@ -1,0 +1,30 @@
+{
+  "id": "ingress-matrix-java-alias-match-supplier-ranges-in",
+  "description": "Alias arm catalog with a localeMatchSupplier negotiating the header 'in' through the whole-list solver (expansion in, id).",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "localeMatchSupplier": {
+    "behavior": "match-ranges",
+    "ranges": "in"
+  },
+  "files": {
+    "he": {
+      "Checkout.Title": "he"
+    },
+    "id": {
+      "Checkout.Title": "id"
+    },
+    "ro": {
+      "Checkout.Title": "ro"
+    },
+    "sr": {
+      "Checkout.Title": "sr"
+    },
+    "fil": {
+      "Checkout.Title": "fil"
+    },
+    "en": {
+      "Checkout.Title": "en"
+    }
+  }
+}

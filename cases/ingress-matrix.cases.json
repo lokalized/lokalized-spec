@@ -1,0 +1,1262 @@
+{
+  "formatVersion": 1,
+  "family": "ingress-matrix",
+  "description": "Plan v7 section 8.3 fixture family 'ingress-matrix'. Inputs only; the oracle emits expected.",
+  "skipped": [
+    {
+      "what": "getResult with a return-string failure handler (instance or per-call), which would exercise TranslationResultStatus.RETURNED_STRING",
+      "why": "DefaultStrings.java:758 returns TranslationResultStatus.RETURNED_STRING for the RETURN_STRING action, but behavioral-vectors.schema.json's $defs.translationResult.status enum admits only TRANSLATED and RETURNED_KEY, so the oracle's emitted expected block would fail scripts/validate-artifacts.mjs and take the whole corpus down. I verified this by executing the family and confirming zero RETURNED_STRING rows are produced. Every return-string precedence case here is therefore authored on the `get` operation, whose emitted channel is a bare translation string. This is a real schema gap worth fixing (add RETURNED_STRING to the enum, and a matching `translationResult` emission path) before a family needs the result-object channel for that response kind."
+    },
+    {
+      "what": "A per-call option field explicitly CLEARED back to the library default while the instance holds a non-default value",
+      "why": "TranslationOptions.Builder accepts null for bidiIsolation, translationFailureHandler and translationFallbackPolicy, and DefaultStrings.java:683-685 reads them through Optional.orElse, so 'per-call null' and 'per-call absent' are the same thing in Java — but the vector format cannot even express the distinction: VectorOracle.optionsFrom guards every field with `!spec.isNull()`, so a JSON null in a case input is indistinguishable from omitting the key. Nothing is lost behaviorally, but the corpus cannot record that equivalence as a proposition; doing so would need an oracle change (a sentinel such as `\"bidiIsolation\": \"__unset__\"`), not a vector."
+    },
+    {
+      "what": "TranslationFailureHandler.returnKey(Consumer<TranslationFailure>) — the observing variant — at either configuration site, including the documented behavior that an exception thrown by the OBSERVER propagates to the caller",
+      "why": "VectorOracle.handlerFrom recognizes only four named behaviors (return-key, throw, return-string, throw-in-handler), and the schema's $defs.failureHandler enumerates the same four. There is no named behavior for the observer overload, so no executable case can reach it. `throw-in-handler` covers a throwing callback generally, but not the specific claim that returnKey(observer) still returns the key after a non-throwing observer runs. Adding it needs a new named behavior in the oracle and the schema."
+    },
+    {
+      "what": "Per-call language-range ingress: TranslationOptions.forLanguageRanges(...) and builder().languageRanges(...) as a fourth construction path, including the mutual-exclusion rule that setting one clears the other",
+      "why": "VectorOracle.optionsFrom reads only input.locale and never languageRanges, so there is no way to author an executable case that reaches localeLookupFor's languageRanges branch (DefaultStrings.java:2442-2447) or TranslationOptions' 'Specify either locale or languageRanges, not both' rejection at :71. Reaching it needs an oracle change, not a vector."
+    },
+    {
+      "what": "Instance-versus-per-call rows for localeMatchSupplier / a supplied LocaleMatchResult, and the case, legacy-alias and extlang spellings section 8.3 lists alongside them",
+      "why": "Explicitly listed as still unsupported in the authoring brief, and VectorOracle.buildStrings never configures a localeMatchSupplier — it sets only localizedStringSupplier, localeSupplier, tiebreakers, handler, policy, runtime limits and bidi — so localeLookupFor's supplied-match branch (DefaultStrings.java:2449-2454) and validateSuppliedLocaleMatchResult are unreachable from a vector."
+    },
+    {
+      "what": "A precedence matrix for runtime limits (maximumExpressionTokens and the rest)",
+      "why": "Not a precedence question at all: I read TranslationOptions.Builder in full and it carries exactly five fields — locale, languageRanges, bidiIsolation, translationFailureHandler, translationFallbackPolicy — with no runtime-limits slot, and DefaultStrings reads getRuntimeLimits() directly at the interpolation sites (:1322, :1368, :1407). Runtime limits are instance-only, so there is no per-call leg to vary and no matrix to author. Recorded here so a reader does not conclude the family forgot them."
+    },
+    {
+      "what": "Instance-versus-per-call variation of the phonetic resolver and of the locale resolver named in section 8.3's ingress-matrix sentence",
+      "why": "VectorOracle.buildStrings configures neither a phoneticResolver nor an alternative locale resolver, and phonetic resolver callbacks are named as unsupported in the authoring brief. There is no fixture field to set and no per-call field on TranslationOptions to set it against, so both sides of the matrix are unreachable."
+    }
+  ],
+  "cases": [
+    {
+      "id": "ingress-matrix.bidi.instance-unset-defaults-to-rtl-locales-at-ar",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-bidi-default",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Named",
+        "locale": "ar",
+        "placeholders": {
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Baseline for the whole bidi leg: with no instance bidiIsolation configured, DefaultStrings.java:477 substitutes DEFAULT_BIDI_ISOLATION, which :80 defines as RTL_LOCALES, so an Arabic request served by the Arabic donor isolates the caller-supplied name. A port that guessed NONE or ALWAYS as the default fails here, and every per-call override below is measured against this row."
+    },
+    {
+      "id": "ingress-matrix.bidi.instance-unset-defaults-to-rtl-locales-at-en",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-bidi-default",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Named",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The other half of the default: RTL_LOCALES must NOT isolate in an LTR locale. Paired with the ar row it pins the default to exactly RTL_LOCALES rather than to either constant, which neither row alone can do."
+    },
+    {
+      "id": "ingress-matrix.bidi.per-call-none-overrides-unset-instance-at-ar",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-bidi-default",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Named",
+        "locale": "ar",
+        "placeholders": {
+          "name": "Sarah"
+        },
+        "bidiIsolation": "NONE"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Per-call-only leg of the matrix. Identical to the instance-unset ar row except for the per-call NONE, and NONE differs from the RTL_LOCALES default precisely at an RTL request, so the isolate marks must disappear. A port that ignored options.getBidiIsolation() at DefaultStrings.java:683 emits the isolated form and fails."
+    },
+    {
+      "id": "ingress-matrix.bidi.per-call-always-overrides-unset-instance-at-en",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-bidi-default",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Named",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        },
+        "bidiIsolation": "ALWAYS"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The mirror of the previous case: per-call ALWAYS at an LTR locale, where the RTL_LOCALES default would not isolate. Together the two prove the per-call value is consulted in both directions rather than only ever adding isolation or only ever removing it."
+    },
+    {
+      "id": "ingress-matrix.bidi.unset-instance-isolates-returned-key-at-ar",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-bidi-default",
+      "operation": "getResult",
+      "input": {
+        "key": "Farewell.Named {{name}}",
+        "locale": "ar",
+        "placeholders": {
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Baseline for the SECOND bidi ingress site. interpolateFailureKey (DefaultStrings.java:754 and :1406) applies the resolved option when the handler returns the key, isolating against the lookup locale rather than a donor. This key is in no catalog, so an Arabic request reaches that path and the RTL_LOCALES default must isolate. Without this row the per-call override on the same path has nothing to be measured against."
+    },
+    {
+      "id": "ingress-matrix.bidi.per-call-none-overrides-unset-instance-on-returned-key-at-ar",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-bidi-default",
+      "operation": "getResult",
+      "input": {
+        "key": "Farewell.Named {{name}}",
+        "locale": "ar",
+        "placeholders": {
+          "name": "Sarah"
+        },
+        "bidiIsolation": "NONE"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The per-call override on the failure-key path, against the baseline row directly above. A port that threaded the per-call option into template interpolation but forgot interpolateFailureKey passes every other bidi case and fails only this one."
+    },
+    {
+      "id": "ingress-matrix.bidi.instance-none-at-ar-does-not-isolate",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-bidi-none",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Named",
+        "locale": "ar",
+        "placeholders": {
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Instance-only leg. Same catalog, key and locale as the instance-unset ar row, differing only in that the fixture pins the instance option to NONE; the isolate marks must be gone. This is the case that proves the instance-level setting is read at all rather than the library default being hardcoded."
+    },
+    {
+      "id": "ingress-matrix.bidi.per-call-none-matches-instance-none-at-ar",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-bidi-none",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Named",
+        "locale": "ar",
+        "placeholders": {
+          "name": "Sarah"
+        },
+        "bidiIsolation": "NONE"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Both-set-to-the-same-value leg. Restating the instance value per-call must be a no-op. It also moves the call from the forLocale() construction path to the builder path (VectorOracle.optionsFrom switches as soon as a second field is present), so it catches a port whose builder path drops or mangles a redundantly-restated option."
+    },
+    {
+      "id": "ingress-matrix.bidi.per-call-always-overrides-instance-none-at-ar",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-bidi-none",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Named",
+        "locale": "ar",
+        "placeholders": {
+          "name": "Sarah"
+        },
+        "bidiIsolation": "ALWAYS"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Both-set-to-DIFFERENT-values leg, the discriminating one. Instance NONE versus per-call ALWAYS: the per-call value must win and isolation must appear. A port that resolved the instance value first, or that ORed the two, produces the unisolated string."
+    },
+    {
+      "id": "ingress-matrix.bidi.per-call-rtl-locales-overrides-instance-none-at-ar",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-bidi-none",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Named",
+        "locale": "ar",
+        "placeholders": {
+          "name": "Sarah"
+        },
+        "bidiIsolation": "RTL_LOCALES"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The third bidi value as the per-call override, probed at ar where RTL_LOCALES separates from the instance's NONE. Without this row RTL_LOCALES is only ever exercised as a default or an instance value, never as a per-call override."
+    },
+    {
+      "id": "ingress-matrix.bidi.instance-none-does-not-isolate-returned-key-at-en",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-bidi-none",
+      "operation": "getResult",
+      "input": {
+        "key": "Farewell.Named {{name}}",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Baseline for the returned-key path under a non-default INSTANCE value. Needed so the ALWAYS override on the same fixture and locale is measured against an observed instance behavior rather than against the library default, which the earlier fixture already covers."
+    },
+    {
+      "id": "ingress-matrix.bidi.per-call-always-overrides-instance-none-on-returned-key-at-en",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-bidi-none",
+      "operation": "getResult",
+      "input": {
+        "key": "Farewell.Named {{name}}",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        },
+        "bidiIsolation": "ALWAYS"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Per-call override winning over a non-default instance value on the failure-key path. The earlier returned-key override beat the library default; this one beats an explicitly configured NONE, so a port that only special-cased 'instance unset' on that path fails here."
+    },
+    {
+      "id": "ingress-matrix.bidi.instance-always-at-en-isolates",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-bidi-always",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Named",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Instance-only leg for ALWAYS, probed at en where it separates from both NONE and the RTL_LOCALES default. Baseline for the override rows on this fixture."
+    },
+    {
+      "id": "ingress-matrix.bidi.per-call-always-matches-instance-always-at-en",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-bidi-always",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Named",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        },
+        "bidiIsolation": "ALWAYS"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Both-set-to-the-same-value leg for ALWAYS. Combined with the instance-only row it shows the two configuration sites are interchangeable when they agree, which is the premise the differing rows then break."
+    },
+    {
+      "id": "ingress-matrix.bidi.per-call-none-overrides-instance-always-at-en",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-bidi-always",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Named",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        },
+        "bidiIsolation": "NONE"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Both-set-to-different-values in the direction that REMOVES isolation. The instance says ALWAYS, the call says NONE, and the per-call value must win. Paired with the instance-NONE/per-call-ALWAYS case it rules out any implementation that treats the two sources as additive rather than as an override."
+    },
+    {
+      "id": "ingress-matrix.bidi.per-call-rtl-locales-overrides-instance-always-at-en",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-bidi-always",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Named",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        },
+        "bidiIsolation": "RTL_LOCALES"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ALWAYS versus RTL_LOCALES is only distinguishable in an LTR locale, which is why this is probed at en: shouldApplyBidiIsolation (DefaultStrings.java:1420) returns true unconditionally for ALWAYS but consults BidiUtils.localeUsesRightToLeftScript for RTL_LOCALES. A port that collapsed the two constants passes most bidi cases and fails this one."
+    },
+    {
+      "id": "ingress-matrix.bidi.get-per-call-none-overrides-instance-always-at-en",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-bidi-always",
+      "operation": "get",
+      "input": {
+        "key": "Greeting.Named",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        },
+        "bidiIsolation": "NONE"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same instance-versus-per-call bidi row repeated through the OTHER operation ingress, which is what this clause asks for. get() is a delegate to getResult(...).getTranslation() (DefaultStrings.java:641), so the isolate marks must be absent here exactly as on the getResult row; a port that resolved options differently in its two entry points is caught by the pair."
+    },
+    {
+      "id": "ingress-matrix.bidi.instance-always-isolates-returned-key-at-en",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-bidi-always",
+      "operation": "getResult",
+      "input": {
+        "key": "Farewell.Named {{name}}",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Baseline for the ALWAYS-versus-RTL_LOCALES distinction on the failure-key path: at an LTR lookup locale the instance ALWAYS must still isolate the interpolated key. Without it the override row below has no observed instance behavior to displace."
+    },
+    {
+      "id": "ingress-matrix.bidi.per-call-rtl-locales-overrides-instance-always-on-returned-key-at-en",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-bidi-always",
+      "operation": "getResult",
+      "input": {
+        "key": "Farewell.Named {{name}}",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        },
+        "bidiIsolation": "RTL_LOCALES"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The ALWAYS-versus-RTL_LOCALES distinction carried through the returned-key path, where the locale consulted is the lookup locale rather than a donor. Ensures the failure-key site resolves the option with the same precedence AND the same locale-sensitivity as the template site."
+    },
+    {
+      "id": "ingress-matrix.bidi.instance-explicit-rtl-locales-matches-unset-at-ar",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-bidi-rtl-locales",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Named",
+        "locale": "ar",
+        "placeholders": {
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Configuring RTL_LOCALES explicitly must be indistinguishable from leaving the instance option unset. Only comparing this fixture with ingress-matrix-bidi-default can show that; a port that treated 'unset' as a fourth state with its own behavior would break the pair."
+    },
+    {
+      "id": "ingress-matrix.bidi.instance-explicit-rtl-locales-matches-unset-at-en",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-bidi-rtl-locales",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Named",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "LTR half of the explicit-equals-default claim. Needed alongside the ar half because a port could match the default on one side only."
+    },
+    {
+      "id": "ingress-matrix.bidi.per-call-always-overrides-instance-rtl-locales-at-en",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-bidi-rtl-locales",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Named",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        },
+        "bidiIsolation": "ALWAYS"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Both-set-to-different-values with RTL_LOCALES as the INSTANCE value, probed at en where ALWAYS separates from it. Completes the pairwise coverage: every ordered pair of distinct bidi values now appears as (instance, per-call) somewhere in this family."
+    },
+    {
+      "id": "ingress-matrix.bidi.per-call-none-overrides-instance-rtl-locales-at-ar",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-bidi-rtl-locales",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Named",
+        "locale": "ar",
+        "placeholders": {
+          "name": "Sarah"
+        },
+        "bidiIsolation": "NONE"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Instance RTL_LOCALES versus per-call NONE, probed at ar where the two separate. The last of the six ordered pairs of distinct values."
+    },
+    {
+      "id": "ingress-matrix.policy.instance-unset-halts-on-resolution-failure",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-policy-default",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Sparse",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "5"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Baseline for the policy leg: with no instance policy configured, DefaultStrings.java:473 installs fallbackOnMissingTranslationOrNoMatchingAlternative, whose shouldTryNextLocale returns reason != RESOLUTION_FAILURE. itemCount 5 selects Russian MANY, which Items.Sparse does not declare, so the ru attempt throws and the walk must STOP rather than reaching en's working translation. A port defaulting to the permissive policy resolves 'en:fallback-resolved' instead and fails."
+    },
+    {
+      "id": "ingress-matrix.policy.instance-unset-continues-on-missing-translation",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-policy-default",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.EnOnly",
+        "locale": "ru"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The other side of the default: a plain MISSING_TRANSLATION at the ru candidate must NOT stop the walk, so the en entry resolves. Paired with the previous row it pins the default to exactly missing-or-no-match rather than to either extreme, which neither row alone can do."
+    },
+    {
+      "id": "ingress-matrix.policy.per-call-any-failure-overrides-unset-instance",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-policy-default",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Sparse",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "5"
+          }
+        },
+        "translationFallbackPolicy": "any-failure"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Per-call-only leg. Identical to the halting baseline except for the per-call any-failure, which must carry the walk past the ru resolution failure to en and turn a RETURNED_KEY into a TRANSLATED result with resolvedLocale en. A port that ignored options.getTranslationFallbackPolicy() at DefaultStrings.java:685 still returns the key."
+    },
+    {
+      "id": "ingress-matrix.policy.per-call-never-overrides-unset-instance-on-missing",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-policy-default",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.EnOnly",
+        "locale": "ru",
+        "translationFallbackPolicy": "never"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Per-call override in the opposite direction: the default would walk past the missing ru entry and resolve from en, and per-call never must stop at ru, truncating attemptedLocales and returning the key. Proves the per-call slot can make the library STRICTER, not only more permissive, which a port that only implemented an escape hatch would miss."
+    },
+    {
+      "id": "ingress-matrix.policy.instance-any-failure-continues-past-resolution-failure",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-policy-any-failure",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Sparse",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "5"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Instance-only leg for any-failure. Same catalog, key, locale and placeholders as the unset-instance halting baseline; only the fixture's instance policy differs, and the result must flip from RETURNED_KEY to TRANSLATED. This is the case that proves the instance-level policy is read at all."
+    },
+    {
+      "id": "ingress-matrix.policy.per-call-any-failure-matches-instance-any-failure",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-policy-any-failure",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Sparse",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "5"
+          }
+        },
+        "translationFallbackPolicy": "any-failure"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Both-set-to-the-same-value leg. Restating the instance policy per-call must be a no-op, and it also switches the construction path from forLocale() to the builder, catching a port whose builder path mishandles a redundantly-restated policy."
+    },
+    {
+      "id": "ingress-matrix.policy.per-call-missing-or-no-match-overrides-instance-any-failure",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-policy-any-failure",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Sparse",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "5"
+          }
+        },
+        "translationFallbackPolicy": "missing-or-no-match"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The central discriminating case for the policy leg: instance any-failure versus per-call missing-or-no-match. The per-call value must win and the walk must stop at the ru resolution failure, producing a RETURNED_KEY where the instance value alone produces 'en:fallback-resolved'. Anything that resolved the instance policy first fails."
+    },
+    {
+      "id": "ingress-matrix.policy.per-call-never-overrides-instance-any-failure",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-policy-any-failure",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.EnOnly",
+        "locale": "ru",
+        "translationFallbackPolicy": "never"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The (any-failure, never) ordered pair, probed deliberately on a MISSING_TRANSLATION. On a RESOLUTION_FAILURE never and missing-or-no-match behave identically, so probing there would have produced output byte-identical to the row above and proved nothing about never; here the instance value would resolve 'en:only-here' and the per-call never must truncate the walk to ru and return the key."
+    },
+    {
+      "id": "ingress-matrix.policy.instance-never-halts-on-missing-translation",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-policy-never",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.EnOnly",
+        "locale": "ru"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Instance-only leg for never, probed with a plain MISSING_TRANSLATION because that is the only reason on which never differs from missing-or-no-match. The en entry must NOT be reached. A port that implemented never as a synonym for the default resolves 'en:only-here' and fails."
+    },
+    {
+      "id": "ingress-matrix.policy.per-call-never-matches-instance-never",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-policy-never",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.EnOnly",
+        "locale": "ru",
+        "translationFallbackPolicy": "never"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Both-set-to-the-same-value leg for never. Establishes that the two configuration sites agree before the next row makes them disagree."
+    },
+    {
+      "id": "ingress-matrix.policy.per-call-missing-or-no-match-overrides-instance-never",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-policy-never",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.EnOnly",
+        "locale": "ru",
+        "translationFallbackPolicy": "missing-or-no-match"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Both-set-to-different-values in the LOOSENING direction: instance never, per-call missing-or-no-match, and the walk must now reach en. MISSING_TRANSLATION is the only reason that separates these two policies, so a port that mapped both onto 'stop on resolution failure' fails precisely here."
+    },
+    {
+      "id": "ingress-matrix.policy.per-call-any-failure-overrides-instance-never",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-policy-never",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Sparse",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "5"
+          }
+        },
+        "translationFallbackPolicy": "any-failure"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The strictest instance value against the most permissive per-call value, probed on a RESOLUTION_FAILURE so both endpoints of the policy lattice are exercised in one call. Completes pairwise coverage of the three policy values as (instance, per-call) ordered pairs across this family."
+    },
+    {
+      "id": "ingress-matrix.policy.instance-explicit-missing-or-no-match-matches-unset",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-policy-missing-or-no-match",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Sparse",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "5"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Explicitly configuring the default policy must be indistinguishable from leaving it unset, on the RESOLUTION_FAILURE side. Only a comparison across fixtures shows this; a port that treated 'unset' as a distinct fourth state would break the pair."
+    },
+    {
+      "id": "ingress-matrix.policy.instance-explicit-missing-or-no-match-continues-on-missing",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-policy-missing-or-no-match",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.EnOnly",
+        "locale": "ru"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The MISSING_TRANSLATION half of the same explicit-equals-unset claim, mirroring how the bidi leg checks its default in two locales. Without it a port could match the unset fixture on resolution failures and diverge on missing translations under an explicitly configured default, and nothing in the corpus would notice."
+    },
+    {
+      "id": "ingress-matrix.policy.per-call-any-failure-overrides-instance-missing-or-no-match",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-policy-missing-or-no-match",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Sparse",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "5"
+          }
+        },
+        "translationFallbackPolicy": "any-failure"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Override over an EXPLICITLY configured default rather than over an unset one. Catches a port whose precedence logic is implemented as 'use the per-call value only when the instance value is absent' — which happens to look correct on the unset-instance fixture and is wrong here."
+    },
+    {
+      "id": "ingress-matrix.policy.get-instance-unset-halts-and-returns-key",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-policy-default",
+      "operation": "get",
+      "input": {
+        "key": "Items.Sparse",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "5"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The default-policy halt repeated through the get ingress, where the emitted channel is a bare translation string rather than a result object. Baseline for the get override row below, and it records that the returned-key response reaches get unchanged."
+    },
+    {
+      "id": "ingress-matrix.policy.get-per-call-any-failure-overrides-unset-instance",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-policy-default",
+      "operation": "get",
+      "input": {
+        "key": "Items.Sparse",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "5"
+          }
+        },
+        "translationFallbackPolicy": "any-failure"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The policy override repeated through get, which the clause's 'repeat applicable rows through ingresses' requirement asks for and which the policy leg otherwise lacked entirely. Against the get baseline above the string flips from the key to 'en:fallback-resolved'."
+    },
+    {
+      "id": "ingress-matrix.handler.instance-unset-returns-key-from-getresult",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-handler-default",
+      "operation": "getResult",
+      "input": {
+        "key": "Absent.Key",
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Baseline for the handler leg: with no instance handler configured, DefaultStrings.java:472 installs TranslationFailureHandler.returnKey(), so a key present in no catalog yields status RETURNED_KEY with the key as the translation. Every per-call override below is measured against this row."
+    },
+    {
+      "id": "ingress-matrix.handler.instance-unset-returns-key-from-get",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-handler-default",
+      "operation": "get",
+      "input": {
+        "key": "Absent.Key",
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same default seen through get(), which DefaultStrings.java:641 implements as getResult(...).getTranslation(). Establishes that the two operations agree under the default before later rows use them to expose handlers whose response differs in shape between the two channels."
+    },
+    {
+      "id": "ingress-matrix.handler.per-call-throw-overrides-unset-instance-in-getresult",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-handler-default",
+      "operation": "getResult",
+      "input": {
+        "key": "Absent.Key",
+        "locale": "en",
+        "translationFailureHandler": {
+          "behavior": "throw"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Per-call-only leg, and the row that records a fact the authoring brief gets wrong: getResult DOES throw for a throw handler. DefaultStrings.java:762 calls throwExceptionFor inside getResult's own response switch, so the per-call handler converts this row from a returned key into a thrown MissingTranslationException. A port that made getResult exception-free and applied THROW_EXCEPTION only inside get() returns 'Absent.Key' here and fails."
+    },
+    {
+      "id": "ingress-matrix.handler.per-call-throw-overrides-unset-instance-in-get",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-handler-default",
+      "operation": "get",
+      "input": {
+        "key": "Absent.Key",
+        "locale": "en",
+        "translationFailureHandler": {
+          "behavior": "throw"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same per-call throw through the get ingress. Paired with the getResult row it pins that the throw identity — type, message and absent cause — is the same from both entry points, which is the substance of the getResult-versus-get claim rather than an assumption about it."
+    },
+    {
+      "id": "ingress-matrix.handler.per-call-return-string-overrides-unset-instance-in-get",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-handler-default",
+      "operation": "get",
+      "input": {
+        "key": "Absent.Key",
+        "locale": "en",
+        "translationFailureHandler": {
+          "behavior": "return-string",
+          "text": "PER-CALL-HANDLER-TEXT"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Per-call-only leg for the third handler response kind. The returned text shares no substring with the key, so a port that ignored the per-call handler (returning the key) or concatenated rather than replaced is caught. Authored on get() because DefaultStrings.java:758 sets status RETURNED_STRING, which the corpus schema's translationResult.status enum does not admit — a getResult row here would fail artifact validation and take the whole corpus down."
+    },
+    {
+      "id": "ingress-matrix.handler.per-call-throw-in-handler-overrides-unset-instance",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-handler-default",
+      "operation": "getResult",
+      "input": {
+        "key": "Absent.Key",
+        "locale": "en",
+        "translationFailureHandler": {
+          "behavior": "throw-in-handler",
+          "message": "per-call handler exploded"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Section 8.3's 'callback exceptions' reached through the per-call slot: the handler itself throws instead of returning a response, so the exception escapes getResult with the handler's own type and message rather than a MissingTranslationException. The failure channel still records the failure the handler was handed before it threw, proving the per-call handler was actually invoked and not merely swapped in."
+    },
+    {
+      "id": "ingress-matrix.handler.instance-throw-throws-from-getresult",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-handler-throw",
+      "operation": "getResult",
+      "input": {
+        "key": "Absent.Key",
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Instance-only leg for the throwing handler. Same catalog, key and locale as the unset-instance baseline; only the fixture's instance handler differs, and the outcome must flip from a returned key to a throw. This is the row that proves the instance handler is read at all, and it independently confirms that getResult honours THROW_EXCEPTION."
+    },
+    {
+      "id": "ingress-matrix.handler.instance-throw-throws-from-get",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-handler-throw",
+      "operation": "get",
+      "input": {
+        "key": "Absent.Key",
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The instance throwing handler through get(). Paired with the getResult row it locks the identity of the throw across both operations — a port that wrapped the exception on one path, or threw a different type from the other, is caught even though each row alone looks fine."
+    },
+    {
+      "id": "ingress-matrix.handler.per-call-return-key-overrides-instance-throw",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-handler-throw",
+      "operation": "getResult",
+      "input": {
+        "key": "Absent.Key",
+        "locale": "en",
+        "translationFailureHandler": {
+          "behavior": "return-key"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Both-set-to-different-values, and the sharpest handler case: an instance configured to throw must be fully displaced by a per-call return-key, turning a throw into an ordinary RETURNED_KEY result. Any implementation that consults the instance handler first, or that runs both, throws here."
+    },
+    {
+      "id": "ingress-matrix.handler.per-call-throw-matches-instance-throw",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-handler-throw",
+      "operation": "getResult",
+      "input": {
+        "key": "Absent.Key",
+        "locale": "en",
+        "translationFailureHandler": {
+          "behavior": "throw"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Both-set-to-the-same-value leg. The throw identity must be unchanged by restating the handler per-call; it also moves the call onto the builder construction path, catching a port whose builder path substitutes a differently-constructed throwing handler."
+    },
+    {
+      "id": "ingress-matrix.handler.per-call-return-string-overrides-instance-throw-in-get",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-handler-throw",
+      "operation": "get",
+      "input": {
+        "key": "Absent.Key",
+        "locale": "en",
+        "translationFailureHandler": {
+          "behavior": "return-string",
+          "text": "RESCUED-BY-PER-CALL"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A per-call handler rescuing a call that the instance configuration would have failed outright. Distinct from the return-key override because it proves the per-call handler's RESPONSE PAYLOAD, not merely its action, reaches the caller."
+    },
+    {
+      "id": "ingress-matrix.handler.instance-return-string-in-get",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-handler-return-string",
+      "operation": "get",
+      "input": {
+        "key": "Absent.Key",
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Instance-only leg for a return-string handler. The instance payload is distinctive, so this row alone separates 'instance handler consulted' from 'defaulted to return-key'. Authored on get() to stay inside the corpus schema's status enum, which does not admit RETURNED_STRING."
+    },
+    {
+      "id": "ingress-matrix.handler.per-call-return-string-overrides-instance-return-string-in-get",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-handler-return-string",
+      "operation": "get",
+      "input": {
+        "key": "Absent.Key",
+        "locale": "en",
+        "translationFailureHandler": {
+          "behavior": "return-string",
+          "text": "PER-CALL-HANDLER-TEXT"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The single most discriminating handler row: both sites set, same BEHAVIOR, different PAYLOAD. The output is one string or the other with no third possibility, so a port that resolved the instance handler first produces INSTANCE-HANDLER-TEXT and is caught immediately. A behavior-name-only comparison cannot detect that bug."
+    },
+    {
+      "id": "ingress-matrix.handler.per-call-return-key-overrides-instance-return-string-in-get",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-handler-return-string",
+      "operation": "get",
+      "input": {
+        "key": "Absent.Key",
+        "locale": "en",
+        "translationFailureHandler": {
+          "behavior": "return-key"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Per-call return-key displacing an instance return-string, covering the (return-string, return-key) ordered pair. Its output equals the lookup key, which also coincides with what a port would produce by silently falling back to the library default — which is exactly why the return-string-over-return-string row above is authored alongside it, since that one has no such coincidence."
+    },
+    {
+      "id": "ingress-matrix.handler.per-call-throw-overrides-instance-return-string",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-handler-return-string",
+      "operation": "getResult",
+      "input": {
+        "key": "Absent.Key",
+        "locale": "en",
+        "translationFailureHandler": {
+          "behavior": "throw"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A per-call handler making a call FAIL that the instance configuration would have handled gracefully. The opposite direction from the rescue case on the throwing fixture, ruling out an implementation that only lets per-call handlers soften outcomes."
+    },
+    {
+      "id": "ingress-matrix.handler.instance-throw-in-handler-propagates-from-getresult",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-handler-throw-in-handler",
+      "operation": "getResult",
+      "input": {
+        "key": "Absent.Key",
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Instance-only leg for section 8.3's callback exceptions. The handler throws instead of returning a TranslationFailureResponse, so the exception escapes getResult unwrapped, carrying the instance handler's message rather than the library's 'No match for ...' text. The failure channel still shows the failure it was handed, distinguishing 'handler invoked and threw' from 'never invoked'."
+    },
+    {
+      "id": "ingress-matrix.handler.instance-throw-in-handler-propagates-from-get",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-handler-throw-in-handler",
+      "operation": "get",
+      "input": {
+        "key": "Absent.Key",
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same callback exception through get(). Because the handler throws before any TranslationFailureResponse exists, neither entry point can wrap or translate it; the pair pins that a port does not, for instance, convert a handler exception into a MissingTranslationException on one path only."
+    },
+    {
+      "id": "ingress-matrix.handler.per-call-return-key-overrides-instance-throw-in-handler",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-handler-throw-in-handler",
+      "operation": "getResult",
+      "input": {
+        "key": "Absent.Key",
+        "locale": "en",
+        "translationFailureHandler": {
+          "behavior": "return-key"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Proof that a per-call handler REPLACES rather than composes with the instance handler. If a port invoked both — or invoked the instance handler for observation before delegating — the instance handler's exception would escape and this call would throw instead of returning the key. Nothing else in the family isolates that bug so cleanly, because a non-throwing instance handler leaves composition invisible."
+    },
+    {
+      "id": "ingress-matrix.handler.per-call-throw-in-handler-overrides-instance-message",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-handler-throw-in-handler",
+      "operation": "getResult",
+      "input": {
+        "key": "Absent.Key",
+        "locale": "en",
+        "translationFailureHandler": {
+          "behavior": "throw-in-handler",
+          "message": "per-call handler exploded"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Both sites set to the same behavior with different messages, so the thrown message alone says which handler ran. The analogue of the return-string-over-return-string row on the exception path: a port that resolved the instance handler first still throws, and only the message text reveals it."
+    },
+    {
+      "id": "ingress-matrix.options.none-uses-instance-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-locale-ingress",
+      "operation": "getResult",
+      "input": {
+        "key": "Ingress.Probe"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "TranslationOptions.none() — the first of the three construction paths. With no locale, handler, policy or bidi in the input the oracle passes none(), so localeLookupFor (DefaultStrings.java:2432) falls through every override branch to the instance localeSupplier. instanceLocale is fr while fallbackLocale is en and the probe key differs in every catalog, so the result names which source was used: fr is correct, en would mean the port confused the ambient locale with the fallback locale."
+    },
+    {
+      "id": "ingress-matrix.options.for-locale-overrides-instance-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-locale-ingress",
+      "operation": "getResult",
+      "input": {
+        "key": "Ingress.Probe",
+        "locale": "de"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "TranslationOptions.forLocale(de) — the second construction path, taken by the oracle when locale is the only input option. Must displace the fr instance locale and resolve the de catalog. Three distinct catalog values mean the result identifies the locale source uniquely rather than merely differing from the previous row."
+    },
+    {
+      "id": "ingress-matrix.options.builder-with-locale-and-bidi-keeps-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-locale-ingress",
+      "operation": "getResult",
+      "input": {
+        "key": "Ingress.Probe",
+        "locale": "de",
+        "bidiIsolation": "NONE"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The third construction path: adding a second field switches the oracle from forLocale() to the full builder. The locale must survive that switch and still resolve de. A port whose builder path forgets to carry the locale silently reverts to the fr instance locale, which no forLocale-only case can detect. The bidi value is deliberately inert here — Ingress.Probe has no placeholder — so the row isolates the locale question."
+    },
+    {
+      "id": "ingress-matrix.options.builder-without-locale-keeps-instance-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-locale-ingress",
+      "operation": "getResult",
+      "input": {
+        "key": "Ingress.Probe",
+        "translationFallbackPolicy": "never"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A fully built options object carrying NO locale. TranslationOptions.Builder.build() keeps the object non-none because a policy is set, and localeLookupFor finds neither a locale nor language ranges, so it falls through to the instance supplier and the result must be fr — not the fallback en, which is the natural wrong answer for a port that treats 'options present but no locale' as 'no ambient locale'. The policy is inert because the fr entry resolves on the first candidate."
+    },
+    {
+      "id": "ingress-matrix.options.none-does-not-isolate-at-instance-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-locale-ingress",
+      "operation": "getResult",
+      "input": {
+        "key": "Ingress.Named",
+        "placeholders": {
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Baseline for the next row: none() with a placeholder-bearing key resolves under the fr instance locale with the RTL_LOCALES default, which does not isolate in an LTR locale. Establishes the unisolated fr form so the ALWAYS override below is measurable."
+    },
+    {
+      "id": "ingress-matrix.options.builder-without-locale-applies-per-call-bidi",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-locale-ingress",
+      "operation": "getResult",
+      "input": {
+        "key": "Ingress.Named",
+        "placeholders": {
+          "name": "Sarah"
+        },
+        "bidiIsolation": "ALWAYS"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Both halves of the ingress question in one call: the per-call bidi field must apply while the locale still comes from the instance. The result is the fr translation WITH isolate marks, differing from the previous row in the isolation and from any en/de row in the prefix. A port that read the options object as an all-or-nothing replacement produces either an unisolated fr string or an isolated fallback-locale one, and both are visibly wrong."
+    },
+    {
+      "id": "ingress-matrix.options.builder-with-locale-and-handler-reports-per-call-lookup-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-locale-ingress",
+      "operation": "getResult",
+      "input": {
+        "key": "Absent.Probe",
+        "locale": "de",
+        "translationFailureHandler": {
+          "behavior": "return-key"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The builder path carrying a locale AND a handler, observed through the failure channel rather than a translation: the key is in no catalog, so lookupLocale and attemptedLocales on both the result and what the handler was handed report which locale the options object actually carried. de with the en fallback appended is correct; fr would mean the builder dropped the locale. This checks the same claim as the earlier builder-with-locale row through a completely different output channel."
+    },
+    {
+      "id": "ingress-matrix.options.none-reports-instance-lookup-locale-on-failure",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-locale-ingress",
+      "operation": "getResult",
+      "input": {
+        "key": "Absent.Probe"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The none() counterpart to the previous row, so the failure channel's locale reporting is pinned for the instance-supplied locale as well as for a per-call one. lookupLocale must be fr and the walk [fr, en]; against the de row the two differ in both fields, which is what makes each of them evidence about the locale source rather than about the failure machinery."
+    },
+    {
+      "id": "ingress-matrix.combined.instance-triple-applies-with-none-options",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-combined",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Sparse {{tag}}",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "5"
+          },
+          "tag": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The instance configuration under TranslationOptions.none(). The instance locale ru is used, the instance any-failure policy carries the walk past ru's RESOLUTION_FAILURE, and the instance ALWAYS bidi isolates the caller-supplied tag inside the en donor's template. Two of the three settings are directly readable from the single expected string: the library-default policy would have returned the key instead, and either other bidi value would leave the tag unisolated because ru and en are both LTR. The instance HANDLER is deliberately not observable here — the call succeeds, so nothing invokes it; the rows below are what pin it."
+    },
+    {
+      "id": "ingress-matrix.combined.per-call-triple-overrides-instance-triple",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-combined",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Sparse {{tag}}",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "5"
+          },
+          "tag": "Sarah"
+        },
+        "translationFallbackPolicy": "missing-or-no-match",
+        "bidiIsolation": "NONE",
+        "translationFailureHandler": {
+          "behavior": "return-key"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The full three-way override, every field set on both sides to a DIFFERENT value. The per-call policy halts the walk at ru instead of continuing, the per-call handler returns the key instead of throwing, and the per-call bidi leaves the interpolated key unisolated where the instance ALWAYS would isolate it. Because the lookup key itself carries {{tag}}, all three overrides are visible in one string; if any single field leaked from the instance the result changes shape entirely — a translation, a throw, or isolate marks."
+    },
+    {
+      "id": "ingress-matrix.combined.per-call-triple-override-on-absent-key",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-combined",
+      "operation": "getResult",
+      "input": {
+        "key": "Absent.Named {{tag}}",
+        "locale": "ru",
+        "placeholders": {
+          "tag": "Sarah"
+        },
+        "translationFallbackPolicy": "never",
+        "bidiIsolation": "NONE",
+        "translationFailureHandler": {
+          "behavior": "return-key"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The three-way override driven through a key that exists in no catalog, so the bidi field is resolved by interpolateFailureKey against the LOOKUP locale rather than by interpolateTemplate against a donor. It also exercises never as the per-call policy on a MISSING_TRANSLATION, truncating attemptedLocales to ru alone where the instance any-failure would append en. Complements the previous row by covering the second bidi ingress site with all three fields overridden at once."
+    },
+    {
+      "id": "ingress-matrix.combined.per-call-policy-and-bidi-leave-instance-handler",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-combined",
+      "operation": "getResult",
+      "input": {
+        "key": "Absent.Named {{tag}}",
+        "locale": "ru",
+        "placeholders": {
+          "tag": "Sarah"
+        },
+        "translationFallbackPolicy": "never",
+        "bidiIsolation": "NONE"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Two of three overridden, the handler inherited. Per-call never halts at ru on a MISSING_TRANSLATION where the inherited any-failure would append en, and the INSTANCE throwing handler then fires, so the call throws a MissingTranslationException — throwExceptionFor (DefaultStrings.java:3196) takes its MissingTranslationException branch because no runtime cause exists for this reason. If a port reset unset option fields to library defaults whenever any field is present, the handler would become return-key and this would quietly return the key. The bidi override is inert on this row (the call produces no string at all); it is here to prove that setting a third field does not disturb the other two, and the rows below observe bidi directly."
+    },
+    {
+      "id": "ingress-matrix.combined.per-call-handler-leaves-instance-policy-and-bidi",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-combined",
+      "operation": "getResult",
+      "input": {
+        "key": "Sparse.RuOnly {{tag}}",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "5"
+          },
+          "tag": "Sarah"
+        },
+        "translationFailureHandler": {
+          "behavior": "return-key"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "One of three overridden, two inherited, and every one of the three is genuinely observable — which is why this row uses Sparse.RuOnly rather than an ordinary absent key. ru raises a RESOLUTION_FAILURE and en has no counterpart, so the inherited any-failure still appends en to attemptedLocales where the library default would stop at ru; the inherited ALWAYS bidi still isolates the tag inside the returned key; and the per-call return-key replaces the instance throw. On a plain MISSING_TRANSLATION the inherited policy would have been invisible, because any-failure and the default behave identically there."
+    },
+    {
+      "id": "ingress-matrix.combined.per-call-bidi-only-leaves-instance-policy-and-handler",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-combined",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Sparse {{tag}}",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "5"
+          },
+          "tag": "Sarah"
+        },
+        "bidiIsolation": "NONE"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A single-field override with the other two inherited, chosen so the inherited policy is still doing work: any-failure is what gets the call as far as the en donor at all, and the per-call NONE strips the isolation the instance ALWAYS would have added. The result differs from the all-instance row only in the isolate marks and from the policy-overridden rows in being a translation rather than a key or a throw. The inherited handler is not observable here because the call succeeds."
+    },
+    {
+      "id": "ingress-matrix.combined.per-call-policy-only-leaves-instance-bidi-and-handler",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-combined",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Sparse {{tag}}",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "5"
+          },
+          "tag": "Sarah"
+        },
+        "translationFallbackPolicy": "never"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Single-field override of the policy alone, on a RESOLUTION_FAILURE. never halts at the first candidate, so attemptedLocales is ru only, and the inherited instance throwing handler then fires — and because a runtime cause exists, throwExceptionFor RETHROWS that IllegalStateException rather than raising MissingTranslationException. That makes this row's throw identity different from the never-on-a-missing-key row above, so the two record the two distinct branches of throwExceptionFor rather than duplicating each other."
+    },
+    {
+      "id": "ingress-matrix.combined.per-call-handler-and-bidi-leave-instance-policy",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-combined",
+      "operation": "getResult",
+      "input": {
+        "key": "Sparse.RuOnly {{tag}}",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "5"
+          },
+          "tag": "Sarah"
+        },
+        "translationFailureHandler": {
+          "behavior": "return-key"
+        },
+        "bidiIsolation": "NONE"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The third two-of-three subset: handler and bidi overridden, policy inherited. The returned key is unisolated — per-call NONE beating instance ALWAYS — while attemptedLocales still shows the inherited any-failure walk reaching en, which it can only show because Sparse.RuOnly fails at ru with a RESOLUTION_FAILURE the default policy would have halted on. With the other subsets this covers every pair, so no single inherited field can hide behind another."
+    },
+    {
+      "id": "ingress-matrix.combined.for-locale-only-does-not-reset-instance-options",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-combined",
+      "operation": "getResult",
+      "input": {
+        "key": "Sparse.RuOnly {{tag}}",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "5"
+          },
+          "tag": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A locale-only options object takes the TranslationOptions.forLocale() construction path, and none of the instance's three non-default options may be disturbed by it. The instance throwing handler must still fire (a default return-key handler would return the key instead), and the inherited any-failure policy must still carry attemptedLocales to [ru, en] before the throw (the default policy would leave it [ru]). A port that modelled per-call options as a complete configuration record — locale supplied, everything else defaulted — fails on both counts while passing almost every other case in the family."
+    },
+    {
+      "id": "ingress-matrix.combined.none-options-does-not-reset-instance-options",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-combined",
+      "operation": "getResult",
+      "input": {
+        "key": "Sparse.RuOnly {{tag}}",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "5"
+          },
+          "tag": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same claim for the TranslationOptions.none() path: an empty options object must leave the instance locale, handler and policy all in force, so the lookup happens at ru, the walk still reaches en, and the instance throwing handler fires. Authored separately from the forLocale row because none() and forLocale() are distinct constructions (TranslationOptions.NONE is a shared singleton that Builder.build() also collapses to) and a port could plausibly get one right and the other wrong."
+    },
+    {
+      "id": "ingress-matrix.combined.get-per-call-return-string-overrides-instance-throw",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-combined",
+      "operation": "get",
+      "input": {
+        "key": "Absent.Named {{tag}}",
+        "locale": "ru",
+        "placeholders": {
+          "tag": "Sarah"
+        },
+        "translationFailureHandler": {
+          "behavior": "return-string",
+          "text": "COMBINED-PER-CALL-TEXT"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The return-string response kind exercised against a fully non-default instance configuration, through get() so the emitted channel is the translation string rather than the RETURNED_STRING status the corpus schema cannot express. The payload shares no substring with the key, so a port that ignored the per-call handler either throws (instance handler) or returns the interpolated key (library default) and is caught either way."
+    }
+  ]
+}

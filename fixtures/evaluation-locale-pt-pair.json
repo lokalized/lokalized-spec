@@ -1,0 +1,67 @@
+{
+  "id": "evaluation-locale-pt-pair",
+  "description": "The pt / pt-PT half of the clause. GeneratedCldrPluralData keeps pt and pt-PT as distinct cardinal rule sets: pt's one-rule is `i = 0..1` while pt-PT's is `i = 1 and v = 0`, so the two disagree at 0 (pt ONE, pt-PT OTHER) and at 1.5 (pt ONE, pt-PT OTHER) and nowhere else. Three keys route three different donors: Boxes.PtOnly makes pt the donor for a pt-PT request through the CLDR parent chain, Boxes.PtPtOnly makes pt-PT reachable for a bare pt request through the tiebreaker limb of localeFallbackCandidates, and Boxes.EnOnly makes the fallback locale en the donor for both. Tiebreakers are MANDATORY here because pt and pt-PT share the primary language code 'pt', and DefaultStrings requires the list to be an exact permutation of the loaded pt-language locales; 'pt' is listed first so a bare pt request still selects pt itself.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "pt": [
+      "pt",
+      "pt-PT"
+    ]
+  },
+  "files": {
+    "pt": {
+      "Locale.Marker": "pt",
+      "Boxes.PtOnly": {
+        "translation": "{{noun}}",
+        "placeholders": {
+          "noun": {
+            "value": "itemCount",
+            "translations": {
+              "CARDINALITY_ZERO": "pt:ZERO",
+              "CARDINALITY_ONE": "pt:ONE",
+              "CARDINALITY_TWO": "pt:TWO",
+              "CARDINALITY_FEW": "pt:FEW",
+              "CARDINALITY_MANY": "pt:MANY",
+              "CARDINALITY_OTHER": "pt:OTHER"
+            }
+          }
+        }
+      }
+    },
+    "pt-PT": {
+      "Locale.Marker": "pt-PT",
+      "Boxes.PtPtOnly": {
+        "translation": "{{noun}}",
+        "placeholders": {
+          "noun": {
+            "value": "itemCount",
+            "translations": {
+              "CARDINALITY_ZERO": "pt-PT:ZERO",
+              "CARDINALITY_ONE": "pt-PT:ONE",
+              "CARDINALITY_TWO": "pt-PT:TWO",
+              "CARDINALITY_FEW": "pt-PT:FEW",
+              "CARDINALITY_MANY": "pt-PT:MANY",
+              "CARDINALITY_OTHER": "pt-PT:OTHER"
+            }
+          }
+        }
+      }
+    },
+    "en": {
+      "Locale.Marker": "en",
+      "Boxes.EnOnly": {
+        "translation": "{{noun}}",
+        "commentary": "Only the two categories English has, so a port that evaluated this donor entry under pt or pt-PT rules would select MANY at 1000000 and find no branch.",
+        "placeholders": {
+          "noun": {
+            "value": "itemCount",
+            "translations": {
+              "CARDINALITY_ONE": "en:ONE",
+              "CARDINALITY_OTHER": "en:OTHER"
+            }
+          }
+        }
+      }
+    }
+  }
+}

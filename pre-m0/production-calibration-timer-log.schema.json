@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lokalized.org/schemas/pre-m0/production-calibration-timer-log.schema.json",
+  "title": "Lokalized JS production calibration monotonic timer log",
+  "description": "Structural schema only. pre-m0/validate-artifacts.mjs authoritatively reconciles intervals, phases, people, clocks, and recorded minute totals.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "formatVersion",
+    "runId",
+    "monotonicClock",
+    "phases",
+    "humanIntervals",
+    "agentIntervals"
+  ],
+  "properties": {
+    "formatVersion": { "const": 1 },
+    "runId": { "$ref": "#/$defs/name" },
+    "monotonicClock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "unit", "continuousProcessIdentity"],
+      "properties": {
+        "source": { "$ref": "#/$defs/name" },
+        "unit": { "const": "seconds" },
+        "continuousProcessIdentity": { "$ref": "#/$defs/name" }
+      }
+    },
+    "phases": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "items": { "$ref": "#/$defs/phase" }
+    },
+    "humanIntervals": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/humanInterval" }
+    },
+    "agentIntervals": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/agentInterval" }
+    }
+  },
+  "$defs": {
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": ".*\\S.*"
+    },
+    "phaseName": {
+      "enum": ["authoring", "review", "rework", "decision-review", "final-verification"]
+    },
+    "phase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "start", "end", "elapsedSeconds"],
+      "properties": {
+        "name": { "$ref": "#/$defs/phaseName" },
+        "start": { "type": "number" },
+        "end": { "type": "number" },
+        "elapsedSeconds": { "type": "number", "minimum": 0 }
+      }
+    },
+    "humanInterval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["metric", "participant", "phase", "start", "end", "elapsedSeconds"],
+      "properties": {
+        "metric": {
+          "enum": [
+            "implementer",
+            "reviewer",
+            "decisionOwnerPerRecordWork",
+            "decisionOwnerFixedBatchWork"
+          ]
+        },
+        "participant": { "$ref": "#/$defs/name" },
+        "phase": { "$ref": "#/$defs/phaseName" },
+        "start": { "type": "number" },
+        "end": { "type": "number" },
+        "elapsedSeconds": { "type": "number", "minimum": 0 }
+      }
+    },
+    "agentInterval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["metric", "agent", "phase", "start", "end", "elapsedSeconds"],
+      "properties": {
+        "metric": { "enum": ["authoring", "review", "rework"] },
+        "agent": { "$ref": "#/$defs/name" },
+        "phase": { "$ref": "#/$defs/phaseName" },
+        "start": { "type": "number" },
+        "end": { "type": "number" },
+        "elapsedSeconds": { "type": "number", "minimum": 0 }
+      }
+    }
+  }
+}

@@ -1,0 +1,635 @@
+{
+  "formatVersion": 1,
+  "family": "supplied-match",
+  "description": "Plan v7 section 8.3 fixture family 'supplied-match'. Inputs only; the oracle emits expected.",
+  "skipped": [
+    {
+      "what": "localeResolver and localeMatchResolver ingress axes named in plan v7 section 8.3",
+      "why": "Not Java APIs. lokalized-java 3.0.0 exposes only localeSupplier and localeMatchSupplier (DefaultStrings.java:86-88, 2756-2762) and the oracle's fixture schema has no resolver field; these names belong to the plan's JS surface, so no Java-oracle case can be authored for them."
+    },
+    {
+      "what": "A case asserting that a fixture's instanceLocale is inert when a localeMatchSupplier is configured (the removed supplied-match-instance-locale-inert fixture and its case)",
+      "why": "REMOVED FROM THE AUTHORED SET as non-discriminating. VectorOracle.buildStrings reads instanceLocale only in the else branch where neither supplier is configured (VectorOracle.java:155-163); with a localeMatchSupplier set the value never reaches Strings.Builder, so the case could not have failed and would have asserted a harness property rather than a library one. The library's own exactly-one-ambient-source rule (DefaultStrings.java:254-255) is likewise unexpressible: the oracle refuses a fixture setting both suppliers before the library ever sees it."
+    },
+    {
+      "what": "A duplicated echo case for requestedLanguageRanges on the unmatched fixture (the removed supplied-match.unmatched.requested-ranges-survive-verbatim)",
+      "why": "REMOVED as a duplicate proposition. Measured: every case on supplied-match-unmatched-none emits a byte-identical match block, so the verbatim de range is already asserted by supplied-match.unmatched.lookup-uses-supplied-fallback-locale, whose notes now carry the claim."
+    },
+    {
+      "what": "A supplied match selecting a locale that is NOT loaded",
+      "why": "Structurally unreachable, not merely untested. LocaleMatchResult's constructor requires the selection to be among consideredLocales, and DefaultStrings.validateSuppliedLocaleMatchResult requires consideredLocales to equal the supported locales as a set, so any unloaded selection fails as 'different supported locales'. Covered indirectly by supplied-match.considered.subset-is-rejected and .superset-is-rejected rather than as its own shape."
+    },
+    {
+      "what": "A non-finite (NaN/Infinity) effective weight",
+      "why": "The constructor checks Double.isFinite, but JSON has no literal for NaN or Infinity and the oracle decodes weight with asDouble(), so the value cannot reach the constructor through the fixture format. The finite boundary is covered at 0 and 1.5."
+    },
+    {
+      "what": "A malformed (non-well-formed) supplied, considered, or fallback locale reaching LocaleUtils.requireWellFormed",
+      "why": "The vector schema's languageTag pattern admits only alphanumeric-and-hyphen tags, and Locale.forLanguageTag silently drops ill-formed subtags from any such tag, so the Locale the oracle can build is always well-formed. Expressing a genuinely ill-formed locale would require a schema change this family must not make. Confirmed adjacent: qq is well-formed and unassigned, and supplied-match.considered.unassigned-tag-fails-the-same-way shows the check is syntactic only."
+    },
+    {
+      "what": "Match-object identity asserted AT the fallback observer callback",
+      "why": "Java's TranslationFallbackPolicy.shouldTryNextLocale receives (reason, locale, cause) and is never handed a LocaleMatchResult, so there is no match object at that callback whose identity could be compared. The fallback-observer leg of the section 8.3 clause is covered as far as Java permits by the policyCalls channel on the three policy cases, which shows the walk the supplied match drove."
+    },
+    {
+      "what": "Classpath loading of the fabricated-match fixtures",
+      "why": "Still unsupported by the vector oracle, which materializes fixtures to a filesystem directory and loads through LocalizedStringLoader.loadFromFilesystem."
+    },
+    {
+      "what": "JS-side delivery of a supplied match (SSR serialization of LocaleMatchResult, Fetch/Node planning, digest capability, shard merges)",
+      "why": "No Java counterpart to observe. LocaleMatchResult's Java serialization proxy exists but the corpus has no channel for it, and the delivery surfaces are JS-only."
+    }
+  ],
+  "cases": [
+    {
+      "id": "supplied-match.type-table.exact-drives-isfallback",
+      "requirementIds": [],
+      "fixture": "supplied-match-type-exact",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Hello"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Greeting.Hello exists in fr, so resolution serves the supplied locale directly and the second isFallback term (resolvedLocale not equivalent to lookupLocale) contributes nothing. Whatever isFallback reports therefore comes entirely from the SUPPLIED matchType. A port that re-derived the match from the catalog, or that computed isFallback from how the translation was actually served, diverges on the types the switch treats as fallback."
+    },
+    {
+      "id": "supplied-match.type-table.canonical-drives-isfallback",
+      "requirementIds": [],
+      "fixture": "supplied-match-type-canonical",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Hello"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Same instance shape with matchType CANONICAL. Only the fabricated type can decide isFallback here, so this row and its six siblings reconstruct TranslationResult.negotiationUsedFallback's whole switch through the supplied channel."
+    },
+    {
+      "id": "supplied-match.type-table.cldr-fallback-drives-isfallback",
+      "requirementIds": [],
+      "fixture": "supplied-match-type-cldr-fallback",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Hello"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "CLDR_FALLBACK claimed over a locale that actually served the key exactly. Whichever way isFallback lands, it is provably a function of the supplied diagnostic and not of resolution -- the strongest single statement that a supplied match is trusted."
+    },
+    {
+      "id": "supplied-match.type-table.likely-subtag-drives-isfallback",
+      "requirementIds": [],
+      "fixture": "supplied-match-type-likely-subtag",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Hello"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "LIKELY_SUBTAG on an exact serve. Pairs with the EXTENDED_RANGE and WILDCARD rows, which are the near neighbours a port is most likely to sort onto the wrong side of the switch."
+    },
+    {
+      "id": "supplied-match.type-table.extended-range-drives-isfallback",
+      "requirementIds": [],
+      "fixture": "supplied-match-type-extended-range",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Hello"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "EXTENDED_RANGE sounds like a fallback relationship. A port that grouped the types by intuition rather than by the enumeration diverges here."
+    },
+    {
+      "id": "supplied-match.type-table.primary-language-drives-isfallback",
+      "requirementIds": [],
+      "fixture": "supplied-match-type-primary-language",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Hello"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "PRIMARY_LANGUAGE against EXTENDED_RANGE and WILDCARD is what makes the grouping non-guessable; the three cases are only meaningful together."
+    },
+    {
+      "id": "supplied-match.type-table.wildcard-drives-isfallback",
+      "requirementIds": [],
+      "fixture": "supplied-match-type-wildcard",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Hello"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "WILDCARD completes the seven non-NONE types. With all seven recorded, a port's own isFallback classification is fully pinned without needing NONE, which cannot be paired with a locale at all."
+    },
+    {
+      "id": "supplied-match.type-table.exact-claim-still-falls-back-when-served-elsewhere",
+      "requirementIds": [],
+      "fixture": "supplied-match-type-exact",
+      "operation": "getResult",
+      "input": {
+        "key": "Only.En"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Same instance whose supplied match claims EXACT on fr, but a key that exists only in en. isFallback is an OR (TranslationResult.java:250-253): the supplied type feeds the first term and the resolved-locale comparison feeds the second. Isolates the second term from the first, so a port cannot pass the seven-row type table by hard-wiring isFallback to the matchType alone."
+    },
+    {
+      "id": "supplied-match.contradiction.none-with-locale-is-rejected",
+      "requirementIds": [],
+      "fixture": "supplied-match-type-none-with-locale",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Hello"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "NONE plus a selected locale is the sharpest contradiction the public constructor can be handed. Records WHICH validation fires, with what exception type and message; a port that accepts the contradiction, or that silently coerces the type to EXACT, produces a translation where Java produces a throw."
+    },
+    {
+      "id": "supplied-match.contradiction.per-call-locale-bypasses-invalid-supplier",
+      "requirementIds": [],
+      "fixture": "supplied-match-type-none-with-locale",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Hello",
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same instance, but with a per-call locale. localeLookupFor (DefaultStrings.java:2436-2438) returns before ever touching localeMatchSupplier, so the invalid fabrication is never built and the call succeeds. Proves the supplier is consulted lazily and only as the LAST ingress; a port that evaluated the ambient supplier eagerly at construction, or consulted it before the per-call locale, throws here. The absent supplierCalls channel is half the observation."
+    },
+    {
+      "id": "supplied-match.contradiction.per-call-ranges-bypass-invalid-supplier",
+      "requirementIds": [],
+      "fixture": "supplied-match-type-none-with-locale",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Hello",
+        "languageRanges": "fr;q=0.8"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Same bypass through the per-call RANGES ingress (DefaultStrings.java:2442-2445). Also records the match a real negotiation derives for that header, next to the fabrication that never ran -- including the header's own q value as the effective weight, which a port that normalized weights away would lose."
+    },
+    {
+      "id": "supplied-match.ingress.per-call-ranges-clear-an-earlier-per-call-locale",
+      "requirementIds": [],
+      "fixture": "supplied-match-type-none-with-locale",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Hello",
+        "locale": "en",
+        "languageRanges": "fr",
+        "perCallOverrideOrder": [
+          "locale",
+          "languageRanges"
+        ]
+      },
+      "partition": "informationalIds",
+      "notes": "Both per-call ingresses at once, with the ORDER NOW STATED BY THE CASE rather than by the oracle. TranslationOptions refuses to hold both (TranslationOptions.java:70-71) and its Builder avoids that by having each setter CLEAR the other (:309-313, :330-333), so the surviving override is whichever was applied last -- which makes :70-71 dead by construction and a both-present TranslationOptions unrecordable. This row applies locale then languageRanges, so fr survives and the call answers 'Bonjour'. Its reverse-order partner per-call-override-order.supplied-match.ranges-then-locale carries the identical key, locale and ranges and MEASURES 'Hello', so the order is visible in the returned string and not only in the diagnostics; neither row alone says what a both-present call does. A port whose builder keeps both and prefers one, or that throws instead of clearing, diverges on one of the pair. The separately emitted match channel is computed straight from the per-call locale, so it and the result block disagree on purpose. The invalid ambient supplier stays unbuilt under both orders, so a second per-call ingress does not reopen it. PARTITION: informationalIds, not requiredPortableIds -- see the twin note on ingress-matrix-java.zh-tw.per-call-ranges-displace-per-call-locale. The JS surface is an object literal, the analogue of Java's CONSTRUCTOR (which refuses) rather than of its ordered BUILDER, and choosing the port's answer is a plan decision this row must not be read as settling."
+    },
+    {
+      "id": "supplied-match.contradiction.matchfor-does-not-consult-supplier",
+      "requirementIds": [],
+      "fixture": "supplied-match-type-none-with-locale",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "fr"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "matchFor negotiates directly and never consults the ambient match supplier -- if it did, this invalid fabrication would throw instead of returning a match. The recorded absence of a supplierCalls channel is the assertion, and it is the shape a JS port breaks when it routes a no-argument matchFor through the ambient ingress."
+    },
+    {
+      "id": "supplied-match.unmatched.lookup-uses-supplied-fallback-locale",
+      "requirementIds": [],
+      "fixture": "supplied-match-unmatched-none",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Hello"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "With no selected locale the lookup locale comes from the supplied match's own fallbackLocale, not from the instance locale and not from a re-negotiation of the requested ranges. The result's match also echoes a requested range of de that was never negotiated and is not loaded, so a port that recomputed requestedLanguageRanges from its own ingress emits an empty list here."
+    },
+    {
+      "id": "supplied-match.unmatched.missing-key-carries-none-match-into-failure",
+      "requirementIds": [],
+      "fixture": "supplied-match-unmatched-none",
+      "operation": "getResult",
+      "input": {
+        "key": "Only.Fr"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Only.Fr exists solely in fr, which the unmatched supplied match never selected, so the lookup fails. The failure record must carry the SAME unmatched match object as the result (matchObjectIdenticalToResult), which is the identity clause asserted for a supplied match rather than a matcher-derived one."
+    },
+    {
+      "id": "supplied-match.unmatched.weight-without-locale-is-rejected",
+      "requirementIds": [],
+      "fixture": "supplied-match-unmatched-with-weight",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Hello"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The unmatched-state check is the one constructor rejection no other case in this family reaches, so without it a port could omit the check entirely and still pass. isMatch is derived from locale != null with no setter, so an unmatched result carrying a weight is exactly the inconsistency this check exists to stop."
+    },
+    {
+      "id": "supplied-match.unmatched.non-none-type-without-locale-is-rejected",
+      "requirementIds": [],
+      "fixture": "supplied-match-unmatched-with-non-none-type",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Hello"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Pairs with the weight case: a port that validated only range and weight, and let matchType drift free of the matched/unmatched state, accepts this. Which of the two constructor messages Java uses is itself the observation."
+    },
+    {
+      "id": "supplied-match.unmatched.empty-requested-ranges-are-accepted",
+      "requirementIds": [],
+      "fixture": "supplied-match-unmatched-no-requested-ranges",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Hello"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Read against supplied-match.range.matched-result-requires-requested-ranges, this shows the empty-list rejection is about matched-range CONTAINMENT and not about emptiness, so a port must not reject an empty requested-range list outright. The echoed empty list is also the only place in this family where requestedLanguageRanges is observably empty."
+    },
+    {
+      "id": "supplied-match.unasked.selection-wins-over-requested-range",
+      "requirementIds": [],
+      "fixture": "supplied-match-loaded-but-unasked",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Hello"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Greeting.Hello exists in BOTH locales with different text, so the served translation alone reveals which locale the library trusted: the supplied selection, or the locale the supplied range asks for."
+    },
+    {
+      "id": "supplied-match.unasked.candidate-chain-starts-at-supplied-locale",
+      "requirementIds": [],
+      "fixture": "supplied-match-loaded-but-unasked",
+      "operation": "getResult",
+      "input": {
+        "key": "Only.Fr"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Only.Fr lives in fr alone. Starting the candidate chain at the supplied en makes the key unreachable; a port that re-derived from the requested fr range would find it. attemptedLocales makes the difference explicit, and the failure record pins the match identity on that path too."
+    },
+    {
+      "id": "supplied-match.unasked.per-call-locale-replaces-supplier",
+      "requirementIds": [],
+      "fixture": "supplied-match-loaded-but-unasked",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Hello",
+        "locale": "fr"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The per-call locale must REPLACE the ambient fabrication wholesale -- the result's match is re-derived for fr and no supplierCalls channel appears. Pairs with the case above, where the same key on the same instance served the other locale's text."
+    },
+    {
+      "id": "supplied-match.weight.effective-weight-is-echoed-not-recomputed",
+      "requirementIds": [],
+      "fixture": "supplied-match-effective-weight-lower-than-range",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Hello"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A port that derived effectiveWeight from the matched range's own weight would report 1.0 where Java reports the supplied 0.25, even though nothing else about the match is counterfactual."
+    },
+    {
+      "id": "supplied-match.weight.zero-is-rejected",
+      "requirementIds": [],
+      "fixture": "supplied-match-weight-zero",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Hello"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Weight 0 is a legal Accept-Language quality (it means 'not acceptable'), so a port might well allow it on a match result. This records which side Java lands on, and the exact rejection."
+    },
+    {
+      "id": "supplied-match.weight.above-one-is-rejected",
+      "requirementIds": [],
+      "fixture": "supplied-match-weight-above-one",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Hello"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The upper half of the same boundary. Paired with the zero case so a port cannot pass by clamping into range instead of rejecting."
+    },
+    {
+      "id": "supplied-match.range.matched-range-must-be-requested",
+      "requirementIds": [],
+      "fixture": "supplied-match-range-not-among-requested",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Hello"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The ingress-smoke fabrication gets away with claiming range de precisely because it also LISTS de as requested. This case removes that and shows the constraint is real, so a port cannot conclude from the smoke case that the range field is unvalidated."
+    },
+    {
+      "id": "supplied-match.range.identity-includes-weight",
+      "requirementIds": [],
+      "fixture": "supplied-match-range-weight-mismatch",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Hello"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The sharpest of the three containment cases: a port whose LanguageRange equality compares only the range string accepts this where Java rejects it, and the effective weight (0.5) is inside the legal interval so the weight check cannot be what fires."
+    },
+    {
+      "id": "supplied-match.range.matched-result-requires-requested-ranges",
+      "requirementIds": [],
+      "fixture": "supplied-match-no-requested-ranges",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Hello"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Constrains any port's own public constructor: a supplied MATCHED result can never carry an empty requested-range list. Read together with supplied-match.unmatched.empty-requested-ranges-are-accepted, which shows the same list is fine when nothing was selected."
+    },
+    {
+      "id": "supplied-match.range.containment-check-precedes-weight-check",
+      "requirementIds": [],
+      "fixture": "supplied-match-range-absent-and-weight-zero",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Hello"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The single-violation range and weight fixtures cannot pin validation ORDER, because in each of them the other check would have passed anyway. This one breaks both, so a port that validates the weight interval first reports the other message for this exact input."
+    },
+    {
+      "id": "supplied-match.considered.subset-is-rejected",
+      "requirementIds": [],
+      "fixture": "supplied-match-considered-missing-locale",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Hello"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "This is the INSTANCE-level validation rather than the constructor's, so the message and throw site differ from every constructor rejection in this family -- and so does the supplierCalls channel, which is PRESENT here (the supplier returned, then the instance refused its result) where a constructor rejection leaves it absent. A port that only replicated LocaleMatchResult's own checks accepts this. It is also why a supplied match can never select an unloaded locale: the selection must be considered, and considered must equal supported."
+    },
+    {
+      "id": "supplied-match.considered.superset-is-rejected",
+      "requirementIds": [],
+      "fixture": "supplied-match-considered-extra-loadable-locale",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Hello"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Set equality is symmetric: an extra considered locale must be rejected as firmly as a missing one. A port that implemented containment (every supported locale considered) passes this where Java throws."
+    },
+    {
+      "id": "supplied-match.considered.unassigned-tag-fails-the-same-way",
+      "requirementIds": [],
+      "fixture": "supplied-match-considered-nonexistent-locale",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Hello"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Pairs with the de superset case. If both produce the same failure identity, neither the constructor's well-formedness check nor the instance validation consults a registry of real languages -- a check a port must not add."
+    },
+    {
+      "id": "supplied-match.considered.empty-list-fails-in-the-constructor",
+      "requirementIds": [],
+      "fixture": "supplied-match-considered-empty",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Hello"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Locates the throw. Both the value type's fallback-containment rule and the instance's supported-locale comparison are broken here, so the message that comes out says which LAYER validates first. A port that only checked at the instance reports the other message."
+    },
+    {
+      "id": "supplied-match.considered.duplicate-is-rejected-though-set-matches",
+      "requirementIds": [],
+      "fixture": "supplied-match-considered-duplicate",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Hello"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "As a SET this list equals the supported locales exactly, so nothing downstream would have objected. A port that models considered locales as a set, or that deduplicates silently, loses this rejection entirely. This case deliberately makes no ordering claim: its fallback locale IS considered, so no second check was in contention."
+    },
+    {
+      "id": "supplied-match.considered.duplicate-check-precedes-fallback-containment",
+      "requirementIds": [],
+      "fixture": "supplied-match-considered-duplicate-and-fallback-absent",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Hello"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Neither the plain duplicate fixture nor the empty-considered fixture can pin this order, because in each of them only one of the two checks was violated. Here both are, so the emitted message names which of the two constructor checks runs first -- portable behavior a port reproduces only by validating in the same sequence."
+    },
+    {
+      "id": "supplied-match.considered.caller-order-is-preserved",
+      "requirementIds": [],
+      "fixture": "supplied-match-considered-reordered",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Hello"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Two propositions that only work together: order does not affect ACCEPTANCE (a port comparing ordered lists throws here), and the accepted order is echoed on the result rather than normalized to the library's sorted supported-locale order. Every other fixture in this family lists en before fr, where caller order and sorted order coincide and neither proposition would be visible."
+    },
+    {
+      "id": "supplied-match.fallback.foreign-fallback-is-rejected",
+      "requirementIds": [],
+      "fixture": "supplied-match-foreign-fallback-locale",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Hello"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A supplied match may disagree with reality about the SELECTION but not about the instance's fallback locale. Without this boundary a port would let a supplier redirect the whole fallback chain from outside."
+    },
+    {
+      "id": "supplied-match.fallback.fallback-check-precedes-considered-check",
+      "requirementIds": [],
+      "fixture": "supplied-match-foreign-fallback-and-considered",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Hello"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Validation ORDER inside validateSuppliedLocaleMatchResult is observable through the message when both of its invariants are broken at once. A port that compares considered locales first reports the other failure for this input."
+    },
+    {
+      "id": "supplied-match.range-count.thirty-two-is-accepted-and-echoed",
+      "requirementIds": [],
+      "fixture": "supplied-match-requested-ranges-at-maximum",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Hello"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The inclusive boundary at LocaleMatcher.MAXIMUM_LANGUAGE_RANGES. Thirty-one of the ranges correspond to nothing loaded and none of them was ever negotiated, so the echoed list also proves the library neither filters, sorts, nor compacts what it was handed."
+    },
+    {
+      "id": "supplied-match.range-count.thirty-three-is-rejected",
+      "requirementIds": [],
+      "fixture": "supplied-match-requested-ranges-above-maximum",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Hello"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Off-by-one partner of the accepted 32. The message carries both the limit and the received count, which a port's own error must reproduce to be diagnosable."
+    },
+    {
+      "id": "supplied-match.identity.missing-translation-carries-supplied-match",
+      "requirementIds": [],
+      "fixture": "supplied-match-failure-identity",
+      "operation": "getResult",
+      "input": {
+        "key": "Missing.Everywhere"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "MISSING_TRANSLATION under the default policy. The handler's failure record carries the impossible match and matchObjectIdenticalToResult reports reference identity -- a port that COPIED the supplied match into the failure while SHARING derived ones would still pass every existing identity case in the corpus and fail this one."
+    },
+    {
+      "id": "supplied-match.identity.no-matching-alternative-carries-supplied-match",
+      "requirementIds": [],
+      "fixture": "supplied-match-failure-identity",
+      "operation": "getResult",
+      "input": {
+        "key": "NoMatch.Alternatives",
+        "placeholders": {
+          "itemCount": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same identity assertion on the NO_MATCHING_ALTERNATIVE reason, which is raised from a different site in resolution and carries no cause. Also shows the supplied match survives a walk across both locales' alternatives."
+    },
+    {
+      "id": "supplied-match.identity.resolution-failure-carries-supplied-match",
+      "requirementIds": [],
+      "fixture": "supplied-match-failure-identity",
+      "operation": "getResult",
+      "input": {
+        "key": "Res.Failure",
+        "placeholders": {
+          "itemCount": 2
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The third reason: an in-translation resolution failure, where the failure object also carries a cause and the DEFAULT policy declines to continue. The supplied match must still be the same object, and the fabricated de range and 0.25 weight must still be visible on it."
+    },
+    {
+      "id": "supplied-match.identity.policy-never-stops-at-supplied-locale",
+      "requirementIds": [],
+      "fixture": "supplied-match-failure-identity",
+      "operation": "getResult",
+      "input": {
+        "key": "Missing.Everywhere",
+        "translationFallbackPolicy": "never"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Under the never-fall-back policy the chain stops at the supplied match's own locale, so attemptedLocales is the shortest it can be; the contrast with the default-policy case on the same key is the whole point. The supplied match itself is unaffected by the policy -- a policy-sensitive match object would show up here first."
+    },
+    {
+      "id": "supplied-match.identity.policy-any-failure-walks-past-supplied-locale",
+      "requirementIds": [],
+      "fixture": "supplied-match-failure-identity",
+      "operation": "getResult",
+      "input": {
+        "key": "Res.Failure",
+        "placeholders": {
+          "itemCount": 2
+        },
+        "translationFallbackPolicy": "any-failure"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "THE RE-DERIVATION TRAP: any-failure continues past the supplied match's locale into the fallback candidate, which is exactly where an implementation that recomputed the match per candidate would emit a second, different match. The match on the result and on the failure record must remain the single supplied one, and supplierCalls must still show ONE consultation for the whole two-candidate walk. Pairs with the default-policy case on the same key, which stops at fr."
+    },
+    {
+      "id": "supplied-match.identity.policy-continue-for-locales-keeps-one-match",
+      "requirementIds": [],
+      "fixture": "supplied-match-failure-identity",
+      "operation": "getResult",
+      "input": {
+        "key": "Missing.Everywhere",
+        "translationFallbackPolicy": {
+          "behavior": "continue-for-locales",
+          "locales": [
+            "fr"
+          ]
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A caller-supplied policy that continues only while the failing locale is fr, so the walk is driven by a third callback that sees the lookup locale but never the match. policyCalls shows which locales it was consulted for, and every resulting failure record must still carry the one supplied match object."
+    },
+    {
+      "id": "supplied-match.identity.get-returns-key-with-failure-recorded",
+      "requirementIds": [],
+      "fixture": "supplied-match-failure-identity",
+      "operation": "get",
+      "input": {
+        "key": "Missing.Everywhere"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The get() surface rather than getResult(): the default return-key handler's response becomes the returned string, while the failure channel still records the supplied match verbatim. matchObjectIdenticalToResult is false BY CONSTRUCTION here -- get() yields no result object for the oracle to compare against -- so the assertion is content-level, and the paired getResult case above is where reference identity is checked."
+    },
+    {
+      "id": "supplied-match.identity.thrown-path-sees-supplied-match",
+      "requirementIds": [],
+      "fixture": "supplied-match-failure-identity-throwing-handler",
+      "operation": "get",
+      "input": {
+        "key": "Missing.Everywhere"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "get() with a throwing handler surfaces MissingTranslationException. The failure record captured before the throw must show the impossible fabrication verbatim -- range de on a CLDR_FALLBACK claim over fr at weight 0.25 -- proving the thrown path is fed the supplied object. Reference identity cannot be reported here because no result exists to compare against, so the assertion is content-level."
+    },
+    {
+      "id": "supplied-match.identity.thrown-path-from-getresult",
+      "requirementIds": [],
+      "fixture": "supplied-match-failure-identity-throwing-handler",
+      "operation": "getResult",
+      "input": {
+        "key": "Res.Failure",
+        "placeholders": {
+          "itemCount": 2
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The throwing handler fires inside getResult too, so this is the thrown path reached from the RESULT surface, and the escaping exception is the resolution cause itself rather than a MissingTranslationException. The failure record still carries the fabricated match verbatim, and the exception identity distinguishes the two thrown paths."
+    },
+    {
+      "id": "supplied-match.unmatched.thrown-path-carries-none-match",
+      "requirementIds": [],
+      "fixture": "supplied-match-unmatched-throwing-handler",
+      "operation": "get",
+      "input": {
+        "key": "Only.Fr"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The least informative supply -- an unmatched NONE -- on the throwing path. The failure record captured before the throw must carry that NONE match, with the de range that was never negotiated. A port that omitted the match on an unmatched supply, or that substituted a re-derived match for the fallback locale it ended up using, diverges here."
+    },
+    {
+      "id": "supplied-match.region.candidate-chain-descends-from-supplied-region",
+      "requirementIds": [],
+      "fixture": "supplied-match-region-selection",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Hello"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Greeting.Hello is absent from fr-CA but present in fr and en with different text. The CLDR parent chain of the SUPPLIED selection decides which one serves it, so this shows the supplied locale drives candidate generation rather than merely labelling the result."
+    },
+    {
+      "id": "supplied-match.region.supplied-type-decides-fallback-at-region-serve",
+      "requirementIds": [],
+      "fixture": "supplied-match-region-selection",
+      "operation": "getResult",
+      "input": {
+        "key": "Only.FrCa"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Served straight from the supplied fr-CA, so lookupLocale and resolvedLocale coincide and the resolved-locale term of the isFallback OR contributes nothing; only the fabricated PRIMARY_LANGUAGE type is left to decide it. Isolates the supplied type's effect at a region-bearing selection, where a port is most tempted to recompute the relationship from the tag itself instead of trusting the supply."
+    }
+  ]
+}

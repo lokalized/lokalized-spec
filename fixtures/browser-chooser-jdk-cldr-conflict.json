@@ -1,0 +1,19 @@
+{
+  "id": "browser-chooser-jdk-cldr-conflict",
+  "description": "The conflict DefaultStrings.java:1570-1576 documents in prose: the JDK's IANA equivalence table maps nsl to sgn-NO while CLDR canonicalizes sgn-NO to nsi. Both nsl and nsi are loaded so the two data sources point at different, individually reachable sources; they do not share a canonical language code, so no tiebreakers are needed and the fixture builds. A port that took the transitive union of the two tables would collapse nsl and nsi into one preference and could not reproduce these rows.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "nsl": {
+      "Checkout.Title": "nsl"
+    },
+    "nsi": {
+      "Checkout.Title": "nsi"
+    },
+    "en": {
+      "Checkout.Title": "en"
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

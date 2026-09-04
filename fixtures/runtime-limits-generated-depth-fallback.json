@@ -1,0 +1,40 @@
+{
+  "id": "runtime-limits-generated-depth-fallback",
+  "description": "Plan v7 section 4.6: 'Generated depth and cumulative expansion budgets reset for each locale attempt.' The expansion half is covered by runtime-limits-expansion-fallback-budget; this fixture covers the depth half. With maximumGeneratedPlaceholderDepth 2, fr's Deep is a three-link chain that breaches the limit while en's is a two-link chain that sits exactly on it, so a permissive walk must reach en with a depth counter seeded back to 0. en and fr are different primary languages, so tiebreakers are absent.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "runtimeLimits": {
+    "maximumGeneratedPlaceholderDepth": 2
+  },
+  "files": {
+    "en": {
+      "Deep": {
+        "translation": "{{q1}}",
+        "placeholders": {
+          "q1": {
+            "translation": "{{q2}}"
+          },
+          "q2": {
+            "translation": "en-two"
+          }
+        }
+      }
+    },
+    "fr": {
+      "Deep": {
+        "translation": "{{r1}}",
+        "placeholders": {
+          "r1": {
+            "translation": "{{r2}}"
+          },
+          "r2": {
+            "translation": "{{r3}}"
+          },
+          "r3": {
+            "translation": "fr-three"
+          }
+        }
+      }
+    }
+  }
+}

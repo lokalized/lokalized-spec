@@ -1,0 +1,2814 @@
+{
+  "formatVersion": 1,
+  "status": "atomization-worklist-unreviewed",
+  "sourcePlanSha256": "4ace5e349bedd45b16cd87182aed3306d33fae92b034ed01ddb93bc733c5f62d",
+  "selectedProfileId": "strict-parity-0.x-draft",
+  "sourceInventories": [
+    {
+      "path": "pre-m0/inventory/sections-1-4.json",
+      "sha256": "2f43dbf81591dfb03ecce5a3d5cfa477dd85892c6f401f16eec9812d16531867"
+    },
+    {
+      "path": "pre-m0/inventory/sections-5-7.json",
+      "sha256": "c444f46e0745d2ddacb797ff1f1164d68a47cb05fa97ef1742ccd94b6519371a"
+    },
+    {
+      "path": "pre-m0/inventory/sections-8-14.json",
+      "sha256": "e225cd8b396b440e74268a5bfd604496e4e95bb659fffef8ff68a76aae536b8d"
+    }
+  ],
+  "blockCount": 186,
+  "anticipatedAtomicRecords": 1338,
+  "blocks": [
+    {
+      "inventoryId": "INV-1-4-002",
+      "sourceLineStart": 5,
+      "sourceLineEnd": 5,
+      "sourceAnchor": "document-target",
+      "sourceBlockSha256": "7e863c4654973e86df650715d59a2880152cfcc52cb7fdc52f27a276ffda24ca",
+      "sourceText": "**Target:** a vanilla-JavaScript port of lokalized-java 3.0.0, pinned to CLDR 48.2.",
+      "ownerMilestone": "M0",
+      "parityClass": "portable",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 3,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-004",
+      "sourceLineStart": 22,
+      "sourceLineEnd": 23,
+      "sourceAnchor": "1.goal.shared-vector-parity",
+      "sourceBlockSha256": "8f2e1d2716cf9b82d35d78761a5ddc5099e6a149b5ff758ec60185dcbaefe6f9",
+      "sourceText": "- produces the same semantic result as lokalized-java for every shared behavioral vector when both\n  implementations use the same pinned data and vector versions;",
+      "ownerMilestone": "M0",
+      "parityClass": "portable",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 2,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-005",
+      "sourceLineStart": 24,
+      "sourceLineEnd": 25,
+      "sourceAnchor": "1.goal.semantic-result-fields",
+      "sourceBlockSha256": "9c93933a5f247958869e5b921c0efa08e1233c7cdf3752bfae009eb515702111",
+      "sourceText": "- treats the semantic result as the returned translation, lookup and resolved locales, attempted\n  locales, status, failure reason, negotiation diagnostics, and specified thrown error behavior;",
+      "ownerMilestone": "M0",
+      "parityClass": "portable",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 8,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-006",
+      "sourceLineStart": 26,
+      "sourceLineEnd": 27,
+      "sourceAnchor": "1.goal.environments",
+      "sourceBlockSha256": "d12ddae431765f7e1b6a0ed6dc70f227edb8bc9fc3c6552fa16a9eca0fd6adc2",
+      "sourceText": "- works in Node, bundlers, and a plain browser `<script type=\"module\">` without an application build\n  step or runtime dependency;",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 5,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-007",
+      "sourceLineStart": 28,
+      "sourceLineEnd": 29,
+      "sourceAnchor": "1.goal.sync-runtime-async-loading",
+      "sourceBlockSha256": "481105dca4c2b40ac8cbd900b3dabfe7517dd64d0979d8cb9d4f170134270802",
+      "sourceText": "- keeps loading asynchronous and explicit while keeping `createStrings`, `get`, `t`, and `getResult`\n  synchronous;",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 6,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-008",
+      "sourceLineStart": 30,
+      "sourceLineEnd": 31,
+      "sourceAnchor": "1.goal.language-neutral-contracts",
+      "sourceBlockSha256": "d9d39986b458c32959605c1c0c81b47c07ad2a1f7c7d78a0d51cd8f07d5a02f2",
+      "sourceText": "- publishes language-neutral data and behavioral contracts that a Python or Go implementation can\n  consume without reproducing JavaScript or JVM implementation details.",
+      "ownerMilestone": "M3a",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 3,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-010",
+      "sourceLineStart": 41,
+      "sourceLineEnd": 41,
+      "sourceAnchor": "1.1.node-floor",
+      "sourceBlockSha256": "7c270a1b8ca57c5791a62c9a96cb9522e0061c4690965f438d0bca52bf20a9b1",
+      "sourceText": "| Node | 22; CI also runs 24 and current | Installed-package tests against the packed tarball |",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 4,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-011",
+      "sourceLineStart": 42,
+      "sourceLineEnd": 42,
+      "sourceAnchor": "1.1.browser-floors",
+      "sourceBlockSha256": "5b21e021e3e7e504f310991347bd6ecaca3c2747f92b93d8636d838e7a867210",
+      "sourceText": "| Browsers | Safari 16.4, Chrome 111, Firefox 111 | Exact-floor smoke tests plus current Playwright engines |",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 5,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-012",
+      "sourceLineStart": 43,
+      "sourceLineEnd": 43,
+      "sourceAnchor": "1.1.module-format",
+      "sourceBlockSha256": "8d4618b64fca53552122b89c8c5da3816516d754b1843376ee4bd435a1c26740",
+      "sourceText": "| Modules | ESM only; CommonJS `require` is unsupported | Node ESM, bundler, and direct-browser tests |",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 3,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-013",
+      "sourceLineStart": 44,
+      "sourceLineEnd": 44,
+      "sourceAnchor": "1.1.typescript-resolution",
+      "sourceBlockSha256": "82194c218fd2a17506b8319fca569c1005ac5e57fbb11f46fd6273d36f35436d",
+      "sourceText": "| TypeScript consumers | `node16`/`nodenext` and `bundler` resolution | Generated declarations checked from a packed install |",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 3,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-014",
+      "sourceLineStart": 46,
+      "sourceLineEnd": 47,
+      "sourceAnchor": "1.1.provisional-browser-floor",
+      "sourceBlockSha256": "e070a20ea41d2d95552d363b5b357b9f4d18959bd7d5528829b5c0de7f13e994",
+      "sourceText": "The named browser floors are provisional until CI can exercise those actual releases. Playwright's\nbundled current engines alone do not prove an old compatibility floor.",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 2,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-017",
+      "sourceLineStart": 53,
+      "sourceLineEnd": 54,
+      "sourceAnchor": "1.2.rendering-feature-scope",
+      "sourceBlockSha256": "262ef2ca9051410a71a0ce759450ddf6b95d341f4a1576b1a5b8d508f4d2c7f2",
+      "sourceText": "- interpolation, bidi isolation, expressions, all ten language-form axes, generated placeholders,\n  exact decimals, ordinals, and cardinal ranges;",
+      "ownerMilestone": "M0",
+      "parityClass": "portable",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 8,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-019",
+      "sourceLineStart": 57,
+      "sourceLineEnd": 57,
+      "sourceAnchor": "1.2.manifest-loading-scope",
+      "sourceBlockSha256": "0383ef6521e55ee623331e5c353d652c6902823da387fadd92dfce17bfe3fb48",
+      "sourceText": "- explicit manifest planning and browser/Node loading;",
+      "ownerMilestone": "M8",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 3,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-021",
+      "sourceLineStart": 60,
+      "sourceLineEnd": 61,
+      "sourceAnchor": "1.2.distribution-docs-parity-scope",
+      "sourceBlockSha256": "b5df7c9c35caa087faf947c2fb626316878ce89614483cdf836584d8324afec1",
+      "sourceText": "- npm and direct-browser distribution, generated declarations, documentation, and a release-time\n  parity declaration.",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 5,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-022",
+      "sourceLineStart": 65,
+      "sourceLineEnd": 65,
+      "sourceAnchor": "1.3.formatting-exclusions",
+      "sourceBlockSha256": "eb3758d8906f13c08d086c34fdb731c7321ba4f53dd885a7147c0da2cca1b17e",
+      "sourceText": "- date, time, number, percentage, currency, and list formatting; collation;",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 7,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-023",
+      "sourceLineStart": 66,
+      "sourceLineEnd": 67,
+      "sourceAnchor": "1.3.ecosystem-deferrals",
+      "sourceBlockSha256": "126e613a0c10971d1b85b8cb0245f3a9a0c96ee54416a324cbea08f1bef14de5",
+      "sourceText": "- React bindings, linting, a standalone conformance package, dashboards, and host-`Intl`\n  optimizations; these are post-MVP proposals;",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 5,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-024",
+      "sourceLineStart": 68,
+      "sourceLineEnd": 68,
+      "sourceAnchor": "1.3.tms-exclusion",
+      "sourceBlockSha256": "0beef6404fea4127aa4d3e957a4ae3e55254417094fe11b31f2836fd35168049",
+      "sourceText": "- TMS/XLIFF import, export, or round-tripping in v1;",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 3,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-025",
+      "sourceLineStart": 69,
+      "sourceLineEnd": 69,
+      "sourceAnchor": "1.3.no-hidden-io",
+      "sourceBlockSha256": "1e29f128f2aa11bd921b30238c7f3bfd7618b0219956e23934c44b8283098c52",
+      "sourceText": "- automatic I/O from `get`, hidden global caches, or mutable live-reload instances;",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 3,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-026",
+      "sourceLineStart": 70,
+      "sourceLineEnd": 70,
+      "sourceAnchor": "1.3.fixed-runtime-limits",
+      "sourceBlockSha256": "6228c252e6a417d35a8a9f960254ccb9231315953f34176f7f6ea62ac45bade6",
+      "sourceText": "- runtime-limit customization in v1; Java-compatible defaults are fixed;",
+      "ownerMilestone": "M6",
+      "parityClass": "portable",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 2,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-027",
+      "sourceLineStart": 71,
+      "sourceLineEnd": 71,
+      "sourceAnchor": "1.3.intl-no-parity",
+      "sourceBlockSha256": "1ed3a8e0c2e0684cb2624611c24a6ce7dcab7a23981cb4d20d5744131e210862",
+      "sourceText": "- strict parity claims for the optional host-`Intl` locale or plural implementations;",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 2,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-028",
+      "sourceLineStart": 72,
+      "sourceLineEnd": 76,
+      "sourceAnchor": "1.3.browser-negotiation-split",
+      "sourceBlockSha256": "6f1c1f8daab3ebc67c424db5aa038024b28e1c046fbb44585dd078fea9baad9c",
+      "sourceText": "- the exact server negotiation solver in the root browser entry. Browser applications may consume\n  an already-resolved locale or use the explicitly best-effort small browser chooser; the parity\n  solver's additional range/header parsing and whole-list ranking code is an optional browser/edge/\n  server subpath. Root already carries the pinned data and strict single-locale kernel used by direct\n  diagnostics and the small chooser.",
+      "ownerMilestone": "M9",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 7,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-059",
+      "sourceLineStart": 229,
+      "sourceLineEnd": 235,
+      "sourceAnchor": "2.5.fallback-policy-signature",
+      "sourceBlockSha256": "2e6c166bf76f24821f2c5cbe85afd2a50bd7708bd57c7f5676f05210ae77590f",
+      "sourceText": "~~~ts\ntype FallbackPolicy = (\n  reason: FailureReason,\n  attemptedLocale: LocaleTag,\n  cause: unknown | null\n) => boolean;\n~~~",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 5,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-080",
+      "sourceLineStart": 342,
+      "sourceLineEnd": 343,
+      "sourceAnchor": "3.api-notation-and-declarations",
+      "sourceBlockSha256": "582bbdb9c5e3292e4b86ea1d0d0bedcb6bd48614dde1371bcd7bfbe9c86cf30d",
+      "sourceText": "The API is specified below in TypeScript notation, but the implementation is vanilla JavaScript with\n`// @ts-check` and checked JSDoc. Generated declarations must match this contract.",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 4,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-081",
+      "sourceLineStart": 345,
+      "sourceLineEnd": 346,
+      "sourceAnchor": "3.return-immutability-and-bound-methods",
+      "sourceBlockSha256": "fc80864447a61c206ff11c76b1ae2ab6866d2ab5397f13017d5d1f0592183e72",
+      "sourceText": "All returned records and arrays are defensively copied and frozen. `get`, `t`, `getResult`, and\n`getDirectLocaleContext` are bound, referentially stable functions; `strings.t === strings.get`.",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 7,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-082",
+      "sourceLineStart": 350,
+      "sourceLineEnd": 354,
+      "sourceAnchor": "3.1.entry-root",
+      "sourceBlockSha256": "62abcf4812e95d3e583da9a693c1180885a18e26d25a0278129662d91cbe2dbe",
+      "sourceText": "The first parity-backed release exports only implemented entry points:\n\n| npm subpath | Contents | Browser | Edge | Node |\n|---|---|:--:|:--:|:--:|\n| `lokalized` | strict core, parser, cardinal/locale/direct-match data, small browser chooser | Yes | Yes | Yes |",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 6,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-083",
+      "sourceLineStart": 355,
+      "sourceLineEnd": 355,
+      "sourceAnchor": "3.1.entry-core",
+      "sourceBlockSha256": "a728816fb4f2d5d1a1d34bc5fc691a60a4468965e1c74a6b314016968284b326",
+      "sourceText": "| `lokalized/core` | strict runtime plus synchronous raw-catalog parsing accepted by `createStrings` | Yes | Yes | Yes |",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 4,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-084",
+      "sourceLineStart": 356,
+      "sourceLineEnd": 356,
+      "sourceAnchor": "3.1.entry-parse",
+      "sourceBlockSha256": "c199e7d2a7f0938a95cfeef189342f05be3f57e04656adf4cb8dd745f0a7b6c0",
+      "sourceText": "| `lokalized/parse` | parser, validator, schema model, warnings | Yes | Yes | Yes |",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 5,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-085",
+      "sourceLineStart": 357,
+      "sourceLineEnd": 357,
+      "sourceAnchor": "3.1.entry-load",
+      "sourceBlockSha256": "bab84f306e44f282fd07e508e9bc6b342a89861664e66df27742a96565b120a5",
+      "sourceText": "| `lokalized/load` | manifest validation, planning, Fetch loading, identity | Yes | Yes | Yes |",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 5,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-086",
+      "sourceLineStart": 358,
+      "sourceLineEnd": 358,
+      "sourceAnchor": "3.1.entry-ssr",
+      "sourceBlockSha256": "ccc3600e25d3b9d8c1f181efc8d1cef680eff29e21305af407c07bab765c4e84",
+      "sourceText": "| `lokalized/ssr` | SSR stamp creation and validation | Yes | Yes | Yes |",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 3,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-087",
+      "sourceLineStart": 359,
+      "sourceLineEnd": 359,
+      "sourceAnchor": "3.1.entry-negotiate",
+      "sourceBlockSha256": "499a848a31c20d1a9ffa611020cc515538ce7678daec60ba94d33ff94613540d",
+      "sourceText": "| `lokalized/negotiate` | full RFC 4647, pinned IANA closure, header helpers | Yes, size-heavy | Yes | Yes |",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 6,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-088",
+      "sourceLineStart": 360,
+      "sourceLineEnd": 360,
+      "sourceAnchor": "3.1.entry-node",
+      "sourceBlockSha256": "3dad8d21e5baceedf0295412e8e99601a2c1652a2a8cbe9005373c6a3a3635bb",
+      "sourceText": "| `lokalized/node` | directory/filesystem loading and manifest generation | No | No | Yes |",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 3,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-089",
+      "sourceLineStart": 361,
+      "sourceLineEnd": 361,
+      "sourceAnchor": "3.1.entry-ordinal",
+      "sourceBlockSha256": "e93ffbefe3a94a4d17af6f936199013e0717543a5d3b3cb2abd6898b51c305d7",
+      "sourceText": "| `lokalized/data/ordinal` | optional ordinal data and classifiers | Yes | Yes | Yes |",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 3,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-090",
+      "sourceLineStart": 362,
+      "sourceLineEnd": 362,
+      "sourceAnchor": "3.1.entry-ranges",
+      "sourceBlockSha256": "4993597312694660d5e683c875795ba53b03400811dfe7d709dc5318c1c63616",
+      "sourceText": "| `lokalized/data/ranges` | optional cardinal-range data and classifier | Yes | Yes | Yes |",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 4,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-091",
+      "sourceLineStart": 364,
+      "sourceLineEnd": 368,
+      "sourceAnchor": "3.1.symbol-owner-core",
+      "sourceBlockSha256": "f22ff769b519529a662fe635f905814beeaa8fb8c2098da8254c8000d916fe70",
+      "sourceText": "The canonical symbol owners and root re-exports are fixed before M0 closes:\n\n| Canonical owner | Public symbols | Re-exported by `lokalized`? |\n|---|---|:--:|\n| `core` | `createStrings`, `Strings`, construction/translation/result types, `DirectLocaleContext`, `CatalogIdentity`, `LanguageRange`, `StringsLoadCoverage`, `StringsLoadVerification`, match/configuration structural types, `SourceDataProvenance`, `DataProvenance`, `OrdinalData`, `CardinalRangeData`, `forLocale`, `forLocaleMatch`, `chooseLocaleForPreferredLanguages`, `chooseBrowserLocale`, failure policy/observer/handler types and helpers, `decimal`, `pluralOperands`, tagged-value types, all 61 named language-form constants, cardinal classifiers/support probes, CLDR/IANA runtime metadata, core errors | Yes |",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 27,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-092",
+      "sourceLineStart": 369,
+      "sourceLineEnd": 369,
+      "sourceAnchor": "3.1.symbol-owner-parse",
+      "sourceBlockSha256": "7718e79a48f238c50adbe079f5977ad3a57344217cddc3da570d1b25b13b8d06",
+      "sourceText": "| `parse` | `parseStrings`, `mergeParsedStringsFiles`, `defineLocalizedString`, `defineCatalog`, parsed/model/warning/limit types, `StringsParseError` | Yes |",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 7,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-093",
+      "sourceLineStart": 370,
+      "sourceLineEnd": 370,
+      "sourceAnchor": "3.1.symbol-owner-load",
+      "sourceBlockSha256": "032a9d4e446b9030ab07859ee57dd50f59fd13b0ec7f3fbbd241872a3bd6dc2e",
+      "sourceText": "| `load` | `StringsManifestV1`, `CatalogIdentityInputV1`, `FetchEntry`, `LoadedStrings`, manifest/load option and failure types, manifest parse/validate/configuration/identity functions, `chain`, `fetchSet`, subset/whole loaders, loading errors; it consumes but does not re-own or re-export core's `CatalogIdentity` and `StringsLoadCoverage` | No |",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 13,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-094",
+      "sourceLineStart": 371,
+      "sourceLineEnd": 371,
+      "sourceAnchor": "3.1.symbol-owner-ssr",
+      "sourceBlockSha256": "4189549a826c1a9b206242ecc44cccf1ae0a8a4fd6fa2a52a6b37369d8931c68",
+      "sourceText": "| `ssr` | SSR stamp/context types, `createSsrStamp`, `validateSsrStamp` | No |",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 4,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-095",
+      "sourceLineStart": 372,
+      "sourceLineEnd": 372,
+      "sourceAnchor": "3.1.symbol-owner-negotiate",
+      "sourceBlockSha256": "fc0879a7a050876fc32db27b8ea91c38e10aa7983d98eda75585718268851a90",
+      "sourceText": "| `negotiate` | `LocaleMatcher`, `LocaleNegotiator`, range parser/factory/option helpers; re-exports core's `LanguageRange` type and IANA metadata | No |",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 8,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-096",
+      "sourceLineStart": 373,
+      "sourceLineEnd": 373,
+      "sourceAnchor": "3.1.symbol-owner-node",
+      "sourceBlockSha256": "38d27c18ba3dab0f5eb9ae81035feeb807e3c5bcf9110847c72a78dd5f8a8021",
+      "sourceText": "| `node` | `readStringsManifest`, file/whole-manifest loaders, directory loader, directory-to-manifest generator, `LoadStringsFromFilesOptions`, `DirectoryManifestOptions`, and `LoadStringsFromDirectoryOptions`; re-exports applicable shared load types | No |",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 10,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-097",
+      "sourceLineStart": 374,
+      "sourceLineEnd": 374,
+      "sourceAnchor": "3.1.symbol-owner-ordinal",
+      "sourceBlockSha256": "9691ea12459d04d1bd0f571bc2561ac11d2cf12d2c36cdbc439869e3663e9888",
+      "sourceText": "| `data/ordinal` | `ordinalData`, number/operand ordinal classifiers and support probes | No |",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 5,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-098",
+      "sourceLineStart": 375,
+      "sourceLineEnd": 375,
+      "sourceAnchor": "3.1.symbol-owner-ranges",
+      "sourceBlockSha256": "928ac69c30a7917c5889a0557641543f0eea9802154a1f227cfb4e5e46b91748",
+      "sourceText": "| `data/ranges` | `cardinalRangeData`, `cardinalityForRange` | No |",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 3,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-099",
+      "sourceLineStart": 377,
+      "sourceLineEnd": 381,
+      "sourceAnchor": "3.1.export-allowlist-and-tree-shaking",
+      "sourceBlockSha256": "93392f64018dd99c9708b2269de65cfb1379b2380dd8501dd4ea1f09035d7212",
+      "sourceText": "The export map and generated declarations are checked against a machine-readable symbol allowlist.\nRoot does not re-export loading, SSR, full negotiation, Node, or the ordinal/range subpaths' runtime\nvalues and classifier functions, preventing those graphs from being pulled in accidentally. The\n`OrdinalData` and `CardinalRangeData` carrier interfaces are type-only core/root exports; other\nstructural types may likewise be declaration-only re-exports without changing the runtime graph.",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 11,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-100",
+      "sourceLineStart": 383,
+      "sourceLineEnd": 386,
+      "sourceAnchor": "3.1.environment-dependencies",
+      "sourceBlockSha256": "b1928df8b22bff7488c6ca28fee57377f94b9c838b52262fea2c763fd49d7293",
+      "sourceText": "All non-Node paths are free of `process`, `Buffer`, filesystem APIs, and Node crypto. `lokalized/load`\nrequires Fetch, readable response bodies, `AbortController`, `TextDecoder`, and WebCrypto; other\nnon-Node paths require only the ECMAScript/browser floor stated in `1.1`. Deferred subpaths such as `lokalized/react`, `lokalized/locale-intl`, and\n`lokalized/cardinality-intl` do not appear in the export map until implemented.",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 13,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-101",
+      "sourceLineStart": 388,
+      "sourceLineEnd": 388,
+      "sourceAnchor": "3.1.browser-and-npm-names",
+      "sourceBlockSha256": "76d138be9d49e6cbadf004579ec6fa4046e4ad876716ea2294a54d4a4f47293c",
+      "sourceText": "Direct-browser files retain `.js` names. npm public subpaths are extensionless.",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 2,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-102",
+      "sourceLineStart": 392,
+      "sourceLineEnd": 413,
+      "sourceAnchor": "3.2.core-scalar-types",
+      "sourceBlockSha256": "41227153e5d7805dee95eb4bccc1f6dc8aa99b1bd065d14bc26e5415872b9e04",
+      "sourceText": "~~~ts\ntype LocaleTag = string;\ntype BidiIsolation = \"none\" | \"rtl-locales\" | \"all\";\ntype FailureReason =\n  | \"missing-translation\"\n  | \"no-matching-alternative\"\n  | \"resolution-failure\";\ntype TranslationStatus = \"translated\" | \"returned-key\" | \"returned-string\";\ntype LokalizedErrorCode =\n  | \"MISSING_TRANSLATION\"\n  | \"UNSUPPORTED_LOCALE\"\n  | \"EXPRESSION_EVALUATION\"\n  | \"RESOLUTION_INVALID_ARGUMENT\"\n  | \"RESOLUTION_INVALID_STATE\"\n  | \"STRINGS_PARSE\"\n  | \"STRINGS_LOADING\"\n  | \"DIGEST_UNAVAILABLE\"\n  | \"CONFIGURATION\";\ntype BuiltinFallbackPolicy =\n  | \"missing-or-no-match\"\n  | \"any-failure\"\n  | \"never\";",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 6,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-103",
+      "sourceLineStart": 415,
+      "sourceLineEnd": 418,
+      "sourceAnchor": "3.2.language-range-type",
+      "sourceBlockSha256": "3a1486aea518092ad80bf2d99f8510b94169716e46407986666c5a7f4a278c06",
+      "sourceText": "interface LanguageRange {\n  readonly range: string;\n  readonly weight: number;\n}",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 3,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-104",
+      "sourceLineStart": 420,
+      "sourceLineEnd": 434,
+      "sourceAnchor": "3.2.warning-types",
+      "sourceBlockSha256": "405664d228db27e3a63dd77ce6b7f709e8e8e1c24f7db9c758c28c7953df8fff",
+      "sourceText": "type LocalizedStringWarningType =\n  | \"INCOMPLETE_CARDINALITY_TRANSLATIONS\"\n  | \"INCOMPLETE_ORDINALITY_TRANSLATIONS\";\n\ninterface LocalizedStringWarning {\n  readonly type: LocalizedStringWarningType;\n  readonly source: string;\n  readonly locale: LocaleTag;\n  readonly key: string;\n  readonly placeholder: string;\n  readonly missingLanguageForms: readonly (\n    CardinalityFormName | OrdinalityFormName\n  )[];\n  readonly message: string;\n}",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 9,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-106",
+      "sourceLineStart": 455,
+      "sourceLineEnd": 463,
+      "sourceAnchor": "3.2.optional-data-carriers",
+      "sourceBlockSha256": "67cd01921df3704e7f03b9dd82a4899a6653dfa40e68007689ea4229ba6d1767",
+      "sourceText": "interface OrdinalData {\n  readonly $lokalized: \"ordinal-data\";\n  readonly provenance: DataProvenance;\n}\n\ninterface CardinalRangeData {\n  readonly $lokalized: \"cardinal-range-data\";\n  readonly provenance: DataProvenance;\n}",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 6,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-107",
+      "sourceLineStart": 465,
+      "sourceLineEnd": 496,
+      "sourceAnchor": "3.2.catalog-identity-and-load-verification",
+      "sourceBlockSha256": "3cfff2c8e23819d514d2243cf8c3d6676d59ac91b1119981fb6eb0a96b5cacfd",
+      "sourceText": "interface CatalogIdentity {\n  readonly catalogVersion: string;\n  readonly catalogFingerprint: string;\n}\n\ntype StringsLoadCoverage =\n  | {\n      readonly kind: \"lookup\";\n      // Normalized planning input; it need not occur in the manifest.\n      readonly lookupLocale: LocaleTag;\n    }\n  | { readonly kind: \"entire-manifest\" };\n\ninterface StringsLoadVerification {\n  readonly source: \"verified-manifest-v1\";\n  readonly producerImplementation: \"lokalized-js\";\n  readonly producerVersion: string;\n  readonly manifestLocaleConfiguration: LocaleConfiguration;\n  readonly catalogIdentity: CatalogIdentity;\n  readonly cldrVersion: string;\n  readonly dataFingerprint: string;\n  readonly ianaRegistryDate: string;\n  readonly ianaDataFingerprint: string;\n  readonly behavioralVectorsVersion: string;\n  readonly localeDataMode: \"pinned\";\n  readonly cardinalityMode: \"exact\";\n  readonly coverage: StringsLoadCoverage;\n  // Renderer-kernel plan order and exact loaded tags, respectively.\n  readonly plannedLocales: readonly LocaleTag[];\n  readonly coveredLocales: readonly LocaleTag[];\n  readonly complete: boolean;\n}",
+      "ownerMilestone": "M8",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 24,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-108",
+      "sourceLineStart": 498,
+      "sourceLineEnd": 529,
+      "sourceAnchor": "3.2.configuration-catalog-input-maps",
+      "sourceBlockSha256": "6838bdcfa473282e50d20854eac01d9f6e917b33181cd15f20f6af870e516299",
+      "sourceText": "interface LocaleConfiguration {\n  readonly fallbackLocale: LocaleTag;\n  readonly supportedLocales: readonly LocaleTag[];\n  readonly tiebreakers: Readonly<Record<string, readonly LocaleTag[]>>;\n}\n\ntype Placeholders =\n  | Readonly<Record<string, unknown>>\n  | ReadonlyMap<string, unknown>;\n\ninterface ParsedStringsFile {\n  readonly $lokalized: \"parsed-strings-file\";\n  readonly locale: LocaleTag;\n  readonly sources: readonly string[];\n  readonly strings: readonly LocalizedStringInput[];\n  readonly originsByKey: Readonly<Record<string, readonly string[]>>;\n  readonly warnings: readonly LocalizedStringWarning[];\n}\n\ntype CatalogInput =\n  | string\n  | Uint8Array\n  | ParsedStringsFile\n  | readonly LocalizedStringInput[];\n\ntype CatalogMap =\n  | Readonly<Record<LocaleTag, CatalogInput>>\n  | ReadonlyMap<LocaleTag, CatalogInput>;\n\ntype TiebreakerMap =\n  | Readonly<Record<string, readonly LocaleTag[]>>\n  | ReadonlyMap<string, readonly LocaleTag[]>;",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 19,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-109",
+      "sourceLineStart": 531,
+      "sourceLineEnd": 546,
+      "sourceAnchor": "3.2.behavior-options",
+      "sourceBlockSha256": "b9d090c014eb67ff811a0961e93855f3c68826c5e67bfab9ae6af78d4c997bdb",
+      "sourceText": "interface CreateStringsBehaviorOptions {\n  readonly pluralData?: {\n    readonly ordinal?: OrdinalData;\n    readonly ranges?: CardinalRangeData;\n  };\n\n  readonly phoneticResolver?: PhoneticResolver;\n  readonly onFailure?: FailureHandler;\n  readonly fallbackPolicy?: BuiltinFallbackPolicy | FallbackPolicy;\n  readonly bidiIsolation?: BidiIsolation;\n  readonly onWarning?: (warning: LocalizedStringWarning) => void;\n  readonly onFallback?: FallbackObserver;\n\n  // No customization in v1. A non-undefined value is rejected.\n  readonly runtimeLimits?: undefined;\n}",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 11,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-110",
+      "sourceLineStart": 548,
+      "sourceLineEnd": 563,
+      "sourceAnchor": "3.2.locale-source-options",
+      "sourceBlockSha256": "ee15b1eb73a1e3451bdf1e066529febb8314fad85052980c4e607e08e80a36fe",
+      "sourceText": "type LocaleSourceOptions =\n  | {\n      readonly locale: LocaleTag;\n      readonly localeResolver?: never;\n      readonly localeMatchResolver?: never;\n    }\n  | {\n      readonly locale?: never;\n      readonly localeResolver: () => LocaleTag;\n      readonly localeMatchResolver?: never;\n    }\n  | {\n      readonly locale?: never;\n      readonly localeResolver?: never;\n      readonly localeMatchResolver: () => LocaleMatchResult;\n    };",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 9,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-111",
+      "sourceLineStart": 565,
+      "sourceLineEnd": 588,
+      "sourceAnchor": "3.2.create-options",
+      "sourceBlockSha256": "a5311d3dbad3f4f6a2bce165f36586dae25526d4e4a644e10ddfada14b1c5277",
+      "sourceText": "type CommonCreateStringsOptions =\n  CreateStringsBehaviorOptions & LocaleSourceOptions;\n\ntype DirectCreateStringsOptions = CommonCreateStringsOptions & {\n  readonly fallbackLocale: LocaleTag;\n  readonly strings: CatalogMap;\n  readonly tiebreakers?: TiebreakerMap;\n  readonly catalogIdentity?: CatalogIdentity;\n  readonly loadingLimits?: Partial<StringsLoadingLimits>;\n  readonly loaded?: never;\n};\n\ntype LoadedCreateStringsOptions = CommonCreateStringsOptions & {\n  readonly loaded: LoadedStrings;\n  readonly fallbackLocale?: never;\n  readonly strings?: never;\n  readonly tiebreakers?: never;\n  readonly catalogIdentity?: never;\n  readonly loadingLimits?: never;\n};\n\ntype CreateStringsOptions =\n  | DirectCreateStringsOptions\n  | LoadedCreateStringsOptions;",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 17,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-112",
+      "sourceLineStart": 590,
+      "sourceLineEnd": 590,
+      "sourceAnchor": "3.2.create-strings-signature",
+      "sourceBlockSha256": "74cc48ca4f67d16609c3c3d02c10b111c893d6c6589c9d8b14d8793dc2e3f005",
+      "sourceText": "function createStrings(options: CreateStringsOptions): Strings;",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 1,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-114",
+      "sourceLineStart": 602,
+      "sourceLineEnd": 608,
+      "sourceAnchor": "3.2.match-source-and-catalog-source.through-preserved-sentence",
+      "sourceBlockSha256": "394e26b452e5d4174a814f8ef7e9e3f1c8beee41926bb635277144e2580b2d98",
+      "sourceText": "A `localeMatchResolver` instead supplies a precomputed negotiation result. Its selected locale, or its\nconfigured fallback when unmatched, becomes the lookup locale. Full language-range/header negotiation\nremains in `lokalized/negotiate`; core contains only the single-weight-1 direct-locale matcher and the\npinned validity/IANA data needed to reproduce Java's diagnostics. Exactly one catalog\nsource is also required: direct `strings` plus `fallbackLocale`, or a `LoadedStrings` value whose\nfallback, filtered runtime tiebreakers, full manifest negotiation configuration, catalog identity,\ncoverage, and completeness metadata are preserved. Construction is",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 15,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-120",
+      "sourceLineStart": 646,
+      "sourceLineEnd": 662,
+      "sourceAnchor": "3.3.translation-options-and-helpers",
+      "sourceBlockSha256": "4cd4b8465f45aff388aa54f3a5953c0fc4417c42c5cd8effb85777cc33e83360",
+      "sourceText": "~~~ts\ninterface TranslationBehaviorOptions {\n  readonly bidiIsolation?: BidiIsolation;\n  readonly onFailure?: FailureHandler;\n  readonly fallbackPolicy?: BuiltinFallbackPolicy | FallbackPolicy;\n  readonly onFallback?: FallbackObserver;\n}\n\ntype TranslationOptions = TranslationBehaviorOptions & (\n  | { readonly locale?: LocaleTag; readonly localeMatch?: never }\n  | { readonly locale?: never; readonly localeMatch: LocaleMatchResult }\n);\n\nfunction forLocale(locale: LocaleTag): Readonly<TranslationOptions>;\nfunction forLocaleMatch(\n  localeMatch: LocaleMatchResult\n): Readonly<TranslationOptions>;",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 9,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-121",
+      "sourceLineStart": 664,
+      "sourceLineEnd": 667,
+      "sourceAnchor": "3.3.direct-locale-context-type",
+      "sourceBlockSha256": "53a2f12b64cb93902b66577a82bc25e814e96d33e4afc346cc60d3ebb40ea7fe",
+      "sourceText": "interface DirectLocaleContext {\n  readonly lookupLocale: LocaleTag;\n  readonly localeMatch: LocaleMatchResult;\n}",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 2,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-122",
+      "sourceLineStart": 669,
+      "sourceLineEnd": 687,
+      "sourceAnchor": "3.3.strings-translation-methods",
+      "sourceBlockSha256": "1e5365fdfad17f3227dfc39db3bb7ba0ecfdf6c1bcd185cb604fbaa6daa2bdc3",
+      "sourceText": "interface Strings {\n  readonly get: (\n    key: string,\n    placeholders?: Placeholders,\n    options?: TranslationOptions\n  ) => string;\n\n  readonly t: Strings[\"get\"];\n\n  readonly getResult: (\n    key: string,\n    placeholders?: Placeholders,\n    options?: TranslationOptions\n  ) => TranslationResult;\n\n  readonly getDirectLocaleContext: (\n    locale: LocaleTag\n  ) => DirectLocaleContext;\n",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 11,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-123",
+      "sourceLineStart": 688,
+      "sourceLineEnd": 699,
+      "sourceAnchor": "3.3.strings-inspection-methods",
+      "sourceBlockSha256": "a385e26623e07d08fbb3176ec1d475024e833ff7ea94f22b2cc1933ef32aadbf",
+      "sourceText": "  readonly getSupportedLocales: () => readonly LocaleTag[];\n  readonly getKeysForLocale: (locale: LocaleTag) => readonly string[];\n  readonly getMissingKeys: (\n    sourceLocale: LocaleTag,\n    targetLocale: LocaleTag\n  ) => readonly string[];\n  readonly getLocaleConfiguration: () => LocaleConfiguration;\n  readonly getCatalogIdentity: () => CatalogIdentity | null;\n  readonly isCatalogComplete: () => boolean;\n  readonly getLoadVerification: () => StringsLoadVerification | null;\n  readonly getWarnings: () => readonly LocalizedStringWarning[];\n}",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 10,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-130",
+      "sourceLineStart": 747,
+      "sourceLineEnd": 748,
+      "sourceAnchor": "3.3.lookup-call-shape",
+      "sourceBlockSha256": "cb2294df3cf7a3eea4d04a59e4c82967d3f2b6ab882b45bdc93d64f07ba79218",
+      "sourceText": "`get(key, options)` is not an overload. Options are always argument three. Callers without\nplaceholders use `get(key, undefined, options)`. The same rule applies to `getResult`. A per-call",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 4,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-264",
+      "sourceLineStart": 749,
+      "sourceLineEnd": 749,
+      "sourceAnchor": "3.3.per-call-locale-source-exclusivity",
+      "sourceBlockSha256": "a34c20e005a64f4123c2f3c92a008729cf499855461d54e95fb40d653cf2663a",
+      "sourceText": "`locale` and `localeMatch` are mutually exclusive in declarations and runtime validation. A direct",
+      "ownerMilestone": "M7",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 2,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-134",
+      "sourceLineStart": 778,
+      "sourceLineEnd": 798,
+      "sourceAnchor": "3.4.locale-match-result-types",
+      "sourceBlockSha256": "51977d0d5b34847f7be1bf5763cec86d9e49058de666f591813ee3bbd96d3482",
+      "sourceText": "~~~ts\ntype LocaleMatchType =\n  | \"none\"\n  | \"exact\"\n  | \"canonical\"\n  | \"extended-range\"\n  | \"wildcard\"\n  | \"cldr-fallback\"\n  | \"likely-subtag\"\n  | \"primary-language\";\n\ninterface LocaleMatchResult {\n  readonly requestedLanguageRanges: readonly LanguageRange[];\n  readonly locale: LocaleTag | null;\n  readonly languageRange: LanguageRange | null;\n  readonly effectiveWeight: number | null;\n  readonly matchType: LocaleMatchType;\n  readonly fallbackLocale: LocaleTag;\n  readonly consideredLocales: readonly LocaleTag[];\n  readonly isMatch: boolean;\n}",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 16,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-135",
+      "sourceLineStart": 800,
+      "sourceLineEnd": 824,
+      "sourceAnchor": "3.4.translation-result-types",
+      "sourceBlockSha256": "13e5f43fd26694c4e034fb941096814edd74ee1ad5a175493cb214e816d5f1f9",
+      "sourceText": "interface TranslationResultBase {\n  readonly key: string;\n  readonly translation: string;\n  readonly lookupLocale: LocaleTag;\n  readonly localeMatch: LocaleMatchResult;\n  readonly attemptedLocales: readonly LocaleTag[];\n  readonly isFallback: boolean;\n  readonly status: TranslationStatus;\n}\n\ninterface TranslatedResult extends TranslationResultBase {\n  readonly status: \"translated\";\n  readonly resolvedLocale: LocaleTag;\n  readonly failureReason: null;\n  readonly cause: null;\n}\n\ninterface FailureResult extends TranslationResultBase {\n  readonly status: \"returned-key\" | \"returned-string\";\n  readonly resolvedLocale: null;\n  readonly failureReason: FailureReason;\n  readonly cause: unknown | null; // non-null iff resolution-failure\n}\n\ntype TranslationResult = TranslatedResult | FailureResult;",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 19,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-144",
+      "sourceLineStart": 879,
+      "sourceLineEnd": 898,
+      "sourceAnchor": "3.4.negotiator-interfaces",
+      "sourceBlockSha256": "94ae270586785f3cc4757dad68fd4e99ecf2ce78b90180aeae0eeb05477050a3",
+      "sourceText": "The full, size-heavy language-range solver is exported by `lokalized/negotiate`; it is browser/edge\nsafe but intentionally absent from the root graph:\n\n~~~ts\ninterface LocaleMatcher {\n  readonly matchFor: (locale: LocaleTag) => LocaleMatchResult;\n  readonly bestMatchFor: (locale: LocaleTag) => LocaleTag;\n}\n\ninterface LocaleNegotiator extends LocaleMatcher {\n  readonly matchForLanguageRanges: (\n    ranges: readonly LanguageRange[]\n  ) => LocaleMatchResult;\n  readonly bestMatchForLanguageRanges: (\n    ranges: readonly LanguageRange[]\n  ) => LocaleTag;\n  readonly bestMatchForAcceptLanguage: (\n    value: string | null | undefined\n  ) => LocaleTag;\n}",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 12,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-145",
+      "sourceLineStart": 900,
+      "sourceLineEnd": 915,
+      "sourceAnchor": "3.4.negotiator-functions-and-metadata",
+      "sourceBlockSha256": "2b90e895a48a192e8944ab4a0b2b6c1f82c9ff384ded60784922be16a741c8eb",
+      "sourceText": "function parseLanguageRanges(value: string): readonly LanguageRange[];\nfunction createLocaleNegotiator(\n  configuration: LocaleConfiguration\n): LocaleNegotiator;\nfunction forLanguageRanges(\n  negotiator: LocaleNegotiator,\n  ranges: readonly LanguageRange[]\n): Readonly<TranslationOptions>;\nfunction forAcceptLanguage(\n  negotiator: LocaleNegotiator,\n  value: string | null | undefined\n): Readonly<TranslationOptions>;\n\nconst ianaRegistryDate: string;\nconst ianaDataFingerprint: string;\n~~~",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 11,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-149",
+      "sourceLineStart": 938,
+      "sourceLineEnd": 946,
+      "sourceAnchor": "3.4.small-chooser-api",
+      "sourceBlockSha256": "33e3e9b939ba2e8d950fb9eb6b2b41d06a0b6e2c478164097b21d94fbca97e25",
+      "sourceText": "The root graph instead exports a pure small chooser and a browser convenience:\n\n~~~ts\nfunction chooseLocaleForPreferredLanguages(\n  configuration: LocaleConfiguration,\n  languages: readonly string[]\n): LocaleTag;\nfunction chooseBrowserLocale(configuration: LocaleConfiguration): LocaleTag;\n~~~",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 6,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-151",
+      "sourceLineStart": 963,
+      "sourceLineEnd": 963,
+      "sourceAnchor": "3.5.structural-failure-responses",
+      "sourceBlockSha256": "8648bf9cc87f506b777df13e8458e30ab2d23f45c9c083244b83532aa5ef7eb6",
+      "sourceText": "Failure responses are discriminated structurally. Correctness never depends on singleton identity.",
+      "ownerMilestone": "M7",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 2,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-152",
+      "sourceLineStart": 965,
+      "sourceLineEnd": 983,
+      "sourceAnchor": "3.5.failure-response-types",
+      "sourceBlockSha256": "70e7693205dd714c7962420cca8cb1b69b3ec7202077a72766a2938ac9e47e7b",
+      "sourceText": "~~~ts\ninterface ReturnKeyResponse {\n  readonly action: \"return-key\";\n}\ninterface ReturnStringResponse {\n  readonly action: \"return-string\";\n  readonly translation: string;\n}\ninterface ThrowResponse {\n  readonly action: \"throw\";\n}\ntype FailureResponse =\n  | ReturnKeyResponse\n  | ReturnStringResponse\n  | ThrowResponse;\n\nconst RETURN_KEY: Readonly<ReturnKeyResponse>;\nconst THROW_EXCEPTION: Readonly<ThrowResponse>;\nfunction returnString(translation: string): Readonly<ReturnStringResponse>;",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 10,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-153",
+      "sourceLineStart": 985,
+      "sourceLineEnd": 995,
+      "sourceAnchor": "3.5.translation-failure-type",
+      "sourceBlockSha256": "c5731b3ca051ccd1a4a160c498e68448b4e9d0d61706cc0b6680e6f6e5b296ff",
+      "sourceText": "interface TranslationFailure {\n  readonly key: string;\n  readonly lookupLocale: LocaleTag;\n  readonly localeMatch: LocaleMatchResult;\n  readonly attemptedLocales: readonly LocaleTag[];\n  // Frozen, enumerable, null-prototype record; it has no inherited magic keys.\n  readonly placeholders: Readonly<Record<string, unknown>>;\n  readonly reason: FailureReason;\n  readonly cause: unknown | null;\n  readonly message: string; // redacted; excludes placeholder values and cause message\n}",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 14,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-154",
+      "sourceLineStart": 997,
+      "sourceLineEnd": 1014,
+      "sourceAnchor": "3.5.callback-types",
+      "sourceBlockSha256": "7fbe98a3e01a5c5f75b7d7a8dce4669c8e251680a96a14d93f3157ce58ea3106",
+      "sourceText": "type FailureHandler = (failure: TranslationFailure) => FailureResponse;\ninterface FallbackEvent {\n  readonly key: string;\n  readonly lookupLocale: LocaleTag;\n  readonly localeMatch: LocaleMatchResult;\n  readonly attemptedLocales: readonly LocaleTag[];\n  readonly resolvedLocale: LocaleTag;\n  readonly precedingFailures: readonly Readonly<{\n    locale: LocaleTag;\n    reason: FailureReason;\n    cause: unknown | null;\n  }>[];\n}\ntype FallbackObserver = (event: FallbackEvent) => void;\ntype PhoneticResolver = (\n  term: string,\n  locale: LocaleTag\n) => PhoneticValue;",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 14,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-161",
+      "sourceLineStart": 1036,
+      "sourceLineEnd": 1063,
+      "sourceAnchor": "3.5.core-error-interfaces",
+      "sourceBlockSha256": "8cc617b1aee8752ed8f033d3760824b4644bfa8dbd1d937d967efa4bfda57bbb",
+      "sourceText": "Exported library errors have the following declaration contract:\n\n~~~ts\ninterface LokalizedError extends Error {\n  readonly code: LokalizedErrorCode;\n  readonly cause?: unknown;\n}\n\ninterface MissingTranslationError extends LokalizedError {\n  readonly code: \"MISSING_TRANSLATION\";\n  readonly failure: TranslationFailure;\n}\n\ninterface UnsupportedLocaleError extends LokalizedError {\n  readonly code: \"UNSUPPORTED_LOCALE\";\n  readonly locale: LocaleTag;\n}\n\ninterface ExpressionEvaluationError extends LokalizedError {\n  readonly code: \"EXPRESSION_EVALUATION\";\n}\n\ninterface ResolutionError extends LokalizedError {\n  readonly code:\n    | \"RESOLUTION_INVALID_ARGUMENT\"\n    | \"RESOLUTION_INVALID_STATE\";\n  readonly thrownValue?: \"null\" | \"undefined\";\n}",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 15,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-162",
+      "sourceLineStart": 1065,
+      "sourceLineEnd": 1084,
+      "sourceAnchor": "3.5.parse-loading-digest-configuration-errors",
+      "sourceBlockSha256": "ead255ecb287ff14535ea57c8eb42ed7ac53930b913d4625a675a24fbda5512b",
+      "sourceText": "interface StringsParseError extends LokalizedError {\n  readonly code: \"STRINGS_PARSE\";\n  readonly source: string;\n  readonly line: number | null;\n  readonly column: number | null;\n  readonly path: string | null;\n}\n\ninterface StringsLoadingError extends LokalizedError {\n  readonly code: \"STRINGS_LOADING\";\n  readonly failures: readonly LoadFailure[];\n}\n\ninterface DigestUnavailableError extends LokalizedError {\n  readonly code: \"DIGEST_UNAVAILABLE\";\n}\n\ninterface ConfigurationError extends LokalizedError {\n  readonly code: \"CONFIGURATION\";\n}",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 13,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-163",
+      "sourceLineStart": 1086,
+      "sourceLineEnd": 1100,
+      "sourceAnchor": "3.5.catch-only-error-values",
+      "sourceBlockSha256": "741a670bf24b06e8531e3b35cb235a4897205771d44e1ad507a7932ed9fc5fa1",
+      "sourceText": "interface CatchOnlyErrorClass<T extends LokalizedError> {\n  readonly prototype: T;\n  [Symbol.hasInstance](value: unknown): value is T;\n  // Deliberately no call or construct signature.\n}\n\nconst LokalizedError: CatchOnlyErrorClass<LokalizedError>;\nconst MissingTranslationError: CatchOnlyErrorClass<MissingTranslationError>;\nconst UnsupportedLocaleError: CatchOnlyErrorClass<UnsupportedLocaleError>;\nconst ExpressionEvaluationError: CatchOnlyErrorClass<ExpressionEvaluationError>;\nconst ResolutionError: CatchOnlyErrorClass<ResolutionError>;\nconst StringsParseError: CatchOnlyErrorClass<StringsParseError>;\nconst StringsLoadingError: CatchOnlyErrorClass<StringsLoadingError>;\nconst DigestUnavailableError: CatchOnlyErrorClass<DigestUnavailableError>;\nconst ConfigurationError: CatchOnlyErrorClass<ConfigurationError>;",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 13,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-269",
+      "sourceLineStart": 1107,
+      "sourceLineEnd": 1108,
+      "sourceAnchor": "3.5.error-catch-only-test-families",
+      "sourceBlockSha256": "3b0d498b14c69b8a6f9da10ee166f3077621692fa54c13bf059066d9af7f4522",
+      "sourceText": "declaration tests reject consumer-side construction and subclass declarations; runtime tests accept\ncatching and `instanceof` and reject direct construction and subclass instantiation.",
+      "ownerMilestone": "M-R",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 6,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-270",
+      "sourceLineStart": 1109,
+      "sourceLineEnd": 1109,
+      "sourceAnchor": "3.5.catch-only-helper-private",
+      "sourceBlockSha256": "258978977889bdcf56b6dd3e6c87634a9fbbeef7af1569435792fb89e7f7468c",
+      "sourceText": "`CatchOnlyErrorClass` is a declaration-private helper, not a package export.",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 2,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-180",
+      "sourceLineStart": 1165,
+      "sourceLineEnd": 1181,
+      "sourceAnchor": "3.6.localized-string-node-types",
+      "sourceBlockSha256": "7d87d85e27f9af8efe6834e5e3bafc250987e266aa16fc45f996a529f771bae6",
+      "sourceText": "~~~ts\ninterface LocalizedStringNodeInput {\n  readonly translation?: string;\n  readonly commentary?: string;\n  readonly placeholders?:\n    | Readonly<Record<string, PlaceholderDefinition>>\n    | ReadonlyMap<string, PlaceholderDefinition>;\n  readonly alternatives?: readonly WholeMessageAlternativeInput[];\n}\n\ninterface LocalizedStringInput extends LocalizedStringNodeInput {\n  readonly key: string;\n}\n\ninterface WholeMessageAlternativeInput extends LocalizedStringNodeInput {\n  readonly expression: string;\n}",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 10,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-181",
+      "sourceLineStart": 1183,
+      "sourceLineEnd": 1201,
+      "sourceAnchor": "3.6.placeholder-definition-types",
+      "sourceBlockSha256": "dd2e8fe1c184529c51b6018cfa09ef5c7334b7a26ad258f48c8ac29b1d4c2966",
+      "sourceText": "type PlaceholderDefinition =\n  | LanguageFormTranslationInput\n  | ExpressionTranslationInput;\n\ninterface LanguageFormTranslationInput {\n  readonly kind: \"language-form\";\n  readonly value?: string;\n  readonly range?: { readonly start: string; readonly end: string };\n  readonly translations: Readonly<Partial<Record<LanguageFormName, string>>>;\n}\n\ninterface ExpressionTranslationInput {\n  readonly kind: \"expression\";\n  readonly translation: string;\n  readonly alternatives?: readonly {\n    readonly expression: string;\n    readonly translation: string;\n  }[];\n}",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 13,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-182",
+      "sourceLineStart": 1203,
+      "sourceLineEnd": 1209,
+      "sourceAnchor": "3.6.definition-helper-signatures",
+      "sourceBlockSha256": "4c98665f64d3537fb90888cb1ab74eb04b53fd147b8ec450cc52f988fb823fd5",
+      "sourceText": "function defineLocalizedString(\n  input: LocalizedStringInput\n): Readonly<LocalizedStringInput>;\n\nfunction defineCatalog(\n  inputs: readonly LocalizedStringInput[]\n): readonly Readonly<LocalizedStringInput>[];",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 4,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-191",
+      "sourceLineStart": 1245,
+      "sourceLineEnd": 1266,
+      "sourceAnchor": "3.7.decimal-and-operand-types",
+      "sourceBlockSha256": "c443dd80c34c67f832e90d9e62a02f636f663ff54c27aebdeb910c487b900459",
+      "sourceText": "~~~ts\ninterface DecimalValue {\n  readonly $lokalized: \"decimal\";\n  readonly value: string;\n}\n\ninterface PluralOperandValue {\n  readonly $lokalized: \"plural-operands\";\n  readonly value: string;\n  readonly visibleDecimalPlaces?: number;\n  readonly compactExponent?: number;\n}\n\nfunction decimal(value: string): DecimalValue;\nfunction pluralOperands(\n  value: string,\n  options?: {\n    readonly visibleDecimalPlaces?: number;\n    readonly compactExponent?: number;\n  }\n): PluralOperandValue;\n~~~",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 12,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-194",
+      "sourceLineStart": 1283,
+      "sourceLineEnd": 1331,
+      "sourceAnchor": "3.7.language-form-axis-and-name-types",
+      "sourceBlockSha256": "d1e183292a95110c912729be14e862314ebb5bf4935f70ac75cbae2bac559888",
+      "sourceText": "Language-form constants use the same technique:\n\n~~~ts\ntype LanguageFormAxis =\n  | \"cardinality\"\n  | \"ordinality\"\n  | \"gender\"\n  | \"grammatical-case\"\n  | \"definiteness\"\n  | \"classifier\"\n  | \"formality\"\n  | \"clusivity\"\n  | \"animacy\"\n  | \"phonetic\";\n\ntype CardinalityFormName =\n  | \"CARDINALITY_ZERO\" | \"CARDINALITY_ONE\" | \"CARDINALITY_TWO\"\n  | \"CARDINALITY_FEW\" | \"CARDINALITY_MANY\" | \"CARDINALITY_OTHER\";\ntype OrdinalityFormName =\n  | \"ORDINALITY_ZERO\" | \"ORDINALITY_ONE\" | \"ORDINALITY_TWO\"\n  | \"ORDINALITY_FEW\" | \"ORDINALITY_MANY\" | \"ORDINALITY_OTHER\";\ntype GenderFormName =\n  | \"GENDER_MASCULINE\" | \"GENDER_FEMININE\" | \"GENDER_COMMON\" | \"GENDER_NEUTER\";\ntype GrammaticalCaseFormName =\n  | \"CASE_NOMINATIVE\" | \"CASE_ACCUSATIVE\" | \"CASE_GENITIVE\" | \"CASE_DATIVE\"\n  | \"CASE_INSTRUMENTAL\" | \"CASE_LOCATIVE\" | \"CASE_PREPOSITIONAL\"\n  | \"CASE_VOCATIVE\" | \"CASE_ABLATIVE\";\ntype DefinitenessFormName =\n  | \"DEFINITENESS_DEFINITE\" | \"DEFINITENESS_INDEFINITE\" | \"DEFINITENESS_CONSTRUCT\";\ntype ClassifierFormName =\n  | \"CLASSIFIER_GENERAL\" | \"CLASSIFIER_PERSON\" | \"CLASSIFIER_ANIMAL\"\n  | \"CLASSIFIER_LONG_THIN\" | \"CLASSIFIER_FLAT\" | \"CLASSIFIER_BOUND\"\n  | \"CLASSIFIER_MACHINE\" | \"CLASSIFIER_VEHICLE\";\ntype FormalityFormName =\n  | \"FORMALITY_CASUAL\" | \"FORMALITY_INFORMAL\" | \"FORMALITY_FORMAL\"\n  | \"FORMALITY_HUMBLE\" | \"FORMALITY_HONORIFIC\";\ntype ClusivityFormName = \"CLUSIVITY_INCLUSIVE\" | \"CLUSIVITY_EXCLUSIVE\";\ntype AnimacyFormName = \"ANIMACY_ANIMATE\" | \"ANIMACY_INANIMATE\";\ntype PhoneticFormName =\n  | \"PHONETIC_VOWEL\" | \"PHONETIC_CONSONANT\" | \"PHONETIC_H_SILENT\"\n  | \"PHONETIC_H_ASPIRATED\" | \"PHONETIC_S_IMPURE\" | \"PHONETIC_Z\"\n  | \"PHONETIC_GN\" | \"PHONETIC_PS\" | \"PHONETIC_PN\" | \"PHONETIC_X\"\n  | \"PHONETIC_GLIDE_Y\" | \"PHONETIC_GLIDE_W\" | \"PHONETIC_STRESSED_A\"\n  | \"PHONETIC_SOLAR\" | \"PHONETIC_LUNAR\" | \"PHONETIC_OTHER\";\n\ntype LanguageFormName =\n  | CardinalityFormName | OrdinalityFormName | GenderFormName\n  | GrammaticalCaseFormName | DefinitenessFormName | ClassifierFormName\n  | FormalityFormName | ClusivityFormName | AnimacyFormName | PhoneticFormName;",
+      "ownerMilestone": "M0",
+      "parityClass": "portable",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 72,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-195",
+      "sourceLineStart": 1333,
+      "sourceLineEnd": 1359,
+      "sourceAnchor": "3.7.tagged-language-form-types",
+      "sourceBlockSha256": "97d7afc5ba65e69f811d91e8901efa16b40b2d2a575abb8d65a540c9a7ce412e",
+      "sourceText": "interface TaggedLanguageFormValue<\n  Axis extends LanguageFormAxis,\n  Name extends LanguageFormName\n> {\n  readonly $lokalized: \"language-form\";\n  readonly axis: Axis;\n  readonly name: Name;\n  readonly renderName: string;\n}\n\ntype LanguageFormValue =\n  | TaggedLanguageFormValue<\"cardinality\", CardinalityFormName>\n  | TaggedLanguageFormValue<\"ordinality\", OrdinalityFormName>\n  | TaggedLanguageFormValue<\"gender\", GenderFormName>\n  | TaggedLanguageFormValue<\"grammatical-case\", GrammaticalCaseFormName>\n  | TaggedLanguageFormValue<\"definiteness\", DefinitenessFormName>\n  | TaggedLanguageFormValue<\"classifier\", ClassifierFormName>\n  | TaggedLanguageFormValue<\"formality\", FormalityFormName>\n  | TaggedLanguageFormValue<\"clusivity\", ClusivityFormName>\n  | TaggedLanguageFormValue<\"animacy\", AnimacyFormName>\n  | TaggedLanguageFormValue<\"phonetic\", PhoneticFormName>;\n\ntype CardinalityValue =\n  TaggedLanguageFormValue<\"cardinality\", CardinalityFormName>;\ntype OrdinalityValue =\n  TaggedLanguageFormValue<\"ordinality\", OrdinalityFormName>;\ntype PhoneticValue = TaggedLanguageFormValue<\"phonetic\", PhoneticFormName>;",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 19,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-196",
+      "sourceLineStart": 1361,
+      "sourceLineEnd": 1375,
+      "sourceAnchor": "3.7.cardinal-public-api",
+      "sourceBlockSha256": "f3357c72bb5ea50d6b8a55f6fbd584abfec7f48aae63b7c5e1e17d5b537e643f",
+      "sourceText": "type PluralNumber = number | bigint | DecimalValue;\n\n// Root exports; strict cardinal data is in the root graph.\nfunction cardinalityForNumber(\n  value: PluralNumber,\n  locale: LocaleTag\n): CardinalityValue;\nfunction cardinalityForOperands(\n  value: PluralOperandValue,\n  locale: LocaleTag\n): CardinalityValue;\nfunction supportedCardinalitiesForLocale(\n  locale: LocaleTag\n): readonly CardinalityValue[];\nfunction getSupportedCardinalityLocaleTags(): readonly LocaleTag[];",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 7,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-197",
+      "sourceLineStart": 1377,
+      "sourceLineEnd": 1390,
+      "sourceAnchor": "3.7.ordinal-public-api",
+      "sourceBlockSha256": "da9f1da5b79aefff569ea6d7ed343c587ccd8f7a6757920f019125d7130d0e16",
+      "sourceText": "// `lokalized/data/ordinal` exports.\nconst ordinalData: OrdinalData;\nfunction ordinalityForNumber(\n  value: PluralNumber,\n  locale: LocaleTag\n): OrdinalityValue;\nfunction ordinalityForOperands(\n  value: PluralOperandValue,\n  locale: LocaleTag\n): OrdinalityValue;\nfunction supportedOrdinalitiesForLocale(\n  locale: LocaleTag\n): readonly OrdinalityValue[];\nfunction getSupportedOrdinalityLocaleTags(): readonly LocaleTag[];",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 6,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-198",
+      "sourceLineStart": 1392,
+      "sourceLineEnd": 1402,
+      "sourceAnchor": "3.7.range-api-and-exported-constant",
+      "sourceBlockSha256": "e9ea9f4c98c517a2e33af907cef45c7b6471714a3ac2e50a7a8712fbb1e9edc5",
+      "sourceText": "// `lokalized/data/ranges` exports.\nconst cardinalRangeData: CardinalRangeData;\nfunction cardinalityForRange(\n  start: CardinalityValue,\n  end: CardinalityValue,\n  locale: LocaleTag\n): CardinalityValue;\n\n// Example exported constant:\nconst GENDER_FEMININE:\n  TaggedLanguageFormValue<\"gender\", \"GENDER_FEMININE\">;",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 7,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-204",
+      "sourceLineStart": 1445,
+      "sourceLineEnd": 1481,
+      "sourceAnchor": "4.1.parser-and-merge-api",
+      "sourceBlockSha256": "2c773c78d582780f6bae6f66b3e25954e388f92e43ac21b8dd39f172c87b7001",
+      "sourceText": "`parseStrings` is synchronous:\n\n~~~ts\ninterface StringsLoadingLimits {\n  readonly maximumInputBytes: number;\n  readonly maximumReaderCharacters: number;\n  readonly maximumJsonNestingDepth: number;\n  readonly maximumTotalInputBytes: number;\n  readonly maximumLocalizedStringsFiles: number;\n  readonly maximumTranslationNodes: number;\n  readonly maximumWarnings: number;\n}\n\ntype ParsedCatalogLimits = Pick<\n  StringsLoadingLimits,\n  | \"maximumLocalizedStringsFiles\"\n  | \"maximumTranslationNodes\"\n  | \"maximumWarnings\"\n>;\n\ninterface ParseStringsOptions {\n  readonly locale: LocaleTag;\n  readonly source?: string;\n  readonly limits?: Partial<StringsLoadingLimits>;\n  readonly onWarning?: (warning: LocalizedStringWarning) => void;\n}\n\nfunction parseStrings(\n  input: string | Uint8Array,\n  options: ParseStringsOptions\n): ParsedStringsFile;\n\nfunction mergeParsedStringsFiles(\n  files: readonly ParsedStringsFile[],\n  options?: { readonly limits?: Partial<ParsedCatalogLimits> }\n): ParsedStringsFile;\n~~~",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 22,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-227",
+      "sourceLineStart": 1560,
+      "sourceLineEnd": 1560,
+      "sourceAnchor": "4.4.discovery-warning-surface-disposition",
+      "sourceBlockSha256": "66e02de2430beb5146f47c3fabab04e540e6bf528563cd5d2d9a5832b8528e98",
+      "sourceText": "Java's `INVALID_CLASSPATH_LOCALE_FILENAME` is discovery-specific and is not a portable JS warning;",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 1,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-237",
+      "sourceLineStart": 1584,
+      "sourceLineEnd": 1585,
+      "sourceAnchor": "4.5.classpath-controls-excluded",
+      "sourceBlockSha256": "9048c1122fd99124afdfb2634d3688392823e2e586726ced5a6e4cf7a0018620",
+      "sourceText": "Classpath discovery controls are Node/Java convenience concerns and are not part of the portable\nparser.",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 1,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-239",
+      "sourceLineStart": 1593,
+      "sourceLineEnd": 1593,
+      "sourceAnchor": "4.6.limit-decimal-precision",
+      "sourceBlockSha256": "085f2cdfa80f18679e79b15b0245f5aa79454ee54e23b5e4b0da638b8a109762",
+      "sourceText": "| Decimal precision | 1,024 digits |",
+      "ownerMilestone": "M6",
+      "parityClass": "portable",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 1,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-240",
+      "sourceLineStart": 1594,
+      "sourceLineEnd": 1594,
+      "sourceAnchor": "4.6.limit-decimal-scale",
+      "sourceBlockSha256": "926090dbb42b5e215fc2fe7e8804c1336e681382b27041091e0da6fe8a775461",
+      "sourceText": "| Absolute decimal scale | 1,024 |",
+      "ownerMilestone": "M6",
+      "parityClass": "portable",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 1,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-241",
+      "sourceLineStart": 1595,
+      "sourceLineEnd": 1595,
+      "sourceAnchor": "4.6.limit-visible-decimals",
+      "sourceBlockSha256": "39b2c58f84fede29474ca15f8796a67b73e7c822eea761266fe83be5d4f3beac",
+      "sourceText": "| Explicit visible decimal places | 1,024 |",
+      "ownerMilestone": "M6",
+      "parityClass": "portable",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 1,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-242",
+      "sourceLineStart": 1596,
+      "sourceLineEnd": 1596,
+      "sourceAnchor": "4.6.limit-compact-exponent",
+      "sourceBlockSha256": "cdbdfa1a4ab6d9ef6fd4553efe28297980a8125d0e1224dfb461eb8c87087562",
+      "sourceText": "| Compact exponent | 64 |",
+      "ownerMilestone": "M6",
+      "parityClass": "portable",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 1,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-243",
+      "sourceLineStart": 1597,
+      "sourceLineEnd": 1597,
+      "sourceAnchor": "4.6.limit-expression-characters",
+      "sourceBlockSha256": "26bc6eef8e47030f950630cebaf69168763184c4c724fc3b304effea393a81fe",
+      "sourceText": "| Characters per expression | 2,048 UTF-16 code units |",
+      "ownerMilestone": "M6",
+      "parityClass": "portable",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 1,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-244",
+      "sourceLineStart": 1598,
+      "sourceLineEnd": 1598,
+      "sourceAnchor": "4.6.limit-expression-tokens",
+      "sourceBlockSha256": "77a80e0b7e669a952f925f9909a550e50d35037c3d86988037afe81fcd71b985",
+      "sourceText": "| Tokens per expression | 256 |",
+      "ownerMilestone": "M6",
+      "parityClass": "portable",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 1,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-245",
+      "sourceLineStart": 1599,
+      "sourceLineEnd": 1599,
+      "sourceAnchor": "4.6.limit-expression-depth",
+      "sourceBlockSha256": "58c25bf3c680f79af36bb7dab8f94ecfde721f5888ef1ae314175b649b5da4e8",
+      "sourceText": "| Expression nesting depth | 32 |",
+      "ownerMilestone": "M6",
+      "parityClass": "portable",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 1,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-246",
+      "sourceLineStart": 1600,
+      "sourceLineEnd": 1600,
+      "sourceAnchor": "4.6.limit-generated-depth",
+      "sourceBlockSha256": "b99d79b5cf6dc16f452c1a0d2adcaa1c860ef7b4750a49b0e558fcbd3d790ddb",
+      "sourceText": "| Generated-placeholder depth | 32 |",
+      "ownerMilestone": "M6",
+      "parityClass": "portable",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 1,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-247",
+      "sourceLineStart": 1601,
+      "sourceLineEnd": 1601,
+      "sourceAnchor": "4.6.limit-output-characters",
+      "sourceBlockSha256": "7130688f0aa8bb9e1b11a12af6a43f03e12e92f7e67156287e0a48b74e8a3a9b",
+      "sourceText": "| Interpolated message, generated fragment, or phonetic input | 262,144 UTF-16 code units |",
+      "ownerMilestone": "M6",
+      "parityClass": "portable",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 1,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-1-4-248",
+      "sourceLineStart": 1602,
+      "sourceLineEnd": 1602,
+      "sourceAnchor": "4.6.limit-cumulative-expansion",
+      "sourceBlockSha256": "05b21c45ba29a25b4062bc3b41ae6327da0625e8cb347550ccec42219d2964e5",
+      "sourceText": "| Cumulative generated expansion | 1,048,576 UTF-16 code units per locale attempt |",
+      "ownerMilestone": "M6",
+      "parityClass": "portable",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 1,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-5-7-014",
+      "sourceLineStart": 1692,
+      "sourceLineEnd": 1698,
+      "sourceAnchor": "5.1 M0 lossless encoding candidate families",
+      "sourceBlockSha256": "7ff13d7c4b22b6e3f74f807e2a16a676ed05342c817baaa8befe779c3ab8132a",
+      "sourceText": "The first production encoding is lossless. Before any semantic projection is considered, M0 measures\na reproducible row/object baseline, generic lossless columnar/string-pool candidates, and domain-\nspecific membership candidates for predicate-shaped tables. At minimum, the membership set includes a\ndense `26^3` bitset family for three-letter `VALID_LANGUAGES` with an explicit two-letter representation,\nplus packed/range/bitset families as applicable to the other validity and RTL sets. Binary, base64,\nescaped-string, and emitted typed-array forms are measurement candidates rather than a predetermined\nshipping representation. M0 records a provisional choice; M1 integrates and validates the chosen",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 11,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-5-7-016",
+      "sourceLineStart": 1706,
+      "sourceLineEnd": 1711,
+      "sourceAnchor": "5.1 encoding measurement matrix and conjunctive selection",
+      "sourceBlockSha256": "ad63dc5bd21a592237a9ff1b2c4f8796e318e798ba65fbd11554b45609e0ec18",
+      "sourceText": "target language/script/region triple; missing and unknown keys remain absent. Each candidate records\ncanonical/raw bytes, emitted JavaScript, minified bytes, gzip-9, Brotli-q11, Brotli-q5, module import\nand decode time, lookup time, and peak/retained memory under locked inputs and tools. M1 owns these data\nencodings; M4 owns the complete plural evaluator and public classifier behavior. Selection is\nconjunctive across every locked minified, gzip-9, q11, q5, import/decode, lookup, and memory constraint;\nan improvement under one compressor cannot substitute for a miss under another.",
+      "ownerMilestone": "M0",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 14,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-5-7-131",
+      "sourceLineStart": 1708,
+      "sourceLineEnd": 1709,
+      "sourceAnchor": "5.1 M1 data-encoding ownership",
+      "sourceBlockSha256": "1cc18641f1b5c02539c8e85f6c15c1d69e720d80798869d2ff3fe8c4dc62dfcd",
+      "sourceText": "and decode time, lookup time, and peak/retained memory under locked inputs and tools. M1 owns these data\nencodings; M4 owns the complete plural evaluator and public classifier behavior. Selection is",
+      "ownerMilestone": "M1",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 1,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-5-7-132",
+      "sourceLineStart": 1708,
+      "sourceLineEnd": 1709,
+      "sourceAnchor": "5.1 M4 plural-evaluator ownership",
+      "sourceBlockSha256": "1cc18641f1b5c02539c8e85f6c15c1d69e720d80798869d2ff3fe8c4dc62dfcd",
+      "sourceText": "and decode time, lookup time, and peak/retained memory under locked inputs and tools. M1 owns these data\nencodings; M4 owns the complete plural evaluator and public classifier behavior. Selection is",
+      "ownerMilestone": "M4",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 2,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-5-7-017",
+      "sourceLineStart": 1713,
+      "sourceLineEnd": 1716,
+      "sourceAnchor": "5.1 evidence admissibility for encoding measurements",
+      "sourceBlockSha256": "f22549ccdddfa63789b15cfc66201dc0c562ee7067bcd6abb0ac0d6f40704dc2",
+      "sourceText": "Prior reviews reported promising lossless encoding results, but those informal measurements have no\nchecked input/tool/command/result record and are not acceptance evidence. M0 reruns the candidates under\nthe frozen measurement protocol; only its immutable attestations and reviewer-approved dispositions\nenter a budget decision.",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 4,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-5-7-093",
+      "sourceLineStart": 2364,
+      "sourceLineEnd": 2372,
+      "sourceAnchor": "7 peer-repository topology",
+      "sourceBlockSha256": "4d1c0f3294731cc5ac85727c7278bc72c64df565a45d275cf8402054f206fb8e",
+      "sourceText": "The implementations remain peer repositories under a conventional sibling container:\n\n~~~text\nlokalized/\n  lokalized-java/       reference implementation and interim data producer\n  lokalized-js/         JavaScript consumer\n  lokalized-cldr/       trigger-gated future shared generator\n  lokalized.com/        documentation/site consumer\n~~~",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 5,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-5-7-100",
+      "sourceLineStart": 2391,
+      "sourceLineEnd": 2393,
+      "sourceAnchor": "7.1 requirements/evidence schema ownership and extension",
+      "sourceBlockSha256": "3b0c24cae84768b894922b50358d03f6e91b7834d962ea7ca1b55fe012a4dbfa",
+      "sourceText": "- the language-neutral `requirements.json` and evidence schemas live beside those vectors; each\n  implementation may add implementation-required evidence records without reclassifying portable\n  requirements;",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 4,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-5-7-117",
+      "sourceLineStart": 2429,
+      "sourceLineEnd": 2430,
+      "sourceAnchor": "7.3 independent implementation versions",
+      "sourceBlockSha256": "b7f1bca7fc2c3918124abfd3f9ab78a85f7ae3d4f24142e8ae2f3e17f47148d2",
+      "sourceText": "Implementations version independently. Compatibility is expressed by metadata, not matching package\nversions:",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 2,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-005",
+      "sourceLineStart": 2475,
+      "sourceLineEnd": 2492,
+      "sourceAnchor": "§8.2 behavioral-vector schema example",
+      "sourceBlockSha256": "a63cc07627684e83b7f940e9090ee5bf4cbe2b5c03ac01281926c81be0ec24fb",
+      "sourceText": "The behavioral format uses stable semantic IDs:\n\n~~~json\n{\n  \"formatVersion\": 1,\n  \"behavioralVectorsVersion\": \"1.0.0\",\n  \"cases\": [\n    {\n      \"id\": \"resolution.fallback.resolution-failure-stops\",\n      \"requirementIds\": [\"LJ-RESOLUTION-014\"],\n      \"fixture\": \"fallback-cardinality\",\n      \"operation\": \"getResult\",\n      \"input\": {},\n      \"expected\": {}\n    }\n  ]\n}\n~~~",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 10,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-006",
+      "sourceLineStart": 2494,
+      "sourceLineEnd": 2496,
+      "sourceAnchor": "§8.2 vector payload list item 1",
+      "sourceBlockSha256": "652747ab283275d128b9b4ba77304990393936b734309409fa34ffab5da2f3e3",
+      "sourceText": "A vector can provide:\n\n- one or more raw strings-file fixtures with source names and locale tags;",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 3,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-007",
+      "sourceLineStart": 2497,
+      "sourceLineEnd": 2497,
+      "sourceAnchor": "§8.2 vector payload list item 2",
+      "sourceBlockSha256": "4d784cf2bc1ae62837e4c8f99d575311cdf02376bb97113596c18d8cb85493e0",
+      "sourceText": "- tiebreakers, fallback locale, callback fixture IDs, and registered data modules;",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 4,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-008",
+      "sourceLineStart": 2498,
+      "sourceLineEnd": 2498,
+      "sourceAnchor": "§8.2 vector payload list item 3",
+      "sourceBlockSha256": "63042a28b45ad9a88b2f63c54dc045e9ad605b3973ef6ce7d2300db486944639",
+      "sourceText": "- a lookup key, locale or language ranges, typed placeholders, and per-call options;",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 4,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-009",
+      "sourceLineStart": 2499,
+      "sourceLineEnd": 2499,
+      "sourceAnchor": "§8.2 vector payload list item 4",
+      "sourceBlockSha256": "e34f8bb210f2c1ec1d4016c05bf3b8ef0ce29b268ac47e1f0b857096a85469ac",
+      "sourceText": "- an expected result, failure-handler input, warning set, or thrown error/cause identity token.",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 4,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-010",
+      "sourceLineStart": 2501,
+      "sourceLineEnd": 2501,
+      "sourceAnchor": "§8.2 public wire shapes",
+      "sourceBlockSha256": "74d4d061ef3abafbae787fa6648b30c2419cc615ff33d5ed619e184dfacc2d6f",
+      "sourceText": "Tagged decimal, plural-operand, and language-form records use the exact public wire shapes from `3.7`.",
+      "ownerMilestone": "M0",
+      "parityClass": "portable",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 3,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-211",
+      "sourceLineStart": 2502,
+      "sourceLineEnd": 2502,
+      "sourceAnchor": "§8.2 callback fixture IDs",
+      "sourceBlockSha256": "06ecab897e05723f7ec28d934ca8a9ce8842955706b71fd72afff48435afcb5a",
+      "sourceText": "Callbacks are referenced by versioned fixture IDs rather than embedding executable code.",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 2,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-011",
+      "sourceLineStart": 2504,
+      "sourceLineEnd": 2510,
+      "sourceAnchor": "§8.2 semantic ID partitions and activation",
+      "sourceBlockSha256": "710a5b8ac87cf6cfdbd7e804915a9a61d8520dae720019c399e34e7ed2a3ed2e",
+      "sourceText": "An ID names one semantic proposition, not one test method. IDs are never reassigned to unrelated\nbehavior. The corpus partitions cross-language `requiredPortableIds`,\n`requiredImplementationIds` keyed by implementation family (for example JS browser/Node delivery),\nand explicitly nonportable `informationalIds`. Every implementation reports exact applicable,\npassed, failed, xfailed, and unsupported sets; counts are derived presentation only. Milestone\nmanifests report, but do not activate, the IDs whose registry activation milestone has been reached:\ncore through M7, JS delivery at M8, and negotiation at M9. Activation is derived under `8.6`.",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 12,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-012",
+      "sourceLineStart": 2512,
+      "sourceLineEnd": 2512,
+      "sourceAnchor": "§8.2 development xfail metadata",
+      "sourceBlockSha256": "0e12a5a04a4a55e24db2452fb910721fe5e3be05086f69b38177e3e3aba8afb1",
+      "sourceText": "An xfail requires severity, owner, reason, and expiry during development. A strict parity-backed",
+      "ownerMilestone": "M3b",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 4,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-199",
+      "sourceLineStart": 2513,
+      "sourceLineEnd": 2516,
+      "sourceAnchor": "§8.2 strict release ID partitions",
+      "sourceBlockSha256": "68f0b40d3f6bab77fab4e78d9570821a26faeac81996d0ea72a3d31a5207d6aa",
+      "sourceText": "release requires every `requiredPortableId` to pass and empty failed, xfailed, and unsupported sets for\nthat partition. An implementation release must also pass every applicable\n`requiredImplementationId`, but those cases do not inflate cross-language parity. Informational IDs may\nbe unsupported and never enter either numerator.",
+      "ownerMilestone": "M-R",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 8,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-052",
+      "sourceLineStart": 2612,
+      "sourceLineEnd": 2615,
+      "sourceAnchor": "§8.4 CI item 2 reference runtime lock",
+      "sourceBlockSha256": "0083743551b7fcc16d5cf09a670d93f9affb1598aa942c246426734f0ae58c07",
+      "sourceText": "- The reference runner and generator execute in a repository-pinned Eclipse Temurin JDK 21 image. M0\n  records the exact vendor, update/build string, and immutable image digest in\n  `reference-runtime-lock.json`; the archive and parity report repeat them. This controls\n  `Double.toString` and other host behavior without changing lokalized-java's `--release 9` consumer",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 8,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-200",
+      "sourceLineStart": 2616,
+      "sourceLineEnd": 2617,
+      "sourceAnchor": "§8.4 tagged large-number vector rule",
+      "sourceBlockSha256": "60308d3ad171b79b10c07dba24041f077eee93248edcb9e1f770dea0503db519",
+      "sourceText": "  contract. Values beyond JS safe integer range use tagged decimal/bigint/operand vectors, never an\n  ambiguous bare JSON number.",
+      "ownerMilestone": "M3a",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 2,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-069",
+      "sourceLineStart": 2657,
+      "sourceLineEnd": 2664,
+      "sourceAnchor": "§8.6 staged registry lifecycle",
+      "sourceBlockSha256": "21014fae4b2e2f7d644e69a6aa27ca911e234727668d9e68676ba302a0035f9c",
+      "sourceText": "Before plan approval starts M0, a checked bootstrap `requirements.json` contains every selected-\nprofile requirement whose `registrationBefore` frontier includes M0. During M0 it expands to the\ncomplete initial registration slice, which also contains every selected-profile requirement whose\nfrontier includes M1, M3a, or M2. Before any post-M0 milestone in a requirement's frontier starts, its\napplicable clauses are atomized, reviewed, and appended in a successor registry revision;\nimplementation or evidence from that milestone cannot count before the revision and successor\nselection attestation are frozen. The complete semantic plan remains the M0 contract, but a later\nclause does not acquire immutable requirement-record status until its registration batch.",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 13,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-070",
+      "sourceLineStart": 2666,
+      "sourceLineEnd": 2668,
+      "sourceAnchor": "§8.6 requirement identity and atomicity",
+      "sourceBlockSha256": "ee85fa7b4cceb556b6e559147fd2d53121e4797f2bea1a86c6e76bf3ede5c8b2",
+      "sourceText": "Requirement IDs have the immutable form `LJ-<AREA>-NNN`; from first registration an ID is never\nreassigned, and a retired requirement remains as a tombstone. Each registered non-retired record\ncontains exactly one atomic, independently verifiable proposition plus:",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 5,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-071",
+      "sourceLineStart": 2670,
+      "sourceLineEnd": 2670,
+      "sourceAnchor": "§8.6 record field 1",
+      "sourceBlockSha256": "5b9ab8f5c20ebba08c0bec5808ae4e5dd5bd7a51d842bcb3f6749c3de21fc8f9",
+      "sourceText": "- the normative statement, its hash, and a stable source anchor;",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 3,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-072",
+      "sourceLineStart": 2671,
+      "sourceLineEnd": 2671,
+      "sourceAnchor": "§8.6 record field 2",
+      "sourceBlockSha256": "281fefc6ed4d5b67ed942faef874e30844635fb4b377a5c090a8ff8f88929cd5",
+      "sourceText": "- parity class: portable, implementation-required, or informational/nonportable;",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 1,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-073",
+      "sourceLineStart": 2672,
+      "sourceLineEnd": 2673,
+      "sourceAnchor": "§8.6 record field 3",
+      "sourceBlockSha256": "95328f69845bb1f144771dbf127f2e1140bb7bde3ccb35163790b2ec7b37b2a8",
+      "sourceText": "- exactly one activation milestone, one owning exit milestone, and the release profiles to which it\n  applies;",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 3,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-074",
+      "sourceLineStart": 2674,
+      "sourceLineEnd": 2676,
+      "sourceAnchor": "§8.6 record field 4",
+      "sourceBlockSha256": "a2c76978b4e2c16547a79ef28ae8c79b51104a30c3b9aa64446146b1c9c4b563",
+      "sourceText": "- a nonempty `registrationBefore` frontier containing the activation milestone and every declared\n  evidence-producer milestone, reduced only when the dependency DAG guarantees that another retained\n  frontier milestone must start first;",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 4,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-075",
+      "sourceLineStart": 2677,
+      "sourceLineEnd": 2679,
+      "sourceAnchor": "§8.6 record field 5",
+      "sourceBlockSha256": "19b28849b55781bae69c84b062eaf9d57a5f30c1cc9507fe6d811b38db019868",
+      "sourceText": "- a checked evidence expression, each evidence item's producer milestone, and the IDs of vectors,\n  generated-corpus partitions, static checks, benchmarks, compatibility runs, or reviewed decision\n  records that discharge it.",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 3,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-076",
+      "sourceLineStart": 2681,
+      "sourceLineEnd": 2689,
+      "sourceAnchor": "§8.6 statement hashes and plan markers",
+      "sourceBlockSha256": "35bc796c21322ea62f38ba0f5f45560038b1458882c8e5c7298b0a2ea3dc16b5",
+      "sourceText": "The statement hash is SHA-256 over the exact UTF-8 bytes of the statement value in the registry's JCS\nprojection, so whitespace or wording changes cannot drift silently. The reviewed bootstrap process\nadds a clause-level marker with exactly one requirement ID to every M0-frontier proposition; M0 adds\nthe markers for the remaining M1/M3a/M2 initial-slice propositions. Multiple propositions are split\ninto separately marked clauses; an outer block may list its contained IDs for navigation but cannot\ndischarge them. Every remaining selected-profile normative block carries a\nlightweight checked `DEFERRED-UNTIL:<milestone[,milestone...]>` marker naming its reduced registration\nfrontier. Before any named milestone starts, the block is atomized and its deferred marker is replaced\nby registered IDs. M-R permits no deferred marker in selected-profile scope.",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 13,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-077",
+      "sourceLineStart": 2691,
+      "sourceLineEnd": 2696,
+      "sourceAnchor": "§8.6 registry linter and review",
+      "sourceBlockSha256": "09fd624dfe3a59d32c01a166637a59898f562f454172b2e14316c7319d7a2953",
+      "sourceText": "The linter knows the checked normative section/clause grammar. From first registration it checks every\nregistered record for a unique ID, a source marker, and a one-to-one exact statement hash; it also\nrejects an unmarked clause inside the active closure or a deferred marker whose frontier has begun.\nIt does not infer semantic boundaries or atomicity. A reviewer attests atomicity when approving the\ninitial record, expansion, or migration. An explicit reviewed `NONNORMATIVE` marker is required for\nrationale or examples inside the checked grammar.",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 9,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-078",
+      "sourceLineStart": 2698,
+      "sourceLineEnd": 2708,
+      "sourceAnchor": "§8.6 evidence grammar and acceptance",
+      "sourceBlockSha256": "a6e7aefa0c957e6e0b7a620c1a1d6b45848990678b93545219ea381f6ba7fb0e",
+      "sourceText": "Every behavioral and generated vector carries one or more `requirementIds`. Non-vector evidence uses\nchecked evidence manifests with the same IDs. Evidence references are conjunctive by default. An\nexplicit `anyOf` group is allowed only when the registry records a reviewed rationale that every branch\nproves the same proposition; nested free-form Boolean expressions are forbidden. Each allowed evidence\nkind has a schema-level machine acceptance predicate: vector, generated-partition, and compatibility\nruns must execute the exact referenced ID set with every required result passing; static checks must\nrun the locked tool/command over the locked source/configuration, exit successfully, and satisfy their\ndeclared zero-or-exact-finding predicate; benchmarks must meet the frozen threshold and tolerance under\ntheir checked scenario; and decision records require separate reviewer approval plus immutable\ninput/result hashes. Acceptance is derived from those records, never asserted by a free status field.\nA decision record cannot discharge a runtime-behavior requirement.",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 21,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-079",
+      "sourceLineStart": 2710,
+      "sourceLineEnd": 2718,
+      "sourceAnchor": "§8.6 evidence applicability and invalidation",
+      "sourceBlockSha256": "cfc26353a09911accc932fb14468ea6365c8279a85142e226e2dd0f7aa011201",
+      "sourceText": "Every evidence attestation binds the exact canonical requirement-record hash and evidence-expression\nhash it proves. It also carries a checked applicability projection: covered source-root tree hashes,\nartifact or packed-tarball hash, data-lock hashes, and relevant configuration/tool hashes. Closure\nrecomputes that projection for the milestone subject; a mismatch invalidates the evidence and requires\na rerun. The only exception is an explicitly referenced reviewed non-impact static check whose locked\ndependency analysis proves the changed subject is outside the evidence scope; prose or a decision\nrecord alone cannot preserve runtime evidence. A statement/evidence-expression migration likewise\ninvalidates prior evidence unless the new expression explicitly references a reviewed equivalence\ncheck, and all prior pass/fail/missing history remains immutable.",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 14,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-080",
+      "sourceLineStart": 2720,
+      "sourceLineEnd": 2730,
+      "sourceAnchor": "§8.6 profiles and selection attestations",
+      "sourceBlockSha256": "57bfc3a449f2a45cb8e5b68420f9ba568bc524830ac7926197243f0ac4aeca39",
+      "sourceText": "Before approval, the bootstrap process freezes `release-profiles.json` and one initial signed/approved\nselection record. Each immutable\nprofile ID names its complete product/support claims and derives its applicable requirement set; the\nselection record contains that ID plus the exact profile-registry and `requirements.json` hashes.\nEvery milestone-closure and release attestation repeats the selected profile ID and selection-record\nhash, and closure requires the record's embedded hashes to equal the current registries. After every\nregistry expansion or reviewed requirements/profile-registry migration, a successor signed selection\nattestation records the predecessor hash and current registry hashes; it may retain the same profile\nID. Changing the selected profile ID or claim set is specifically a reviewed claim-cut migration and creates a new\nimmutable profile/selection record. Every successor retains the prior selection, failures, and missing-\nevidence history and cannot retroactively make an earlier gate pass.",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 16,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-081",
+      "sourceLineStart": 2732,
+      "sourceLineEnd": 2746,
+      "sourceAnchor": "§8.6 activation, migration, and closure",
+      "sourceBlockSha256": "466b7e3d8d9542132176c82592386a8e51d7ac9456929da657d2f4bf5e825d50",
+      "sourceText": "Activation is derived mechanically from each registered requirement's activation milestone and\nselected release profile; a milestone manifest cannot omit an applicable requirement or activate one\nitself. In the dependency DAG, each\nactivation milestone and every declared evidence-producer milestone must be an ancestor of or equal to\nthe owning exit milestone. For a registered record, changing statement text, parity class,\nactivation/owner milestone, release profile, canonical evidence expression, reference IDs, producer\nmilestones, scenario/acceptance-policy identity, or retirement requires a reviewed\nmigration record containing old/new canonical records, reason, and approver identity. Section links\nremain navigation aids, never identity. CI rejects duplicate, reused, unknown, source-unmarked, or\nhash-mismatched registered IDs; an unmarked clause inside the active closure; any overdue deferred marker;\nan executable vector without a requirement; an active requirement without one owner or declared evidence;\nevidence with an unknown requirement; a self-asserted acceptance; and milestone closure while any\nactive requirement whose owner is an ancestor of or equal to the closing milestone lacks accepted\nevidence. Thus every closure rechecks earlier owners rather than only requirements owned by that exact\nmilestone. M-R repeats closure over every requirement derived for the release profile.",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 34,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-093",
+      "sourceLineStart": 2776,
+      "sourceLineEnd": 2778,
+      "sourceAnchor": "§9.2 measurement dimensions and host truth",
+      "sourceBlockSha256": "236a02b7fc3d34effdf634dde9b26e77df2b83a0992fad57dd547c55398db161",
+      "sourceText": "Each consumer scenario records source/canonical raw, generated JavaScript before minification, shipped\nminified bytes, gzip-9, Brotli-q11, Brotli-q5, parse time, retained memory, module/request count, and the\nincluded graph. Brotli-q11 is a lab comparison; q5 is a delivery proxy. The chosen production host's",
+      "ownerMilestone": "M2",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 12,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-095",
+      "sourceLineStart": 2787,
+      "sourceLineEnd": 2797,
+      "sourceAnchor": "§9.2 scenario and run manifest contract",
+      "sourceBlockSha256": "3a2e977698295c12103c9f0ced2f17204f11107e2c16fc7e95ec2d70b289bb12",
+      "sourceText": "Each checked scenario manifest names its applicable `profileIds`, one owner milestone, an immutable\nfreeze deadline, the pack/build recipe and artifact-identity rule, import specifier, fixed fixture\nhashes, raw-versus-parsed input, harness source and command hashes, runtime/browser/tool versions,\nexact hardware or provisioned-host identity, cold/warm cache state, warm-up count, measured sample\ncount, concurrency, aggregation statistic and percentile, timeout and failed-sample treatment, proxy\ninventory and estimation method, thresholds, and regression tolerances.\nNetwork scenarios also lock origin/CDN and host profile, headers, cache/preload state, and measurement\nregion. Each immutable run attestation records the actual tarball, output-graph, data-derivative, and result hashes;\na new implementation digest identifies a new run without redefining the scenario. Changing the frozen\nrecipe, fixture, environment, method, or threshold creates a reviewed scenario revision and cannot be\ncompared as the same scenario.",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 36,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-096",
+      "sourceLineStart": 2799,
+      "sourceLineEnd": 2802,
+      "sourceAnchor": "§9.2 scenario freeze and applicability",
+      "sourceBlockSha256": "c265b2b555c86936bc73d662a3f9026c7d1b63db65dd1e40e80a99e378f44e02",
+      "sourceText": "M0 freezes every selected-profile scenario whose deadline is M0 and registers the owner/deadline for\nthe rest. A later scenario must freeze before its owner's implementation/evidence can count. The\nselected profile mechanically defines which registered scenarios are applicable; deferred-profile\nscenarios are catalog entries, not first-release gates.",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 6,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-097",
+      "sourceLineStart": 2806,
+      "sourceLineEnd": 2810,
+      "sourceAnchor": "§9.2 scenario 0a",
+      "sourceBlockSha256": "9ce8e4bc3e14ed1e0ce0b4a6c8bc7c0edd8714facaa41096c1258178873f8dbd",
+      "sourceText": "- **0a — M2 static integration (owner M2; freeze M0):** two mandatory variants use the same packed artifact and complete M1\n  locale/cardinal/direct-match derivative: root with a fixed small embedded raw-text catalog, and\n  `lokalized/core` with its fixed already-parsed equivalent. They record bytes, import/decode,\n  construction, first render, and memory in Node and one exact-floor browser, with no manifest, Fetch,\n  preload, or network-loader graph;",
+      "ownerMilestone": "M2",
+      "parityClass": "implementation-required",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 18,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-105",
+      "sourceLineStart": 2832,
+      "sourceLineEnd": 2837,
+      "sourceAnchor": "§9.2 evidence baseline and provisional ceilings",
+      "sourceBlockSha256": "cd23ca36708b427fe151d565574399bcb9e8653c1b1a9ceb58c9eda1360bd1d5",
+      "sourceText": "The pinned likely-subtag, alias, validity, and direct-match data make old small-core estimates obsolete.\nEarlier row, lossy-projection, and lossless-encoding numbers lacked a common checked measurement record\nand are deliberately excluded from this plan's evidence. M0 records exact input hashes, generation and\nbuild commands, tool versions, immutable results, and separate provisional gzip-9/q11/q5 ceilings after the\ncandidates are reproduced. M1 records the integrated production result. No fixed byte ceiling or\ncatalog compression ratio is hard-coded by this pre-M0 plan.",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 10,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-114",
+      "sourceLineStart": 2854,
+      "sourceLineEnd": 2855,
+      "sourceAnchor": "§9.3 M0 and M2 0a threshold lifecycle",
+      "sourceBlockSha256": "1f0a2639770ab549eb1d7399c520bfba07cbf8b953d74a3c3d38a5e66968202d",
+      "sourceText": "M0 freezes the provisional M2 0a import/decode, construction, first-render, memory, and size thresholds;\nM2 must meet them or use the reviewed rebaseline/claim-cut path in `9.2`. At M2 exit, the decision owner",
+      "ownerMilestone": "M2",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 6,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-115",
+      "sourceLineStart": 2870,
+      "sourceLineEnd": 2871,
+      "sourceAnchor": "§10 bounded planning premise",
+      "sourceBlockSha256": "66828c9a89c9fb151dcad4b40a52ee3c939e2eaf9960a3cb8f688afc2bf42c33",
+      "sourceText": "Sizes are relative and are not calendar estimates. Plan approval records finite M0 and provisional M2\ntime-and-effort envelopes under `10.4`; work does not begin on an unbounded schedule.",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 5,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-116",
+      "sourceLineStart": 2875,
+      "sourceLineEnd": 2875,
+      "sourceAnchor": "§10.1 stage 1 walking skeleton",
+      "sourceBlockSha256": "0e6f633798f8b02f6397d89fcbd3a916d5b392c54729aea4cb01a949627ed81c",
+      "sourceText": "- **Walking skeleton:** internal proof at M2; not published as a supported package.",
+      "ownerMilestone": "M2",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 2,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-117",
+      "sourceLineStart": 2876,
+      "sourceLineEnd": 2877,
+      "sourceAnchor": "§10.1 stage 2 parity-backed release",
+      "sourceBlockSha256": "7c783fcd6a8e1841cf90a50f76b254e6fec6d544db6e5d7421c1851cbf63cc06",
+      "sourceText": "- **Parity-backed `0.x`:** M-R; complete strict core, delivery, server negotiation, documentation, and\n  an embedded parity declaration.",
+      "ownerMilestone": "M-R",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 6,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-118",
+      "sourceLineStart": 2878,
+      "sourceLineEnd": 2881,
+      "sourceAnchor": "§10.1 stage 3 cut negotiation",
+      "sourceBlockSha256": "9030b2f6270b5b552811b511ab156082088610a5ae35a8c73de7bf52fcc1c52a",
+      "sourceText": "- **Core preview if full negotiation is cut:** remains an internal, unpublished integration artifact\n  that accepts arbitrary well-formed direct locales and supplied precomputed matches but makes no\n  range-list/header claim. Publishing it requires a separately approved profile-bound release path;\n  this plan does not let it bypass M9/M-R.",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 6,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-121",
+      "sourceLineStart": 2887,
+      "sourceLineEnd": 2899,
+      "sourceAnchor": "§10.2 dependency DAG",
+      "sourceBlockSha256": "c96d1221809d73369a7a14449a6f18ad2f7c3aca434cc28f5fbf81b206b95f9b",
+      "sourceText": "~~~text\nM0 → M1\nM0 → M3a\n(M0, M1, M3a) → M2\n(M2, M3a) → M3b\n(M1, M2) → M4\n(M2, M3a) → M5a\n(M2, M3a, M4, M5a) → M5b\n(M2, M3a, M4) → M6\n(M3b, M4, M5b, M6) → M7 → M8 → M9 → M-D → M-R → M-E\n\nM-X starts only when its trigger fires.\n~~~",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 15,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-122",
+      "sourceLineStart": 2901,
+      "sourceLineEnd": 2908,
+      "sourceAnchor": "§10.2 execution ordering and closure",
+      "sourceBlockSha256": "793c2495599332de1b754de73152ba73e6dde04fe7ee69b5d2da6eff848d542c",
+      "sourceText": "Limited, explicitly capped canonical-generator and lossless-encoding exploration may run while M0\ncloses. Formal M1 and M3a both start only after the corrected semantic contract freezes, then may run\nin parallel; M2 waits for both. M3a is intentionally small so the economic M2 gate is not held by the\nfull corpus. M3b then grows coverage in parallel with implementation and must close before M7.\nM5b and M6 may explore earlier but cannot close until they reuse M4's exact-number/typed-value engine.\nEvery implementation milestone adds or activates stable semantic case IDs. In addition to its table\ngate, each milestone closes only when every active requirement whose owner is that milestone or an\nancestor has the required accepted evidence under `8.6`.",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 13,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-123",
+      "sourceLineStart": 2912,
+      "sourceLineEnd": 2914,
+      "sourceAnchor": "§10.3 milestone M0",
+      "sourceBlockSha256": "6d25d6e7bd2a21f9ab974f82206747cc24baca56f522a05b82270e7ca880c09a",
+      "sourceText": "| ID | Milestone | Size | Dependencies | Exit gate |\n|---|---|:--:|---|---|\n| **M0** | **Contract and decision freeze** | M | — | A checked contract covers every type and behavior in `2–6`, including arbitrary well-formed direct lookup, automatic match diagnostics, loading/SSR propagation, the symbol/subpath allowlist, Java-surface disposition, callback/error identity, and full-triple likely-subtag baseline. Freeze the complete semantic plan; the clause-marked M0/M1/M3a/M2 registration slice and deferred-block schedule; complete initial `requirements.json` and its successor selection record, retaining the preapproval `release-profiles.json` and bootstrap selection record; requirement/vector/evidence schemas and lint/closure checker; generated artifact schemas; the consumer-inventory/probe-corpus protocol; reproducible row/object, columnar/string-pool, and predicate-membership encoding candidates/criteria; a provisional lossless production choice; and distinct gzip-9/q11/q5 ceilings. Record package scope, exact-browser mechanism, pinned JDK/IANA locks, production toolchain and provisional hosting target, branch-disposition process, named owners, the immutable hash of the preapproval registry-calibration artifact and its inventory-derived cap allowance, and the confirmed M2 capacity envelope from `10.4`. Limited capped generator/measurement work may support these decisions. Scaffold package, declarations, tests, and CI. |",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 3,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-139",
+      "sourceLineStart": 2933,
+      "sourceLineEnd": 2940,
+      "sourceAnchor": "§10.4 production calibration procedure",
+      "sourceBlockSha256": "a2d31f844044248cd73a3f20b7f755e3ed5b47897a7a5959d3bb977d397dc28b",
+      "sourceText": "Before plan approval fixes the M0 effort cap, the named production implementer, human reviewer, and\nhuman decision owner run a dry calibration over all of `2.2`. In a scratch copy they classify every\nchecked block, split every normative clause, and draft one provisional `CAL-*` record per atomic\nproposition using the candidate production marker/registry grammar. They also assign the proposed\n`registrationBefore` frontier, owner, parity class,\nevidence kind, and source anchor. Calibration IDs never enter `requirements.json` and acquire no\nimmutability. The reviewed bootstrap process mints M0-frontier production records; M0 mints the\nremaining initial-slice records.",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 19,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-140",
+      "sourceLineStart": 2942,
+      "sourceLineEnd": 2955,
+      "sourceAnchor": "§10.4 calibration artifact and allowance formula",
+      "sourceBlockSha256": "4f490179e63a33ed5cc2b0464a507e25f9d671be353e4e2282d747f3fa1b3293",
+      "sourceText": "The append-only calibration artifact records the exact plan/schema/tool hashes; implementer, reviewer,\nand decision owner; monotonic start/stop boundaries; accepted, split, merged, rejected, and reworked\nrecord counts; separate agent authoring/review/rework wall minutes; separate active human implementer,\nreviewer, and decision-owner minutes; and the accepted annotated-section and scratch-registry hashes.\nAgent minutes per accepted record remain a throughput measure. The formal human-attention rate is\n`(human implementer + human reviewer + human decision-owner minutes) / accepted records`; any\ndecision-owner work measured per batch rather than per record is added as a separate fixed allowance.\nThe initial-slice human registry allowance is that rate multiplied by the checked-inventory-derived\nM0/M1/M3a/M2 clause count and a contingency factor of at least `1.5`, plus fixed decision-owner work\nand separately estimated human schema/linter/tooling effort. Agent throughput receives a separate\nplanning allowance and is never substituted for the human-attention cap. The M0 combined-human-effort\ncap must include the human allowance and all other M0 work. A change to the named people,\nmarker/schema workflow, or tooling that invalidates either measured rate requires a rerun or an\napproved more-conservative rate.",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 24,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-141",
+      "sourceLineStart": 2957,
+      "sourceLineEnd": 2962,
+      "sourceAnchor": "§10.4 initial-slice inventory",
+      "sourceBlockSha256": "16c917b3b6889f681625cde9abdde86673f5112c3fd318517567a7dfeb37b431",
+      "sourceText": "Before approval, a separate lightweight inventory lists every normative source block assigned to the\ninitial registration slice, its source anchor, reduced `registrationBefore` frontier, and reviewed\nanticipated atomic-record count. The allowance uses the sum of those reviewed counts; it may not\nextrapolate from section word count alone. The calibration and inventory are preapproval inputs, while\napproval binds their immutable hashes and freezes the production M0-frontier bootstrap records. M0\nperforms the remaining M1/M3a/M2 initial-slice atomization before those milestones start.",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 10,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-142",
+      "sourceLineStart": 2964,
+      "sourceLineEnd": 2972,
+      "sourceAnchor": "§10.4 named capacity envelopes",
+      "sourceBlockSha256": "9004676b6462ccd5f9e6c5b17c798d6c209db0fce12a0bf767dd9742ca4090d4",
+      "sourceText": "Before work starts, plan approval records the named implementer, human reviewer, human decision owner,\ncommitted engineering, review, and decision-owner hours per week, a finite M0 target date and combined\ncumulative-hour (or fixed-conversion engineer-week) cap, and a provisional M2 elapsed-duration and\ncombined-effort cap. M0's\nclock begins\nat approval, not at its eventual exit. M0 exit confirms the M2 duration/effort envelope or records an\nexplicit rebaseline, then computes the absolute M2 deadline as `M0ExitedAt + confirmedDuration`. The M2\nclock and envelope begin at M0 exit and cover the complete M1 + M3a + M2 critical path: all engineering\nand review effort charged to those milestones counts against it, including parallel work.",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 16,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-143",
+      "sourceLineStart": 2974,
+      "sourceLineEnd": 2983,
+      "sourceAnchor": "§10.4 50-percent checkpoints",
+      "sourceBlockSha256": "3df48566585ded782d5f8eb8bda59ff522808f170117ec1fc6f7cece81f81dcb",
+      "sourceText": "At the earlier of 50% elapsed time or 50% cumulative effort for either gate, the decision owner records\na checkpoint. M0's checkpoint must attach hashes for the corrected direct-locale contract, an\nexecutable registry linter over the currently marked plan, and reproducible results for the required\nlossless candidates. The M2 checkpoint must attach a running 0a root/core result in Node and one\nexact-floor browser plus current M1/M3a evidence closure. If an artifact is absent or the named reviewer\ndoes not approve the checkpoint, CI records the pause and cannot advance until an append-only outcome\napproved by both decision owner and reviewer names exactly one of: stop; a release-profile/requirement\nclaim-cut migration; an in-cap\nremediation plan with remaining work, owner, deadline, and reviewer approval; or a new cumulative\nenvelope with identified additional capacity. An unconstrained \"continue\" memo cannot resume work.",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 18,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-144",
+      "sourceLineStart": 2985,
+      "sourceLineEnd": 2987,
+      "sourceAnchor": "§10.4 100-percent stop",
+      "sourceBlockSha256": "2f2f6dbfb5f0f22c6c1af4160dda7d3797e460a9672f343844df4b79b786e63d",
+      "sourceText": "At 100% of either date or effort cap, an incomplete gate stops advancement. Continuing requires an\nexplicit new envelope plus either named scope/claim cuts or funded additional capacity; silently moving\nthe date or continuing an open-ended milestone is not permitted.",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 5,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-145",
+      "sourceLineStart": 2989,
+      "sourceLineEnd": 2994,
+      "sourceAnchor": "§10.4 append-only capacity record",
+      "sourceBlockSha256": "9bde6f53e5abfae7a795f4daf67f1b2b022e81137c1cb2ba85f20bbebf1476a8",
+      "sourceText": "The checked capacity record is versioned and append-only. It names the approval commit/date, start\nevent, counted milestones/work categories, weekly commitments, ledger source, date/effort caps,\nthreshold calculations, checkpoint artifact hashes, approver, and every pause or rebaseline. Elapsed\ntime may toll only for a recorded external block approved by both decision owner and reviewer; effort\nnever tolls. A rebaseline preserves prior usage and history rather than resetting either counter. CI\nand milestone review reject a missing, overdue, unapproved, or over-cap record.",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 16,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-146",
+      "sourceLineStart": 2998,
+      "sourceLineEnd": 2998,
+      "sourceAnchor": "§10.5 claim-cut invariant",
+      "sourceBlockSha256": "1ae85ca18d783494e89e3252fa9bfe756bf5813aae81c1001fd0ea687cf977ae",
+      "sourceText": "Cuts must reduce the claim as well as the work:",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 1,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-147",
+      "sourceLineStart": 3000,
+      "sourceLineEnd": 3000,
+      "sourceAnchor": "§10.5 cut 1",
+      "sourceBlockSha256": "e99903453ea5f4b7f931896c1fd5429c963c35d0c828c5812070622cc532bc78",
+      "sourceText": "1. publish no package at M2; keep the walking skeleton internal;",
+      "ownerMilestone": "M2",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 2,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-148",
+      "sourceLineStart": 3001,
+      "sourceLineEnd": 3001,
+      "sourceAnchor": "§10.5 cut 2",
+      "sourceBlockSha256": "efcf5e1ab2a97b93ca3347dcd99602ca3dff30575c7b1a2a9beb10e04c62f4b9",
+      "sourceText": "2. defer M9 and keep any core-preview artifact internal and unpublished;",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 2,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-149",
+      "sourceLineStart": 3002,
+      "sourceLineEnd": 3003,
+      "sourceAnchor": "§10.5 cut 3",
+      "sourceBlockSha256": "8ec10f99a4085d3cb9c19b147696032a05a00bb0f9292531c94ca8c0a084a536",
+      "sourceText": "3. defer edge/domain delivery and therefore M-R under this fixed release path; any narrower publication\n   requires a separately approved profile-bound release plan rather than deleting gates in place;",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 4,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-150",
+      "sourceLineStart": 3004,
+      "sourceLineEnd": 3004,
+      "sourceAnchor": "§10.5 cut 4",
+      "sourceBlockSha256": "3e364e123346fe941b1da9fe3fe2743665ed27e1934265a5056114dcad877791",
+      "sourceText": "4. defer all of M-E;",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 1,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-151",
+      "sourceLineStart": 3005,
+      "sourceLineEnd": 3005,
+      "sourceAnchor": "§10.5 cut 5",
+      "sourceBlockSha256": "46b06296c90f2fceea22e306fff878f6ff97cba05888a80fd9bb3de0c9139259",
+      "sourceText": "5. leave M-X dormant until its trigger.",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 1,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-152",
+      "sourceLineStart": 3007,
+      "sourceLineEnd": 3008,
+      "sourceAnchor": "§10.5 non-cuttable parity core",
+      "sourceBlockSha256": "93b58fb4bf8f08bd7b615345fe046a0342cc842e81f4e87c58d0e9d2310bd049",
+      "sourceText": "Exact locale data, duplicate-aware parsing, typed placeholders, fallback semantics, and behavioral\ncase IDs are not optional cuts from a parity-backed release.",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 5,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-153",
+      "sourceLineStart": 3014,
+      "sourceLineEnd": 3016,
+      "sourceAnchor": "§11 approval timing",
+      "sourceBlockSha256": "a391d9f9500e54f0c79d84d10db85ab2f901f3a5241d4ac9c8bd124cf052b39f",
+      "sourceText": "The registry calibration, its initial-slice inventory, and the finite M0 and provisional M2 capacity\nenvelopes are recorded before approval; M0 exit confirms or explicitly rebaselines M2. The remaining\nrows must be closed by M0 exit.",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 5,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-154",
+      "sourceLineStart": 3020,
+      "sourceLineEnd": 3020,
+      "sourceAnchor": "§11 decision package name and scope",
+      "sourceBlockSha256": "184954062861ba7e2eb702e8f11e943cc983690bb738da6ba0c2ed9a66da7c6a",
+      "sourceText": "| Package name and scope | Recheck registry ownership at execution time; decide whether core and future bindings use an npm scope |",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 2,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-155",
+      "sourceLineStart": 3021,
+      "sourceLineEnd": 3021,
+      "sourceAnchor": "§11 decision artifact owners",
+      "sourceBlockSha256": "6326af532c9e0d1c5e0b565f3cac92c3005e327cb99b2bfeefc529e6ec1b4fd3",
+      "sourceText": "| Artifact owners | Name accountable maintainers for CLDR generation, IANA closure, requirements/vectors, and npm release metadata |",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 4,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-156",
+      "sourceLineStart": 3022,
+      "sourceLineEnd": 3022,
+      "sourceAnchor": "§11 decision registry-effort calibration",
+      "sourceBlockSha256": "62d5327fcdbaa0c528d5c38f6bfd927030b0dd8429ee4ea17b084442caa9b17c",
+      "sourceText": "| Registry-effort calibration | Fully mark a scratch copy of `2.2`; have the production implementer, human reviewer, and human decision owner review every provisional atomic record; freeze separate agent/human timing; and derive the initial-slice allowances under `10.4` before approving M0's cap |",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 4,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-157",
+      "sourceLineStart": 3023,
+      "sourceLineEnd": 3023,
+      "sourceAnchor": "§11 decision M0/M2 capacity envelope",
+      "sourceBlockSha256": "8191e38df3909c8d5e28ea1d3f98e0c396646915b172aa60cf39021ee5e2d1b8",
+      "sourceText": "| M0/M2 capacity envelope | Name implementer, human reviewer, and human decision owner; record committed engineering/review/decision-owner hours per week, finite M0 date/combined-human-effort cap, separate agent-throughput allowance, and provisional M2 elapsed-duration/combined-effort cap under `10.4`; confirm or explicitly rebaseline M2 at M0 exit |",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 6,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-158",
+      "sourceLineStart": 3024,
+      "sourceLineEnd": 3024,
+      "sourceAnchor": "§11 decision browser floors",
+      "sourceBlockSha256": "483476dd42c048604108c49cb15680fb7dc2fe2d2d06bf75973bf3eaffb0c24a",
+      "sourceText": "| Exact browser-floor testing | Name the service or maintained runners that execute Safari 16.4, Chrome 111, and Firefox 111 |",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 4,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-159",
+      "sourceLineStart": 3025,
+      "sourceLineEnd": 3025,
+      "sourceAnchor": "§11 decision reference runtime",
+      "sourceBlockSha256": "22831ea929360400e8a7a0f3245e2fe3a5f65c2e7b04d4fb3937db3a4d92f1c4",
+      "sourceText": "| Reference runtime lock | Record the exact Temurin JDK 21 update/build and immutable image digest without changing Java's release-9 target |",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 3,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-160",
+      "sourceLineStart": 3026,
+      "sourceLineEnd": 3026,
+      "sourceAnchor": "§11 decision IANA snapshot",
+      "sourceBlockSha256": "3b136cd97373a5b4c99743e9b25d9808d9921dbfdbff2257724b57dfb32c970c",
+      "sourceText": "| IANA snapshot | Record registry `File-Date`, source SHA-256, closure schema, and update procedure |",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 4,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-161",
+      "sourceLineStart": 3027,
+      "sourceLineEnd": 3027,
+      "sourceAnchor": "§11 decision provisional hosting target",
+      "sourceBlockSha256": "22b3948346dc8b6f3bf7ca73064bf8e6e30c07810df9454740ae3b25f6a09b78",
+      "sourceText": "| Provisional hosting target | Name the CDN/origin family used for M0 q5 planning and verify its current response encoding; exact 0b origin/CDN, headers, cache/preload state, region, import/pack recipe, and harness freeze before M8 starts |",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 3,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-162",
+      "sourceLineStart": 3028,
+      "sourceLineEnd": 3028,
+      "sourceAnchor": "§11 decision design partner",
+      "sourceBlockSha256": "c34c1aa5c1aed45780e6b3c096c0d4b074241a93b679c4da3eb87430cb9aac14",
+      "sourceText": "| Design partner | Name one realistic Java+JS adopter or explicitly accept maintainer-only validation through M-D |",
+      "ownerMilestone": "M-D",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 2,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-163",
+      "sourceLineStart": 3029,
+      "sourceLineEnd": 3029,
+      "sourceAnchor": "§11 decision production encoding",
+      "sourceBlockSha256": "f8c26783294e3a4af992942a80d41bb0b5cd48c1e61c222464abf87c98251b9c",
+      "sourceText": "| Lossless production encoding | Reproduce row/object, generic columnar/string-pool, and predicate-membership candidates, including the required validity/RTL families; freeze criteria and a provisional M0 choice for M1 integration |",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 6,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-164",
+      "sourceLineStart": 3030,
+      "sourceLineEnd": 3030,
+      "sourceAnchor": "§11 decision preliminary ceilings",
+      "sourceBlockSha256": "1bbe18bdddd5e7e1cf3b1e77154c08b79ee3b079844171145914bd10908d4b92",
+      "sourceText": "| Preliminary size ceilings | After the encoding spike, set distinct gzip-9, q11 lab, and q5 delivery-proxy go/no-go thresholds before M2; actual-host 0b thresholds freeze before M8 |",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 4,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-165",
+      "sourceLineStart": 3032,
+      "sourceLineEnd": 3033,
+      "sourceAnchor": "§11 non-blockers and non-goal",
+      "sourceBlockSha256": "03d929965391276eab497bfbd1484a8877b8cbb79ec8a74895d431cf703b7b35",
+      "sourceText": "The schema stays at its current URL/path until M-X, so schema hosting is not an M0 blocker. TMS/XLIFF\nis a v1 non-goal, not an unresolved scope item.",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 3,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-210",
+      "sourceLineStart": 3041,
+      "sourceLineEnd": 3041,
+      "sourceAnchor": "§12 post-M0 scope freeze",
+      "sourceBlockSha256": "b1aa72fd8283f0b1b82849ef580765dded5d20b5bb8cb355ed1da8ee6c1930d1",
+      "sourceText": "| Single maintainer against a large semantic port | High | Project stalls before an end-to-end result | Finite M0/M2 date-and-effort envelopes, 50% checkpoints, and 100% stop/rebaseline rules in `10.4`; freeze new scope after M0 |",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 1,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-182",
+      "sourceLineStart": 3063,
+      "sourceLineEnd": 3064,
+      "sourceAnchor": "§13 unknown 7 later registry rate",
+      "sourceBlockSha256": "5cb2cf5295e4d53356bf64fdf7a8707c271193ae50166dfd062b5c606a0976c1",
+      "sourceText": "- The authoring/review rate for later requirement-registration slices; the initial M0 slice instead\n  uses the pre-approval `2.2` calibration and must be recalibrated after a material workflow change.",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 3,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-185",
+      "sourceLineStart": 3068,
+      "sourceLineEnd": 3070,
+      "sourceAnchor": "§13 binding interpretation",
+      "sourceBlockSha256": "d465d0c9bcd92fc7df08ce8b1ad3f03a606bebb40f16ec61641abc3832a1f397",
+      "sourceText": "These are milestone measurements, not reasons to substitute optimistic estimates. The M0/M2 capacity\nclocks in `10.4` are nevertheless binding. M2 is the first economic go/no-go; M7 is the final technical\nbudget gate before delivery and release work.",
+      "ownerMilestone": "M7",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 4,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-186",
+      "sourceLineStart": 3076,
+      "sourceLineEnd": 3076,
+      "sourceAnchor": "§14 approval precondition",
+      "sourceBlockSha256": "a22fc3050f4bdb069fbde8ec1613d2f8ad725f64bf25bef09f7dd0fcc20b102e",
+      "sourceText": "Approve this plan to begin M0 and bounded generator/measurement exploration only when:",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 1,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-187",
+      "sourceLineStart": 3078,
+      "sourceLineEnd": 3078,
+      "sourceAnchor": "§14 approval item 1 API completeness",
+      "sourceBlockSha256": "cec97baf6c9bb179ecf794aeac8c09c35b90bef43cbef20664f873e3d91d0807",
+      "sourceText": "- the M0 API contract can be implemented independently without consulting unspecified Java overloads;",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 1,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-188",
+      "sourceLineStart": 3079,
+      "sourceLineEnd": 3080,
+      "sourceAnchor": "§14 approval item 2 direct-locale contract",
+      "sourceBlockSha256": "05a73ab0a5cedbc58f8838d8028249b7054e9ae7f8d1df93aa22fdde17f37c0d",
+      "sourceText": "- the direct-locale two-channel contract is accepted: the requested tag drives fallback while its\n  independently computed match is diagnostic;",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 2,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-189",
+      "sourceLineStart": 3081,
+      "sourceLineEnd": 3081,
+      "sourceAnchor": "§14 approval item 3 pinned data",
+      "sourceBlockSha256": "e1ecefbca76b54a1b68d1e003eeba675f89637fd868078b9ab10633c46159356",
+      "sourceText": "- strict parity does not depend on unpinned host ICU, CLDR, or IANA data;",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 1,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-190",
+      "sourceLineStart": 3082,
+      "sourceLineEnd": 3083,
+      "sourceAnchor": "§14 approval item 4 semantic product decisions",
+      "sourceBlockSha256": "9bb616b334af05df7270826a833b0fff00ad2d779867fb1ae27d25fb3081b4db",
+      "sourceText": "- raw text, tagged values, locale-preserving merges, callback behavior, and failure precedence are\n  accepted as product decisions;",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 5,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-191",
+      "sourceLineStart": 3084,
+      "sourceLineEnd": 3085,
+      "sourceAnchor": "§14 approval item 5 ownership",
+      "sourceBlockSha256": "48b504221cf716cf36333828327c8207b7af4f477573f95583cff3b755e0185b",
+      "sourceText": "- the CLDR, IANA, requirement/vector, and release-metadata ownership roles are accepted as M0\n  assignments;",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 4,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-192",
+      "sourceLineStart": 3086,
+      "sourceLineEnd": 3087,
+      "sourceAnchor": "§14 approval item 6 lossless baseline",
+      "sourceBlockSha256": "3549f929d7f585896071662c1ca883478ac13a0b6f76794a2e12dd72c3b4d7ce",
+      "sourceText": "- reviewers accept a lossless full-triple encoding as the production baseline and the projection proof\n  as the only semantic-reduction gate;",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 2,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-193",
+      "sourceLineStart": 3088,
+      "sourceLineEnd": 3088,
+      "sourceAnchor": "§14 approval item 7 registry policy",
+      "sourceBlockSha256": "d7bdcc3cc2345efa51f0525107377ee1760e8cd3e52635cfbc6b6265cc0e164c",
+      "sourceText": "- the requirement/evidence registry policy is accepted as a milestone-closure mechanism;",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 1,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-194",
+      "sourceLineStart": 3089,
+      "sourceLineEnd": 3090,
+      "sourceAnchor": "§14 approval item 8 human calibration",
+      "sourceBlockSha256": "cc48e5ddd99ef92ec41c2f326726e6bbae652208860c6f9bc4e0168747cddc58",
+      "sourceText": "- the named production implementer, human reviewer, and human decision owner have completed the `2.2`\n  registry-effort calibration, and M0's cap includes its derived human initial-slice allowance;",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 2,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-195",
+      "sourceLineStart": 3091,
+      "sourceLineEnd": 3092,
+      "sourceAnchor": "§14 approval item 9 bootstrap coverage",
+      "sourceBlockSha256": "9a61ff9f290246da483aaa4605a63adf1efaa8b1600cb8d51e83375d82584947",
+      "sourceText": "- the bootstrap requirement registry and initial selection attestation cover every selected-profile\n  clause whose `registrationBefore` frontier includes M0;",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 2,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-196",
+      "sourceLineStart": 3093,
+      "sourceLineEnd": 3094,
+      "sourceAnchor": "§14 approval item 10 capacity record",
+      "sourceBlockSha256": "0dd4255e0c1127652cae276d4b3c4ca84ed7041d040d1a84e7ff1e6154f17cfd",
+      "sourceText": "- the named owner, committed capacity, finite M0 envelope, provisional M2 envelope, and 50%/100%\n  trip-wires in `10.4` are recorded before the clock starts;",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 5,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-197",
+      "sourceLineStart": 3095,
+      "sourceLineEnd": 3095,
+      "sourceAnchor": "§14 approval item 11 honest cuts",
+      "sourceBlockSha256": "a95bb2b2d2d640c618df6ec121bda11fdcb4fbd9e0acca220efeb25bba075aae",
+      "sourceText": "- reviewers agree that cuts reduce claims explicitly instead of creating silent divergences.",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 1,
+      "atomizationStatus": "not-started"
+    },
+    {
+      "inventoryId": "INV-8-14-215",
+      "sourceLineStart": 3180,
+      "sourceLineEnd": 3181,
+      "sourceAnchor": "Appendix B Java-public-surface audit sentence",
+      "sourceBlockSha256": "2e7529dc160a9e745fffbc2d60cfefa1d5b5bcd9099d5feb5521ea1fe270ddbb",
+      "sourceText": "builders—are explicit v1 deferrals, not accidental gaps. M0 checks this table against the Java public\nsurface and records any newly discovered public type or method before API freeze.",
+      "ownerMilestone": "M0",
+      "parityClass": "process-only",
+      "registrationBefore": [
+        "M0"
+      ],
+      "anticipatedAtomicRecords": 3,
+      "atomizationStatus": "not-started"
+    }
+  ]
+}

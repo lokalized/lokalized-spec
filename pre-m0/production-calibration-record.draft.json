@@ -1,0 +1,83 @@
+{
+  "formatVersion": 1,
+  "status": "not-run",
+  "runId": null,
+  "rolesSha256": null,
+  "sourcePlanSha256": "4ace5e349bedd45b16cd87182aed3306d33fae92b034ed01ddb93bc733c5f62d",
+  "sourceSection": {
+    "anchor": "2.2",
+    "sha256": "de22308d19e357db0dd77e35a7be712960c39e3cd15f3caaa28e86769b212000"
+  },
+  "workflowArtifacts": {
+    "registrySchema": null,
+    "markerGrammar": null,
+    "validator": null
+  },
+  "people": {
+    "productionImplementer": null,
+    "humanReviewer": null,
+    "humanDecisionOwner": null
+  },
+  "monotonicClock": {
+    "source": null,
+    "unit": null,
+    "continuousProcessIdentity": null
+  },
+  "phases": [],
+  "sourceUnitLedger": [],
+  "counts": {
+    "initialProvisionalRecords": null,
+    "acceptedRecords": null,
+    "sourceUnitsInitiallySplit": null,
+    "reviewRequestedSplits": null,
+    "netRecordsAddedByReviewSplits": null,
+    "reviewMergeGroups": null,
+    "netRecordsRemovedByMerges": null,
+    "netRecordsRemovedByRejectionOrReclassification": null,
+    "acceptedRecordsReworked": null
+  },
+  "agentWallMinutes": {
+    "authoring": null,
+    "review": null,
+    "rework": null
+  },
+  "activeHumanMinutes": {
+    "implementer": null,
+    "reviewer": null,
+    "decisionOwnerPerRecordWork": null,
+    "decisionOwnerFixedBatchWork": null
+  },
+  "zeroMinuteReasons": {
+    "implementer": null,
+    "reviewer": null,
+    "decisionOwnerPerRecordWork": null,
+    "decisionOwnerFixedBatchWork": null
+  },
+  "toolingEstimate": {
+    "minutes": null,
+    "responsibleRole": null,
+    "basis": null,
+    "evidence": null
+  },
+  "acceptedArtifacts": {
+    "annotatedSection": null,
+    "scratchRegistry": null,
+    "timerLog": null
+  },
+  "derived": {
+    "humanMinutesPerAcceptedRecord": null,
+    "reviewedInitialSliceRecordCount": null,
+    "contingencyFactor": 1.5,
+    "initialSliceHumanAllowanceMinutes": null
+  },
+  "approvals": {
+    "productionImplementer": null,
+    "humanReviewer": null,
+    "humanDecisionOwner": null,
+    "approvedAt": null
+  },
+  "blockingReasons": [
+    "Production roles have not been assigned and approved.",
+    "The production calibration has not run."
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "id": "classpath-discovery-pkg-42-b7",
+  "description": "A package name carrying digits and hyphens, which validateClasspathPackage must accept. The fixture id IS the package name, so the default-package case exercises the accepted shape end to end rather than merely surviving validation.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Key.D": "d"
+    }
+  }
+}

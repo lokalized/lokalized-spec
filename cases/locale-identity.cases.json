@@ -1,0 +1,1371 @@
+{
+  "formatVersion": 1,
+  "family": "locale-identity",
+  "description": "Plan v7 section 8.3 fixture family 'locale-identity'. Inputs only; the oracle emits expected.",
+  "skipped": [
+    {
+      "what": "Classpath loading of locale-named resources, including the INVALID_CLASSPATH_LOCALE_FILENAME warning that the classpath path emits (LocalizedStringLoader.java:1717) where the filesystem path throws (line 1699). That warning is squarely in this family - it is the classpath twin of the root.json rejection, and reading the two branches side by side confirms they wrap the same exception - but the oracle only drives loadFromFilesystem, so there is no way to materialize a classpath resource for it.",
+      "why": "Classpath loading is listed as unsupported by the oracle harness; only filesystem loading is driven."
+    },
+    {
+      "what": "Locale identity arriving through localeMatchSupplier / a supplied LocaleMatch and localeMatchResolver ingress - the section 8.3 ingress matrix's 'case, legacy-alias, and extlang spellings ... preserving the intentional lookup difference for supplied matches'. Every alias, grandfathered and extlang spelling authored here would repay a second pass through those ingress points.",
+      "why": "Negotiation ingress is unsupported in the current oracle; only the instance locale and the per-call locale reach the library, and only those two are exercised here (the deprecated-fallback fixtures cover the instance-locale side)."
+    },
+    {
+      "what": "The three-letter region aliases ANT, NTZ, SCG, SUN and YUG reached through Java's legacy Locale constructors (new Locale(\"en\",\"ANT\")), which is the only way a caller could ever present them as regions rather than extlangs.",
+      "why": "Those Locale instances are not well-formed BCP 47 and LocaleUtils.requireWellFormed rejects them at every public boundary; the oracle's input format also only expresses a language tag string, so the path is unreachable by construction. The extlang-collapse cases document what actually happens instead, and the filename-rejected case documents the third behavior the same strings get as filenames (isKnownLanguageTag('en-ANT') and isKnownLanguageTag('ru-SUN') are both false, verified by reflection)."
+    },
+    {
+      "what": "Whether a JS port can reproduce the JDK's grandfathered-tag table (i-default becoming en-x-i-default, cel-gaulish becoming xtg-x-cel-gaulish, sgn-BE-NL becoming vgt) through Intl.Locale, and the corresponding round-trip through the pinned IANA equivalence oracle.",
+      "why": "That is JS-side delivery/ingress work covered by the generated direct-matcher vectors of section 8.3, not something the behavioral corpus can settle; the cases here record the Java behavior a port must reach by whatever means, on both the filename side and the request side."
+    },
+    {
+      "what": "A duplicate-filename case whose reported path fragment is provably order-independent.",
+      "why": "The loader quotes whichever colliding file the directory scan reaches SECOND, and no pair of filenames can make that independent of iteration order. Both creation orders were tested six times on this machine and DirectoryStream returned nan before zh-min-nan.json every time, which is also sorted order, so the emitted message is stable for the oracle; a port whose directory iteration differs would reproduce the failure type, the locale named, and the abort, but not that one path fragment. Everything else about the case is order-independent."
+    },
+    {
+      "what": "A case in which the multi-valued region alias is steered by a SCRIPT the caller supplied rather than by the language's own likely region.",
+      "why": "preferredRegionAlias does consult likelySubtagCandidateTags of the language-and-script pair, but no language in the bundled CLDR data has a script variant whose likely region differs from the bare language's likely region in a way that lands on a different value of any multi-valued alias list, so the branch cannot be made observable. Checked exhaustively against the 23 multi-valued rows and the likely-subtags table."
+    },
+    {
+      "what": "A tiebreaker list supplied with a deprecated locale spelling that is NOT the loaded spelling, for example tiebreakers {\"hy\": [\"hy-SU\", \"hy-RU\"]} against loaded {hy-AM, hy-RU}.",
+      "why": "The exact-permutation check at DefaultStrings.java:404 compares against LOADED locales, so this throws at construction and the fixture could not be loaded to observe anything. The behavior is documented in the notes of the mo-tiebreaker and equivalent-tags fixtures instead; the deprecated-fallback pair covers the reachable half of the same trap, where a deprecated tag is accepted as the fallback and instance locale but resolved to a loaded spelling."
+    },
+    {
+      "what": "A fixture loading two or more und-* catalogs simultaneously (for example und and und-Latn)",
+      "why": "MEASURED UNBUILDABLE. Two und-* locales make the primary language 'und' ambiguous, so DefaultStrings demands a tiebreaker entry for it, and then rejects that entry with \"Tiebreaker language code 'und' must identify a primary language\". The two requirements are mutually exclusive, so no such catalog set can be constructed. und-Latn is therefore exercised as a requested tag rather than as a loaded catalog."
+    }
+  ],
+  "cases": [
+    {
+      "id": "locale-identity.filename.case-normalized-but-not-cldr-canonicalized",
+      "requirementIds": [],
+      "fixture": "locale-identity-filename-normalization",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "LocalizedStringLoader keys catalogs by Locale.forLanguageTag(fileName) (LocalizedStringLoader.java:1263) and never calls CldrLocaleData.canonicalLanguageTag. A filename is therefore only BCP 47 case-normalized (zh-hant becomes zh-Hant, nb-no becomes nb-NO) while CLDR aliases are left alone: hy-SU, ru-SU and pap-AN stay spelled that way in the loaded map. A port that canonicalizes at load time - the intuitive thing to do - reports hy-AM, ru-RU and pap-CW here, and every later exact-identity comparison against those map keys shifts with it."
+    },
+    {
+      "id": "locale-identity.filename.unknown-tags-are-silently-skipped",
+      "requirementIds": [],
+      "fixture": "locale-identity-filename-rejected",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "An EXTENSIONLESS file that fails isLanguageTag (LocalizedStringLoader.java:1649) is skipped with no warning and no exception, because languageTagForFileName returns null rather than throwing. The three rejected names fail three different clauses, verified by reflection against the real methods: isKnownLanguageTag('root') is false; en-ANT builds to 'ant' via extlang promotion and isKnownLanguageTag('en-ANT') is false; i-enochian IS known but builds to x-i-enochian, whose getLanguage() is empty and which is not explicitly undetermined. The load succeeds with en alone. A port that throws on these names, warns about them, or accepts root as the root locale loads a different catalog set from the same directory."
+    },
+    {
+      "id": "locale-identity.filename.grandfathered-tags-become-modern-locales",
+      "requirementIds": [],
+      "fixture": "locale-identity-filename-grandfathered",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "Eight grandfathered filenames become tlh, jbo, cmn, xtg-x-cel-gaulish, en-x-i-default, nan, sfb and nb. Two are the interesting ones: cel-gaulish and i-default have no clean replacement, so the JDK preserves the original as a private-use subtag rather than dropping it, and zh-guoyu becomes cmn (the IANA preferred value) rather than the CLDR-canonical zh. A port whose ingress uses Intl.Locale or plain string handling rejects or differently rewrites these; this case pins the exact table a port must replicate at the Locale boundary."
+    },
+    {
+      "id": "locale-identity.grandfathered-request.i-klingon-reaches-tlh",
+      "requirementIds": [],
+      "fixture": "locale-identity-grandfathered-requests",
+      "operation": "matchFor",
+      "input": {
+        "locale": "i-klingon"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The irregular grandfathered tag i-klingon is rewritten to tlh by Locale.forLanguageTag before matchFor ever runs, so it matches the loaded tlh catalog EXACTLY and the emitted languageRange is 'tlh' - the request string never appears anywhere in the result. A port whose ingress leaves i-klingon intact reports NONE."
+    },
+    {
+      "id": "locale-identity.grandfathered-request.art-lojban-reaches-jbo",
+      "requirementIds": [],
+      "fixture": "locale-identity-grandfathered-requests",
+      "operation": "matchFor",
+      "input": {
+        "locale": "art-lojban"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A regular grandfathered tag whose replacement is a plain language subtag: art-lojban becomes jbo and matches EXACTLY. Distinct row of the legacy table from the i-* forms, and the one most likely to be mistaken for a language-plus-variant by a hand-rolled parser."
+    },
+    {
+      "id": "locale-identity.grandfathered-request.zh-min-nan-reaches-nan",
+      "requirementIds": [],
+      "fixture": "locale-identity-grandfathered-requests",
+      "operation": "matchFor",
+      "input": {
+        "locale": "zh-min-nan"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A three-subtag grandfathered tag collapsing to a single subtag: zh-min-nan becomes nan and matches EXACTLY, with the loaded zh catalog NOT selected. A port that treated zh-min-nan as zh plus subtags would serve Mandarin to a Min Nan request."
+    },
+    {
+      "id": "locale-identity.grandfathered-request.sgn-be-fr-reaches-sfb",
+      "requirementIds": [],
+      "fixture": "locale-identity-grandfathered-requests",
+      "operation": "matchFor",
+      "input": {
+        "locale": "sgn-BE-FR"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "sgn-BE-FR becomes sfb and matches EXACTLY. This is the row that proves the rewrite is a table lookup rather than subtag arithmetic: dropping the trailing subtags would give sgn-BE, and the sibling sgn-BE-NL maps to an entirely unrelated language (vgt). A port that normalizes legacy tags by any rule other than the table gets this row wrong in a way no shorter tag exposes."
+    },
+    {
+      "id": "locale-identity.grandfathered-request.zh-guoyu-reaches-zh",
+      "requirementIds": [],
+      "fixture": "locale-identity-grandfathered-requests",
+      "operation": "matchFor",
+      "input": {
+        "locale": "zh-guoyu"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Two tables in sequence, in opposite directions: the JDK rewrites zh-guoyu to cmn, then CLDR aliases cmn to zh, so the request lands on the loaded zh catalog as CANONICAL with languageRange 'cmn'. A port that applied only the CLDR table reports NONE; one that applied only the JDK table reports NONE as well, since no cmn catalog is loaded. Paired with the filename case, where zh-guoyu.json loads AS cmn and is NOT canonicalized."
+    },
+    {
+      "id": "locale-identity.grandfathered-request.no-bok-reaches-nb-no",
+      "requirementIds": [],
+      "fixture": "locale-identity-grandfathered-requests",
+      "operation": "matchFor",
+      "input": {
+        "locale": "no-bok"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "no-bok becomes bare nb, which reaches the loaded nb-NO by LIKELY_SUBTAG - a weaker category than the EXACT and CANONICAL rows above. Shows the rewritten tag then goes through ordinary matching with no special status attached to its legacy origin."
+    },
+    {
+      "id": "locale-identity.grandfathered-request.cel-gaulish-reaches-xtg",
+      "requirementIds": [],
+      "fixture": "locale-identity-grandfathered-requests",
+      "operation": "matchFor",
+      "input": {
+        "locale": "cel-gaulish"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "cel-gaulish has no clean replacement, so the JDK produces xtg-x-cel-gaulish, preserving the original as a private-use subtag. Its fallback chain is [xtg-x-cel-gaulish, xtg-x-cel, xtg], so it reaches the loaded xtg catalog by CLDR_FALLBACK rather than CANONICAL - and note the intermediate xtg-x-cel step, which a port that strips the whole x- section in one move would skip."
+    },
+    {
+      "id": "locale-identity.grandfathered-request.i-default-reaches-en",
+      "requirementIds": [],
+      "fixture": "locale-identity-grandfathered-requests",
+      "operation": "matchFor",
+      "input": {
+        "locale": "i-default"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "i-default becomes en-x-i-default, whose chain is [en-x-i-default, en-x-i, en], so it reaches the loaded en catalog by CLDR_FALLBACK. Together with cel-gaulish this pins the JDK's habit of parking an unmappable legacy tag in a private-use extension on a real language, and the subtag-at-a-time walk back out of it."
+    },
+    {
+      "id": "locale-identity.grandfathered-request.lookup-locale-is-the-rewritten-tag",
+      "requirementIds": [],
+      "fixture": "locale-identity-grandfathered-requests",
+      "operation": "getResult",
+      "input": {
+        "key": "Only.Zh",
+        "locale": "zh-guoyu"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The resolution channel for a grandfathered request: lookupLocale is reported as 'cmn', NOT the requested 'zh-guoyu'. The rewrite happens at the Locale boundary, outside the library, so even the failure-reporting channel - which otherwise faithfully preserves the requested spelling, as the ru-SU and hy-SU cases show - never sees the string the caller wrote. A port that carries the caller's original string through reports a different lookupLocale here while producing the identical translation."
+    },
+    {
+      "id": "locale-identity.filename.jdk-legacy-codes-rewritten-cldr-aliases-not",
+      "requirementIds": [],
+      "fixture": "locale-identity-filename-legacy-language",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "iw, in and ji load as he, id and yi because Locale.forLanguageTag performs that rewrite, while sh, tl, mo, cmn and aa-Saaho load under their own spellings because CLDR aliasing is not applied at load - even though canonicalLanguageTag would rewrite them to sr-Latn, fil, ro, zh and ssy respectively. A port that applies one uniform canonicalization - rewriting all eight or none of them - produces a different loaded-locale set, and the two rewriting layers can only be told apart by a fixture that contains both kinds."
+    },
+    {
+      "id": "locale-identity.filename.grandfathered-duplicate-fails-the-load",
+      "requirementIds": [],
+      "fixture": "locale-identity-duplicate-grandfathered-filename",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "Two filenames that reduce to the same Locale abort the whole load with LocalizedStringLoadingException 'Duplicate localized strings file for locale ...' (LocalizedStringLoader.java:1266). A port that keys catalogs by raw filename keeps both and silently picks one. CAVEAT, verified by repeated runs with both creation orders on this machine: the loader quotes whichever colliding file DirectoryStream reaches SECOND, so only the trailing path fragment of the message is iteration-order dependent - the failure type, the locale it names, and the fact that the load aborts are not. On APFS this pair iterates nan then zh-min-nan.json regardless of creation order, which is also sorted order; a port whose directory iteration differs would reproduce everything but that fragment."
+    },
+    {
+      "id": "locale-identity.filename.root-json-is-rejected-not-skipped",
+      "requirementIds": [],
+      "fixture": "locale-identity-root-json-filename",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "'root' is not a CLDR-known language tag, so root.json takes the throwing branch of languageTagForFileName (LocalizedStringLoader.java:1699) and the entire directory fails, even though a valid en file sits beside it. Together with the extensionless-root case this pins the asymmetry: extension present means reject loudly, extension absent means skip silently. A port that treats root as an alias of und, or only warns here, loads a directory the reference implementation refuses."
+    },
+    {
+      "id": "locale-identity.canonicalization.hy-su-selects-hy-am",
+      "requirementIds": [],
+      "fixture": "locale-identity-explicit-canonicalization",
+      "operation": "matchFor",
+      "input": {
+        "locale": "hy-SU"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "hy-SU canonicalizes to hy-AM because the SU region alias is multi-valued and Armenian's likely region AM is one of its values (CldrLocaleData.preferredRegionAlias, line 350). The diagnostic must report matchType CANONICAL - not EXACT, not CLDR_FALLBACK - with locale hy-AM. A port that skips alias canonicalization reports NONE here; one that canonicalizes but mislabels the category breaks every consumer that branches on matchType."
+    },
+    {
+      "id": "locale-identity.canonicalization.ru-su-selects-ru-ru",
+      "requirementIds": [],
+      "fixture": "locale-identity-explicit-canonicalization",
+      "operation": "matchFor",
+      "input": {
+        "locale": "ru-SU"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ru-SU canonicalizes to ru-RU: Russian's likely region RU is also the first entry of the SU alias list, so first-wins and likely-wins agree and only the mapping itself is under test. Deliberately paired with the hy-SU case, where the two rules disagree."
+    },
+    {
+      "id": "locale-identity.canonicalization.pap-an-selects-pap-cw",
+      "requirementIds": [],
+      "fixture": "locale-identity-explicit-canonicalization",
+      "operation": "matchFor",
+      "input": {
+        "locale": "pap-AN"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "pap-AN canonicalizes to pap-CW - the clause's third named mapping, with Papiamento's likely region CW also being the first of AN's three values. A port that dropped an unrecognized AN region instead of aliasing it would land on bare pap and report a weaker match category."
+    },
+    {
+      "id": "locale-identity.canonicalization.ru-su-request-resolves-in-ru-ru-catalog",
+      "requirementIds": [],
+      "fixture": "locale-identity-explicit-canonicalization",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting",
+        "locale": "ru-SU"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The resolution channel, not just the diagnostic one: lookupLocale stays the requested ru-SU while resolvedLocale and the single attempted locale are the LOADED ru-RU. CldrLocaleData.fallbackLocalesFor(ru-SU) is [ru-SU, ru, ru-RU], but localeFallbackCandidates (DefaultStrings.java:2475) maps each candidate through localizedStringsFor (line 2506), which resolves the ru-SU candidate onto its canonically equivalent loaded catalog and keys the attempt by the LOADED spelling - so ru-SU never appears in attemptedLocales. This is 'candidate tags differing from loaded file tags' in its simplest form; a port that reported the lookup locale as ru-RU, or the attempted locale as ru-SU, would corrupt bidi selection and failure reporting, both of which key off the REQUESTED locale."
+    },
+    {
+      "id": "locale-identity.canonicalization.hy-su-fallback-chain-starts-at-canonical-tag",
+      "requirementIds": [],
+      "fixture": "locale-identity-explicit-canonicalization",
+      "operation": "getResult",
+      "input": {
+        "key": "Only.En",
+        "locale": "hy-SU"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "For a key absent from Armenian the attempted chain is hy-AM, hy, en. Note the mechanism, which is easy to get right for the wrong reason: fallbackLocalesFor(hy-SU) actually yields [hy-SU, hy, hy-AM] - the requested spelling IS the first candidate - and the reported list collapses hy-SU and hy-AM into one entry named hy-AM only because localizedStringsFor maps the hy-SU candidate onto the equivalent loaded catalog. A port that builds the chain from the canonicalized tag alone gets the same answer here but diverges in the equivalent-tags fixture, where an hy-SU catalog IS loaded and hy-SU survives as its own attempted entry."
+    },
+    {
+      "id": "locale-identity.region-alias.first-preference-062",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-first-preference",
+      "operation": "matchFor",
+      "input": {
+        "locale": "en-062"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Multi-valued region alias 062 -> [034 143]. No CLDR language maximizes to either value, so preferredRegionAlias (CldrLocaleData.java:350) can only fall through to regionAliases.get(0) and en-062 must select en-034 with matchType CANONICAL. This is the one alias row with no reachable likely-subtag counterpart anywhere in CLDR, so first-wins is its only observable behavior. A port that picked the last value, sorted the list, or gave up on a multi-valued alias selects a different catalog."
+    },
+    {
+      "id": "locale-identity.region-alias.first-preference-172",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-first-preference",
+      "operation": "matchFor",
+      "input": {
+        "locale": "en-172"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Multi-valued region alias 172 -> [RU AM AZ BY GE KG KZ MD TJ TM UA UZ]. English's likely region US is in none of those, so preferredRegionAlias falls through to the first value and en-172 must select en-RU with matchType CANONICAL. Paired with the hy-172 case, where the likely region IS in the list and a different value wins."
+    },
+    {
+      "id": "locale-identity.region-alias.first-preference-200",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-first-preference",
+      "operation": "matchFor",
+      "input": {
+        "locale": "en-200"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Multi-valued region alias 200 -> [CZ SK]. en-200 must select en-CZ (first value) with matchType CANONICAL. Paired with sk-200, where Slovak's likely region promotes the second value instead."
+    },
+    {
+      "id": "locale-identity.region-alias.first-preference-530",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-first-preference",
+      "operation": "matchFor",
+      "input": {
+        "locale": "en-530"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Multi-valued region alias 530 -> [CW SX BQ]. en-530 must select en-CW (first value) with matchType CANONICAL. 530 and 532 are separate rows in the alias table with identical targets, and both are covered so a port cannot pass by handling only one spelling of Netherlands Antilles."
+    },
+    {
+      "id": "locale-identity.region-alias.first-preference-532",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-first-preference",
+      "operation": "matchFor",
+      "input": {
+        "locale": "en-532"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Multi-valued region alias 532 -> [CW SX BQ]. en-532 must select en-CW with matchType CANONICAL, exactly as 530 and AN do. Covered separately because it is a separate row of the CLDR alias table."
+    },
+    {
+      "id": "locale-identity.region-alias.first-preference-536",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-first-preference",
+      "operation": "matchFor",
+      "input": {
+        "locale": "en-536"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Multi-valued region alias 536 -> [SA IQ] (the Saudi-Iraqi Neutral Zone). en-536 must select en-SA with matchType CANONICAL. Paired with ckb-536, where Sorani's likely region IQ wins instead."
+    },
+    {
+      "id": "locale-identity.region-alias.first-preference-582",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-first-preference",
+      "operation": "matchFor",
+      "input": {
+        "locale": "en-582"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Multi-valued region alias 582 -> [FM MH MP PW]. en-582 must select en-FM with matchType CANONICAL. Paired with cal-582 (third value) and pau-582 (fourth value), so a port that special-cased only 'first or second' still fails."
+    },
+    {
+      "id": "locale-identity.region-alias.first-preference-810",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-first-preference",
+      "operation": "matchFor",
+      "input": {
+        "locale": "en-810"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Multi-valued region alias 810 -> [RU AM AZ BY EE GE KZ KG LV LT MD TJ TM UA UZ], the fifteen-value USSR row. en-810 must select en-RU with matchType CANONICAL. Paired with et-810, hy-810 and uz-810, where later values in the same long list win."
+    },
+    {
+      "id": "locale-identity.region-alias.first-preference-830",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-first-preference",
+      "operation": "matchFor",
+      "input": {
+        "locale": "en-830"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Multi-valued region alias 830 -> [JE GG] (Channel Islands). en-830 must select en-JE with matchType CANONICAL. Verified against the bundled likely-subtags table: no CLDR language maximizes to GG, so this alias has no likely-preference counterpart and first-wins is its only observable behavior."
+    },
+    {
+      "id": "locale-identity.region-alias.first-preference-890",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-first-preference",
+      "operation": "matchFor",
+      "input": {
+        "locale": "en-890"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Multi-valued region alias 890 -> [RS ME SI HR MK BA], the six-value Yugoslavia row. en-890 must select en-RS with matchType CANONICAL. Paired with hr-890 (fourth value) and bs-890 (sixth value)."
+    },
+    {
+      "id": "locale-identity.region-alias.first-preference-891",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-first-preference",
+      "operation": "matchFor",
+      "input": {
+        "locale": "en-891"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Multi-valued region alias 891 -> [RS ME] (Serbia and Montenegro). en-891 must select en-RS with matchType CANONICAL. Verified against the likely-subtags table: no CLDR language maximizes to ME, so first-wins is the only reachable branch for this row and for its CS, YU, SCG and YUG twins."
+    },
+    {
+      "id": "locale-identity.region-alias.first-preference-an",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-first-preference",
+      "operation": "matchFor",
+      "input": {
+        "locale": "en-AN"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Multi-valued region alias AN -> [CW SX BQ]. en-AN must select en-CW with matchType CANONICAL, and the emitted languageRange is lowercased to 'en-an'. Paired with vic-AN, whose likely region SX wins."
+    },
+    {
+      "id": "locale-identity.region-alias.first-preference-cs",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-first-preference",
+      "operation": "matchFor",
+      "input": {
+        "locale": "en-CS"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Multi-valued region alias CS -> [RS ME]. en-CS must select en-RS with matchType CANONICAL. Note CS is a live-looking two-letter code that no longer denotes a country; a port that validated regions against a current ISO list before aliasing would discard it."
+    },
+    {
+      "id": "locale-identity.region-alias.first-preference-fq",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-first-preference",
+      "operation": "matchFor",
+      "input": {
+        "locale": "en-FQ"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Multi-valued region alias FQ -> [AQ TF] (French Southern and Antarctic Territories). en-FQ must select en-AQ with matchType CANONICAL. No CLDR language maximizes to either value, so first-wins is the only reachable branch."
+    },
+    {
+      "id": "locale-identity.region-alias.first-preference-nt",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-first-preference",
+      "operation": "matchFor",
+      "input": {
+        "locale": "en-NT"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Multi-valued region alias NT -> [SA IQ]. en-NT must select en-SA with matchType CANONICAL - the alphabetic spelling of the same row as 536, covered separately because it is a separate alias entry. Paired with ckb-NT."
+    },
+    {
+      "id": "locale-identity.region-alias.first-preference-pc",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-first-preference",
+      "operation": "matchFor",
+      "input": {
+        "locale": "en-PC"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Multi-valued region alias PC -> [FM MH MP PW] (Pacific Islands Trust Territory). en-PC must select en-FM with matchType CANONICAL. Paired with cal-PC (third value) and pau-PC (fourth value)."
+    },
+    {
+      "id": "locale-identity.region-alias.first-preference-su",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-first-preference",
+      "operation": "matchFor",
+      "input": {
+        "locale": "en-SU"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Multi-valued region alias SU -> [RU AM AZ BY EE GE KZ KG LV LT MD TJ TM UA UZ]. For English the likely region US is absent from the list, so en-SU selects en-RU by first-wins - the same target the clause's named ru-SU mapping reaches, but for a different reason. Contrast with hy-SU (second value) and uz-SU (fifteenth value)."
+    },
+    {
+      "id": "locale-identity.region-alias.first-preference-yu",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-first-preference",
+      "operation": "matchFor",
+      "input": {
+        "locale": "en-YU"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Multi-valued region alias YU -> [RS ME]. en-YU must select en-RS with matchType CANONICAL. Together with CS, SCG, 890 and 891 this covers every spelling of the former Yugoslavia present in the alias table."
+    },
+    {
+      "id": "locale-identity.region-alias.single-valued-numeric-840",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-first-preference",
+      "operation": "matchFor",
+      "input": {
+        "locale": "en-840"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Control for the multi-valued rows: 840 -> US is a SINGLE-valued numeric region alias, so preferredRegionAlias returns immediately at size()==1 and en-840 selects en-US. A port that only special-cased multi-valued lists, or that treated numeric regions as opaque, fails this while passing the deprecated-alpha cases."
+    },
+    {
+      "id": "locale-identity.region-alias.first-preference-resolves-catalog",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-first-preference",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting",
+        "locale": "en-SU"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Proves the alias choice is not merely diagnostic: en-SU actually resolves inside the en-RU catalog (translation 'hello RU') with lookupLocale still en-SU. Catches a port that reports the right selection but resolves from the wrong catalog, or that falls straight through to the bare en fallback."
+    },
+    {
+      "id": "locale-identity.region-alias.likely-preference-et-810",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-likely-preference",
+      "operation": "matchFor",
+      "input": {
+        "locale": "et-810"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Multi-valued alias 810 resolved for Estonian: et maximizes to et-Latn-EE, and EE is value 5 of the 15-value list, so preferredRegionAlias returns EE INSTEAD of the first value RU. The competing et-RU catalog is loaded too, so a port that hardcodes first-wins selects a real but wrong catalog and the divergence is immediate."
+    },
+    {
+      "id": "locale-identity.region-alias.likely-preference-et-su",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-likely-preference",
+      "operation": "matchFor",
+      "input": {
+        "locale": "et-SU"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The alphabetic spelling of the same row: et-SU must also select et-EE, not et-RU. Covered separately because SU and 810 are separate alias entries and a port could plausibly implement only the numeric table."
+    },
+    {
+      "id": "locale-identity.region-alias.likely-preference-sk-200",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-likely-preference",
+      "operation": "matchFor",
+      "input": {
+        "locale": "sk-200"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Multi-valued alias 200 -> [CZ SK] resolved for Slovak: sk maximizes to sk-Latn-SK, so the SECOND value wins and sk-200 selects sk-SK while the loaded sk-CZ is passed over. The shortest possible list where first-wins and likely-wins differ."
+    },
+    {
+      "id": "locale-identity.region-alias.likely-preference-vic-an",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-likely-preference",
+      "operation": "matchFor",
+      "input": {
+        "locale": "vic-AN"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Multi-valued alias AN -> [CW SX BQ] resolved for Virgin Islands Creole: vic maximizes to vic-Latn-SX, so value 2 wins and vic-AN selects vic-SX rather than the loaded vic-CW. Verified against the likely-subtags table as the only language that makes this alias's non-first branch observable (pap covers the first value, and nothing maximizes to BQ)."
+    },
+    {
+      "id": "locale-identity.region-alias.likely-preference-vic-530",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-likely-preference",
+      "operation": "matchFor",
+      "input": {
+        "locale": "vic-530"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Numeric spelling of the same row for vic: 530 must also select vic-SX. Separate alias entry, separate case, so a port that implemented AN but not 530 is caught."
+    },
+    {
+      "id": "locale-identity.region-alias.likely-preference-vic-532",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-likely-preference",
+      "operation": "matchFor",
+      "input": {
+        "locale": "vic-532"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Third spelling of the Netherlands Antilles row for vic: 532 must also select vic-SX. Completes the AN/530/532 triple in the likely-preference branch."
+    },
+    {
+      "id": "locale-identity.region-alias.likely-preference-ckb-536",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-likely-preference",
+      "operation": "matchFor",
+      "input": {
+        "locale": "ckb-536"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Multi-valued alias 536 -> [SA IQ] resolved for Central Kurdish: ckb maximizes to ckb-Arab-IQ, so the second value wins and ckb-536 selects ckb-IQ rather than the loaded ckb-SA."
+    },
+    {
+      "id": "locale-identity.region-alias.likely-preference-ckb-nt",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-likely-preference",
+      "operation": "matchFor",
+      "input": {
+        "locale": "ckb-NT"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Alphabetic spelling of the same row for ckb: NT must also select ckb-IQ. Separate alias entry from 536, so both are covered."
+    },
+    {
+      "id": "locale-identity.region-alias.likely-preference-cal-582",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-likely-preference",
+      "operation": "matchFor",
+      "input": {
+        "locale": "cal-582"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Multi-valued alias 582 -> [FM MH MP PW] resolved for Carolinian: cal maximizes to cal-Latn-MP, which is value THREE of four, so preferredRegionAlias reaches past two earlier candidates. A port that only checked the first two entries, or that stopped at the first likely-subtag candidate tag, fails here while passing the two-value rows."
+    },
+    {
+      "id": "locale-identity.region-alias.likely-preference-cal-pc",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-likely-preference",
+      "operation": "matchFor",
+      "input": {
+        "locale": "cal-PC"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Alphabetic spelling of the same four-value row for cal: PC must also select cal-MP, not the loaded cal-FM."
+    },
+    {
+      "id": "locale-identity.region-alias.likely-preference-pau-582",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-likely-preference",
+      "operation": "matchFor",
+      "input": {
+        "locale": "pau-582"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Multi-valued alias 582 -> [FM MH MP PW] resolved for Palauan: pau maximizes to pau-Latn-PW, the LAST of the four values, so pau-582 must select pau-PW rather than the loaded pau-FM. Paired with cal-582 on the identical alias row, where the THIRD value wins instead: two languages, one row, two different non-first answers, so a port that memoized one answer per alias row rather than per (language, row) pair cannot satisfy both."
+    },
+    {
+      "id": "locale-identity.region-alias.likely-preference-pau-pc",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-likely-preference",
+      "operation": "matchFor",
+      "input": {
+        "locale": "pau-PC"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Alphabetic spelling of the same four-value row for Palauan: PC must also select pau-PW. Completes the 582/PC pair in its deepest branch."
+    },
+    {
+      "id": "locale-identity.region-alias.likely-preference-hr-890",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-likely-preference",
+      "operation": "matchFor",
+      "input": {
+        "locale": "hr-890"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Multi-valued alias 890 -> [RS ME SI HR MK BA] resolved for Croatian: hr maximizes to hr-Latn-HR, value FOUR of six, so hr-890 selects hr-HR while the loaded hr-RS - the first value - is passed over. Deeper picks exist and are covered separately (bs-890 reaches value six, uz-SU value fifteen); this is the shortest row where a port that scans only the first three candidates already fails."
+    },
+    {
+      "id": "locale-identity.region-alias.likely-preference-bs-890",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-likely-preference",
+      "operation": "matchFor",
+      "input": {
+        "locale": "bs-890"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Multi-valued alias 890 -> [RS ME SI HR MK BA] resolved for Bosnian: bs maximizes to bs-Latn-BA, value SIX of six, so bs-890 must select bs-BA and pass over the loaded bs-RS. Paired with hr-890 on the identical alias row - same row, different language, different answer."
+    },
+    {
+      "id": "locale-identity.region-alias.likely-preference-hy-172",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-likely-preference",
+      "operation": "matchFor",
+      "input": {
+        "locale": "hy-172"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Multi-valued alias 172 -> [RU AM ...] (Commonwealth of Independent States) resolved for Armenian: AM is value 2, so hy-172 selects hy-AM rather than the loaded hy-RU. Same target as the clause's named hy-SU mapping, reached through a different alias row."
+    },
+    {
+      "id": "locale-identity.region-alias.likely-preference-hy-810",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-likely-preference",
+      "operation": "matchFor",
+      "input": {
+        "locale": "hy-810"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Numeric spelling of the USSR row for Armenian: hy-810 must select hy-AM, with hy-RU loaded and deliberately not chosen. Together with the explicit hy-SU case this shows all three spellings of the same historical region converge on the likely-subtag answer."
+    },
+    {
+      "id": "locale-identity.region-alias.likely-preference-uz-su",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-likely-preference",
+      "operation": "matchFor",
+      "input": {
+        "locale": "uz-SU"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The deepest pick in the entire CLDR region-alias table: SU -> [RU AM AZ BY EE GE KZ KG LV LT MD TJ TM UA UZ] and uz maximizes to uz-Latn-UZ, value FIFTEEN of fifteen, so uz-SU must select uz-UZ while the loaded uz-RU (the first value) is passed over. A port that scans only a bounded prefix of the alias list, or that returns the first value once a few candidates miss, fails here while passing every shorter row."
+    },
+    {
+      "id": "locale-identity.region-alias.likely-preference-uz-810",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-likely-preference",
+      "operation": "matchFor",
+      "input": {
+        "locale": "uz-810"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Numeric spelling of the same fifteen-value row for Uzbek: uz-810 must also select uz-UZ. Separate alias entry from SU, so both are covered."
+    },
+    {
+      "id": "locale-identity.region-alias.likely-preference-resolves-catalog",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-likely-preference",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting",
+        "locale": "et-SU"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Resolution counterpart: et-SU must serve the Estonian et-EE catalog ('g et-EE'), not the et-RU one that first-wins would pick, while lookupLocale stays et-SU. Locks the likely-subtag preference into the value the caller actually receives, not just the diagnostic."
+    },
+    {
+      "id": "locale-identity.region-alias.extlang-ru-sun",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-extlang-collapse",
+      "operation": "matchFor",
+      "input": {
+        "locale": "ru-SUN"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Multi-valued region alias SUN is UNREACHABLE through Java's Locale boundary: Locale.forLanguageTag('ru-SUN') yields the locale 'sun' because a three-letter subtag after a language is an extlang and promotes itself to primary language. The request therefore reaches the Sundanese catalog (CANONICAL, since sun further aliases to su) and never touches Russian. This is the honest coverage of that alias row: a port that applied the region alias would select a ru-* catalog, and one that rejected the tag would report no match at all."
+    },
+    {
+      "id": "locale-identity.region-alias.extlang-en-ant",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-extlang-collapse",
+      "operation": "matchFor",
+      "input": {
+        "locale": "en-ANT"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Multi-valued region alias ANT is unreachable for the same reason: en-ANT becomes the locale 'ant' and matches that loaded catalog EXACTLY. A port that applied the ANT -> [CW SX BQ] alias would select an en-* catalog instead; one that threw on the tag would produce no result at all. The same string as a FILENAME behaves differently again - it is silently skipped, which the filename-rejected case pins."
+    },
+    {
+      "id": "locale-identity.region-alias.extlang-en-ntz",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-extlang-collapse",
+      "operation": "matchFor",
+      "input": {
+        "locale": "en-NTZ"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Multi-valued region alias NTZ is unreachable: en-NTZ becomes the locale 'ntz' and matches that catalog EXACTLY rather than aliasing to [SA IQ]. Third of the five three-alpha alias rows."
+    },
+    {
+      "id": "locale-identity.region-alias.extlang-sr-scg",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-extlang-collapse",
+      "operation": "matchFor",
+      "input": {
+        "locale": "sr-SCG"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Multi-valued region alias SCG is unreachable: sr-SCG becomes the locale 'scg' and matches that catalog EXACTLY - Serbian is not consulted at all, even though sr is loaded in this fixture. A port applying SCG -> [RS ME] would select a Serbian catalog."
+    },
+    {
+      "id": "locale-identity.region-alias.extlang-sr-yug",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-extlang-collapse",
+      "operation": "matchFor",
+      "input": {
+        "locale": "sr-YUG"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Multi-valued region alias YUG is unreachable: sr-YUG becomes the locale 'yug' and matches that catalog EXACTLY, with loaded sr passed over. Completes coverage of all five three-alpha rows (ANT, NTZ, SCG, SUN, YUG) and, with the eighteen first-preference rows, of all twenty-three multi-valued rows in the bundled alias table."
+    },
+    {
+      "id": "locale-identity.region-alias.extlang-sun-language-alias",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-extlang-collapse",
+      "operation": "matchFor",
+      "input": {
+        "locale": "sun"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The tag ru-SUN collapses to, taken on its own: sun is itself a deprecated language code aliased to su, so the match is CANONICAL rather than EXACT even though the caller never wrote 'su'. Its expected block is deliberately identical to the ru-SUN row - that identity IS the proposition, and running both localizes the fault: a port that fails only the ru-SUN row has an extlang problem, a port that fails both has a language-alias problem."
+    },
+    {
+      "id": "locale-identity.region-alias.extlang-contrast-ru-su",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-extlang-collapse",
+      "operation": "matchFor",
+      "input": {
+        "locale": "ru-SU"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Contrast case inside the same fixture: the two-letter SU alias DOES canonicalize (ru-SU to ru-RU), and with only bare ru loaded the diagnostic reports CLDR_FALLBACK on ru - not the Sundanese catalog that ru-SUN reaches. A port that normalized SU and SUN through the same code path collapses these two rows into one answer."
+    },
+    {
+      "id": "locale-identity.region-alias.extlang-sun-serves-sundanese-catalog",
+      "requirementIds": [],
+      "fixture": "locale-identity-region-alias-extlang-collapse",
+      "operation": "getResult",
+      "input": {
+        "key": "Only.Su",
+        "locale": "ru-SUN"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Resolution proof of the collapse: a caller asking for ru-SUN is handed Sundanese text, and lookupLocale is reported as 'sun' - the tag was rewritten by the Locale boundary before the library saw it, so even the failure-reporting channel never mentions ru. A port that preserves the requested string verbatim reports a different lookupLocale here."
+    },
+    {
+      "id": "locale-identity.undetermined.und-request-selects-nothing",
+      "requirementIds": [],
+      "fixture": "locale-identity-undetermined-and-private-use",
+      "operation": "matchFor",
+      "input": {
+        "locale": "und"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Even though a und catalog IS loaded, the diagnostic channel reports NONE: an undetermined, non-private-use range is rejected outright by the `member.undetermined && !member.privateUse` guard in languageRangeSpecificityFor (DefaultStrings.java:2022). A port that lets und match the loaded und locale advertises a selectable locale the library considers unselectable - exactly the value a JS delivery layer would try to fetch."
+    },
+    {
+      "id": "locale-identity.undetermined.und-latn-request-selects-nothing",
+      "requirementIds": [],
+      "fixture": "locale-identity-undetermined-and-private-use",
+      "operation": "matchFor",
+      "input": {
+        "locale": "und-Latn"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same rejection with a script subtag present, and with und-Latn actually LOADED - which proves the NONE of seed row 1 is a property of undetermined ranges, not of the catalog being absent. A port that treated und-Latn as matchable would diverge from the pinned seed row too."
+    },
+    {
+      "id": "locale-identity.undetermined.root-request-selects-nothing",
+      "requirementIds": [],
+      "fixture": "locale-identity-undetermined-and-private-use",
+      "operation": "matchFor",
+      "input": {
+        "locale": "root"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "root survives Locale.forLanguageTag unchanged as a language subtag, and canonicalLanguageTag('root') is still 'root' - it is NOT aliased to und - so it neither matches the loaded und catalog nor is rejected as undetermined; it simply finds nothing. A port that maps root to und, as CLDR data files invite, selects the und catalog here."
+    },
+    {
+      "id": "locale-identity.undetermined.private-use-request-is-exact",
+      "requirementIds": [],
+      "fixture": "locale-identity-undetermined-and-private-use",
+      "operation": "matchFor",
+      "input": {
+        "locale": "x-private"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A wholly private-use tag matches its own loaded catalog EXACTLY, unlike und. Private use is explicitly exempted from the undetermined rejection (member.undetermined && !member.privateUse), so the two categories that both lack a primary language behave oppositely in the diagnostic channel."
+    },
+    {
+      "id": "locale-identity.undetermined.private-use-extension-is-exact",
+      "requirementIds": [],
+      "fixture": "locale-identity-undetermined-and-private-use",
+      "operation": "matchFor",
+      "input": {
+        "locale": "en-x-custom"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A private-use EXTENSION on a real language stays a distinct, exactly-matchable locale rather than folding into en. A port that strips x- subtags before matching returns en here and also loses the distinction between the two loaded English catalogs - the same distinction that forces this fixture's tiebreaker."
+    },
+    {
+      "id": "locale-identity.undetermined.unknown-private-use-selects-nothing",
+      "requirementIds": [],
+      "fixture": "locale-identity-undetermined-and-private-use",
+      "operation": "matchFor",
+      "input": {
+        "locale": "x-other"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "An unloaded, wholly private-use tag finds nothing at all: there is no primary language to degrade to, so the result is NONE rather than the en fallback. Pairs with en-x-other, which does have one."
+    },
+    {
+      "id": "locale-identity.undetermined.unknown-private-use-extension-falls-back",
+      "requirementIds": [],
+      "fixture": "locale-identity-undetermined-and-private-use",
+      "operation": "matchFor",
+      "input": {
+        "locale": "en-x-other"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "en-x-other keeps its primary language, so an unmatched private-use extension degrades to CLDR_FALLBACK on en instead of NONE - its fallback chain is literally [en-x-other, en]. With x-other this pins where the private-use boundary sits: the x- subtag is dropped when walking the fallback chain, but the language in front of it is not."
+    },
+    {
+      "id": "locale-identity.undetermined.root-request-does-not-reach-und-catalog",
+      "requirementIds": [],
+      "fixture": "locale-identity-undetermined-and-private-use",
+      "operation": "getResult",
+      "input": {
+        "key": "Only.Und",
+        "locale": "root"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Resolution counterpart: a key that exists ONLY in the und catalog is not found for a root request. fallbackLocalesFor(root) is empty, so attempted locales are just [en] - the fallback locale and nothing else, not even root itself - and the call returns the key with a MISSING_TRANSLATION failure. Contrast the zh-CN case in the zh-Hant fixture, where uncatalogued candidates DO appear in the attempted list. A port that treats root as und returns 'und only' here."
+    },
+    {
+      "id": "locale-identity.undetermined.und-request-resolves-und-catalog",
+      "requirementIds": [],
+      "fixture": "locale-identity-undetermined-and-private-use",
+      "operation": "getResult",
+      "input": {
+        "key": "Only.Und",
+        "locale": "und"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The complement of the und matchFor case: resolution DOES reach the und catalog even though selection reported NONE, and the successful result is nevertheless flagged isFallback true. Two channels disagreeing about the same request is precisely the two-channel independence the plan asks the corpus to lock, and a port that derives resolution from the diagnostic match cannot produce this."
+    },
+    {
+      "id": "locale-identity.undetermined.private-use-request-resolves-own-catalog",
+      "requirementIds": [],
+      "fixture": "locale-identity-undetermined-and-private-use",
+      "operation": "getResult",
+      "input": {
+        "key": "Only.Private",
+        "locale": "x-private"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A private-use locale is a fully usable resolution target: its own key resolves in it with isFallback false. Guards against a port that loads x- catalogs but never routes a lookup into them."
+    },
+    {
+      "id": "locale-identity.undetermined.private-use-chain-visits-und",
+      "requirementIds": [],
+      "fixture": "locale-identity-undetermined-and-private-use",
+      "operation": "getResult",
+      "input": {
+        "key": "Only.En",
+        "locale": "x-private"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The fallback chain of a private-use request is x-private, und, en - confirmed directly against CldrLocaleData.fallbackLocalesFor, which returns two entries for x-private. The undetermined catalog is visited on the way to the fallback locale. Nothing in the public API hints at this; a port that goes straight from x-private to the fallback locale skips a catalog that can legitimately answer the key, and reports a shorter attemptedLocales list to the failure handler."
+    },
+    {
+      "id": "locale-identity.norwegian.no-no-reaches-nb-no",
+      "requirementIds": [],
+      "fixture": "locale-identity-nb-no-macrolanguage",
+      "operation": "matchFor",
+      "input": {
+        "locale": "no-NO"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "no-NO selects nb-NO with matchType CLDR_FALLBACK: no and nb are not CLDR aliases of each other, so the connection exists only because addMacrolanguageBridgeTags (CldrLocaleData.java:403) extends the chain to [no-NO, no, nb-NO, nb], keeping the region. A port without that bridge reports NONE for every Norwegian macrolanguage request."
+    },
+    {
+      "id": "locale-identity.norwegian.bare-no-selects-nothing",
+      "requirementIds": [],
+      "fixture": "locale-identity-nb-no-macrolanguage",
+      "operation": "matchFor",
+      "input": {
+        "locale": "no"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Surprise worth pinning: bare 'no' selects NOTHING even though no-NO reaches nb-NO in the same fixture. Three routes are closed at once - a one-subtag positive range loses direct structural authority (the broadPositiveStructuralRange guard in languageRangeSpecificityFor, DefaultStrings.java:2014 onward), the bridge only extends the chain to bare nb (fallbackLocalesFor(no) is [no, nb], which does not contain nb-NO), and the likely-subtag route fails because no maximizes to no-Latn while nb-NO maximizes to nb-Latn. A port that implements the bridge as a plain language rewrite answers nb-NO here - wrong in the opposite direction from a port with no bridge at all."
+    },
+    {
+      "id": "locale-identity.norwegian.bare-nb-is-likely-subtag",
+      "requirementIds": [],
+      "fixture": "locale-identity-nb-no-macrolanguage",
+      "operation": "matchFor",
+      "input": {
+        "locale": "nb"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Bare nb, by contrast, does select nb-NO - through the likely-subtag route (nb maximizes to nb-Latn-NO, matching nb-NO's own likely language-script), a weaker category than the CLDR_FALLBACK that no-NO gets. Three Norwegian requests against one loaded catalog produce three different match types; a port with a single 'close enough' rule cannot reproduce all three."
+    },
+    {
+      "id": "locale-identity.norwegian.no-no-resolves-nb-no-catalog",
+      "requirementIds": [],
+      "fixture": "locale-identity-nb-no-macrolanguage",
+      "operation": "getResult",
+      "input": {
+        "key": "Only.Nb",
+        "locale": "no-NO"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The bridge in the resolution channel: attempted locales are no-NO, no, nb-NO, so the bridged tag is appended AFTER the requested language's own chain is exhausted, and the result is marked isFallback. A port that inserted nb-NO earlier produces the same translation with a different attempted list and a different failure-handler payload."
+    },
+    {
+      "id": "locale-identity.norwegian.nb-no-reaches-no-catalog",
+      "requirementIds": [],
+      "fixture": "locale-identity-no-macrolanguage-catalog",
+      "operation": "matchFor",
+      "input": {
+        "locale": "nb-NO"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "nb-NO selects the loaded 'no' catalog by CLDR_FALLBACK. A port that implemented the bridge only from the macrolanguage toward bokmal - the direction most data files suggest - reports NONE here."
+    },
+    {
+      "id": "locale-identity.norwegian.nb-no-resolves-no-catalog",
+      "requirementIds": [],
+      "fixture": "locale-identity-no-macrolanguage-catalog",
+      "operation": "getResult",
+      "input": {
+        "key": "Only.No",
+        "locale": "nb-NO"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Resolution counterpart with attempted locales nb-NO, nb, no: the bridged tag again lands last, so the ordering rule is symmetric. Locks both directions of the only macrolanguage special case in the library."
+    },
+    {
+      "id": "locale-identity.zh-hant.zh-hant-tw-is-cldr-fallback",
+      "requirementIds": [],
+      "fixture": "locale-identity-zh-hant-script",
+      "operation": "matchFor",
+      "input": {
+        "locale": "zh-Hant-TW"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A request strictly more specific than the loaded tag reaches it by CLDR_FALLBACK, not EXACT. A port that normalized a request by dropping the region before matching reports EXACT and loses the distinction between an exact catalog hit and a truncated one - a distinction a delivery layer uses to decide what to cache."
+    },
+    {
+      "id": "locale-identity.zh-hant.zh-hans-selects-nothing",
+      "requirementIds": [],
+      "fixture": "locale-identity-zh-hant-script",
+      "operation": "matchFor",
+      "input": {
+        "locale": "zh-Hans"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The script boundary is hard: zh-Hans finds nothing even though a Chinese catalog is loaded. Both routes are closed - crossesLikelyScriptBoundary keeps bare zh out of zh-Hans's fallback chain, and the last-resort PRIMARY_LANGUAGE branch of languageRangeSpecificityFor is gated by compatibleLikelyScripts, which rejects zh-Hans against zh-Hant even though both normalize to language zh. A port that walked zh-Hans to zh and on to zh-Hant, or that let a shared primary language win, would hand Simplified readers Traditional text."
+    },
+    {
+      "id": "locale-identity.zh-hant.bare-zh-selects-nothing",
+      "requirementIds": [],
+      "fixture": "locale-identity-zh-hant-script",
+      "operation": "matchFor",
+      "input": {
+        "locale": "zh"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Bare zh also selects nothing: zh maximizes to zh-Hans, so the broad request cannot claim the Traditional catalog by likely subtag, and the one-subtag broad-range guard denies it the structural route. With the zh-MO case this shows the decision is made on likely script, not on prefix matching - a prefix-matching port answers zh-Hant here and fails."
+    },
+    {
+      "id": "locale-identity.zh-hant.zh-mo-is-likely-subtag",
+      "requirementIds": [],
+      "fixture": "locale-identity-zh-hant-script",
+      "operation": "matchFor",
+      "input": {
+        "locale": "zh-MO"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "zh-MO reaches zh-Hant by LIKELY_SUBTAG, because Macau maximizes to zh-Hant-MO. A REGION the caller supplied - not a script - is what makes this request Traditional. A port with an incomplete likely-subtags table typically fails exactly this row while passing the better-known zh-TW."
+    },
+    {
+      "id": "locale-identity.zh-hant.yue-hant-selects-nothing",
+      "requirementIds": [],
+      "fixture": "locale-identity-zh-hant-script",
+      "operation": "matchFor",
+      "input": {
+        "locale": "yue-Hant"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Sharing a script is not sharing a language: Cantonese in Traditional script does not reach the zh-Hant catalog. Guards against a port that matches on script when the primary languages differ."
+    },
+    {
+      "id": "locale-identity.zh-hant.zh-tw-resolves-hant-catalog",
+      "requirementIds": [],
+      "fixture": "locale-identity-zh-hant-script",
+      "operation": "getResult",
+      "input": {
+        "key": "Only.Hant",
+        "locale": "zh-TW"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "zh-TW resolves inside zh-Hant with attempted locales zh-TW, zh-Hant - fallbackLocalesFor(zh-TW) is just [zh-TW], so zh-Hant arrives via the likely-subtag step of localeFallbackCandidates. Deliberately the opposite outcome from seed row 4 (fixture direct-zh-tw), where the same request selects zh-Hant but resolves in en because that fixture's zh-Hant lacks the key: identical selection, different catalog population, different resolution. A port that caches by selected locale alone cannot tell these two apart."
+    },
+    {
+      "id": "locale-identity.zh-hant.zh-cn-does-not-reach-hant-catalog",
+      "requirementIds": [],
+      "fixture": "locale-identity-zh-hant-script",
+      "operation": "getResult",
+      "input": {
+        "key": "Only.Hant",
+        "locale": "zh-CN"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "zh-CN attempts zh-CN, zh, en and returns the key: the Traditional catalog is never consulted and the failure handler sees MISSING_TRANSLATION rather than Traditional text. Proves the script boundary is enforced in resolution and not only in the diagnostic channel."
+    },
+    {
+      "id": "locale-identity.on-disk.modern-request-reaches-hy-am",
+      "requirementIds": [],
+      "fixture": "locale-identity-legacy-tags-on-disk",
+      "operation": "matchFor",
+      "input": {
+        "locale": "hy-AM"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Requested hy-AM reaches the file NAMED hy-SU by CANONICAL match - a multi-valued region alias resolved by likely subtag, applied to the loaded side. Matching compares canonicalized forms of BOTH sides (DefaultStrings.java:2056, localeStatics.canonicalTag against member.canonicalRange), so a port that canonicalizes only the request finds nothing here, and one that canonicalizes only at load time reports the wrong locale for the selection."
+    },
+    {
+      "id": "locale-identity.on-disk.modern-request-reaches-pap-cw",
+      "requirementIds": [],
+      "fixture": "locale-identity-legacy-tags-on-disk",
+      "operation": "matchFor",
+      "input": {
+        "locale": "pap-CW"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Requested pap-CW reaches the file named pap-AN by CANONICAL match - the first-value branch of a multi-valued alias applied to the loaded tag. Same mapping as the explicit-canonicalization fixture, run in the opposite direction."
+    },
+    {
+      "id": "locale-identity.on-disk.modern-request-reaches-sr-latn",
+      "requirementIds": [],
+      "fixture": "locale-identity-legacy-tags-on-disk",
+      "operation": "matchFor",
+      "input": {
+        "locale": "sr-Latn"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Requested sr-Latn reaches the file named sh by CANONICAL match: the sh language alias INTRODUCES a script subtag the filename never had (canonicalLanguageTag('sh') is 'sr-Latn', verified by reflection). A port that canonicalizes languages but not the script an alias brings with it produces sr and fails to match."
+    },
+    {
+      "id": "locale-identity.on-disk.modern-request-reaches-ro",
+      "requirementIds": [],
+      "fixture": "locale-identity-legacy-tags-on-disk",
+      "operation": "matchFor",
+      "input": {
+        "locale": "ro"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Requested ro reaches the file named mo by CANONICAL match - the plain language-alias case, and the same mo/ro pair section 8.3 names elsewhere for post-resolution dedup, here observed purely as identity."
+    },
+    {
+      "id": "locale-identity.on-disk.modern-request-reaches-zh",
+      "requirementIds": [],
+      "fixture": "locale-identity-legacy-tags-on-disk",
+      "operation": "matchFor",
+      "input": {
+        "locale": "zh"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Requested zh reaches the file named cmn by CANONICAL match, even though bare zh is a broad one-subtag range: the canonical-equality branch runs BEFORE the broad-range guard, so equality of canonical tags still wins. Note the direction too - the JDK's grandfathered table maps zh-guoyu TO cmn while CLDR's alias table maps cmn TO zh, so a port must apply both tables in the right places or this row and the grandfathered rows cannot all pass."
+    },
+    {
+      "id": "locale-identity.on-disk.lookup-tag-differs-from-resolved-tag",
+      "requirementIds": [],
+      "fixture": "locale-identity-legacy-tags-on-disk",
+      "operation": "getResult",
+      "input": {
+        "key": "Only.Hy",
+        "locale": "hy-AM"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The clause's exact shape in one result: lookupLocale hy-AM, resolvedLocale hy-SU, attemptedLocales [hy-SU]. The requested tag and the tag on disk are different strings and BOTH are reported, each in its own field. A port that reports one where the other belongs passes a translation-only comparison and fails here."
+    },
+    {
+      "id": "locale-identity.on-disk.load-preserves-legacy-file-tags",
+      "requirementIds": [],
+      "fixture": "locale-identity-legacy-tags-on-disk",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The same directory observed through the load channel: the loaded keys are cmn, en, hy-SU, mo, pap-AN, sh - the deprecated spellings, unchanged. Anchors the five matching cases above by proving the canonicalization they exercise happens at match time, not before."
+    },
+    {
+      "id": "locale-identity.tiebreakers.deprecated-key-normalizes-to-canonical-language",
+      "requirementIds": [],
+      "fixture": "locale-identity-mo-tiebreaker-language-code",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The emitted load block is deliberately unremarkable (en, mo, ro); the proposition is that this fixture's Strings instance CONSTRUCTS AT ALL with tiebreakers keyed 'mo' while the library groups those catalogs under canonical language 'ro'. DefaultStrings.java:325 runs the supplied key through normalizedTiebreakerLanguageCode (line 2649), which canonicalizes mo to ro, and the exact-permutation check at line 404 then compares against loaded locales grouped by LocaleUtils.normalizedLanguage. The tiebreaker KEY is canonicalized, the tiebreaker LIST is not - it must be an exact permutation of the loaded spellings. A port that compares raw keys throws \"Tiebreaker language code 'mo' has no localized strings locales\" and every case on this fixture dies at construction, which is why this anchor exists."
+    },
+    {
+      "id": "locale-identity.tiebreakers.mo-md-reaches-mo-catalog",
+      "requirementIds": [],
+      "fixture": "locale-identity-mo-tiebreaker-language-code",
+      "operation": "matchFor",
+      "input": {
+        "locale": "mo-MD"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "With both spellings loaded, mo-MD selects the deprecated mo catalog by CLDR_FALLBACK rather than canonicalizing to ro - equivalence does not collapse two distinct loaded catalogs into one. A port that folded mo into ro at load time has no mo catalog left to select."
+    },
+    {
+      "id": "locale-identity.tiebreakers.mo-request-continues-into-ro",
+      "requirementIds": [],
+      "fixture": "locale-identity-mo-tiebreaker-language-code",
+      "operation": "getResult",
+      "input": {
+        "key": "Only.Ro",
+        "locale": "mo"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "An exact hit on mo that lacks the key continues into ro with attempted locales [mo, ro] and isFallback FALSE. The continuation is NOT the tiebreaker list, as it might appear: CldrLocaleData.fallbackLocalesFor(mo) is literally [mo, ro] because the CLDR language alias is part of the fallback chain itself, and isFallback stays false because ro is an ordinary chain candidate rather than the configured fallback locale. A port that either stopped at mo or jumped to the en fallback reports a different chain and a different isFallback flag."
+    },
+    {
+      "id": "locale-identity.equivalent.hy-su-request-is-exact",
+      "requirementIds": [],
+      "fixture": "locale-identity-equivalent-tags-both-loaded",
+      "operation": "matchFor",
+      "input": {
+        "locale": "hy-SU"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "With both spellings loaded, hy-SU matches the hy-SU catalog EXACTLY - identity beats canonicalization when an exactly-spelled loaded tag exists. A port that canonicalizes the request before looking for an exact hit selects hy-AM and reports CANONICAL, changing both the locale and the match type."
+    },
+    {
+      "id": "locale-identity.equivalent.hy-am-request-is-exact",
+      "requirementIds": [],
+      "fixture": "locale-identity-equivalent-tags-both-loaded",
+      "operation": "matchFor",
+      "input": {
+        "locale": "hy-AM"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The other spelling is likewise exact against its own catalog. The pair proves the two equivalent loaded locales stay genuinely separate rather than one shadowing the other."
+    },
+    {
+      "id": "locale-identity.equivalent.hy-810-request-is-canonical",
+      "requirementIds": [],
+      "fixture": "locale-identity-equivalent-tags-both-loaded",
+      "operation": "matchFor",
+      "input": {
+        "locale": "hy-810"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A third spelling loaded under NEITHER name canonicalizes to hy-AM and matches it CANONICALLY. hy-AM is not preordained, and that is the trap: hy-810 is canonically equivalent to BOTH loaded catalogs, and which one wins is decided by this fixture's tiebreaker list order [hy-AM, hy-SU]. The fixture locale-identity-deprecated-fallback-locale-reordered runs the identical request against identical files with the list flipped and gets hy-SU, so a port that resolves an ambiguous canonical target by canonicalization alone, by alphabetical order or by load order fails exactly one of the pair."
+    },
+    {
+      "id": "locale-identity.equivalent.hy-su-chain-reaches-hy-am",
+      "requirementIds": [],
+      "fixture": "locale-identity-equivalent-tags-both-loaded",
+      "operation": "getResult",
+      "input": {
+        "key": "Only.Am",
+        "locale": "hy-SU"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A key present only in the hy-AM catalog is reached from an hy-SU request through attempted locales hy-SU, hy, hy-AM. All three come from CldrLocaleData.fallbackLocalesFor(hy-SU) = [hy-SU, hy, hy-AM] - NOT from the tiebreaker list - and hy-SU survives as its own attempted entry here, unlike in the explicit-canonicalization fixture, only because an hy-SU catalog is actually loaded. Bare hy is attempted BETWEEN the two equivalent siblings. A port that merged the two catalogs, or that ordered the canonical sibling before the bare language, produces a different attempted list."
+    },
+    {
+      "id": "locale-identity.equivalent.both-catalogs-load-separately",
+      "requirementIds": [],
+      "fixture": "locale-identity-equivalent-tags-both-loaded",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "Anchors the fixture: the loader really does keep en, hy-AM and hy-SU as three catalogs. If a port collapsed the equivalent pair at load time, this case fails first and explains every other failure on this fixture - including the mandatory tiebreaker permutation over the loaded, not canonical, spellings."
+    },
+    {
+      "id": "locale-identity.deprecated-fallback.configured-tag-resolves-to-loaded-spelling",
+      "requirementIds": [],
+      "fixture": "locale-identity-deprecated-fallback-locale",
+      "operation": "matchFor",
+      "input": {
+        "locale": "hy-810"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Every LocaleMatchResult carries a fallbackLocale field, and here it reports hy-AM even though the instance was configured with hy-810: DefaultStrings replaces a fallback locale that is not itself loaded with the canonically equivalent LOADED locale, and when two are equivalent it takes the first entry of the tiebreaker list (DefaultStrings.java:446-470). The same request also selects hy-AM. A port that echoes the configured fallback tag back in diagnostics, or that fails construction because hy-810 has no catalog of its own, diverges on every result this instance ever produces."
+    },
+    {
+      "id": "locale-identity.deprecated-fallback.instance-locale-uses-loaded-spelling",
+      "requirementIds": [],
+      "fixture": "locale-identity-deprecated-fallback-locale",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "No per-call locale, so the deprecated INSTANCE locale hy-810 drives the lookup. lookupLocale is reported as the configured hy-810 while the catalog resolved is hy-AM: the instance-locale ingress preserves the caller's spelling exactly as the per-call ingress does, and canonicalizes only when choosing a catalog. A port that canonicalized the instance locale at construction reports hy-AM as the lookup locale here and in every failure payload."
+    },
+    {
+      "id": "locale-identity.deprecated-fallback.fallback-locale-shadows-loaded-english",
+      "requirementIds": [],
+      "fixture": "locale-identity-deprecated-fallback-locale",
+      "operation": "getResult",
+      "input": {
+        "key": "Only.En"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A key that exists ONLY in the loaded en catalog is NOT found, because en is not this instance's fallback locale - hy-AM is. Attempted locales are [hy-AM, hy, hy-SU]: the chain exhausts the Armenian pair and stops, isFallback is FALSE despite the failure, and en is never visited even though it is loaded. A port that hardcodes English as a last resort, or that appends every loaded locale to the chain, returns 'en only' here instead of MISSING_TRANSLATION."
+    },
+    {
+      "id": "locale-identity.deprecated-fallback.unmatched-request-lands-on-resolved-fallback",
+      "requirementIds": [],
+      "fixture": "locale-identity-deprecated-fallback-locale",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting",
+        "locale": "de"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "An unrelated request selects nothing and falls back: attempted locales are [de, hy-AM] and the translation is Armenian. Pins that the fallback step appends the RESOLVED fallback locale (hy-AM), not the configured hy-810 - a port that pushed the configured spelling into the chain reports a third attempted entry."
+    },
+    {
+      "id": "locale-identity.deprecated-fallback.reordered-tiebreakers-select-the-other-spelling",
+      "requirementIds": [],
+      "fixture": "locale-identity-deprecated-fallback-locale-reordered",
+      "operation": "matchFor",
+      "input": {
+        "locale": "hy-810"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The controlled contrast: identical files, identical hy-810 fallback and instance locale, tiebreaker list flipped to [hy-SU, hy-AM]. Both the selected locale and the reported fallbackLocale become hy-SU. Any port that resolves an ambiguous canonical target by canonicalization alone, by alphabetical order, or by directory order gives the same answer on both fixtures and therefore fails exactly one of them."
+    },
+    {
+      "id": "locale-identity.deprecated-fallback.reordered-instance-locale-uses-the-other-spelling",
+      "requirementIds": [],
+      "fixture": "locale-identity-deprecated-fallback-locale-reordered",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The resolution channel flips too: the same hy-810 instance locale now serves 'barev SU' from hy-SU. Guards against a port that threads tiebreaker order into the diagnostic channel but not into localizedStringsFor's choice among equivalent catalogs (DefaultStrings.java:2506)."
+    },
+    {
+      "id": "locale-identity.deprecated-fallback.reordered-chain-order-flips",
+      "requirementIds": [],
+      "fixture": "locale-identity-deprecated-fallback-locale-reordered",
+      "operation": "getResult",
+      "input": {
+        "key": "Only.En"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same unsatisfiable key as the hy-AM-first fixture, now attempting [hy-SU, hy, hy-AM] - the two Armenian entries swapped, bare hy still between them. Locks that tiebreaker order governs the ORDER of equivalent siblings in the fallback chain and not merely which one is picked first."
+    },
+    {
+      "id": "locale-identity.plural-rules.ru-su-uses-russian-cardinal-forms",
+      "requirementIds": [],
+      "fixture": "locale-identity-ru-su-plural-rules",
+      "operation": "getResult",
+      "input": {
+        "key": "I read {{n}} books",
+        "locale": "ru-SU",
+        "placeholders": {
+          "n": 2
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "n=2 selects CARDINALITY_FEW under Russian rules; the catalog has no FEW, so this is a RESOLUTION_FAILURE whose cause message names 'Missing Cardinality translation for FEW' and whose returned string is the KEY with its placeholders interpolated ('I read 2 books'), not a translation - status RETURNED_KEY. A port that failed to see the deprecated ru-SU tag as Russian would pick OTHER and quietly return '2 knig', a plausible-looking wrong answer that only a case asserting failure identity catches."
+    },
+    {
+      "id": "locale-identity.plural-rules.ru-su-one-form-present",
+      "requirementIds": [],
+      "fixture": "locale-identity-ru-su-plural-rules",
+      "operation": "getResult",
+      "input": {
+        "key": "I read {{n}} books",
+        "locale": "ru-SU",
+        "placeholders": {
+          "n": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The control: n=1 selects ONE, which the catalog does have, so the same deprecated-tag locale translates successfully to '1 kniga'. Without it, the FEW case could be passed by a port that simply fails everything on this fixture."
+    },
+    {
+      "id": "locale-identity.plural-rules.ru-ru-request-reaches-ru-su-catalog",
+      "requirementIds": [],
+      "fixture": "locale-identity-ru-su-plural-rules",
+      "operation": "matchFor",
+      "input": {
+        "locale": "ru-RU"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Canonicalization in the direction opposite to the explicit-canonicalization fixture: the modern ru-RU request matches the deprecated ru-SU FILE canonically. A port that canonicalizes only requests, and not loaded tags, reports no match."
+    },
+    {
+      "id": "locale-identity.plural-rules.bare-ru-request-reaches-ru-su-catalog",
+      "requirementIds": [],
+      "fixture": "locale-identity-ru-su-plural-rules",
+      "operation": "matchFor",
+      "input": {
+        "locale": "ru"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Bare ru reaches the same catalog by LIKELY_SUBTAG (ru maximizes to ru-Cyrl-RU, whose language-script matches the file's) - a strictly weaker category than the CANONICAL that ru-RU earns, and one the one-subtag broad-range guard does not block because the likely-subtag branch runs after it. Pins the ordering between canonical identity and likely-subtag inference against a single catalog."
+    },
+    {
+      "id": "locale-identity.plural-rules.parse-under-ru-su-warns",
+      "requirementIds": [],
+      "fixture": "locale-identity-ru-su-plural-rules",
+      "operation": "parse",
+      "input": {
+        "file": "ru-SU",
+        "locale": "ru-SU",
+        "source": "ru-SU"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Validation-time view of the same identity: parsing the file under locale ru-SU emits INCOMPLETE_CARDINALITY_TRANSLATIONS naming exactly CARDINALITY_FEW and CARDINALITY_MANY, while reporting the warning's locale as the uncanonicalized ru-SU. So the supported-forms lookup canonicalizes and the diagnostic does not - two behaviors a port is likely to unify in one direction or the other."
+    },
+    {
+      "id": "locale-identity.plural-rules.parse-under-extlang-sun-is-silent",
+      "requirementIds": [],
+      "fixture": "locale-identity-ru-su-plural-rules",
+      "operation": "parse",
+      "input": {
+        "file": "ru-SU",
+        "locale": "ru-SUN",
+        "source": "ru-SUN"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The discriminating contrast: parsing the IDENTICAL bytes under 'ru-SUN' emits no warning at all, because that tag collapses to Sundanese, whose only cardinal form is OTHER and is therefore fully covered by the file's ONE/OTHER pair. One character of difference in the locale changes the validator's demanded form set from four forms to one. A port whose tag parsing is even slightly off produces the wrong warning set here while passing the ru-SU case."
+    },
+    {
+      "id": "locale-identity.plural-rules.load-warns-for-ru-su-file",
+      "requirementIds": [],
+      "fixture": "locale-identity-ru-su-plural-rules",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The whole-directory view of the same validation: the load succeeds with locales en and ru-SU and carries the incomplete-cardinality warning, whose source is the ru-SU path and whose locale field is ru-SU. Confirms the filename alone - never a canonicalized rewrite of it - is what the warning attributes the problem to."
+    }
+  ]
+}

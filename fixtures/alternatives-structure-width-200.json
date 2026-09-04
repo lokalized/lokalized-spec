@@ -1,0 +1,1015 @@
+{
+  "id": "alternatives-structure-width-200",
+  "description": "A single alternatives array 200 entries wide, all siblings. Probes whether any width limit exists distinct from the depth limit.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Wide.Alternatives": {
+        "translation": "default",
+        "alternatives": [
+          {
+            "count == 0": {
+              "translation": "branch-0"
+            }
+          },
+          {
+            "count == 1": {
+              "translation": "branch-1"
+            }
+          },
+          {
+            "count == 2": {
+              "translation": "branch-2"
+            }
+          },
+          {
+            "count == 3": {
+              "translation": "branch-3"
+            }
+          },
+          {
+            "count == 4": {
+              "translation": "branch-4"
+            }
+          },
+          {
+            "count == 5": {
+              "translation": "branch-5"
+            }
+          },
+          {
+            "count == 6": {
+              "translation": "branch-6"
+            }
+          },
+          {
+            "count == 7": {
+              "translation": "branch-7"
+            }
+          },
+          {
+            "count == 8": {
+              "translation": "branch-8"
+            }
+          },
+          {
+            "count == 9": {
+              "translation": "branch-9"
+            }
+          },
+          {
+            "count == 10": {
+              "translation": "branch-10"
+            }
+          },
+          {
+            "count == 11": {
+              "translation": "branch-11"
+            }
+          },
+          {
+            "count == 12": {
+              "translation": "branch-12"
+            }
+          },
+          {
+            "count == 13": {
+              "translation": "branch-13"
+            }
+          },
+          {
+            "count == 14": {
+              "translation": "branch-14"
+            }
+          },
+          {
+            "count == 15": {
+              "translation": "branch-15"
+            }
+          },
+          {
+            "count == 16": {
+              "translation": "branch-16"
+            }
+          },
+          {
+            "count == 17": {
+              "translation": "branch-17"
+            }
+          },
+          {
+            "count == 18": {
+              "translation": "branch-18"
+            }
+          },
+          {
+            "count == 19": {
+              "translation": "branch-19"
+            }
+          },
+          {
+            "count == 20": {
+              "translation": "branch-20"
+            }
+          },
+          {
+            "count == 21": {
+              "translation": "branch-21"
+            }
+          },
+          {
+            "count == 22": {
+              "translation": "branch-22"
+            }
+          },
+          {
+            "count == 23": {
+              "translation": "branch-23"
+            }
+          },
+          {
+            "count == 24": {
+              "translation": "branch-24"
+            }
+          },
+          {
+            "count == 25": {
+              "translation": "branch-25"
+            }
+          },
+          {
+            "count == 26": {
+              "translation": "branch-26"
+            }
+          },
+          {
+            "count == 27": {
+              "translation": "branch-27"
+            }
+          },
+          {
+            "count == 28": {
+              "translation": "branch-28"
+            }
+          },
+          {
+            "count == 29": {
+              "translation": "branch-29"
+            }
+          },
+          {
+            "count == 30": {
+              "translation": "branch-30"
+            }
+          },
+          {
+            "count == 31": {
+              "translation": "branch-31"
+            }
+          },
+          {
+            "count == 32": {
+              "translation": "branch-32"
+            }
+          },
+          {
+            "count == 33": {
+              "translation": "branch-33"
+            }
+          },
+          {
+            "count == 34": {
+              "translation": "branch-34"
+            }
+          },
+          {
+            "count == 35": {
+              "translation": "branch-35"
+            }
+          },
+          {
+            "count == 36": {
+              "translation": "branch-36"
+            }
+          },
+          {
+            "count == 37": {
+              "translation": "branch-37"
+            }
+          },
+          {
+            "count == 38": {
+              "translation": "branch-38"
+            }
+          },
+          {
+            "count == 39": {
+              "translation": "branch-39"
+            }
+          },
+          {
+            "count == 40": {
+              "translation": "branch-40"
+            }
+          },
+          {
+            "count == 41": {
+              "translation": "branch-41"
+            }
+          },
+          {
+            "count == 42": {
+              "translation": "branch-42"
+            }
+          },
+          {
+            "count == 43": {
+              "translation": "branch-43"
+            }
+          },
+          {
+            "count == 44": {
+              "translation": "branch-44"
+            }
+          },
+          {
+            "count == 45": {
+              "translation": "branch-45"
+            }
+          },
+          {
+            "count == 46": {
+              "translation": "branch-46"
+            }
+          },
+          {
+            "count == 47": {
+              "translation": "branch-47"
+            }
+          },
+          {
+            "count == 48": {
+              "translation": "branch-48"
+            }
+          },
+          {
+            "count == 49": {
+              "translation": "branch-49"
+            }
+          },
+          {
+            "count == 50": {
+              "translation": "branch-50"
+            }
+          },
+          {
+            "count == 51": {
+              "translation": "branch-51"
+            }
+          },
+          {
+            "count == 52": {
+              "translation": "branch-52"
+            }
+          },
+          {
+            "count == 53": {
+              "translation": "branch-53"
+            }
+          },
+          {
+            "count == 54": {
+              "translation": "branch-54"
+            }
+          },
+          {
+            "count == 55": {
+              "translation": "branch-55"
+            }
+          },
+          {
+            "count == 56": {
+              "translation": "branch-56"
+            }
+          },
+          {
+            "count == 57": {
+              "translation": "branch-57"
+            }
+          },
+          {
+            "count == 58": {
+              "translation": "branch-58"
+            }
+          },
+          {
+            "count == 59": {
+              "translation": "branch-59"
+            }
+          },
+          {
+            "count == 60": {
+              "translation": "branch-60"
+            }
+          },
+          {
+            "count == 61": {
+              "translation": "branch-61"
+            }
+          },
+          {
+            "count == 62": {
+              "translation": "branch-62"
+            }
+          },
+          {
+            "count == 63": {
+              "translation": "branch-63"
+            }
+          },
+          {
+            "count == 64": {
+              "translation": "branch-64"
+            }
+          },
+          {
+            "count == 65": {
+              "translation": "branch-65"
+            }
+          },
+          {
+            "count == 66": {
+              "translation": "branch-66"
+            }
+          },
+          {
+            "count == 67": {
+              "translation": "branch-67"
+            }
+          },
+          {
+            "count == 68": {
+              "translation": "branch-68"
+            }
+          },
+          {
+            "count == 69": {
+              "translation": "branch-69"
+            }
+          },
+          {
+            "count == 70": {
+              "translation": "branch-70"
+            }
+          },
+          {
+            "count == 71": {
+              "translation": "branch-71"
+            }
+          },
+          {
+            "count == 72": {
+              "translation": "branch-72"
+            }
+          },
+          {
+            "count == 73": {
+              "translation": "branch-73"
+            }
+          },
+          {
+            "count == 74": {
+              "translation": "branch-74"
+            }
+          },
+          {
+            "count == 75": {
+              "translation": "branch-75"
+            }
+          },
+          {
+            "count == 76": {
+              "translation": "branch-76"
+            }
+          },
+          {
+            "count == 77": {
+              "translation": "branch-77"
+            }
+          },
+          {
+            "count == 78": {
+              "translation": "branch-78"
+            }
+          },
+          {
+            "count == 79": {
+              "translation": "branch-79"
+            }
+          },
+          {
+            "count == 80": {
+              "translation": "branch-80"
+            }
+          },
+          {
+            "count == 81": {
+              "translation": "branch-81"
+            }
+          },
+          {
+            "count == 82": {
+              "translation": "branch-82"
+            }
+          },
+          {
+            "count == 83": {
+              "translation": "branch-83"
+            }
+          },
+          {
+            "count == 84": {
+              "translation": "branch-84"
+            }
+          },
+          {
+            "count == 85": {
+              "translation": "branch-85"
+            }
+          },
+          {
+            "count == 86": {
+              "translation": "branch-86"
+            }
+          },
+          {
+            "count == 87": {
+              "translation": "branch-87"
+            }
+          },
+          {
+            "count == 88": {
+              "translation": "branch-88"
+            }
+          },
+          {
+            "count == 89": {
+              "translation": "branch-89"
+            }
+          },
+          {
+            "count == 90": {
+              "translation": "branch-90"
+            }
+          },
+          {
+            "count == 91": {
+              "translation": "branch-91"
+            }
+          },
+          {
+            "count == 92": {
+              "translation": "branch-92"
+            }
+          },
+          {
+            "count == 93": {
+              "translation": "branch-93"
+            }
+          },
+          {
+            "count == 94": {
+              "translation": "branch-94"
+            }
+          },
+          {
+            "count == 95": {
+              "translation": "branch-95"
+            }
+          },
+          {
+            "count == 96": {
+              "translation": "branch-96"
+            }
+          },
+          {
+            "count == 97": {
+              "translation": "branch-97"
+            }
+          },
+          {
+            "count == 98": {
+              "translation": "branch-98"
+            }
+          },
+          {
+            "count == 99": {
+              "translation": "branch-99"
+            }
+          },
+          {
+            "count == 100": {
+              "translation": "branch-100"
+            }
+          },
+          {
+            "count == 101": {
+              "translation": "branch-101"
+            }
+          },
+          {
+            "count == 102": {
+              "translation": "branch-102"
+            }
+          },
+          {
+            "count == 103": {
+              "translation": "branch-103"
+            }
+          },
+          {
+            "count == 104": {
+              "translation": "branch-104"
+            }
+          },
+          {
+            "count == 105": {
+              "translation": "branch-105"
+            }
+          },
+          {
+            "count == 106": {
+              "translation": "branch-106"
+            }
+          },
+          {
+            "count == 107": {
+              "translation": "branch-107"
+            }
+          },
+          {
+            "count == 108": {
+              "translation": "branch-108"
+            }
+          },
+          {
+            "count == 109": {
+              "translation": "branch-109"
+            }
+          },
+          {
+            "count == 110": {
+              "translation": "branch-110"
+            }
+          },
+          {
+            "count == 111": {
+              "translation": "branch-111"
+            }
+          },
+          {
+            "count == 112": {
+              "translation": "branch-112"
+            }
+          },
+          {
+            "count == 113": {
+              "translation": "branch-113"
+            }
+          },
+          {
+            "count == 114": {
+              "translation": "branch-114"
+            }
+          },
+          {
+            "count == 115": {
+              "translation": "branch-115"
+            }
+          },
+          {
+            "count == 116": {
+              "translation": "branch-116"
+            }
+          },
+          {
+            "count == 117": {
+              "translation": "branch-117"
+            }
+          },
+          {
+            "count == 118": {
+              "translation": "branch-118"
+            }
+          },
+          {
+            "count == 119": {
+              "translation": "branch-119"
+            }
+          },
+          {
+            "count == 120": {
+              "translation": "branch-120"
+            }
+          },
+          {
+            "count == 121": {
+              "translation": "branch-121"
+            }
+          },
+          {
+            "count == 122": {
+              "translation": "branch-122"
+            }
+          },
+          {
+            "count == 123": {
+              "translation": "branch-123"
+            }
+          },
+          {
+            "count == 124": {
+              "translation": "branch-124"
+            }
+          },
+          {
+            "count == 125": {
+              "translation": "branch-125"
+            }
+          },
+          {
+            "count == 126": {
+              "translation": "branch-126"
+            }
+          },
+          {
+            "count == 127": {
+              "translation": "branch-127"
+            }
+          },
+          {
+            "count == 128": {
+              "translation": "branch-128"
+            }
+          },
+          {
+            "count == 129": {
+              "translation": "branch-129"
+            }
+          },
+          {
+            "count == 130": {
+              "translation": "branch-130"
+            }
+          },
+          {
+            "count == 131": {
+              "translation": "branch-131"
+            }
+          },
+          {
+            "count == 132": {
+              "translation": "branch-132"
+            }
+          },
+          {
+            "count == 133": {
+              "translation": "branch-133"
+            }
+          },
+          {
+            "count == 134": {
+              "translation": "branch-134"
+            }
+          },
+          {
+            "count == 135": {
+              "translation": "branch-135"
+            }
+          },
+          {
+            "count == 136": {
+              "translation": "branch-136"
+            }
+          },
+          {
+            "count == 137": {
+              "translation": "branch-137"
+            }
+          },
+          {
+            "count == 138": {
+              "translation": "branch-138"
+            }
+          },
+          {
+            "count == 139": {
+              "translation": "branch-139"
+            }
+          },
+          {
+            "count == 140": {
+              "translation": "branch-140"
+            }
+          },
+          {
+            "count == 141": {
+              "translation": "branch-141"
+            }
+          },
+          {
+            "count == 142": {
+              "translation": "branch-142"
+            }
+          },
+          {
+            "count == 143": {
+              "translation": "branch-143"
+            }
+          },
+          {
+            "count == 144": {
+              "translation": "branch-144"
+            }
+          },
+          {
+            "count == 145": {
+              "translation": "branch-145"
+            }
+          },
+          {
+            "count == 146": {
+              "translation": "branch-146"
+            }
+          },
+          {
+            "count == 147": {
+              "translation": "branch-147"
+            }
+          },
+          {
+            "count == 148": {
+              "translation": "branch-148"
+            }
+          },
+          {
+            "count == 149": {
+              "translation": "branch-149"
+            }
+          },
+          {
+            "count == 150": {
+              "translation": "branch-150"
+            }
+          },
+          {
+            "count == 151": {
+              "translation": "branch-151"
+            }
+          },
+          {
+            "count == 152": {
+              "translation": "branch-152"
+            }
+          },
+          {
+            "count == 153": {
+              "translation": "branch-153"
+            }
+          },
+          {
+            "count == 154": {
+              "translation": "branch-154"
+            }
+          },
+          {
+            "count == 155": {
+              "translation": "branch-155"
+            }
+          },
+          {
+            "count == 156": {
+              "translation": "branch-156"
+            }
+          },
+          {
+            "count == 157": {
+              "translation": "branch-157"
+            }
+          },
+          {
+            "count == 158": {
+              "translation": "branch-158"
+            }
+          },
+          {
+            "count == 159": {
+              "translation": "branch-159"
+            }
+          },
+          {
+            "count == 160": {
+              "translation": "branch-160"
+            }
+          },
+          {
+            "count == 161": {
+              "translation": "branch-161"
+            }
+          },
+          {
+            "count == 162": {
+              "translation": "branch-162"
+            }
+          },
+          {
+            "count == 163": {
+              "translation": "branch-163"
+            }
+          },
+          {
+            "count == 164": {
+              "translation": "branch-164"
+            }
+          },
+          {
+            "count == 165": {
+              "translation": "branch-165"
+            }
+          },
+          {
+            "count == 166": {
+              "translation": "branch-166"
+            }
+          },
+          {
+            "count == 167": {
+              "translation": "branch-167"
+            }
+          },
+          {
+            "count == 168": {
+              "translation": "branch-168"
+            }
+          },
+          {
+            "count == 169": {
+              "translation": "branch-169"
+            }
+          },
+          {
+            "count == 170": {
+              "translation": "branch-170"
+            }
+          },
+          {
+            "count == 171": {
+              "translation": "branch-171"
+            }
+          },
+          {
+            "count == 172": {
+              "translation": "branch-172"
+            }
+          },
+          {
+            "count == 173": {
+              "translation": "branch-173"
+            }
+          },
+          {
+            "count == 174": {
+              "translation": "branch-174"
+            }
+          },
+          {
+            "count == 175": {
+              "translation": "branch-175"
+            }
+          },
+          {
+            "count == 176": {
+              "translation": "branch-176"
+            }
+          },
+          {
+            "count == 177": {
+              "translation": "branch-177"
+            }
+          },
+          {
+            "count == 178": {
+              "translation": "branch-178"
+            }
+          },
+          {
+            "count == 179": {
+              "translation": "branch-179"
+            }
+          },
+          {
+            "count == 180": {
+              "translation": "branch-180"
+            }
+          },
+          {
+            "count == 181": {
+              "translation": "branch-181"
+            }
+          },
+          {
+            "count == 182": {
+              "translation": "branch-182"
+            }
+          },
+          {
+            "count == 183": {
+              "translation": "branch-183"
+            }
+          },
+          {
+            "count == 184": {
+              "translation": "branch-184"
+            }
+          },
+          {
+            "count == 185": {
+              "translation": "branch-185"
+            }
+          },
+          {
+            "count == 186": {
+              "translation": "branch-186"
+            }
+          },
+          {
+            "count == 187": {
+              "translation": "branch-187"
+            }
+          },
+          {
+            "count == 188": {
+              "translation": "branch-188"
+            }
+          },
+          {
+            "count == 189": {
+              "translation": "branch-189"
+            }
+          },
+          {
+            "count == 190": {
+              "translation": "branch-190"
+            }
+          },
+          {
+            "count == 191": {
+              "translation": "branch-191"
+            }
+          },
+          {
+            "count == 192": {
+              "translation": "branch-192"
+            }
+          },
+          {
+            "count == 193": {
+              "translation": "branch-193"
+            }
+          },
+          {
+            "count == 194": {
+              "translation": "branch-194"
+            }
+          },
+          {
+            "count == 195": {
+              "translation": "branch-195"
+            }
+          },
+          {
+            "count == 196": {
+              "translation": "branch-196"
+            }
+          },
+          {
+            "count == 197": {
+              "translation": "branch-197"
+            }
+          },
+          {
+            "count == 198": {
+              "translation": "branch-198"
+            }
+          },
+          {
+            "count == 199": {
+              "translation": "branch-199"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

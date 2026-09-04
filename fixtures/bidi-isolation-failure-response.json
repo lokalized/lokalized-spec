@@ -1,0 +1,16 @@
+{
+  "id": "bidi-isolation-failure-response",
+  "description": "BidiIsolation.ALWAYS with an instance return-string handler whose text contains a placeholder-looking token, over a catalog that carries no translatable key. Distinguishes the three failure responses by whether isolation is reachable at all: RETURN_STRING returns translationFailureResponse.getTranslation() verbatim without interpolation (DefaultStrings.java:757-759), RETURN_KEY goes through interpolateFailureKey and does isolate (:754), and THROW_EXCEPTION reaches throwExceptionFor (:3196), which builds a MissingTranslationException from the raw key and touches neither the interpolator nor BidiUtils. Per-call handlers replace the instance one (:684), so all three run on one fixture.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "translationFailureHandler": {
+    "behavior": "return-string",
+    "text": "Fallback for {{name}}"
+  },
+  "bidiIsolation": "ALWAYS",
+  "files": {
+    "en": {
+      "Locale.Marker": "en"
+    }
+  }
+}

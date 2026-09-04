@@ -1,0 +1,35 @@
+{
+  "id": "locale-identity-filename-legacy-language",
+  "description": "Deprecated language codes and one compound CLDR language alias as filenames, chosen so the two rewriting layers can be told apart: the JDK rewrites iw/in/ji, CLDR would rewrite sh (to sr-Latn), tl (to fil), mo (to ro), cmn (to zh) and aa-Saaho (to ssy), and only the first layer runs at load. Load-only.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "iw": {
+      "Greeting": "g"
+    },
+    "in": {
+      "Greeting": "g"
+    },
+    "ji": {
+      "Greeting": "g"
+    },
+    "sh": {
+      "Greeting": "g"
+    },
+    "tl": {
+      "Greeting": "g"
+    },
+    "mo": {
+      "Greeting": "g"
+    },
+    "cmn": {
+      "Greeting": "g"
+    },
+    "aa-Saaho": {
+      "Greeting": "g"
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

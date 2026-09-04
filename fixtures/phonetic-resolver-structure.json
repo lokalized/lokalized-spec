@@ -1,0 +1,222 @@
+{
+  "id": "phonetic-resolver-structure",
+  "description": "How many times, in what order and for which placeholders the resolver runs inside ONE lookup. Keys cover: two phonetic placeholders over two sources (control, template order == definition order); the SAME two definitions with the template mentioning them in the OPPOSITE order and reading DIFFERENT sources, so resolverCalls order actually discriminates template order from definition order; two differently-named placeholders reading one source (no memoization); one placeholder referenced twice in a template (resolved once); a phonetic definition the template never references; an alternative that shadows the top-level placeholder; a phonetic branch whose text names a second phonetic placeholder, so the second call happens only because the first selected that branch; a first placeholder whose selected constant has no branch; and a definition mixing a tagged value with a raw term.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "phoneticResolver": {
+    "behavior": "by-term",
+    "mapping": {
+      "apple": "PHONETIC_VOWEL",
+      "book": "PHONETIC_CONSONANT",
+      "strange": "PHONETIC_S_IMPURE"
+    },
+    "default": "PHONETIC_OTHER"
+  },
+  "files": {
+    "en": {
+      "TwoSources": {
+        "translation": "{{x}}/{{y}}",
+        "placeholders": {
+          "x": {
+            "value": "t1",
+            "translations": {
+              "PHONETIC_VOWEL": "xv",
+              "PHONETIC_CONSONANT": "xc",
+              "PHONETIC_S_IMPURE": "xs",
+              "PHONETIC_OTHER": "xo"
+            }
+          },
+          "y": {
+            "value": "t2",
+            "translations": {
+              "PHONETIC_VOWEL": "yv",
+              "PHONETIC_CONSONANT": "yc",
+              "PHONETIC_S_IMPURE": "ys",
+              "PHONETIC_OTHER": "yo"
+            }
+          }
+        }
+      },
+      "ReversedOrder": {
+        "translation": "{{y}}-{{x}}",
+        "placeholders": {
+          "x": {
+            "value": "t1",
+            "translations": {
+              "PHONETIC_VOWEL": "xv",
+              "PHONETIC_CONSONANT": "xc",
+              "PHONETIC_S_IMPURE": "xs",
+              "PHONETIC_OTHER": "xo"
+            }
+          },
+          "y": {
+            "value": "t2",
+            "translations": {
+              "PHONETIC_VOWEL": "yv",
+              "PHONETIC_CONSONANT": "yc",
+              "PHONETIC_S_IMPURE": "ys",
+              "PHONETIC_OTHER": "yo"
+            }
+          }
+        }
+      },
+      "SameSourceTwice": {
+        "translation": "{{x}}+{{y}}",
+        "placeholders": {
+          "x": {
+            "value": "t1",
+            "translations": {
+              "PHONETIC_VOWEL": "xv",
+              "PHONETIC_CONSONANT": "xc",
+              "PHONETIC_S_IMPURE": "xs",
+              "PHONETIC_OTHER": "xo"
+            }
+          },
+          "y": {
+            "value": "t1",
+            "translations": {
+              "PHONETIC_VOWEL": "yv",
+              "PHONETIC_CONSONANT": "yc",
+              "PHONETIC_S_IMPURE": "ys",
+              "PHONETIC_OTHER": "yo"
+            }
+          }
+        }
+      },
+      "RepeatedReference": {
+        "translation": "{{x}} {{x}}",
+        "placeholders": {
+          "x": {
+            "value": "t1",
+            "translations": {
+              "PHONETIC_VOWEL": "xv",
+              "PHONETIC_CONSONANT": "xc",
+              "PHONETIC_S_IMPURE": "xs",
+              "PHONETIC_OTHER": "xo"
+            }
+          }
+        }
+      },
+      "Unreferenced": {
+        "translation": "no placeholder here",
+        "placeholders": {
+          "x": {
+            "value": "t1",
+            "translations": {
+              "PHONETIC_VOWEL": "xv",
+              "PHONETIC_CONSONANT": "xc",
+              "PHONETIC_S_IMPURE": "xs",
+              "PHONETIC_OTHER": "xo"
+            }
+          }
+        }
+      },
+      "Alt": {
+        "translation": "main:{{x}}",
+        "placeholders": {
+          "x": {
+            "value": "t1",
+            "translations": {
+              "PHONETIC_VOWEL": "xv",
+              "PHONETIC_CONSONANT": "xc",
+              "PHONETIC_S_IMPURE": "xs",
+              "PHONETIC_OTHER": "xo"
+            }
+          }
+        },
+        "alternatives": [
+          {
+            "n == 1": {
+              "translation": "alt:{{y}}",
+              "placeholders": {
+                "y": {
+                  "value": "t2",
+                  "translations": {
+                    "PHONETIC_VOWEL": "yv",
+                    "PHONETIC_CONSONANT": "yc",
+                    "PHONETIC_S_IMPURE": "ys",
+                    "PHONETIC_OTHER": "yo"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "Chain": {
+        "translation": "{{outer}}",
+        "placeholders": {
+          "outer": {
+            "value": "t1",
+            "translations": {
+              "PHONETIC_VOWEL": "V<{{inner}}>",
+              "PHONETIC_CONSONANT": "C<{{other}}>",
+              "PHONETIC_S_IMPURE": "S",
+              "PHONETIC_OTHER": "O"
+            }
+          },
+          "inner": {
+            "value": "t2",
+            "translations": {
+              "PHONETIC_VOWEL": "iv",
+              "PHONETIC_CONSONANT": "ic",
+              "PHONETIC_S_IMPURE": "is",
+              "PHONETIC_OTHER": "io"
+            }
+          },
+          "other": {
+            "value": "t3",
+            "translations": {
+              "PHONETIC_VOWEL": "ov",
+              "PHONETIC_CONSONANT": "oc",
+              "PHONETIC_S_IMPURE": "os",
+              "PHONETIC_OTHER": "oo"
+            }
+          }
+        }
+      },
+      "FirstFails": {
+        "translation": "{{x}}/{{y}}",
+        "placeholders": {
+          "x": {
+            "value": "t1",
+            "translations": {
+              "PHONETIC_VOWEL": "xv",
+              "PHONETIC_CONSONANT": "xc"
+            }
+          },
+          "y": {
+            "value": "t2",
+            "translations": {
+              "PHONETIC_VOWEL": "yv",
+              "PHONETIC_CONSONANT": "yc"
+            }
+          }
+        }
+      },
+      "Mixed": {
+        "translation": "{{x}}|{{y}}",
+        "placeholders": {
+          "x": {
+            "value": "t1",
+            "translations": {
+              "PHONETIC_VOWEL": "xv",
+              "PHONETIC_PN": "xpn",
+              "PHONETIC_OTHER": "xo"
+            }
+          },
+          "y": {
+            "value": "t2",
+            "translations": {
+              "PHONETIC_VOWEL": "yv",
+              "PHONETIC_PN": "ypn",
+              "PHONETIC_OTHER": "yo"
+            }
+          }
+        }
+      }
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

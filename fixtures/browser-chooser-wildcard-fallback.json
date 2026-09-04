@@ -1,0 +1,22 @@
+{
+  "id": "browser-chooser-wildcard-fallback",
+  "description": "Supported {de, fr, ja, zu} with the fallback set to ja, which is neither first nor last in sorted order. That separates the two rules in DefaultStrings.preferredLocaleForWildcard (DefaultStrings.java:1955): prefer the configured fallback when it survives, otherwise take the first surviving supported locale. A fixture whose fallback happened to sort first could not tell those apart, and having two locales sort ahead of the fallback lets a second exclusion prove the second rule really walks sorted order.",
+  "fallbackLocale": "ja",
+  "tiebreakers": null,
+  "files": {
+    "de": {
+      "Checkout.Title": "de"
+    },
+    "fr": {
+      "Checkout.Title": "fr"
+    },
+    "ja": {
+      "Checkout.Title": "ja"
+    },
+    "zu": {
+      "Checkout.Title": "zu"
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

@@ -1,0 +1,30 @@
+{
+  "id": "dedup-and-candidates-mo-ro",
+  "description": "Post-resolution first-wins dedup for the clause's named example, mo resolving to loaded ro. Loads ro and en with fallback en; no mo catalog exists, so every mo observation is resolution behavior rather than loading behavior. localeFallbackCandidates (DefaultStrings.java:2474-2503) builds the raw candidate set for mo as [mo, ro, en]: CldrLocaleData.fallbackLocalesFor(mo) is [mo, ro], the likely-subtag match for ro-Latn re-adds ro, the auto-identity tiebreaker DefaultStrings installs for language code 'ro' re-adds it again, and the fallback locale is appended at 2489. Dedup happens AFTER each raw candidate is resolved to a catalog by localizedStringsFor (2506) - canonicalLanguageTag('mo') is 'ro', so mo maps onto loaded ro - and the putIfAbsent at 2498 is keyed by that RESOLVED attempted locale, so the walk sees two candidates, not three. Dedup.Shared exists in both catalogs to show which one first-wins keeps. Dedup.ResolutionFailure is a cardinality placeholder over the context name 'absentCount', which no case supplies, so ro throws IllegalArgumentException at DefaultStrings.java:966-968 while the same key is a plain string in en; that pair makes policy truncation visible against a reachable translation. Its ro translations declare Romanian's complete cardinality set (one/few/other) so the load emits no warning and the fixture isolates exactly one failure cause. Dedup.Missing exists nowhere. Loaded ro and en have distinct language codes, so no tiebreakers are required.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "ro": {
+      "Dedup.OnlyInRo": "ro: only here",
+      "Dedup.Shared": "ro: shared",
+      "Dedup.ResolutionFailure": {
+        "translation": "ro: {{itemWord}}",
+        "placeholders": {
+          "itemWord": {
+            "value": "absentCount",
+            "translations": {
+              "CARDINALITY_ONE": "item",
+              "CARDINALITY_FEW": "items",
+              "CARDINALITY_OTHER": "items"
+            }
+          }
+        }
+      }
+    },
+    "en": {
+      "Dedup.OnlyInEn": "en: only here",
+      "Dedup.Shared": "en: shared",
+      "Dedup.ResolutionFailure": "en: plain fallback text"
+    }
+  }
+}

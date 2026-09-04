@@ -1,0 +1,860 @@
+{
+  "formatVersion": 1,
+  "family": "classpath-filenames",
+  "description": "Plan v7 section 8.3 fixture family 'classpath-filenames'. Inputs only; the oracle emits expected.",
+  "skipped": [
+    {
+      "what": "Filename handling for entries inside a real JAR (loadFromJarPackage, LocalizedStringLoader.java:1406) and inside the META-INF/versions multi-release namespace.",
+      "why": "The oracle roots a URLClassLoader at a directory, so no JarEntry is ever constructed and the 'jar:<file>!/<entry>' warning source cannot be produced. That third call site of languageTagForClasspathFileName is unreachable from this harness even though the tag rules it applies are identical."
+    },
+    {
+      "what": "Merging one classpath package supplied by two different classpath roots (shard merge), and the conflict diagnostic naming two sources on DIFFERENT roots.",
+      "why": "classpathLoaderFor builds a single URLClassLoader over one directory (VectorOracle.java:460), so getResources(package) yields exactly one URL and no cross-root merge can occur. classpath-filenames-case-collision reaches the two-origin conflict diagnostic within a single root, which is as close as this harness gets."
+    },
+    {
+      "what": "Filenames containing a path separator, a NUL byte, or a trailing space, and names exceeding the platform's 255-byte per-component limit.",
+      "why": "These cannot be materialized as files at all on the oracle's host: build.mjs's writeFileSync would fail before the loader ever saw the name, taking the corpus build down rather than recording a behavior."
+    },
+    {
+      "what": "A subdirectory inside the package whose name is a valid locale tag, which the Files.isDirectory guard skips before the name is ever parsed (LocalizedStringLoader.java:1247, :1303).",
+      "why": "Fixtures cannot create nested directories. Every rawFiles/files key is written with a single writeFileSync into the fixture root, so a key containing a separator fails rather than producing a directory."
+    },
+    {
+      "what": "validateClasspathResourcePath's own \"must identify a file, not a package\" rejection (LocalizedStringLoader.java:1005).",
+      "why": "MEASURED unreachable: it tests endsWith(\"/\"), but any trailing slash also produces an empty final segment, which validateClasspathPackage rejects first with the empty/'.'/'..'-segment message. classpath-filenames.resources.trailing-slash-rejected-as-empty-segment pins the message that actually fires; no input can reach the later branch."
+    },
+    {
+      "what": "A loadClasspathResources path naming a DIRECTORY with no trailing slash.",
+      "why": "URLClassLoader's FileLoader returns a directory-listing stream for such a path and the parse then fails on that listing's contents. That stream is a file-URL artifact of the JDK's classloader — absent for a JAR, and its content is directory-iteration order — so it is neither library behavior nor reproducible in a port."
+    },
+    {
+      "what": "An assertion that the precomposed and decomposed accented-Latin fixtures produce DISTINCT warning messages.",
+      "why": "That distinction is a property of the host filesystem's normalization policy, not of the library. Both fixtures are authored and both execute; on the oracle's APFS host they round-tripped distinctly (U+00E9 versus e + U+0301, verified by code point), but where a platform normalizes they simply emit identical observations. Both are informational so neither can gate parity."
+    },
+    {
+      "what": "Stable ordering of the two warnings in classpath-filenames-two-invalid-json, which of the two names its paired filesystem failure quotes, and which origin lands in each slot of the classpath-filenames-case-collision duplicate message.",
+      "why": "All three follow DirectoryStream iteration order, which is filesystem-dependent (measured stable across five runs on APFS, but ext4 and NTFS order differently). The cases are authored so the one-warning-per-file multiplicity and the two-origin diagnostic shape are recorded, but all four are informational because their operand order cannot be a cross-language requirement."
+    },
+    {
+      "what": "maximumWarnings set to a nonzero value below the number of offending filenames.",
+      "why": "Which offending name the budget admits before the limiter fires depends on directory iteration order, so the observation would be unstable. The zero-budget variant is authored instead: with one offending file the hard failure is fully order-independent."
+    },
+    {
+      "what": "JS-side delivery concerns — SSR, Fetch/Node loader planning, digest capability, shard merges.",
+      "why": "Out of scope for this corpus; the oracle observes lokalized-java only."
+    }
+  ],
+  "cases": [
+    {
+      "id": "classpath-filenames.valid-json.classpath-load",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-valid-json-extension",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "A valid tag WITH the .json extension, which classpath-smoke never wrote — every fixture there used extensionless names. A port that never strips an extension, or that treats any dot as disqualifying, loads one locale here instead of two."
+    },
+    {
+      "id": "classpath-filenames.valid-json.filesystem-load",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-valid-json-extension",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The filesystem half. Both paths share languageTagForFileName, so this pins that the .json extension is accepted identically on both and that no warning appears on either."
+    },
+    {
+      "id": "classpath-filenames.case.uppercase-stem-classpath",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-uppercase-stem",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "Filename 'DE'. Every gate in isLanguageTag — pattern, Locale.Builder, CLDR membership — accepts it case-insensitively, and the emitted key is Locale.forLanguageTag's canonical form. A port doing a case-sensitive lookup against its locale table skips the file entirely; a port that keeps the filename's spelling emits the wrong key."
+    },
+    {
+      "id": "classpath-filenames.case.uppercase-stem-filesystem",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-uppercase-stem",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The filesystem half of the uppercase-stem pair. The two paths must agree here; the divergence in this family is confined to names that make parsing throw."
+    },
+    {
+      "id": "classpath-filenames.case.uppercase-extension-classpath",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-uppercase-extension",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "Filename 'DE.JSON'. hasJsonExtension lowercases the entire name before endsWith, so the extension is stripped and the load succeeds. A port comparing the raw suffix to '.json' fails to strip, falls through to the tag pattern, and skips the file in silence — data loss with no warning anywhere to reveal it."
+    },
+    {
+      "id": "classpath-filenames.case.uppercase-extension-filesystem",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-uppercase-extension",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The filesystem half. Also the shape where a naive port silently loses a catalog on both paths at once, so pinning both is what makes the loss visible."
+    },
+    {
+      "id": "classpath-filenames.case.mixed-case-extension-classpath",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-mixed-case-extension",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "Filename 'de.Json'. Separated from the all-uppercase case because a port could plausibly special-case '.JSON' while still missing mixed spellings."
+    },
+    {
+      "id": "classpath-filenames.case.mixed-case-extension-filesystem",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-mixed-case-extension",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The filesystem half of the mixed-case-extension pair."
+    },
+    {
+      "id": "classpath-filenames.tag.lowercase-region-classpath",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-lowercase-region",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "Filename 'de-de.json'. The filename's spelling is accepted but the emitted locale key comes from Locale.forLanguageTag, not from the filename: the region is upper-cased. A port that keys its catalog map by the raw stem produces a different key and every later lookup misses."
+    },
+    {
+      "id": "classpath-filenames.tag.lowercase-region-filesystem",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-lowercase-region",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The filesystem half of the region-canonicalisation pair."
+    },
+    {
+      "id": "classpath-filenames.tag.lowercase-script-classpath",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-lowercase-script",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "Filename 'zh-hant.json'. Script subtags canonicalise to Title case where regions canonicalise to UPPER, so this is a different transform from the de-de case and a port that hardcodes one rule for 'everything after the language' emits 'zh-HANT' here."
+    },
+    {
+      "id": "classpath-filenames.tag.lowercase-script-filesystem",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-lowercase-script",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The filesystem half of the script-canonicalisation pair."
+    },
+    {
+      "id": "classpath-filenames.tag.legacy-tag-classpath",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-legacy-tag",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "Filename 'i-klingon.json'. MEASURED: it loads, and the locale key is 'tlh' — the filename's own tag never appears in the loaded set. This is the only place in the corpus where discovery REWRITES a grandfathered tag; a port that keys by the accepted stem, or that rejects legacy tags at the filename gate, diverges in opposite directions."
+    },
+    {
+      "id": "classpath-filenames.tag.legacy-tag-filesystem",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-legacy-tag",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The filesystem half of the legacy-tag pair. Both paths must produce the same rewritten key."
+    },
+    {
+      "id": "classpath-filenames.tag.three-letter-language-classpath",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-three-letter-language",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "Filename 'deu.json' — the alpha-3 code for a language that also has an alpha-2 code. MEASURED: the key stays 'deu' and is NOT folded to 'de'. Paired with the legacy-tag case this draws the line between the rewriting Java does and the rewriting it does not."
+    },
+    {
+      "id": "classpath-filenames.tag.three-letter-language-filesystem",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-three-letter-language",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The filesystem half of the alpha-3 pair."
+    },
+    {
+      "id": "classpath-filenames.tag.private-use-stem-classpath",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-private-use-stem",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "Filename 'x-custom.json'. isLanguageTag returns true for an 'x-' stem before it ever consults CLDR, so a private-use tag is loadable from a filename. A port that requires a known language rejects this and converts a working catalog into a warning."
+    },
+    {
+      "id": "classpath-filenames.tag.private-use-stem-filesystem",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-private-use-stem",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The filesystem half of the private-use pair. A port that rejected the stem here would hard-fail the whole directory rather than merely losing one file."
+    },
+    {
+      "id": "classpath-filenames.tag.uppercase-private-use-classpath",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-uppercase-private-use",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "Filename 'X-Custom.json'. The 'x-' escape hatch lowercases with Locale.ROOT before testing the prefix, so an uppercase marker takes it too, and the key canonicalises to lowercase. A port testing a raw 'x-' prefix falls through to the CLDR lookup and loses this catalog; one that keeps the filename's case emits 'X-Custom'."
+    },
+    {
+      "id": "classpath-filenames.tag.uppercase-private-use-filesystem",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-uppercase-private-use",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The filesystem half of the uppercase private-use pair."
+    },
+    {
+      "id": "classpath-filenames.tag.undetermined-stem-classpath",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-undetermined-stem",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "Filename 'und.json'. The explicitly-undetermined tag survives the empty-resolved-language check that would otherwise reject it. Without this case a port would reasonably treat 'und' as unloadable."
+    },
+    {
+      "id": "classpath-filenames.tag.undetermined-stem-filesystem",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-undetermined-stem",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The filesystem half of the undetermined-tag pair."
+    },
+    {
+      "id": "classpath-filenames.tag.undetermined-with-script-classpath",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-undetermined-with-script",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "Filename 'und-Latn.json'. The undetermined exception is a disjunction — exact 'und' OR an 'und-' prefix — and only this case exercises the second branch. A port that implements the exception as an equality test against 'und' turns a loadable catalog into a warning here while passing the plain-'und' case."
+    },
+    {
+      "id": "classpath-filenames.tag.undetermined-with-script-filesystem",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-undetermined-with-script",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The filesystem half of the und-prefix pair, where the same mistake would hard-fail the whole directory instead of losing one file."
+    },
+    {
+      "id": "classpath-filenames.skip.non-json-extension-classpath",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-non-json-extension",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "Filename 'de.txt' — a VALID tag under the wrong extension. Only .json is stripped, so the full name is tested against the tag pattern and the dot defeats it: skipped, with no warning. A port that strips whatever follows the last dot loads a spurious 'de' locale here."
+    },
+    {
+      "id": "classpath-filenames.skip.non-json-extension-filesystem",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-non-json-extension",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The filesystem half. The two paths agree because the name returns null rather than throwing — that agreement is what separates this shape from the .json shapes."
+    },
+    {
+      "id": "classpath-filenames.skip.dot-inside-stem-classpath",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-dot-inside-stem",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "Filename 'en.GB' — a dot where a hyphen belongs, no extension. A port that accepted dot as a subtag separator would load an 'en-GB' that does not exist; one that treated '.GB' as an extension would derive 'en', collide with the real en file, and hard-fail."
+    },
+    {
+      "id": "classpath-filenames.skip.dot-inside-stem-filesystem",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-dot-inside-stem",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The filesystem half of the dotted-stem pair."
+    },
+    {
+      "id": "classpath-filenames.skip.trailing-dot-classpath",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-trailing-dot",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "Filename 'de.' — a valid tag with a bare trailing dot. Neither the .json branch nor the tag pattern accepts it, so it is skipped in silence. A port that trims trailing dots before matching loads a locale the reference implementation does not."
+    },
+    {
+      "id": "classpath-filenames.skip.trailing-dot-filesystem",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-trailing-dot",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The filesystem half of the trailing-dot pair."
+    },
+    {
+      "id": "classpath-filenames.skip.nine-letter-stem-classpath",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-nine-letter-stem",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "A nine-letter extensionless stem, one past the pattern's 8-character subtag ceiling. Skipped in silence — the control for the nine-letter .json case, which throws on the identical stem."
+    },
+    {
+      "id": "classpath-filenames.skip.nine-letter-stem-filesystem",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-nine-letter-stem",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The filesystem half of the over-long-stem pair."
+    },
+    {
+      "id": "classpath-filenames.warn.unknown-language-json-classpath",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-unknown-language-json",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "Filename 'zz.json'. classpath-smoke pins that the extensionless 'zz' is skipped in silence; the same stem plus .json makes parsing THROW, which discovery downgrades to INVALID_CLASSPATH_LOCALE_FILENAME while the load still succeeds. Together those two cases place the boundary between silence and the warning precisely on the extension."
+    },
+    {
+      "id": "classpath-filenames.warn.unknown-language-json-filesystem",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-unknown-language-json",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The filesystem half: the same stem and extension fail the whole directory load, naming the file. A port that warns instead of failing here silently degrades a hard error."
+    },
+    {
+      "id": "classpath-filenames.warn.root-stem-classpath",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-root-stem",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "Filename 'root.json'. MEASURED: rejected. 'root' clears the pattern, Locale.Builder and the nonempty-language check and dies only at the CLDR membership test — so a port that grants 'root' the same exemption 'und' gets (an easy and natural thing to do, since plan section 8.3 names them in the same breath elsewhere) loads a catalog Java refuses. Nothing else in the family catches that mistake."
+    },
+    {
+      "id": "classpath-filenames.warn.root-stem-filesystem",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-root-stem",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The filesystem half of the root-stem pair, where the same over-permissive port would load a directory Java rejects outright."
+    },
+    {
+      "id": "classpath-filenames.warn.numeric-first-subtag-classpath",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-numeric-first-subtag",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "Filename '419.json'. LANGUAGE_TAG_PATTERN allows digits only in NON-initial subtags, so a numeric stem fails for a reason the length cases cannot reach. A port that writes the first subtag as [A-Za-z0-9]{1,8} passes both length cases and fails only here."
+    },
+    {
+      "id": "classpath-filenames.warn.numeric-first-subtag-filesystem",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-numeric-first-subtag",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The filesystem half of the numeric-stem pair."
+    },
+    {
+      "id": "classpath-filenames.warn.underscore-separator-classpath",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-underscore-separator",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "Filename 'de_DE.json' — the Locale.toString() spelling. Underscore is not in LANGUAGE_TAG_PATTERN, so this throws and becomes a warning. A port that normalizes underscore to hyphen loads a de-DE catalog and emits no warning at all: the single most likely wrong-by-default behavior in this family."
+    },
+    {
+      "id": "classpath-filenames.warn.underscore-separator-filesystem",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-underscore-separator",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The filesystem half: an underscore-named file is fatal to the directory load, not merely ignored."
+    },
+    {
+      "id": "classpath-filenames.resources.underscore-separator-loads-when-named",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-underscore-separator",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "de": "classpath-filenames-underscore-separator/de_DE.json"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "The same file, same package, named explicitly instead of discovered. loadFromClasspathResources validates the locale key and the resource PATH but never the filename, so the bytes load cleanly under the caller's key with no warning. A port that runs its filename validator on explicit resource paths rejects a file the reference implementation accepts."
+    },
+    {
+      "id": "classpath-filenames.warn.region-dot-json-classpath",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-region-dot-json",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "Filename 'en.GB.json'. Exactly one .json is stripped, leaving 'en.GB', which the tag pattern rejects — so this throws where the extensionless 'en.GB' returned null. Pins that the extension, not the dotted stem, is what promotes silence to a warning."
+    },
+    {
+      "id": "classpath-filenames.warn.region-dot-json-filesystem",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-region-dot-json",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The filesystem half. A port that split the name at the FIRST dot would derive 'en' here, collide with the real en catalog, and produce a duplicate-locale failure instead of this one — same outcome class, wrong identity."
+    },
+    {
+      "id": "classpath-filenames.warn.empty-extension-json-classpath",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-empty-extension-json",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "Filename 'de..json'. Removing the last five characters leaves 'de.', whose trailing dot the tag pattern rejects. A port that strips every trailing dot-segment, or that trims dots after stripping, would load a 'de' catalog and emit nothing."
+    },
+    {
+      "id": "classpath-filenames.warn.empty-extension-json-filesystem",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-empty-extension-json",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The filesystem half of the empty-extension pair."
+    },
+    {
+      "id": "classpath-filenames.warn.doubled-json-extension-classpath",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-doubled-json-extension",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "Filename 'de.json.json'. Exactly one extension is removed, leaving 'de.json', which is not a tag. A port that strips repeatedly until no .json remains reaches 'de' and loads it — this case is the only thing separating single-shot stripping from greedy stripping."
+    },
+    {
+      "id": "classpath-filenames.warn.doubled-json-extension-filesystem",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-doubled-json-extension",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The filesystem half of the doubled-extension pair."
+    },
+    {
+      "id": "classpath-filenames.warn.eight-letter-json-classpath",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-eight-letter-json",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "An eight-letter stem plus .json. VERIFIED in source: eight characters satisfy the tag pattern and Locale.Builder and yield a nonempty language, so only the CLDR known-tag lookup rejects it. A port with a syntax check but no CLDR membership check accepts this stem and loads a bogus locale."
+    },
+    {
+      "id": "classpath-filenames.warn.eight-letter-json-filesystem",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-eight-letter-json",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The filesystem half of the CLDR-membership-rejection pair."
+    },
+    {
+      "id": "classpath-filenames.warn.nine-letter-json-classpath",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-nine-letter-json",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "A nine-letter stem plus .json — rejected by the tag pattern rather than by CLDR. Paired with the eight-letter case this pins that the two internal rejection routes are INDISTINGUISHABLE in the emitted diagnostic; a port that reported different messages for syntax versus unknown-language would diverge on one of the two."
+    },
+    {
+      "id": "classpath-filenames.warn.nine-letter-json-filesystem",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-nine-letter-json",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The filesystem half of the pattern-length-rejection pair."
+    },
+    {
+      "id": "classpath-filenames.warn.long-name-json-classpath",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-long-name-json",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "A 200-character stem plus .json. The offending filename is interpolated into both the warning's message and its source; this pins that neither is truncated or elided, which a port applying a diagnostic length cap would break."
+    },
+    {
+      "id": "classpath-filenames.warn.long-name-json-filesystem",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-long-name-json",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The filesystem half: the full 200-character name must appear in the failure message too."
+    },
+    {
+      "id": "classpath-filenames.warn.exhaustive-search-does-not-duplicate",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-exhaustive-search",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "One offending name under exhaustiveClasspathSearch. classpath-smoke exercises the option only against a clean catalog, so nothing yet pins its interaction with the warning path. MEASURED: exactly ONE warning — a port whose exhaustive mode re-enumerates the same package would emit two and still 'load correctly', which only a warning-count assertion catches. One offending file, so no ordering can vary."
+    },
+    {
+      "id": "classpath-filenames.warn.zero-warning-budget-hardens-classpath",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-warning-limit-zero",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "The same offending name with maximumWarnings 0. MEASURED: the classpath load HARD-FAILS, and with the warning-budget message rather than the filename message — so the downgrade from throw to warning is not unconditional, it is a warning emission subject to the loading session's budget. A port that returns the warning out-of-band, or that short-circuits before the limiter, keeps succeeding here. One offending file, so the outcome is order-independent."
+    },
+    {
+      "id": "classpath-filenames.empty.invalid-json-only-classpath",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-invalid-json-only",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "A package whose ONLY file is rejected by name. Discovery must distinguish 'found nothing loadable' from 'found nothing at all': MEASURED as a success with zero locales plus one warning, not the nonexistent-package failure classpath-smoke pins."
+    },
+    {
+      "id": "classpath-filenames.empty.invalid-json-only-filesystem",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-invalid-json-only",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The filesystem half: with no other file to load, the directory still fails on the name. The starkest form of the divergence — empty success against hard failure over identical bytes."
+    },
+    {
+      "id": "classpath-filenames.warn.two-invalid-json-classpath",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-two-invalid-json",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "Two offending names in one package. Pins one warning PER offending file rather than one per load, and that the valid catalog still loads. Informational because the two warnings arrive in DirectoryStream iteration order, which is filesystem- and platform-dependent and cannot be a cross-language requirement."
+    },
+    {
+      "id": "classpath-filenames.warn.two-invalid-json-filesystem",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-two-invalid-json",
+      "operation": "load",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "The filesystem half: the load aborts on the first offending name it reaches rather than collecting both. Informational because WHICH of the two names the message quotes depends on directory iteration order."
+    },
+    {
+      "id": "classpath-filenames.hidden.tag-classpath",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-hidden-tag",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "Filename '.de' — a valid tag behind a leading dot. isHiddenFileName is consulted before any tag parsing, so the file is skipped with no warning. A port without a hidden-file rule loads a 'de' locale that should not exist."
+    },
+    {
+      "id": "classpath-filenames.hidden.tag-filesystem",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-hidden-tag",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The filesystem half of the hidden-valid-tag pair."
+    },
+    {
+      "id": "classpath-filenames.hidden.tag-json-classpath",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-hidden-tag-json",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "Filename '.de.json'. The hidden check runs BEFORE the .json rule, so this is skipped in total silence — whereas 'de..json', whose residual stem is equally malformed, produces a warning. A port that ordered the two checks the other way emits INVALID_CLASSPATH_LOCALE_FILENAME here. The family's sharpest ordering assertion."
+    },
+    {
+      "id": "classpath-filenames.hidden.tag-json-filesystem",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-hidden-tag-json",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The filesystem half, where a wrong check order is far more damaging: it turns a silently-ignored dotfile into a hard failure of the entire directory."
+    },
+    {
+      "id": "classpath-filenames.hidden.extension-only-classpath",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-hidden-extension-only",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "Filename '.json' — the extension with no stem. Hidden, so never parsed; had it been parsed the stripped stem would be the empty string. Pins that a port must not reach an empty-stem code path here at all."
+    },
+    {
+      "id": "classpath-filenames.hidden.extension-only-filesystem",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-hidden-extension-only",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The filesystem half of the bare-extension pair."
+    },
+    {
+      "id": "classpath-filenames.duplicate.case-collision-classpath",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-case-collision",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "'de' and 'DE.json' are distinct filenames that resolve to the SAME locale. Discovery hard-fails on the duplicate — proving the classpath path's leniency covers filename parsing only and never duplicate detection — and the classpath diagnostic names BOTH colliding origins, serving section 8.3's 'conflict diagnostics naming both sources'. Informational (CORRECTED from portable): the message is 'found in <first-seen> and <second-seen>', so which origin lands in which slot follows DirectoryStream iteration order, which is filesystem-dependent. Measured stable across five runs on APFS, but not a cross-language requirement."
+    },
+    {
+      "id": "classpath-filenames.duplicate.case-collision-filesystem",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-case-collision",
+      "operation": "load",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "The filesystem half. Both paths fail, but with structurally DIFFERENT messages: the filesystem says \"found at '<one path>'\" and quotes only the file it was standing on, the classpath says \"found in '<A>' and '<B>'\". A port sharing one message across the two paths gets one of them wrong. Informational for the same iteration-order reason as its classpath twin — which single path the filesystem message quotes is whichever the directory yielded second."
+    },
+    {
+      "id": "classpath-filenames.bypass.discovery-warns-once",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-explicit-bypass",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "One package holding all three rejected classes at once: a throwing name, a hidden name, and an unrecognised extension. Exactly one warning must appear, for the throwing name alone — the other two are silent. Order cannot vary because only one warning exists, which is why this multi-file fixture stays portable where two-invalid-json cannot."
+    },
+    {
+      "id": "classpath-filenames.bypass.discovery-filesystem",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-explicit-bypass",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The filesystem half of the three-class package: the throwing name is fatal and the other two remain invisible. Only one name can throw, so the quoted filename is order-independent here."
+    },
+    {
+      "id": "classpath-filenames.bypass.throwing-name-loads-when-named",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-explicit-bypass",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "de": "classpath-filenames-explicit-bypass/catalog.json"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "The very file whose name hard-fails a filesystem load and warns under discovery, loaded cleanly and silently as an explicit resource under the caller's key. Three outcomes from one file, decided entirely by entry point."
+    },
+    {
+      "id": "classpath-filenames.bypass.hidden-name-loads-when-named",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-explicit-bypass",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "de": "classpath-filenames-explicit-bypass/.de"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "A dotfile that both discovery paths skip, loaded because it was named explicitly. A port that applies its hidden-file filter to explicit resource paths returns nothing here and reports a missing resource."
+    },
+    {
+      "id": "classpath-filenames.bypass.unrecognized-extension-loads-when-named",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-explicit-bypass",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "de": "classpath-filenames-explicit-bypass/notes.txt"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "A .txt file loaded as a catalog because it was named explicitly. Pins that the explicit path imposes no extension requirement whatsoever, which a port defaulting to a .json suffix would break."
+    },
+    {
+      "id": "classpath-filenames.resources.trailing-slash-rejected-as-empty-segment",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-explicit-bypass",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "de": "classpath-filenames-explicit-bypass/"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "A resource path with a trailing slash. classpath-smoke pins that discovery NORMALIZES a trailing slash away; the resource entry point does not normalize, and MEASURED it is rejected by validateClasspathPackage's empty-segment rule (split on '/' yields a trailing empty segment) — NOT by validateClasspathResourcePath's own \"must identify a file, not a package\" rule, which never gets to run. This is the family's order-of-validation discriminator: a port that reports the file-versus-package message here is wrong even though it rejects the same input."
+    },
+    {
+      "id": "classpath-filenames.resources.dot-dot-segment-rejected",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-explicit-bypass",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "de": "classpath-filenames-explicit-bypass/../classpath-filenames-explicit-bypass/notes.txt"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "A traversal segment that resolves back inside the root, on the RESOURCE entry point — classpath-smoke pins this only for the discovery package. Pins that loadFromClasspathResources reuses the same validator, and MEASURED that the message still says \"Classpath package\", not \"resource\": a port that specialises the wording per entry point diverges."
+    },
+    {
+      "id": "classpath-filenames.resources.multi-release-namespace-permitted",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-explicit-bypass",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "de": "META-INF/versions/9/en.json"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "The complement of classpath-smoke's discovery rejection, which merely POINTS AT loadFromClasspathResources without proving it accepts the namespace. MEASURED: validation passes and the load fails only with \"Unable to find localized strings resource\" — so the META-INF/versions reservation is a discovery-only rule. A port that hoisted that check into shared path validation would reject this instead."
+    },
+    {
+      "id": "classpath-filenames.nonascii.precomposed-latin-classpath",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-accented-latin-precomposed",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "A precomposed accented Latin name with .json: throws during parsing and becomes a warning that quotes the name verbatim. Informational because filesystem encoding of non-ASCII names is platform-dependent and cannot be a cross-language requirement."
+    },
+    {
+      "id": "classpath-filenames.nonascii.precomposed-latin-filesystem",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-accented-latin-precomposed",
+      "operation": "load",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "The filesystem half. Informational for the same reason: how the accented name reaches the loader depends on the platform's filename encoding."
+    },
+    {
+      "id": "classpath-filenames.nonascii.decomposed-latin-classpath",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-accented-latin-decomposed",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "The decomposed spelling of the same name. MEASURED on APFS: the warning quotes base-letter-plus-combining-mark and differs from the precomposed case. Where a platform normalizes, the two coincide. Informational precisely because that outcome is a property of the filesystem, not of the library."
+    },
+    {
+      "id": "classpath-filenames.nonascii.decomposed-latin-filesystem",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-accented-latin-decomposed",
+      "operation": "load",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "The filesystem half of the normalization pair. Informational: non-ASCII filename normalization is platform-dependent."
+    },
+    {
+      "id": "classpath-filenames.nonascii.cjk-classpath",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-cjk-name",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "A CJK filename with .json — multi-byte in UTF-8, single-unit in UTF-16. Informational because filesystem encoding of non-ASCII names is platform-dependent."
+    },
+    {
+      "id": "classpath-filenames.nonascii.cjk-filesystem",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-cjk-name",
+      "operation": "load",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "The filesystem half of the CJK pair. Informational for the same platform-encoding reason."
+    },
+    {
+      "id": "classpath-filenames.nonascii.rtl-classpath",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-rtl-name",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "An Arabic-script filename with .json, embedded in a left-to-right diagnostic without any bidi isolation applied — the loader's warnings are not bidi-isolated the way translations are. Informational because filesystem encoding of non-ASCII names is platform-dependent."
+    },
+    {
+      "id": "classpath-filenames.nonascii.rtl-filesystem",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-rtl-name",
+      "operation": "load",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "The filesystem half of the RTL pair. Informational for the same platform-encoding reason."
+    },
+    {
+      "id": "classpath-filenames.nonascii.emoji-classpath",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-emoji-name",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "An astral-plane emoji filename with .json — a surrogate pair in both languages' string model, so any diagnostic that slices by code unit can split it. Informational because filesystem encoding of non-ASCII names is platform-dependent."
+    },
+    {
+      "id": "classpath-filenames.nonascii.emoji-filesystem",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-emoji-name",
+      "operation": "load",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "The filesystem half of the emoji pair. Informational for the same platform-encoding reason."
+    },
+    {
+      "id": "classpath-filenames.nonascii.no-extension-classpath",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-non-ascii-no-extension",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "The control for the non-ASCII group: the same accented name WITHOUT .json is skipped in silence, so the extension alone is what makes a non-ASCII name visible in diagnostics. Informational because filesystem encoding of non-ASCII names is platform-dependent."
+    },
+    {
+      "id": "classpath-filenames.nonascii.no-extension-filesystem",
+      "requirementIds": [],
+      "fixture": "classpath-filenames-non-ascii-no-extension",
+      "operation": "load",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "The filesystem half of the non-ASCII control pair. Informational for the same platform-encoding reason."
+    }
+  ]
+}

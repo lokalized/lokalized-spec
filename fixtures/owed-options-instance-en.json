@@ -1,0 +1,36 @@
+{
+  "id": "owed-options-instance-en",
+  "description": "The options-smoke-policy catalogs with the INSTANCE locale set to en and the fallback to fr, so a lookup that supplies no locale option still lands on the failing en entry. options-smoke-policy itself resolves straight to fr when no locale is passed, which makes a policy-only or handler-only option unobservable; this fixture is what lets those two options actually change the output.",
+  "fallbackLocale": "fr",
+  "instanceLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Items": {
+        "translation": "{{noun}}",
+        "placeholders": {
+          "noun": {
+            "value": "count",
+            "translations": {
+              "CARDINALITY_ONE": "en-one"
+            }
+          }
+        }
+      }
+    },
+    "fr": {
+      "Items": {
+        "translation": "{{noun}}",
+        "placeholders": {
+          "noun": {
+            "value": "count",
+            "translations": {
+              "CARDINALITY_ONE": "fr-one",
+              "CARDINALITY_OTHER": "fr-other"
+            }
+          }
+        }
+      }
+    }
+  }
+}

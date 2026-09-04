@@ -1,0 +1,22 @@
+{
+  "id": "runtime-limits-expansion-zero",
+  "description": "Plan v7 section 8.3 zero-boundary clause: maximumGeneratedExpansionCharacters is non-negative (TranslationRuntimeLimits.Builder.build line 428), so zero builds. The budget check is consumedCharacters > maximum, and depth-0 output is never billed, so a key with no generated placeholder still renders while a single one-character generated fragment trips the budget.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "runtimeLimits": {
+    "maximumGeneratedExpansionCharacters": 0
+  },
+  "files": {
+    "en": {
+      "No generated": "plain",
+      "One generated": {
+        "translation": "{{x}}",
+        "placeholders": {
+          "x": {
+            "translation": "a"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "id": "phonetic-resolver-expression-null",
+  "description": "A null-returning resolver reached through an expression rather than a placeholder. The expression path raises its own ExpressionEvaluationException whose message omits the key, unlike the placeholder path's IllegalArgumentException.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "phoneticResolver": {
+    "behavior": "return-null"
+  },
+  "files": {
+    "en": {
+      "Expr.One": {
+        "translation": "no-alternative",
+        "alternatives": [
+          {
+            "noun == PHONETIC_VOWEL": {
+              "translation": "alt-vowel"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

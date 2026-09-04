@@ -1,0 +1,470 @@
+{
+  "formatVersion": 1,
+  "family": "interpolation-escapes",
+  "description": "Plan v7 section 8.3 fixture family 'interpolation-escapes'. Inputs only; the oracle emits expected.",
+  "skipped": [
+    {
+      "what": "Strict-mode error branches driven from a LOADED translation: a bare '}}', an unclosed '{{', a malformed placeholder name, an empty '{{}}', and the doubled-backslash-before-close form '\\\\}}' inside a strings-file translation value.",
+      "why": "Unreachable as a case, and re-verified in this review rather than taken on trust. LocalizedStringLoader.validatePlaceholderReferences (LocalizedStringLoader.java:2308, call sites 2150/2285/2455/2515/2638) runs StringInterpolator.placeholderNamesIn - the SAME strict scan - at load time and wraps any IllegalArgumentException in a LocalizedStringLoadingException. Probe fixtures made the oracle exit 3 with 'fixtures that could not be constructed ... invalid placeholder reference in translation for key ...: Unexpected placeholder closing delimiter '}}' at index 5' (bare close) and '... at index 10' for the '\\\\}}' form, aborting the whole corpus build rather than emitting a row. The first four have lenient counterparts authored here, which is where the strict/lenient contrast actually lives; their strict counterparts are load-time behavior belonging to a loader-error family."
+    },
+    {
+      "what": "A dedicated lenient case for '\\\\}}' - proving that a doubled backslash does NOT go on to escape the following closing delimiter.",
+      "why": "It executes leniently (rendering one backslash followed by literal '}}'), but no plausible wrong implementation produces a different string: a port that collapses the pair and then treats the close as bare, and a port that advances by one and lets the second backslash escape the close, both emit exactly the same characters. A case nothing can fail is decoration, so the proposition is left to the load-time observation recorded above rather than faked into a passing row. Its '{{' counterpart IS authorable and IS authored, because there the two readings diverge (substitute versus emit literally)."
+    },
+    {
+      "what": "Explicit strict-vs-lenient MODE SELECTION as a caller-visible option, i.e. asking for lenient interpolation of a translation that resolved, or strict interpolation of a fallback key.",
+      "why": "The library exposes no such option. Mode is a consequence of which code path runs: interpolateTemplate (DefaultStrings.java:1375) always calls interpolateStrictly, interpolateFailureKey (DefaultStrings.java:1413) always calls the lenient interpolate overload. The two fixtures here select mode the only way it can be selected - by whether the key resolves. Nothing further is authorable without a new public surface."
+    },
+    {
+      "what": "Distinguishing a lenient recovery that SUCCEEDED from one that threw and was swallowed, in the general case.",
+      "why": "interpolateFailureKey wraps everything in 'catch (RuntimeException e) { return key; }', so any lenient case whose correct output equals its lookup key is silently satisfied by a throwing implementation. This is worked around here (every lenient case now renders to something other than its key) rather than solved: a case that genuinely needs to observe the difference between 'recovered cleanly' and 'threw and was caught' cannot, because TranslationResult carries no signal for it and warning capture is unsupported."
+    },
+    {
+      "what": "Escape handling under a non-default maximumInterpolatedOutputCharacters, including the IllegalStateException from appendChecked when an escaped literal region ('\\{{...}}' copied wholesale) crosses the limit mid-region.",
+      "why": "Runtime limit overrides are outside the oracle's supported inputs; the fixture shape has no way to configure TranslationRuntimeLimits. This is a genuinely interesting interaction - StringInterpolator's escaped-open branch appends a whole region in one bounds-checked call, so its overshoot semantics differ from character-by-character copying, and the review's new 'region copied verbatim' cases make the region length caller-visible - and it should be authored when limit overrides land."
+    },
+    {
+      "what": "Escape sequences interacting with bidi isolation - a supplied value containing '\\{{' or '}}' wrapped in FSI/PDI by BidiUtils.isolatedValue.",
+      "why": "BidiIsolation settings are not exposed by the oracle (TranslationOptions is built with forLocale/none only). The default is RTL_LOCALES, so an en fixture never isolates; reaching the isolating branch would need an RTL locale plus a deliberate setting, and bidi isolation belongs to its own family."
+    },
+    {
+      "what": "Whether a lenient recovery (bare '}}', unclosed '{{', malformed name) emits a warning or diagnostic alongside the recovered string.",
+      "why": "Warning capture is not supported by the oracle. The TranslationResult fields it records (status, failureReason, attemptedLocales, localeMatchResult) do not distinguish a lenient recovery from a clean one, so any case asserting it would be recording nothing."
+    }
+  ],
+  "cases": [
+    {
+      "id": "interpolation-escapes.strict.doubled-backslash-collapses-to-one",
+      "requirementIds": [],
+      "fixture": "interpolation-escapes-strict",
+      "operation": "getResult",
+      "input": {
+        "key": "esc.backslash.literal",
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Pins the FIRST branch of StringInterpolator's escape handling (StringInterpolator.java:108-112): a backslash followed by a backslash consumes both (index += 2) and emits exactly one. If absent, a JS port that treats the backslash as a pure lookahead marker (peek, then keep the marker, index += 1) emits two backslashes, and every Windows path, regex, or LaTeX fragment in a catalog doubles on every render."
+    },
+    {
+      "id": "interpolation-escapes.strict.lone-backslash-before-plain-character-survives",
+      "requirementIds": [],
+      "fixture": "interpolation-escapes-strict",
+      "operation": "getResult",
+      "input": {
+        "key": "esc.backslash.lone",
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A backslash preceding anything other than a backslash, '{{', or '}}' is emitted verbatim and only ONE character is consumed (the final fall-through branch, StringInterpolator.java:134-136). The translation uses backslash-t twice, so a port built on a JSON- or C-style unescaper would swallow the backslash or turn it into a tab, silently corrupting path-like translations."
+    },
+    {
+      "id": "interpolation-escapes.strict.trailing-lone-backslash-survives",
+      "requirementIds": [],
+      "fixture": "interpolation-escapes-strict",
+      "operation": "getResult",
+      "input": {
+        "key": "esc.backslash.trailing",
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Exercises the end-of-string boundary of the escape branch, where the private startsWith helper is asked about an index equal to the string length and must answer false rather than throw. If absent, a JS port could read past the end, throw a RangeError, or drop the final backslash."
+    },
+    {
+      "id": "interpolation-escapes.strict.escaped-closing-delimiter-emits-literal-braces",
+      "requirementIds": [],
+      "fixture": "interpolation-escapes-strict",
+      "operation": "getResult",
+      "input": {
+        "key": "esc.close.escaped",
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Backslash before a closing delimiter emits the two closing braces and consumes THREE characters (index += 1 + PLACEHOLDER_END.length()). If absent, a JS port would either keep the backslash in the output or, because an unescaped '}}' throws in strict mode, reject a perfectly legal translation at render time."
+    },
+    {
+      "id": "interpolation-escapes.strict.escaped-closing-delimiter-at-end-of-string",
+      "requirementIds": [],
+      "fixture": "interpolation-escapes-strict",
+      "operation": "getResult",
+      "input": {
+        "key": "esc.close.escaped-at-end",
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED IN REVIEW. The three-character advance of the escaped-close branch landing exactly on string.length(). The sibling case has trailing text, so an off-by-one that re-reads or drops the final brace pair would still pass it; this one is the only case where the loop must terminate immediately after that branch."
+    },
+    {
+      "id": "interpolation-escapes.strict.single-brace-escapes-are-not-recognized",
+      "requirementIds": [],
+      "fixture": "interpolation-escapes-strict",
+      "operation": "getResult",
+      "input": {
+        "key": "esc.close.single-brace",
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The escape alphabet is exactly backslash, '{{', and '}}' - never a single brace. Both backslash-brace pairs here fall through to the lone-backslash branch and survive untouched, backslash included. If absent, a JS port using a permissive regex such as /\\\\[{}]/ would strip backslashes that Java keeps."
+    },
+    {
+      "id": "interpolation-escapes.strict.escaped-opening-suppresses-substitution-of-supplied-value",
+      "requirementIds": [],
+      "fixture": "interpolation-escapes-strict",
+      "operation": "getResult",
+      "input": {
+        "key": "esc.open.escaped-closed",
+        "locale": "en",
+        "placeholders": {
+          "name": "Ada"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The whole point of the escape: a value IS bound for 'name', and the escaped placeholder must still render literally rather than interpolate. If absent, a JS port that strips backslashes before scanning for placeholders would substitute Ada and destroy any documentation string that shows placeholder syntax to the reader."
+    },
+    {
+      "id": "interpolation-escapes.strict.escaped-opening-name-is-not-a-required-placeholder",
+      "requirementIds": [],
+      "fixture": "interpolation-escapes-strict",
+      "operation": "getResult",
+      "input": {
+        "key": "esc.open.escaped-closed",
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same translation with NO bindings at all. Because placeholderNamesIn skips escaped regions, 'name' is never added to unresolvedPlaceholderNames and interpolateTemplate must NOT raise the 'Missing value for placeholder(s)' error (DefaultStrings.java:1379) it raises for real ones. Verified to emit status TRANSLATED, not RETURNED_KEY. If absent, a JS port that collects names with a naive regex would fail a translation Java renders fine, and the failure would surface as a resolution failure rather than a visible bug."
+    },
+    {
+      "id": "interpolation-escapes.strict.escaped-opening-closed-at-end-of-string",
+      "requirementIds": [],
+      "fixture": "interpolation-escapes-strict",
+      "operation": "getResult",
+      "input": {
+        "key": "esc.open.escaped-at-end",
+        "locale": "en",
+        "placeholders": {
+          "name": "Ada"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED IN REVIEW. The CLOSED escaped-open branch advancing to exactly string.length() (index = escapedPlaceholderEnd + 2 == length). The clause names 'closed and unclosed' escaped openings; the unclosed one already has its own end-of-string case, but the closed one's terminating advance was untested. A binding for 'name' is supplied so a port that substitutes rather than copies is caught here too."
+    },
+    {
+      "id": "interpolation-escapes.strict.escaped-opening-does-not-validate-inner-name",
+      "requirementIds": [],
+      "fixture": "interpolation-escapes-strict",
+      "operation": "getResult",
+      "input": {
+        "key": "esc.open.escaped-inner-name-invalid",
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Inside an escaped region the text between the delimiters is never checked against LocalizedStringUtils.isValidLocalizedStringIdentifier, so '1:2' passes both LocalizedStringLoader's load-time strict scan and strict interpolation. If absent, a JS port that validated escaped text would reject a catalog Java loads, turning a rendering nicety into a startup failure."
+    },
+    {
+      "id": "interpolation-escapes.strict.escaped-region-contents-are-copied-without-escape-processing",
+      "requirementIds": [],
+      "fixture": "interpolation-escapes-strict",
+      "operation": "getResult",
+      "input": {
+        "key": "esc.open.escaped-region-verbatim",
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED IN REVIEW - a branch the original set left entirely uncovered. The escaped-open branch copies string[start,end) in ONE appendChecked call with no recursion, so escape sequences INSIDE the region are not processed: the doubled backslash inside 'Region \\{{a \\\\ b}} kept' stays doubled in the output. Verified against the oracle. If absent, a JS port that re-ran its escape scanner over the literal region would collapse it, and nothing else in the family would notice. Corollary proved by probe: an escaped '\\}}' inside such a region does NOT protect it (the region ends at that very '}}'), leaving a bare '}}' that makes the translation unloadable - see the lenient twin of this case, where the same string is observable."
+    },
+    {
+      "id": "interpolation-escapes.strict.escaped-opening-never-closed-emits-remainder",
+      "requirementIds": [],
+      "fixture": "interpolation-escapes-strict",
+      "operation": "getResult",
+      "input": {
+        "key": "esc.open.escaped-unclosed",
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "When no closing delimiter exists anywhere after an escaped opening, the interpolator appends everything from just after the backslash to end of string and breaks. Crucially this does NOT throw, unlike an unescaped unclosed placeholder in strict mode. If absent, a JS port would likely raise 'Unclosed placeholder' on a translation Java renders happily - and, because that translation also has to survive the loader's strict scan, would fail at startup rather than at render."
+    },
+    {
+      "id": "interpolation-escapes.strict.escaped-opening-swallows-following-real-placeholder",
+      "requirementIds": [],
+      "fixture": "interpolation-escapes-strict",
+      "operation": "getResult",
+      "input": {
+        "key": "esc.open.escaped-swallows-real",
+        "locale": "en",
+        "placeholders": {
+          "realName": "Ada"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The escaped-opening branch scans forward for the NEXT '}}' anywhere in the string, not for a matching one, so an escaped opening with no close of its own consumes a later REAL placeholder into the literal region - the bound value for realName is ignored and the braces are emitted verbatim. Confirmed by the oracle. This is the highest-risk trap in the escape grammar; if absent, a JS port that scoped the escape to the adjacent token would interpolate Ada and diverge on a legal, loadable catalog."
+    },
+    {
+      "id": "interpolation-escapes.strict.escaped-backslash-before-real-placeholder-still-interpolates",
+      "requirementIds": [],
+      "fixture": "interpolation-escapes-strict",
+      "operation": "getResult",
+      "input": {
+        "key": "esc.backslash.doubled-before-placeholder",
+        "locale": "en",
+        "placeholders": {
+          "name": "Ada"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Two backslashes escape each other and leave the following placeholder REAL, so 'name' is required and substituted (one backslash then Ada). This is the exact counterpart of the single-backslash escape and the pair is what distinguishes 'escape the escape' from 'escape the placeholder'. If absent, a JS port could treat any backslash run before '{{' as suppressing the placeholder."
+    },
+    {
+      "id": "interpolation-escapes.strict.three-backslashes-emit-backslash-then-literal-placeholder",
+      "requirementIds": [],
+      "fixture": "interpolation-escapes-strict",
+      "operation": "getResult",
+      "input": {
+        "key": "esc.backslash.tripled-before-placeholder",
+        "locale": "en",
+        "placeholders": {
+          "name": "Ada"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Odd-length backslash runs: the first pair collapses to one backslash and the third escapes the opening delimiter, so the bound value is again ignored. Three is the shortest length at which run-parity handling can go wrong; if absent, a JS port's parity logic is untested at the only place it can fail."
+    },
+    {
+      "id": "interpolation-escapes.strict.mixed-escapes-and-real-placeholder-interpolate-together",
+      "requirementIds": [],
+      "fixture": "interpolation-escapes-strict",
+      "operation": "getResult",
+      "input": {
+        "key": "esc.mixed.all-forms",
+        "locale": "en",
+        "placeholders": {
+          "count": {
+            "$lokalized": "integer",
+            "value": "3"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The clause's mixed case: one translation containing an escaped opening, a REAL placeholder of the SAME name, an escaped close, and an escaped backslash, all handled in a single left-to-right pass. If absent, each branch could be individually correct while the state machine that sequences them (index advancement after each branch) is wrong. REVIEW FIX: the binding was a bare JSON 3, which the oracle's decoder maps by literal shape; it is now a tagged integer so the rendered digit cannot drift to '3.0' if the driver's number handling ever changes, since this case is about sequencing and not about number formatting."
+    },
+    {
+      "id": "interpolation-escapes.strict.missing-value-for-real-placeholder-fails-despite-escapes",
+      "requirementIds": [],
+      "fixture": "interpolation-escapes-strict",
+      "operation": "getResult",
+      "input": {
+        "key": "esc.strict.missing-value",
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Escapes elsewhere in a translation must not rescue a genuinely unbound real placeholder: interpolateStrictly reports it in unresolvedPlaceholderNames, interpolateTemplate converts that to an IllegalArgumentException, getResult catches it as RESOLUTION_FAILURE and falls through to the returned-key path rather than propagating. Verified: status RETURNED_KEY, failureReason RESOLUTION_FAILURE, translation equal to the key. If absent, a JS port might silently leave unresolved placeholders in any translation that also contains an escape, and would also miss that the strict throw is captured into the result rather than thrown out of getResult."
+    },
+    {
+      "id": "interpolation-escapes.strict.missing-value-case-succeeds-once-bound",
+      "requirementIds": [],
+      "fixture": "interpolation-escapes-strict",
+      "operation": "getResult",
+      "input": {
+        "key": "esc.strict.missing-value",
+        "locale": "en",
+        "placeholders": {
+          "name": "Ada"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The bound twin of the previous case over the IDENTICAL translation, isolating the binding as the only difference (TRANSLATED, with the escaped close still collapsed to literal braces). Without it the failure case could be misread as escape mishandling rather than a missing value, and a JS port could 'fix' the wrong thing."
+    },
+    {
+      "id": "interpolation-escapes.strict.escape-sequences-inside-a-supplied-value-are-not-reprocessed",
+      "requirementIds": [],
+      "fixture": "interpolation-escapes-strict",
+      "operation": "getResult",
+      "input": {
+        "key": "esc.value.raw",
+        "locale": "en",
+        "placeholders": {
+          "raw": "raw \\{{x}} and \\\\ end"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Replacement values are appended to the output buffer and never rescanned, so caller-supplied data containing escape syntax survives byte for byte (verified: the doubled backslash stays doubled and the escaped opening stays escaped). If absent, a JS port that runs a single escape pass over the finished string would corrupt any user data containing backslashes or braces - a data-integrity and injection concern, not a cosmetic one. The value is a bare JSON string, which per plan section 3.7 is always text and never reinterpreted."
+    },
+    {
+      "id": "interpolation-escapes.strict.escaped-placeholder-in-a-language-form-survives-one-expansion",
+      "requirementIds": [],
+      "fixture": "interpolation-escapes-strict",
+      "operation": "getResult",
+      "input": {
+        "key": "esc.generated.single-pass",
+        "locale": "en",
+        "placeholders": {
+          "count": {
+            "$lokalized": "integer",
+            "value": "1"
+          },
+          "name": "Ada"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A generated language-form fragment is itself interpolated (its escape becomes literal braces) and the RESULT is then spliced into the outer template as a replacement value, not rescanned - so the literal braces survive even though the outer template does bind 'name' (verified output combines a literal {{name}} from the fragment with a substituted Ada from the outer template). If absent, a JS port that re-interpolates expanded fragments would substitute Ada into text Java leaves literal. REVIEW FIX: count is now a tagged integer so the CARDINALITY_ONE selection cannot hinge on the driver's number decoding."
+    },
+    {
+      "id": "interpolation-escapes.strict.generated-placeholder-referenced-only-inside-an-escape-is-never-expanded",
+      "requirementIds": [],
+      "fixture": "interpolation-escapes-strict",
+      "operation": "getResult",
+      "input": {
+        "key": "esc.generated.escaped-only-reference",
+        "locale": "en",
+        "placeholders": {
+          "count": {
+            "$lokalized": "integer",
+            "value": "1"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED IN REVIEW. A declared language-form placeholder whose ONLY reference in the template sits inside an escaped region. Verified: the catalog loads (the loader does not require a declared placeholder to be referenced), 'label' never appears in placeholderNamesIn, the generated fragment is never selected or expanded, and the output is the literal braces. This pins that placeholderNamesIn - the same function used by the loader's reference check, by enqueueGeneratedPlaceholderDependencies, and by interpolateTemplate's context assembly - agrees about escaped regions in all three roles. If absent, a JS port could expand the form anyway (rendering 'one book') or reject the catalog as declaring an unused placeholder."
+    },
+    {
+      "id": "interpolation-escapes.lenient.bare-closing-delimiter-is-literal",
+      "requirementIds": [],
+      "fixture": "interpolation-escapes-lenient",
+      "operation": "getResult",
+      "input": {
+        "key": "Bare }} close before {{name}} in a missing key",
+        "locale": "en",
+        "placeholders": {
+          "name": "Ada"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The defining strict/lenient split: an unescaped '}}' THROWS in strict mode but is emitted literally in lenient mode. REVIEW FIX - the original key was 'Bare }} close in a missing key' with no bindings, whose correct output was byte-identical to the key; since interpolateFailureKey catches every RuntimeException and returns the raw key (DefaultStrings.java:1418), that case passed even against a port that threw. A bound placeholder after the bare close now makes the successful lenient render ('...before Ada...') distinguishable from the catch-all's raw key."
+    },
+    {
+      "id": "interpolation-escapes.lenient.unclosed-opening-emits-remainder",
+      "requirementIds": [],
+      "fixture": "interpolation-escapes-lenient",
+      "operation": "getResult",
+      "input": {
+        "key": "Hello {{name}}, unclosed {{open in a missing key",
+        "locale": "en",
+        "placeholders": {
+          "name": "Ada"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Second strict/lenient split: an unclosed '{{' throws in strict mode but in lenient mode appends the rest of the string and breaks. REVIEW FIX - same defect as the bare-close case: the original output equalled the key, so the interpolateFailureKey catch-all masked a throwing port. A real placeholder resolved BEFORE the unclosed one now proves the pass actually ran and got to the break."
+    },
+    {
+      "id": "interpolation-escapes.lenient.malformed-placeholder-name-is-literal",
+      "requirementIds": [],
+      "fixture": "interpolation-escapes-lenient",
+      "operation": "getResult",
+      "input": {
+        "key": "Hello {{name}}, malformed {{2bad}} in a missing key",
+        "locale": "en",
+        "placeholders": {
+          "name": "Ada"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Third strict/lenient split: a name failing isValidLocalizedStringIdentifier (leading digit; Java requires a Unicode letter or underscore first) throws in strict mode but is copied out verbatim WITH both delimiters in lenient mode, and the index advances past the close. REVIEW FIX - a valid bound placeholder was added ahead of it so the case distinguishes a lenient copy-through from the catch-all raw key."
+    },
+    {
+      "id": "interpolation-escapes.lenient.empty-placeholder-name-is-literal",
+      "requirementIds": [],
+      "fixture": "interpolation-escapes-lenient",
+      "operation": "getResult",
+      "input": {
+        "key": "Hello {{name}}, empty {{}} in a missing key",
+        "locale": "en",
+        "placeholders": {
+          "name": "Ada"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The zero-length name is the boundary of the identifier pattern and reaches the same malformed-name branch. If absent, a JS port using a regex with a '*' quantifier where Java requires a mandatory leading letter would treat '{{}}' as a resolvable placeholder and emit an empty string instead of the braces. REVIEW FIX - bound placeholder added for the same catch-all reason as its siblings."
+    },
+    {
+      "id": "interpolation-escapes.lenient.escape-sequences-behave-as-in-strict-mode",
+      "requirementIds": [],
+      "fixture": "interpolation-escapes-lenient",
+      "operation": "getResult",
+      "input": {
+        "key": "Escapes \\\\ and \\{{esc}} and \\}} in a missing key",
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "All three escape sequences in one lenient string, establishing that escaping is MODE-INDEPENDENT: only the error branches differ between strict and lenient. The rendered output differs from the raw key at three separate positions, so the interpolateFailureKey catch-all cannot mask a failure here. If absent, a JS port could reasonably assume lenient mode also relaxes escaping (e.g. passing backslashes through untouched) and no other case would contradict it."
+    },
+    {
+      "id": "interpolation-escapes.lenient.mixed-escaped-and-real-placeholders-interpolate",
+      "requirementIds": [],
+      "fixture": "interpolation-escapes-lenient",
+      "operation": "getResult",
+      "input": {
+        "key": "Hello {{name}}, literal \\{{name}} in a missing key",
+        "locale": "en",
+        "placeholders": {
+          "name": "Ada"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The clause's mixed case on the lenient path: the fallback key is interpolated with real bindings while the escaped occurrence of the SAME name stays literal. If absent, a JS port might treat a returned key as an opaque string and skip interpolation entirely, losing the placeholder values Java renders into failure output."
+    },
+    {
+      "id": "interpolation-escapes.lenient.unresolved-placeholder-is-left-in-place",
+      "requirementIds": [],
+      "fixture": "interpolation-escapes-lenient",
+      "operation": "getResult",
+      "input": {
+        "key": "Hello {{name}} and \\}} in a missing key",
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "In lenient mode an unbound placeholder is re-emitted with its delimiters and recorded in unresolvedPlaceholderNames instead of raising, while a neighbouring escape is still processed in the same pass (so the output differs from the key by the collapsed backslash and the catch-all cannot mask it). If absent, a JS port could drop or blank unbound placeholders, destroying the diagnostic value of the returned key, and the strict counterpart - where the same condition becomes a RESOLUTION_FAILURE - would be the only behavior pinned."
+    },
+    {
+      "id": "interpolation-escapes.lenient.escaped-opening-swallows-following-real-placeholder",
+      "requirementIds": [],
+      "fixture": "interpolation-escapes-lenient",
+      "operation": "getResult",
+      "input": {
+        "key": "\\{{escaped open and {{name}} then tail in a missing key",
+        "locale": "en",
+        "placeholders": {
+          "name": "Ada"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "REVIEW REWRITE of the former 'escaped-opening-swallows-bare-closing-delimiter' case. That case used '\\{{a and }} then tail', where the correct output and the output of a port that scoped the escape narrowly are IDENTICAL - a lenient bare '}}' renders as '}}' either way - so it discriminated nothing about swallowing. Putting a REAL bound placeholder inside the swallowed region restores the discrimination: the forward scan to the NEXT '}}' consumes '{{name}}' into the literal region and Ada is never substituted, whereas a narrow-scoped port emits 'Ada'. This is the lenient twin of the highest-risk strict trap."
+    },
+    {
+      "id": "interpolation-escapes.lenient.escaped-region-contents-are-copied-without-escape-processing",
+      "requirementIds": [],
+      "fixture": "interpolation-escapes-lenient",
+      "operation": "getResult",
+      "input": {
+        "key": "Region \\{{a \\}} b}} tail in a missing key",
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED IN REVIEW. An escaped close INSIDE an escaped region: the region's forward scan finds the '}}' of that very '\\}}' and stops there, so the region is 'a \\}}' copied byte for byte with its backslash intact, and the leftover '}}' later in the string then takes the lenient literal-close branch. Verified output keeps the inner backslash. This can only be observed leniently - the identical string in a translation makes the catalog unloadable (probe: LocalizedStringLoadingException, 'Unexpected placeholder closing delimiter' at the leftover close). If absent, a JS port that recursively processes escapes inside the literal region loses the backslash and also picks a different region end."
+    },
+    {
+      "id": "interpolation-escapes.lenient.trailing-lone-backslash-survives",
+      "requirementIds": [],
+      "fixture": "interpolation-escapes-lenient",
+      "operation": "getResult",
+      "input": {
+        "key": "Trailing lone backslash after {{name}} in a missing key \\",
+        "locale": "en",
+        "placeholders": {
+          "name": "Ada"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "End-of-string boundary of the escape branch on the lenient path, mirroring the strict case so an off-by-one at the string end cannot hide in whichever mode was left untested. REVIEW FIX - the original key had no bindings and rendered to itself, so a port that threw at the trailing backslash would have been rescued by interpolateFailureKey's catch-all and passed; the bound placeholder makes a successful pass observable."
+    }
+  ]
+}

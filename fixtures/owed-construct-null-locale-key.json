@@ -1,0 +1,17 @@
+{
+  "id": "owed-construct-null-locale-key",
+  "description": "Construction refusal subject. DefaultStrings:273 -- a null locale key, which a JS Map catalog can carry but a plain object cannot. Its files load cleanly; the refusal is at Strings construction, which is what makes it invisible without the 'construct' operation.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "refusesConstruction": true,
+  "constructionOverrides": {
+    "catalogSource": "nullLocaleKey"
+  },
+  "files": {
+    "en": {
+      "Greeting": {
+        "translation": "Hello"
+      }
+    }
+  }
+}

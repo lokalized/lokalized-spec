@@ -1,0 +1,42 @@
+{
+  "id": "owed-loader-range-endpoints",
+  "description": "The two range-endpoint shapes the malformed-structure family left out: a range object with ONLY an end (no start member at all, versus the existing explicit-null start) and a range object whose end is explicitly null (versus the existing missing end). Together with the fixtures already present, all four combinations of absent/null x start/end are pinned.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": {
+        "translation": "I read {{books}}",
+        "placeholders": {
+          "books": {
+            "range": {
+              "end": "hi"
+            },
+            "translations": {
+              "CARDINALITY_ONE": "book",
+              "CARDINALITY_OTHER": "books"
+            }
+          }
+        }
+      }
+    },
+    "fr": {
+      "Key.A": {
+        "translation": "I read {{books}}",
+        "placeholders": {
+          "books": {
+            "range": {
+              "start": "lo",
+              "end": null
+            },
+            "translations": {
+              "CARDINALITY_ONE": "book",
+              "CARDINALITY_OTHER": "books"
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "id": "custom-policy-throwing-policy",
+  "description": "A caller-supplied policy that itself raises. The instance policy is throw-in-policy with a fixed message and the instance handler is return-key. DefaultStrings.java:734-735 calls shouldTryNextLocale OUTSIDE the try block that guards getInternal, so the exception is not converted into a RESOLUTION_FAILURE and not recoverable by fallback: it leaves getResult entirely, before the failure handler at :747 is ever consulted. FALLBACK LOCALE fr gives the same four-candidate [en-GB, en-001, en, fr] shape as custom-policy-four-candidate-chain (with fallbackLocale en the chain is three long and fr is unreachable, which would make the neutralized-policy case assert a walk that cannot happen), so the throw occurs at the FIRST consultation and the message identifies which policy fired. Throwing.Present exists only at en-GB, giving a control in which the walk returns before any consultation; Throwing.OnlyInFallback is served by the last candidate once the policy is replaced; Throwing.MissingEverywhere is served by none. Three loaded locales share the primary language en, so tiebreakers lists that exact permutation.",
+  "fallbackLocale": "fr",
+  "tiebreakers": {
+    "en": [
+      "en-GB",
+      "en-001",
+      "en"
+    ]
+  },
+  "translationFailureHandler": {
+    "behavior": "return-key"
+  },
+  "translationFallbackPolicy": {
+    "behavior": "throw-in-policy",
+    "message": "instance policy refused to continue"
+  },
+  "files": {
+    "en-GB": {
+      "Throwing.Present": "en-GB: present at the first candidate"
+    },
+    "en-001": {
+      "Throwing.AtEn001": "en-001: second candidate"
+    },
+    "en": {
+      "Throwing.AtEn": "en: third candidate"
+    },
+    "fr": {
+      "Throwing.OnlyInFallback": "fr: only the fallback catalog has this"
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

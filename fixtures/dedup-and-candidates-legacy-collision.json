@@ -1,0 +1,12 @@
+{
+  "id": "dedup-and-candidates-legacy-collision",
+  "description": "Two filenames that canonicalize to the SAME locale, which the loader treats as a conflict rather than a merge or a last-wins overwrite. he and iw both map to Locale.forLanguageTag('iw') == Locale.forLanguageTag('he'), so the containsKey guard at LocalizedStringLoader.java:1265-1267 throws LocalizedStringLoadingException. Written as rawFiles because the two names are FILENAMES, not two locale-tagged catalogs. loadOnly because the load is deliberately unloadable.",
+  "fallbackLocale": "he",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {},
+  "rawFiles": {
+    "he": "{\"Collide.He\":\"from the he file\"}\n",
+    "iw": "{\"Collide.Iw\":\"from the iw file\"}\n"
+  }
+}

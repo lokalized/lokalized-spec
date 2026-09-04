@@ -1,0 +1,1329 @@
+{
+  "formatVersion": 1,
+  "family": "expressions",
+  "description": "Plan v7 section 8.3 fixture family 'expressions'. Inputs only; the oracle emits expected.",
+  "skipped": [
+    {
+      "what": "Invalid chained comparisons: 'alpha < beta < gamma', and the general shape where a comparison operand is itself a comparison result (ExpressionEvaluator.validateOperatorOperands, 'Chained comparisons are not supported').",
+      "why": "Not authorable through the current oracle. RE-VERIFIED empirically in this review by probing a fixture containing 'alpha < beta < gamma': the run aborts with LocalizedStringLoadingException -> \"unable to parse whole-message alternative expression 'alpha < beta < gamma' for root key 'Probe': Invalid expression 'alpha < beta < gamma': Chained comparisons are not supported. Operator '<' cannot compare BOOLEAN and UNKNOWN_VARIABLE in 'previous comparison < gamma'\". VectorOracle builds one Strings per fixture up front and System.exit(3)s listing every fixture that could not be constructed, so such a fixture kills the ENTIRE corpus run instead of recording a per-case throw. This is not a defect in the clause: chained-comparison rejection is fully static and runs three times (LocalizedStringLoader.validateWholeMessageAlternativeExpression at load, LocalizedStringValidator.validateCurrent, and ExpressionEvaluator.compile in DefaultStrings' constructor), so no runtime input can reach it. Covering it needs an oracle affordance -- a fixture flagged expectsConstructionFailure whose recorded observation is the load/construction throw identity."
+    },
+    {
+      "what": "Every other statically-rejected expression in this clause: 'GENDER_MASCULINE == 1', 'value > CARDINALITY_ONE', 'alpha && alpha == 1' (the JS truthiness trap), an expression ending on a bare operand ('alpha == 1 && beta'), unbalanced parentheses, and '=' used for '=='.",
+      "why": "Same mechanism, and I probed four of them individually in this review rather than inheriting the claim. Each aborts the whole run with its own precise message: \"Operator '==' cannot compare GENDER and NUMBER operands in 'GENDER_MASCULINE == 1'\"; \"Operator '>' requires numeric operands but encountered UNKNOWN_VARIABLE and CARDINALITY in 'value > CARDINALITY_ONE'\"; \"Operator '&&' requires boolean operands but encountered UNKNOWN_VARIABLE and BOOLEAN in 'alpha && previous comparison'\"; \"Operator '&&' requires boolean operands but encountered BOOLEAN and UNKNOWN_VARIABLE in 'previous comparison && beta'\". The '=' case is raised earlier still, by ExpressionTokenizer.unexpectedContent, which appends \"Did you mean '=='?\". These messages are worth capturing once the oracle can record a construction failure, because the truthiness one in particular is the single most likely thing a JS author writes."
+    },
+    {
+      "what": "Distinguishing the identity of the 34 runtime expression failures from one another.",
+      "why": "An oracle recording gap, not an authoring gap, flagged here because it caps the value of a third of this family. DefaultStrings.getResult catches RuntimeException from alternative evaluation, records it as TranslationFailureReason.RESOLUTION_FAILURE, and routes it to the default handler, whose action is RETURN_KEY -- so every runtime expression failure emerges identically as status RETURNED_KEY / failureReason RESOLUTION_FAILURE / translation == the key. VectorOracle.describeResult does not read TranslationResult.getCause(), so every distinguishing message is discarded. I confirmed all 34 causes in this review by instrumenting a scratch copy of the oracle with two extra lines (causeType and causeMessage from result.getCause()); the notes on each failing case now quote its verified cause, but the corpus itself cannot yet check them. Adding those two lines to describeResult would turn 34 cases from 'must fail rather than evaluate to false' into 'must fail for THIS reason' -- the highest-leverage change available to this family. Configuring THROW_EXCEPTION instead would require a custom TranslationFailureHandler, which the oracle does not support."
+    },
+    {
+      "what": "Raw-string phonetic comparison that actually succeeds, e.g. a caller string compared against PHONETIC_VOWEL yielding a real classification.",
+      "why": "Requires a configured PhoneticResolver, which the oracle cannot supply (phonetic resolver callbacks are explicitly out of scope for this milestone). DefaultStrings installs a fail-fast DEFAULT_PHONETIC_RESOLVER that throws IllegalStateException, so the only observable outcome today is a resolution failure -- captured deliberately by expressions.operand.raw-string-against-phonetic-constant-needs-a-resolver, which asserts the resolver-ABSENT behavior and therefore needs no unsupported affordance."
+    },
+    {
+      "what": "Expression failures driven by runtime limits: maximum expression characters, maximum expression tokens, and maximum grouping nesting depth (ExpressionEvaluator.validateExpressionSourceLength and validateInfixTokens).",
+      "why": "Reaching the default ceilings needs an enormous generated expression in the fixture file, and the interesting variants need runtime limit overrides, which the oracle does not support. They are also all static -- they run inside parseAndValidateExpressionTokens at load -- so like the entries above they would abort the run rather than record a case throw. These belong to the runtime-limits family."
+    },
+    {
+      "what": "Optional-wrapped placeholder bindings (operandType and every *FromOperand unwrap 'value instanceof Optional' before typing, and an empty Optional is treated exactly like an explicit null).",
+      "why": "The oracle's decodeValue has no wire shape that produces a java.util.Optional, so an Optional binding cannot be expressed in a case file. Java-specific in any event: a JS port has no Optional, and the portable half of the rule -- that null is rejected with a message distinct from 'no value was provided' -- is covered by expressions.operand.explicit-null-binding-is-rejected."
+    },
+    {
+      "what": "Associativity of chained '&&' and chained '||' (e.g. 'a && b && c' left-associative via the '<=' pop rule in convertTokensToReversePolishNotation).",
+      "why": "Deliberately NOT authored, rather than blocked. I worked the shunting-yard by hand for both groupings: because AND and OR are associative and short-circuiting is applied at every node, left- and right-associative trees produce identical results AND identical operand-touch sets for every input, so no case can discriminate. Authoring one would have looked like coverage while testing nothing -- the failure mode this review was asked to catch."
+    }
+  ],
+  "cases": [
+    {
+      "id": "expressions.precedence.and-binds-tighter-than-or",
+      "requirementIds": [],
+      "fixture": "expressions-precedence",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Precedence.AndBindsTighterThanOr",
+        "locale": "en",
+        "placeholders": {
+          "alpha": 1,
+          "beta": 1,
+          "gamma": 0
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The load-bearing precedence discriminator. ExpressionEvaluator.precedence() (line 928) returns 2 for comparison, 1 for '&&', 0 for '||', and convertTokensToReversePolishNotation pops while precedence(token) <= precedence(top), so 'alpha == 1 || beta == 1 && gamma == 1' yields RPN 'alpha 1 == beta 1 == gamma 1 == && ||' -- OR(alpha, AND(beta, gamma)) -- and true || (true && false) is TRUE. VERIFIED: emits 'or-of-and matched'. A port giving '||' and '&&' equal precedence, or binding '||' tighter, would build (alpha||beta)&&gamma = false and emit 'no alternative'. Note the two parses differ in only one direction (alpha||(beta&&gamma) subsumes (alpha||beta)&&gamma), so this shape is the only kind of tuple that can discriminate at all."
+    },
+    {
+      "id": "expressions.precedence.or-left-alone-satisfies-disjunction",
+      "requirementIds": [],
+      "fixture": "expressions-precedence",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Precedence.AndBindsTighterThanOr",
+        "locale": "en",
+        "placeholders": {
+          "alpha": 1,
+          "beta": 0,
+          "gamma": 0
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Second discriminating tuple on the same expression: true || (false && false) is TRUE under the correct parse, while (true || false) && false is FALSE. VERIFIED: emits 'or-of-and matched'. Discriminates against the same misparse as the previous case but with the AND branch entirely false, so a port that got the tree right only when both AND operands are true is still caught."
+    },
+    {
+      "id": "expressions.precedence.and-branch-alone-satisfies-disjunction",
+      "requirementIds": [],
+      "fixture": "expressions-precedence",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Precedence.AndBindsTighterThanOr",
+        "locale": "en",
+        "placeholders": {
+          "alpha": 0,
+          "beta": 1,
+          "gamma": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Positive control: the alternative can match through the AND branch alone (false || (true && true)). VERIFIED: emits 'or-of-and matched'. Both parses agree here, which is exactly the point -- it proves a failure of the two discriminating cases means wrong precedence rather than an expression that never matches."
+    },
+    {
+      "id": "expressions.precedence.and-branch-with-false-right-does-not-match",
+      "requirementIds": [],
+      "fixture": "expressions-precedence",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Precedence.AndBindsTighterThanOr",
+        "locale": "en",
+        "placeholders": {
+          "alpha": 0,
+          "beta": 1,
+          "gamma": 0
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Negative control: every disjunct false, so the alternative does not match and DefaultStrings.getInternal falls through to the key's own translation. VERIFIED: status TRANSLATED, failureReason null, translation 'no alternative'. Pins the difference between 'expression evaluated to false' (TRANSLATED / null) and 'expression failed' (RETURNED_KEY / RESOLUTION_FAILURE), which is the axis every failing case in this family is read against."
+    },
+    {
+      "id": "expressions.precedence.parentheses-force-and-over-disjunction",
+      "requirementIds": [],
+      "fixture": "expressions-precedence",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Precedence.ParenthesesOverrideAndBinding",
+        "locale": "en",
+        "placeholders": {
+          "alpha": 1,
+          "beta": 1,
+          "gamma": 0
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Same operand tuple as expressions.precedence.and-binds-tighter-than-or, parenthesized the other way, and it must produce the OPPOSITE outcome. VERIFIED: emits 'no alternative' where the unparenthesized key emits 'or-of-and matched'. Locks GROUP_START/GROUP_END handling in the shunting-yard loop (a GROUP_START on the stack is not an operator, so the precedence pop loop stops at it); a port that dropped or mis-popped parentheses would emit the same result for both keys, making parentheses a silent no-op."
+    },
+    {
+      "id": "expressions.precedence.parenthesized-disjunction-can-still-match",
+      "requirementIds": [],
+      "fixture": "expressions-precedence",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Precedence.ParenthesesOverrideAndBinding",
+        "locale": "en",
+        "placeholders": {
+          "alpha": 1,
+          "beta": 1,
+          "gamma": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Positive control for the parenthesized expression. VERIFIED: emits 'grouped or matched'. Without it, the non-match in the previous case could be explained by a parenthesized expression that never matches at all rather than by grouping semantics."
+    },
+    {
+      "id": "expressions.precedence.or-short-circuits-entire-and-branch",
+      "requirementIds": [],
+      "fixture": "expressions-precedence",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Precedence.OrShortCircuitsAndBranch",
+        "locale": "en",
+        "placeholders": {
+          "alpha": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Combines precedence and short-circuiting in one observation. 'alpha == 1 || absentLeft == 1 && absentRight == 1' parses as OR(alpha, AND(absentLeft, absentRight)); evaluateExpressionNode returns TRUE_RESULT_TOKEN for OR as soon as the left operand is true, without descending into the AND subtree, so neither absent placeholder is ever looked up. VERIFIED: emits 'or-of-and matched'. A port with wrong precedence would form (alpha||absentLeft)&&absentRight, short-circuit the OR, then evaluate absentRight and fail -- so a precedence bug shows up here as a resolution failure rather than a wrong boolean."
+    },
+    {
+      "id": "expressions.precedence.and-branch-is-reached-when-or-left-is-false",
+      "requirementIds": [],
+      "fixture": "expressions-precedence",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Precedence.OrShortCircuitsAndBranch",
+        "locale": "en",
+        "placeholders": {
+          "alpha": 0
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Control that makes the previous case meaningful: with alpha false the OR must descend into the AND subtree, whose left operand 'absentLeft' has no binding. VERIFIED: status RETURNED_KEY, failureReason RESOLUTION_FAILURE, cause ExpressionEvaluationException 'No value was provided for placeholder ''absentLeft'''. Without this pairing, a port that never evaluated the right operand of '||' at all would pass the short-circuit case for the wrong reason."
+    },
+    {
+      "id": "expressions.precedence.and-branch-short-circuits-then-or-right-runs",
+      "requirementIds": [],
+      "fixture": "expressions-precedence",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Precedence.AndBranchShortCircuitsBeforeOr",
+        "locale": "en",
+        "placeholders": {
+          "alpha": 0,
+          "beta": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Mirror of expressions.precedence.or-short-circuits-entire-and-branch with the AND on the left: 'alpha == 1 && absentRight == 1 || beta == 1' parses as OR(AND(alpha, absentRight), beta). The AND short-circuits to FALSE_RESULT_TOKEN without touching absentRight, and the OR then evaluates beta and matches. VERIFIED: emits 'or-of-and matched'. A port that parsed alpha && (absentRight || beta) would short-circuit the whole thing to false and emit 'no alternative', so this catches precedence errors in the opposite operand order."
+    },
+    {
+      "id": "expressions.precedence.and-branch-right-runs-when-and-left-is-true",
+      "requirementIds": [],
+      "fixture": "expressions-precedence",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Precedence.AndBranchShortCircuitsBeforeOr",
+        "locale": "en",
+        "placeholders": {
+          "alpha": 1,
+          "beta": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Control for the case above: with alpha true the AND must evaluate its right operand, so the missing 'absentRight' binding surfaces as a failure even though the trailing '|| beta == 1' would have been true. VERIFIED: RESOLUTION_FAILURE, cause 'No value was provided for placeholder ''absentRight'''. Proves evaluation is a tree walk, not an any-disjunct-true scan over a flattened token list."
+    },
+    {
+      "id": "expressions.shortcircuit.and-skips-right-when-left-false",
+      "requirementIds": [],
+      "fixture": "expressions-precedence",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.ShortCircuit.AndSkipsRightWhenLeftFalse",
+        "locale": "en",
+        "placeholders": {
+          "alpha": 0
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The minimal AND short-circuit. evaluateExpressionNode returns FALSE_RESULT_TOKEN for AND as soon as booleanValue(leftResult) is false, before node.getRight() is visited, so the unbound 'absentRight' is never resolved and the alternative simply does not match. VERIFIED: TRANSLATED, translation 'no alternative'. A port that evaluated both operands eagerly -- the natural shape if the walker collects operand values before applying the operator -- would turn a legitimate non-match into a resolution failure. This is the single most likely short-circuit regression."
+    },
+    {
+      "id": "expressions.shortcircuit.and-evaluates-right-when-left-true",
+      "requirementIds": [],
+      "fixture": "expressions-precedence",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.ShortCircuit.AndSkipsRightWhenLeftFalse",
+        "locale": "en",
+        "placeholders": {
+          "alpha": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Control proving the previous case is a short-circuit and not an expression whose right operand is never touched. VERIFIED: RESOLUTION_FAILURE, cause 'No value was provided for placeholder ''absentRight'''. Without this pairing a port could 'pass' the short-circuit case by never evaluating right operands at all."
+    },
+    {
+      "id": "expressions.shortcircuit.or-skips-right-when-left-true",
+      "requirementIds": [],
+      "fixture": "expressions-precedence",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.ShortCircuit.OrSkipsRightWhenLeftTrue",
+        "locale": "en",
+        "placeholders": {
+          "alpha": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The minimal OR short-circuit: a true left operand returns TRUE_RESULT_TOKEN without resolving the unbound right operand. VERIFIED: emits 'or matched'. Symmetric to the AND case; a port that special-cased only one of the two boolean operators fails exactly one of this pair."
+    },
+    {
+      "id": "expressions.shortcircuit.or-evaluates-right-when-left-false",
+      "requirementIds": [],
+      "fixture": "expressions-precedence",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.ShortCircuit.OrSkipsRightWhenLeftTrue",
+        "locale": "en",
+        "placeholders": {
+          "alpha": 0
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Control for the OR short-circuit: a false left operand must fall through to the right operand, whose missing binding then fails. VERIFIED: RESOLUTION_FAILURE, cause 'No value was provided for placeholder ''absentRight'''."
+    },
+    {
+      "id": "expressions.shortcircuit.left-operand-is-always-evaluated",
+      "requirementIds": [],
+      "fixture": "expressions-precedence",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.ShortCircuit.LeftOperandAlwaysEvaluated",
+        "locale": "en",
+        "placeholders": {
+          "alpha": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'absentLeft == 1 || alpha == 1' with alpha bound and absentLeft unbound must FAIL, not match. VERIFIED: RESOLUTION_FAILURE, cause 'No value was provided for placeholder ''absentLeft'''. Short-circuiting is strictly left-to-right: no reordering, no lazy retry, no 'evaluate the operand we can actually resolve' fallback. A port that evaluated operands opportunistically, or that hoisted the cheap operand first, would turn this failure into a match and silently change which alternative fires."
+    },
+    {
+      "id": "expressions.shortcircuit.and-skips-parenthesized-group",
+      "requirementIds": [],
+      "fixture": "expressions-precedence",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.ShortCircuit.AndSkipsParenthesizedGroup",
+        "locale": "en",
+        "placeholders": {
+          "alpha": 0,
+          "beta": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Short-circuiting must skip an entire parenthesized subtree, not just a single comparison node. 'alpha == 1 && (beta == 1 || absentRight == 1)' builds AND(alpha, OR(beta, absentRight)); with alpha false the group is never visited. VERIFIED: TRANSLATED 'no alternative'. A port that flattened groups into a token list and scanned it left to right would resolve absentRight and fail."
+    },
+    {
+      "id": "expressions.shortcircuit.nested-or-short-circuits-inside-group",
+      "requirementIds": [],
+      "fixture": "expressions-precedence",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.ShortCircuit.AndSkipsParenthesizedGroup",
+        "locale": "en",
+        "placeholders": {
+          "alpha": 1,
+          "beta": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Double short-circuit: the AND descends into the group because alpha is true, and the group's own OR then short-circuits on beta so absentRight is still never resolved. VERIFIED: emits 'grouped and matched'. Proves short-circuiting is recursive at every boolean node rather than a top-level optimization."
+    },
+    {
+      "id": "expressions.shortcircuit.group-right-operand-runs-when-group-left-false",
+      "requirementIds": [],
+      "fixture": "expressions-precedence",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.ShortCircuit.AndSkipsParenthesizedGroup",
+        "locale": "en",
+        "placeholders": {
+          "alpha": 1,
+          "beta": 0
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Control for the two grouped cases: with alpha true and beta false the group's OR must evaluate absentRight and fail. VERIFIED: RESOLUTION_FAILURE, cause 'No value was provided for placeholder ''absentRight'''. Confirms the skips above are real skips and that the group is genuinely reachable."
+    },
+    {
+      "id": "expressions.shortcircuit.or-skips-ill-typed-right-operand",
+      "requirementIds": [],
+      "fixture": "expressions-precedence",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.ShortCircuit.OrSkipsIllTypedRight",
+        "locale": "en",
+        "placeholders": {
+          "alpha": 1,
+          "rawRight": "5"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Short-circuiting suppresses operand TYPE failures, not just missing bindings. 'rawRight' IS bound -- to the JSON string \"5\", which would trip the caller-CharSequence numeric guard in evaluateBinaryOperator -- but the OR never evaluates it. VERIFIED: emits 'or matched'. Distinguishes an implementation that short-circuits binding lookup from one that short-circuits the whole comparison: a port that pre-typed every operand before walking the tree fails here while passing all the missing-binding cases."
+    },
+    {
+      "id": "expressions.shortcircuit.ill-typed-right-operand-fails-when-reached",
+      "requirementIds": [],
+      "fixture": "expressions-precedence",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.ShortCircuit.OrSkipsIllTypedRight",
+        "locale": "en",
+        "placeholders": {
+          "alpha": 0,
+          "rawRight": "5"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Control for the case above. VERIFIED: RESOLUTION_FAILURE, cause ExpressionEvaluationException \"Numeric comparison 'rawRight == 5' requires numeric operands supplied as Number or PluralOperands values, but placeholder 'rawRight' resolved to String\". A string that looks like a number is never coerced. In JavaScript \"5\" == 5 is true, so a port that leaned on host equality would match here and select the wrong branch."
+    },
+    {
+      "id": "expressions.alternative.earlier-expression-failure-aborts-the-key",
+      "requirementIds": [],
+      "fixture": "expressions-precedence",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Alternative.EarlierAlternativeFailureAborts",
+        "locale": "en",
+        "placeholders": {
+          "alpha": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED in review; the family had no case for what a throwing expression does to the SURROUNDING alternative scan. DefaultStrings.getInternal calls alternativeMatches in a plain for-loop with no per-alternative try/catch, so an ExpressionEvaluationException from alternative 0 propagates out of getInternal and is caught only by getResult's outer handler. Alternative 0 is 'absentLeft == 1' (never evaluable) and alternative 1 is 'alpha == 1' (would match). VERIFIED: RESOLUTION_FAILURE, cause 'No value was provided for placeholder ''absentLeft''' -- the key does NOT fall through to the second alternative. A JS port that wrapped each alternative in try/catch and continued on error would emit 'second alternative' here, a silently different translation with a TRANSLATED status. This is the highest-value addition in the set."
+    },
+    {
+      "id": "expressions.alternative.later-alternative-is-reached-when-earlier-is-false",
+      "requirementIds": [],
+      "fixture": "expressions-precedence",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Alternative.LaterAlternativeIsReachable",
+        "locale": "en",
+        "placeholders": {
+          "alpha": 1,
+          "beta": 0
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED in review. Control for the abort case: with two always-evaluable alternatives, a false first expression must fall through to the second. VERIFIED: emits 'second alternative'. Without it, the abort case could be explained by 'only the first alternative is ever consulted' rather than by failure propagation."
+    },
+    {
+      "id": "expressions.alternative.first-matching-alternative-wins",
+      "requirementIds": [],
+      "fixture": "expressions-precedence",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Alternative.LaterAlternativeIsReachable",
+        "locale": "en",
+        "placeholders": {
+          "alpha": 1,
+          "beta": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED in review. Both alternatives' expressions are true; array order decides. VERIFIED: emits 'first alternative'. Completes the three-way reading of the abort case (first wins / falls through when false / aborts when it throws) and pins that the loader's one-expression-per-alternative-object rule really does make array order the precedence order."
+    },
+    {
+      "id": "expressions.fragment.and-binds-tighter-than-or",
+      "requirementIds": [],
+      "fixture": "expressions-precedence",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Fragment.PrecedenceAndBindsTighterThanOr",
+        "locale": "en",
+        "placeholders": {
+          "alpha": 1,
+          "beta": 1,
+          "gamma": 0
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED in review; the family covered only ONE of the library's two expression sites. A generated placeholder whose definition carries 'translation' + 'alternatives' is an ExpressionTranslation, compiled separately in DefaultStrings.compileExpressions and evaluated by resolveExpressionTranslation (a different method, different exception contextualization, fragment results are bare strings rather than nested LocalizedStrings). Same discriminating tuple as expressions.precedence.and-binds-tighter-than-or. VERIFIED: emits 'fragment=[or-of-and fragment]'; the wrong parse yields 'fragment=[no fragment alternative]'. A port that implemented precedence once for whole-message alternatives and reused a different code path for fragments would diverge here only."
+    },
+    {
+      "id": "expressions.fragment.no-alternative-falls-back-to-default-fragment",
+      "requirementIds": [],
+      "fixture": "expressions-precedence",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Fragment.PrecedenceAndBindsTighterThanOr",
+        "locale": "en",
+        "placeholders": {
+          "alpha": 0,
+          "beta": 1,
+          "gamma": 0
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED in review. Negative control at the fragment site: no fragment alternative matches, so resolveExpressionTranslation returns the ExpressionTranslation's own default template. VERIFIED: TRANSLATED, translation 'fragment=[no fragment alternative]', failureReason null. Pins that an unmatched fragment expression is a fallback, not a failure -- and gives the interpolated-not-failed baseline the fragment failure case is read against."
+    },
+    {
+      "id": "expressions.fragment.or-short-circuits-absent-operand",
+      "requirementIds": [],
+      "fixture": "expressions-precedence",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Fragment.OrShortCircuitsAbsentOperand",
+        "locale": "en",
+        "placeholders": {
+          "alpha": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED in review. Short-circuiting at the fragment expression site: 'alpha == 1 || absentRight == 1' with alpha true must not resolve absentRight. VERIFIED: emits 'fragment=[or fragment]'."
+    },
+    {
+      "id": "expressions.fragment.absent-operand-fails-when-reached",
+      "requirementIds": [],
+      "fixture": "expressions-precedence",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Fragment.OrShortCircuitsAbsentOperand",
+        "locale": "en",
+        "placeholders": {
+          "alpha": 0
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED in review. Control for the fragment short-circuit, and the only case in the family that exercises the fragment failure-contextualization chain. VERIFIED: RESOLUTION_FAILURE with cause message \"Unable to resolve generated placeholder 'frag' (ExpressionTranslation) for key 'Expr.Fragment.OrShortCircuitsAbsentOperand'; definition declared at Expr.Fragment.OrShortCircuitsAbsentOperand: Unable to evaluate generated-fragment expression 'alpha == 1 || absentRight == 1': No value was provided for placeholder 'absentRight'\" -- two layers of wrapping that the whole-message path does not apply. (The oracle does not currently record causes; see the skipped entry.)"
+    },
+    {
+      "id": "expressions.operand.integer-equals-number-literal",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.ValueVsNumber",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "integer",
+            "value": "5"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Baseline positive for the whole operand-typing fixture: an Integer binding compared to a numeric literal matches. VERIFIED: emits 'equals five'. Every failing case on this key is only interpretable against this control, which proves the key and expression resolve at all."
+    },
+    {
+      "id": "expressions.operand.decimal-scale-does-not-affect-equality",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.ValueVsNumber",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "decimal",
+            "value": "5.00"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Numeric comparison goes through BigDecimal.compareTo, which is scale-insensitive, so 5.00 == 5. VERIFIED: emits 'equals five'. A port that compared normalized decimal strings, or used a decimal library whose equals() is scale-sensitive (BigDecimal.equals itself would say false here), reports a non-match. The tagged 'decimal' wire shape is mandatory: a bare JSON number 5.00 would reach Java as a double 5.0 and erase the very distinction this case exists to test."
+    },
+    {
+      "id": "expressions.operand.plural-operands-are-numeric",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.ValueVsNumber",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "plural-operands",
+            "value": "5"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "operandType() checks 'value instanceof PluralOperands' BEFORE 'instanceof Number' and returns OperandType.NUMBER for both, and bigDecimalFromOperand takes validatePluralOperands(...).sourceNumber(). VERIFIED: emits 'equals five'. A port that treated plural operands as an opaque plural-classification object would reject this comparison, breaking every expression that mixes explicit operands with numeric thresholds."
+    },
+    {
+      "id": "expressions.operand.raw-string-is-not-a-number",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.ValueVsNumber",
+        "locale": "en",
+        "placeholders": {
+          "value": "5"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The central raw-string trap on the equality side. A bare JSON string reaches Java as a CharSequence, which operandType() classifies as OperandType.PHONETIC; the explicit guard in evaluateBinaryOperator then rejects any comparison where one side is a NUMBER and the other is a caller-supplied CharSequence, BEFORE any branch dispatch. VERIFIED: RESOLUTION_FAILURE, cause \"Numeric comparison 'value == 5' requires numeric operands supplied as Number or PluralOperands values, but placeholder 'value' resolved to String\". JavaScript's '==' coerces and returns true, so a port that forgot this guard flips the result of every alternative whose numeric placeholder was passed as a string."
+    },
+    {
+      "id": "expressions.operand.boolean-value-has-no-operand-type",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.ValueVsNumber",
+        "locale": "en",
+        "placeholders": {
+          "value": true
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A JSON boolean binding is not a supported operand: the VARIABLE arm of operandType() falls through every instanceof check and returns UNKNOWN, and evaluateBinaryOperator's first guard rejects UNKNOWN on either side. VERIFIED: RESOLUTION_FAILURE, cause \"Unable to evaluate expression 'value == 5'. Operand types UNKNOWN and NUMBER are unsupported\". A JS port whose value taxonomy is shaped by typeof would very plausibly admit booleans, or coerce true to 1, and quietly accept programs Java rejects."
+    },
+    {
+      "id": "expressions.operand.missing-binding-is-not-defaulted",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.ValueVsNumber",
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "No placeholders argument at all. operandType() throws on !context.containsKey(symbol). VERIFIED: RESOLUTION_FAILURE, cause 'No value was provided for placeholder ''value'''. An absent operand is a hard failure, never zero, undefined, or false. In JavaScript an unset key reads as undefined and 'undefined == 5' is quietly false, which would turn a resolution failure into a silent non-match; this is the single most likely divergence in the family."
+    },
+    {
+      "id": "expressions.operand.empty-placeholder-map-still-misses-binding",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.ValueVsNumber",
+        "locale": "en",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "NOTE CORRECTED in review. The oracle passes null for an absent placeholders field and an empty map for {}, but DefaultStrings.getResult normalizes null to Collections.emptyMap() on its first statement, so the two ingresses provably CONVERGE inside Java rather than taking different paths -- the previous note claimed the opposite. The case is kept because that convergence is the portable requirement: a JS port with distinct getResult(key) and getResult(key, {}) shapes must not make one of them lenient. VERIFIED: identical to the omitted-argument case, RESOLUTION_FAILURE, cause 'No value was provided for placeholder ''value'''."
+    },
+    {
+      "id": "expressions.operand.unrelated-binding-does-not-satisfy-name",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.ValueVsNumber",
+        "locale": "en",
+        "placeholders": {
+          "other": 5
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A populated placeholder map that lacks the referenced name still fails. VERIFIED: RESOLUTION_FAILURE, cause 'No value was provided for placeholder ''value'''. Rules out a port that checks 'were any placeholders supplied' before deciding an expression is evaluable, and pins that lookup is by exact name rather than positional or first-available."
+    },
+    {
+      "id": "expressions.operand.explicit-null-binding-is-rejected",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.ValueVsNumber",
+        "locale": "en",
+        "placeholders": {
+          "value": null
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "An explicitly null binding takes a DIFFERENT check from the missing-binding path: containsKey succeeds, then the value (after Optional unwrapping) is null. VERIFIED: RESOLUTION_FAILURE, cause 'Placeholder ''value'' resolved to null' -- a distinct message from the absent case, which is the proof the two checks are genuinely separate. A port must not conflate null with absent, and must not treat null as a falsy operand that makes the comparison simply false."
+    },
+    {
+      "id": "expressions.operand.gender-value-against-number-literal",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.ValueVsNumber",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_FEMININE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Cross-axis operand against a numeric literal reaches the terminal fallthrough of evaluateBinaryOperator: NUMBER/NUMBER does not apply, GENDER/GENDER requires both sides, and neither operand carries the either-side CARDINALITY/ORDINALITY/PHONETIC types. VERIFIED: RESOLUTION_FAILURE, cause \"Unable to evaluate expression 'value == 5'. Operand runtime types Gender and Number are incompatible\". This is a RUNTIME failure only because the left operand is a variable; the same comparison written with a bare constant is rejected at load (see skipped). A port that compared enum ordinals or interpolated names would produce a boolean here."
+    },
+    {
+      "id": "expressions.operand.integer-orders-against-number-literal",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.ValueOrdersAgainstNumber",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "integer",
+            "value": "3"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Baseline positive for the ordering-operator key. VERIFIED: emits 'less than five'. Makes the ordering failures below attributable to operand typing rather than to a broken '<' expression."
+    },
+    {
+      "id": "expressions.operand.raw-string-cannot-be-ordered-against-number",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.ValueOrdersAgainstNumber",
+        "locale": "en",
+        "placeholders": {
+          "value": "3"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The caller-CharSequence-versus-NUMBER guard sits above the per-type branch dispatch and is operator-independent, so it fires for ordering exactly as for equality. VERIFIED: RESOLUTION_FAILURE, cause \"Numeric comparison 'value < 5' requires numeric operands supplied as Number or PluralOperands values, but placeholder 'value' resolved to String\". JavaScript's relational operators coerce ('3' < 5 is true), so a port that special-cased only '==' would let ordering comparisons through and reach an entirely different alternative."
+    },
+    {
+      "id": "expressions.operand.cardinality-value-rejects-ordering-operator",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.ValueOrdersAgainstNumber",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "cardinality",
+            "name": "CARDINALITY_ONE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A Cardinality binding on EITHER side routes to the cardinality branch, which admits only '==' and '!='. VERIFIED: RESOLUTION_FAILURE, cause \"You may only use the '==' and '!=' operators when performing cardinality comparisons. Offending comparison: 'value < 5'\". Language forms are unordered even though the underlying Java enums have a declaration order, so a port must not fall back to ordinal comparison for '<'. Note this is only reachable at runtime because the left operand is a variable: 'value > CARDINALITY_ONE' with a bare constant is rejected at load (verified, see skipped)."
+    },
+    {
+      "id": "expressions.operand.raw-strings-are-never-textually-equal",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.LeftEqualsRight",
+        "locale": "en",
+        "placeholders": {
+          "left": "abc",
+          "right": "abc"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The headline raw-string rule: two caller-supplied CharSequences compared with '==' are IDENTICAL here and the library still refuses. VERIFIED: RESOLUTION_FAILURE, cause \"Raw CharSequence placeholders 'left' and 'right' cannot be compared with '==': expressions do not support textual equality. Compare phonetic input with a PHONETIC_* constant or an explicit Phonetic value instead\". Caller strings are phonetic inputs, not string literals. This is the case a JS port is most likely to get wrong, because === on two equal strings is true and the wrong answer is indistinguishable from a correct match without this vector."
+    },
+    {
+      "id": "expressions.operand.distinct-raw-strings-also-refuse-equality",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.LeftEqualsRight",
+        "locale": "en",
+        "placeholders": {
+          "left": "abc",
+          "right": "xyz"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Companion to the identical-strings case: unequal raw strings fail identically rather than evaluating to false. VERIFIED: same refusal message. Rules out a port that implements textual equality and merely happens to agree on the unequal pair -- the refusal is unconditional, not a comparison result."
+    },
+    {
+      "id": "expressions.operand.same-axis-gender-values-compare-equal",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.LeftEqualsRight",
+        "locale": "en",
+        "placeholders": {
+          "left": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_FEMININE"
+          },
+          "right": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_FEMININE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Positive control for variable-to-variable language-form comparison: two bindings on the same axis with the same value match. VERIFIED: emits 'left equals right'. Establishes that the cross-axis failures on this key are about axis mismatch and not about language forms being uncomparable in general."
+    },
+    {
+      "id": "expressions.operand.same-axis-gender-values-compare-unequal",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.LeftEqualsRight",
+        "locale": "en",
+        "placeholders": {
+          "left": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_FEMININE"
+          },
+          "right": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_MASCULINE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Same-axis, different value: a clean false with a TRANSLATED default, not a failure. VERIFIED: TRANSLATED 'no alternative', failureReason null. Pins the boundary between 'comparable and unequal' (failureReason null) and 'not comparable' (RESOLUTION_FAILURE), which is the whole point of the cross-axis cases."
+    },
+    {
+      "id": "expressions.operand.same-axis-grammatical-case-values-compare-equal",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.LeftEqualsRight",
+        "locale": "en",
+        "placeholders": {
+          "left": {
+            "$lokalized": "language-form",
+            "axis": "grammatical-case",
+            "name": "CASE_GENITIVE"
+          },
+          "right": {
+            "$lokalized": "language-form",
+            "axis": "grammatical-case",
+            "name": "CASE_GENITIVE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED in review. Every positive language-form comparison in the original set used gender, cardinality, or ordinality, so a port that implemented only those three axes and left the other six paired branches unimplemented would have passed the entire family. evaluateBinaryOperator has eight structurally identical paired-axis branches; this exercises a second one. VERIFIED: emits 'left equals right'. (Note the constants for this axis are spelled CASE_*, not GRAMMATICAL_CASE_*, while the wire axis name is 'grammatical-case' -- an easy place to build a wrong name table.)"
+    },
+    {
+      "id": "expressions.operand.cross-axis-gender-and-formality-are-incompatible",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.LeftEqualsRight",
+        "locale": "en",
+        "placeholders": {
+          "left": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_FEMININE"
+          },
+          "right": {
+            "$lokalized": "language-form",
+            "axis": "formality",
+            "name": "FORMALITY_FORMAL"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Cross-axis comparison of two variables whose axes both require a MATCHED pair, so no branch claims it and evaluation reaches the terminal throw. VERIFIED: RESOLUTION_FAILURE, cause \"Unable to evaluate expression 'left == right'. Operand runtime types Gender and Formality are incompatible\". A port that modeled every language form as a single tagged string union would evaluate this to false rather than failing, hiding an authoring error from the developer."
+    },
+    {
+      "id": "expressions.operand.cross-axis-cardinality-claims-the-comparison",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.LeftEqualsRight",
+        "locale": "en",
+        "placeholders": {
+          "left": {
+            "$lokalized": "language-form",
+            "axis": "cardinality",
+            "name": "CARDINALITY_ONE"
+          },
+          "right": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_FEMININE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The cardinality, ordinality and phonetic branches are entered when EITHER operand has that type (lhs == X || rhs == X), unlike the eight paired-axis branches (lhs == X && rhs == X), so a cardinality-vs-gender comparison never reaches the incompatible-types fallthrough. VERIFIED: RESOLUTION_FAILURE, cause 'Unable to extract Cardinality value from ''right''' -- it enters the cardinality branch and fails converting the OTHER operand. Pins the branch-selection order in evaluateBinaryOperator, which a port dispatching on a normalized (lhsAxis, rhsAxis) pair would get subtly wrong."
+    },
+    {
+      "id": "expressions.operand.number-binding-coerces-to-cardinality",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.LeftEqualsRight",
+        "locale": "en",
+        "placeholders": {
+          "left": {
+            "$lokalized": "integer",
+            "value": "1"
+          },
+          "right": {
+            "$lokalized": "language-form",
+            "axis": "cardinality",
+            "name": "CARDINALITY_ONE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The sanctioned cross-type comparison: the cardinality branch fires on the right operand, and cardinalityFromOperand classifies the numeric LEFT operand for the evaluation locale, so 1 == CARDINALITY_ONE is true in en. VERIFIED: emits 'left equals right'. Locks that NUMBER/CARDINALITY is permitted while every other cross-axis pair fails, and that the coercion is locale-driven classification rather than a numeric identity."
+    },
+    {
+      "id": "expressions.operand.raw-string-against-number-binding",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.LeftEqualsRight",
+        "locale": "en",
+        "placeholders": {
+          "left": "1",
+          "right": {
+            "$lokalized": "integer",
+            "value": "1"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The raw-string numeric guard fires for variable-vs-variable comparisons too, not only against literals: the guard tests OperandType, not token type. VERIFIED: RESOLUTION_FAILURE, cause \"Numeric comparison 'left == right' requires numeric operands supplied as Number or PluralOperands values, but placeholder 'left' resolved to String\" -- and note it names the offending placeholder, which is only possible because the guard tracks which SIDE was the CharSequence. Ensures a port that implemented the guard only where one side is a literal NUMBER token still rejects the all-variable form."
+    },
+    {
+      "id": "expressions.operand.integers-compare-unequal-with-not-equals",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.LeftNotEqualsRight",
+        "locale": "en",
+        "placeholders": {
+          "left": {
+            "$lokalized": "integer",
+            "value": "1"
+          },
+          "right": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED in review; the original set used only '==' and '<', so nothing pinned '!=' at all -- a port that aliased '!=' to '==' would have passed the whole family. Positive control for the non-equality key: 1 != 2 is true. VERIFIED: emits 'left differs from right'."
+    },
+    {
+      "id": "expressions.operand.equal-integers-do-not-satisfy-not-equals",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.LeftNotEqualsRight",
+        "locale": "en",
+        "placeholders": {
+          "left": {
+            "$lokalized": "integer",
+            "value": "1"
+          },
+          "right": {
+            "$lokalized": "integer",
+            "value": "1"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED in review. Paired with the previous case this is the actual discriminator: a port that mapped '!=' onto '==' inverts BOTH outcomes and fails both, while one that ignored the operator and always returned true fails only this one. VERIFIED: TRANSLATED 'no alternative', failureReason null."
+    },
+    {
+      "id": "expressions.operand.identical-raw-strings-refuse-not-equals",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.LeftNotEqualsRight",
+        "locale": "en",
+        "placeholders": {
+          "left": "abc",
+          "right": "abc"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED in review. The clause names raw-string NON-equality, and the original set only ever refused '=='. The textual-equality refusal covers EQUAL_TO || NOT_EQUAL_TO in one arm, so '!=' must refuse too. VERIFIED: RESOLUTION_FAILURE, cause \"Raw CharSequence placeholders 'left' and 'right' cannot be compared with '!=': expressions do not support textual equality...\". In JavaScript \"abc\" !== \"abc\" is false, so a port with textual comparison would emit a clean non-match here -- indistinguishable from correct behavior without the paired case below."
+    },
+    {
+      "id": "expressions.operand.distinct-raw-strings-refuse-not-equals",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.LeftNotEqualsRight",
+        "locale": "en",
+        "placeholders": {
+          "left": "abc",
+          "right": "xyz"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED in review, and the sharpest raw-string case in the family: in JavaScript \"abc\" !== \"xyz\" is true, so a port with textual comparison MATCHES here and emits 'left differs from right'. VERIFIED: RESOLUTION_FAILURE with the same '!=' refusal message. Together with the identical-strings case this proves the refusal is unconditional rather than a comparison outcome, in both directions of the operator."
+    },
+    {
+      "id": "expressions.operand.integers-order-normally",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.LeftOrdersRight",
+        "locale": "en",
+        "placeholders": {
+          "left": {
+            "$lokalized": "integer",
+            "value": "1"
+          },
+          "right": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Positive control for the variable-to-variable ordering key. VERIFIED: emits 'left below right'. Makes the raw-string ordering refusal below attributable to operand typing."
+    },
+    {
+      "id": "expressions.operand.raw-strings-cannot-be-ordered",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.LeftOrdersRight",
+        "locale": "en",
+        "placeholders": {
+          "left": "abc",
+          "right": "abd"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Two raw CharSequences with an ordering operator hit a DIFFERENT arm of the same guard from the equality refusal. VERIFIED: RESOLUTION_FAILURE, cause \"Raw CharSequence placeholders 'left' and 'right' cannot be compared with '<': expressions do not support textual ordering. Use numeric operands for ordering, or compare phonetic input with a PHONETIC_* constant or an explicit Phonetic value using '==' or '!='\". Lexicographic ordering of caller strings is never performed; JavaScript's '<' orders strings happily, so a port lacking this guard produces a locale-dependent-looking boolean out of nowhere."
+    },
+    {
+      "id": "expressions.operand.number-matches-cardinality-constant",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.ValueVsCardinalityConstant",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "integer",
+            "value": "1"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Baseline for comparing a numeric binding against a CARDINALITY_* constant: cardinalityFromOperand builds PluralOperands from the Integer and classifies for en, giving ONE. VERIFIED: emits 'cardinality one'. Anchors the two precision cases below, which differ from this one only in the wire shape of the same numeric magnitude."
+    },
+    {
+      "id": "expressions.operand.number-misses-cardinality-constant",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.ValueVsCardinalityConstant",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "integer",
+            "value": "5"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Negative control: 5 classifies as OTHER in en, so the alternative does not match. VERIFIED: TRANSLATED 'no alternative', failureReason null. Separates 'classified and unequal' from the failures on this same key."
+    },
+    {
+      "id": "expressions.operand.decimal-scale-changes-cardinality-of-a-number-operand",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.ValueVsCardinalityConstant",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "decimal",
+            "value": "1.0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same numeric magnitude as the matching case, written with one visible decimal place, does NOT match CARDINALITY_ONE: en's cardinal 'one' requires i=1 AND v=0, and PluralOperands derives v from the BigDecimal's scale. VERIFIED: TRANSLATED 'no alternative'. Directly contrasts with expressions.operand.decimal-scale-does-not-affect-equality, where 5.00 == 5 matches -- scale is ERASED for numeric comparison but LOAD-BEARING for plural classification, and a port that normalized decimals once at the boundary breaks exactly one of the two. Both are covered, deliberately, on the same fixture."
+    },
+    {
+      "id": "expressions.operand.visible-decimal-places-change-cardinality-of-a-number-operand",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.ValueVsCardinalityConstant",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "plural-operands",
+            "value": "1",
+            "visibleDecimalPlaces": 1
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Reaches the same non-match through explicit caller-declared PluralOperands rather than through decimal scale, exercising validatePluralOperands and the explicitVisibleDecimalPlaces path from inside an expression. VERIFIED: TRANSLATED 'no alternative'. Confirms an expression operand honors declared operands instead of re-deriving them from the source number -- the source number here is the bare integer 1, which alone would classify as ONE."
+    },
+    {
+      "id": "expressions.operand.cardinality-value-matches-its-constant",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.ValueVsCardinalityConstant",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "cardinality",
+            "name": "CARDINALITY_ONE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A Cardinality binding compared to the matching CARDINALITY_* constant matches with no locale classification at all -- cardinalityFromOperand returns the value directly. VERIFIED: emits 'cardinality one'. Establishes the same-axis positive on this key so the raw-string and cross-axis failures below are unambiguous."
+    },
+    {
+      "id": "expressions.operand.raw-string-does-not-equal-cardinality-constant",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.ValueVsCardinalityConstant",
+        "locale": "en",
+        "placeholders": {
+          "value": "CARDINALITY_ONE"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The clause's raw-string-versus-language-form-constant case in its purest form: the placeholder is bound to the exact spelling of the constant and the comparison still fails. VERIFIED: RESOLUTION_FAILURE, cause 'Unable to extract Cardinality value from ''value''' -- the cardinality branch is chosen because the CONSTANT is a cardinality, and the string binding cannot convert. Note it never reaches the phonetic branch, because the cardinality branch is tested first. A port that resolved language forms by name lookup on caller strings would match here, letting untrusted caller data pick translation branches."
+    },
+    {
+      "id": "expressions.operand.gender-value-against-cardinality-constant",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.ValueVsCardinalityConstant",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_FEMININE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Cross-axis binding against a constant of a different axis. VERIFIED: RESOLUTION_FAILURE, cause 'Unable to extract Cardinality value from ''value''' -- the cardinality branch is chosen because the CONSTANT carries the either-operand axis, and conversion of the gender BINDING fails. Pairs with expressions.operand.cardinality-value-against-gender-constant, where the same axis pair fails on the CONSTANT instead; together they pin which operand is blamed in each direction, which is only possible because branch selection depends on which side carries cardinality/ordinality/phonetic, not on operand position."
+    },
+    {
+      "id": "expressions.operand.number-matches-ordinality-constant",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.ValueVsOrdinalityConstant",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Numeric bindings coerce to ORDINALITY as well as CARDINALITY: 2 is ORDINALITY_TWO in en ('2nd'). VERIFIED: emits 'ordinality two'. Confirms canBeEqualExpressionValue's NUMBER/ORDINALITY allowance and the ordinality branch's numeric conversion are both implemented for the ordinal axis, not only the cardinal one -- an easy asymmetry to introduce when porting."
+    },
+    {
+      "id": "expressions.operand.ordinality-value-matches-its-constant",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.ValueVsOrdinalityConstant",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "ordinality",
+            "name": "ORDINALITY_TWO"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Same-axis positive control on the ordinality key. VERIFIED: emits 'ordinality two'. Needed to interpret the cardinality-vs-ordinality failure below as an axis failure rather than a broken key."
+    },
+    {
+      "id": "expressions.operand.cardinality-value-against-ordinality-constant",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.ValueVsOrdinalityConstant",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "cardinality",
+            "name": "CARDINALITY_TWO"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The subtlest cross-axis pair, because both axes share the plural-category vocabulary ZERO/ONE/TWO/FEW/MANY/OTHER. VERIFIED: RESOLUTION_FAILURE, cause 'Unable to extract Cardinality value from ''ORDINALITY_TWO''' -- the cardinality branch is tested BEFORE the ordinality branch, so the binding claims the comparison and the recorded blame lands on the constant. A port keying language forms by bare category name would find these equal; a port that dispatched to ordinality because the constant is ordinal would blame the other operand."
+    },
+    {
+      "id": "expressions.operand.gender-value-matches-gender-constant",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.ValueVsGenderConstant",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_FEMININE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Baseline positive for the gender-constant key. VERIFIED: emits 'gender feminine'. Required to read the four failures on this key as typing failures rather than as a key that never matches."
+    },
+    {
+      "id": "expressions.operand.gender-value-misses-gender-constant",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.ValueVsGenderConstant",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_MASCULINE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Same-axis non-match against a constant: false, not a failure. VERIFIED: TRANSLATED 'no alternative', failureReason null. Fixes the 'comparable but unequal' reference point on this key."
+    },
+    {
+      "id": "expressions.operand.raw-string-does-not-equal-gender-constant",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.ValueVsGenderConstant",
+        "locale": "en",
+        "placeholders": {
+          "value": "GENDER_FEMININE"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A caller string spelled exactly like the constant must not equal it. The route is worth stating because it is surprising and I re-derived it from source: the string types as PHONETIC; GENDER/GENDER needs both sides so it does not fire; cardinality and ordinality do not claim it; the PHONETIC either-operand branch DOES, and phoneticFromOperand hands the string to the configured resolver. DefaultStrings installs a fail-fast DEFAULT_PHONETIC_RESOLVER (DefaultStrings.java:71-79), so the resolver -- not a null check -- is what throws. VERIFIED: RESOLUTION_FAILURE, cause java.lang.IllegalStateException 'No PhoneticResolver was configured. Provide one via Strings.Builder#phoneticResolver(...)'. Even with a working resolver the subsequent gender operand would fail, so the observable outcome is stable; only the internal cause would differ."
+    },
+    {
+      "id": "expressions.operand.formality-value-against-gender-constant",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.ValueVsGenderConstant",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "formality",
+            "name": "FORMALITY_FORMAL"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Cross-axis binding against a constant where NEITHER axis uses the either-operand branch rule, so evaluation falls all the way through. VERIFIED: RESOLUTION_FAILURE, cause \"Unable to evaluate expression 'value == GENDER_FEMININE'. Operand runtime types Formality and Gender are incompatible\". Together with expressions.operand.gender-value-against-number-literal this is one of only three routes in the family to that terminal throw; without them the fallthrough arm of evaluateBinaryOperator is unexercised."
+    },
+    {
+      "id": "expressions.operand.cardinality-value-against-gender-constant",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.ValueVsGenderConstant",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "cardinality",
+            "name": "CARDINALITY_ONE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Mirror of expressions.operand.gender-value-against-cardinality-constant: here the BINDING carries the either-operand axis, so the cardinality branch is entered and the GENDER_FEMININE CONSTANT is the operand that fails to convert. VERIFIED: RESOLUTION_FAILURE, cause 'Unable to extract Cardinality value from ''GENDER_FEMININE'''. The pair proves branch selection depends on which operand carries the either-operand axis, not on operand position -- and the two distinct blame strings are the only evidence that distinguishes the two."
+    },
+    {
+      "id": "expressions.operand.number-against-gender-constant",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.ValueVsGenderConstant",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "integer",
+            "value": "1"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Numeric bindings coerce to CARDINALITY and ORDINALITY but to nothing else. VERIFIED: RESOLUTION_FAILURE, cause \"Unable to evaluate expression 'value == GENDER_FEMININE'. Operand runtime types Integer and Gender are incompatible\" -- note runtimeTypeName reports the concrete Java class 'Integer' for a VARIABLE operand but the abstract 'Gender' for a constant. Bounds the numeric coercion rule, which a port might otherwise generalize to enum ordinals, under which 1 would equal some gender."
+    },
+    {
+      "id": "expressions.operand.phonetic-value-matches-phonetic-constant",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.ValueVsPhoneticConstant",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "phonetic",
+            "name": "PHONETIC_VOWEL"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED in review. The original set reached the PHONETIC branch only through raw strings, i.e. only ever as a failure, so nothing proved the branch works at all. An explicit Phonetic binding returns directly from phoneticFromOperand without touching the resolver. VERIFIED: emits 'phonetic vowel'. This is the positive half that makes the raw-string phonetic failures meaningful, and it needs no resolver, so it stays inside the oracle's supported surface."
+    },
+    {
+      "id": "expressions.operand.phonetic-value-misses-phonetic-constant",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.ValueVsPhoneticConstant",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "language-form",
+            "axis": "phonetic",
+            "name": "PHONETIC_CONSONANT"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED in review. Same-axis phonetic non-match: false, not a failure. VERIFIED: TRANSLATED 'no alternative', failureReason null. Completes the comparable-and-unequal reference point for the phonetic axis."
+    },
+    {
+      "id": "expressions.operand.raw-string-against-phonetic-constant-needs-a-resolver",
+      "requirementIds": [],
+      "fixture": "expressions-operand-typing",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Operand.ValueVsPhoneticConstant",
+        "locale": "en",
+        "placeholders": {
+          "value": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED in review. The honest, direct form of the phonetic rule that the gender case only reaches by accident: a caller string against a PHONETIC_* constant is the ONE comparison the library genuinely wants to route through a resolver, and with none configured it fails rather than guessing. VERIFIED: RESOLUTION_FAILURE, cause java.lang.IllegalStateException 'No PhoneticResolver was configured...'. This case does not require the unsupported resolver affordance -- it asserts the resolver-absent behavior, which is stable and portable. A port that classified vowels itself, or that defaulted to PHONETIC_OTHER, would match or cleanly not-match here instead of failing."
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "id": "bidi-isolation-default-mode",
+  "description": "Establishes the LIBRARY DEFAULT bidi mode without configuring one. DefaultStrings.java:73/80 declares DEFAULT_BIDI_ISOLATION = BidiIsolation.RTL_LOCALES and :477 applies it when the builder was handed null, so an he lookup isolates caller values and an en lookup does not. instanceLocale is he (fallbackLocale is en, deliberately different) so a case that passes no per-call locale still resolves into the RTL catalog, which pins that the AMBIENT locale drives the script test. Serves the 'bidi isolation modes' half of the section 8.3 clause.",
+  "fallbackLocale": "en",
+  "instanceLocale": "he",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Locale.Marker": "en",
+      "Greeting.Named": "Hello, {{name}}"
+    },
+    "he": {
+      "Locale.Marker": "he",
+      "Greeting.Named": "שלום, {{name}}"
+    }
+  }
+}

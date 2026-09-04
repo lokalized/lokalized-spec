@@ -1,0 +1,16 @@
+{
+  "id": "bidi-isolation-output-limit",
+  "description": "BidiIsolation.ALWAYS with maximumInterpolatedOutputCharacters pinned to 10 -- far below DEFAULT_MAXIMUM_INTERPOLATED_OUTPUT_CHARACTERS (262144) and the MAXIMUM_ ceiling (1048576) in TranslationRuntimeLimits, and above the documented minimum of 1. The two isolate characters count against that budget: BidiUtils.isolatedValue wraps the value in a BoundedIsolatedValue, StringInterpolator hands render() the REMAINING budget (maximumOutputCharacters minus what is already emitted), and every character including FSI and PDI goes through an appendChecked. So the same value under the same limit succeeds with NONE and fails with ALWAYS. Sized so '[' + FSI + six characters + PDI + ']' lands exactly on 10 and a seventh character overruns it.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "runtimeLimits": {
+    "maximumInterpolatedOutputCharacters": 10
+  },
+  "bidiIsolation": "ALWAYS",
+  "files": {
+    "en": {
+      "Locale.Marker": "en",
+      "Wrap.Value": "[{{value}}]"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "id": "manifest-loads-empty-catalog-file",
+  "description": "The extreme of key-level partiality: fr's file is a valid but EMPTY JSON object. Verified: fr is still a first-class loaded locale with a zero-length key list, and a request for fr is selected EXACTLY by the matcher while resolution walks past it to en. The one fixture in this family where the two channels disagree about a locale that really loaded.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Greeting": "Hello"
+    },
+    "fr": {}
+  }
+}

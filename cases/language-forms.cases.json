@@ -1,0 +1,155 @@
+{
+  "formatVersion": 1,
+  "family": "language-forms",
+  "description": "Plan v7 section 8.3: all 61 generated (axis, name, renderName) tuples and the public cardinal/ordinal/range classifier functions. Inputs only; the oracle emits expected.",
+  "cases": [
+    {
+      "id": "language-forms.tuples.all-61-axis-name-render-name",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "languageForms",
+      "input": {},
+      "partition": "requiredPortableIds"
+    },
+    {
+      "id": "classifier.cardinal.polish-few-at-22",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "integer",
+          "value": "22"
+        },
+        "locale": "pl"
+      },
+      "partition": "requiredPortableIds"
+    },
+    {
+      "id": "classifier.cardinal.polish-many-at-25",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "integer",
+          "value": "25"
+        },
+        "locale": "pl"
+      },
+      "partition": "requiredPortableIds"
+    },
+    {
+      "id": "classifier.cardinal.trailing-zero-decimal-one-point-zero-is-other-in-en",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "decimal",
+          "value": "1.0"
+        },
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds"
+    },
+    {
+      "id": "classifier.cardinal.integer-one-is-one-in-en",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "integer",
+          "value": "1"
+        },
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds"
+    },
+    {
+      "id": "classifier.cardinal.operands-with-compact-exponent-shift",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForOperands",
+      "input": {
+        "value": {
+          "$lokalized": "plural-operands",
+          "value": "1.2",
+          "compactExponent": 6
+        },
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds"
+    },
+    {
+      "id": "classifier.cardinal.range-one-to-other-in-fr",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForRange",
+      "input": {
+        "start": {
+          "$lokalized": "language-form",
+          "axis": "cardinality",
+          "name": "CARDINALITY_ONE"
+        },
+        "end": {
+          "$lokalized": "language-form",
+          "axis": "cardinality",
+          "name": "CARDINALITY_OTHER"
+        },
+        "locale": "fr"
+      },
+      "partition": "requiredPortableIds"
+    },
+    {
+      "id": "classifier.ordinal.english-two-is-two",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "ordinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "integer",
+          "value": "2"
+        },
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds"
+    },
+    {
+      "id": "classifier.supported.cardinalities-for-polish",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "supportedCardinalitiesForLocale",
+      "input": {
+        "locale": "pl"
+      },
+      "partition": "requiredPortableIds"
+    },
+    {
+      "id": "classifier.supported.ordinalities-for-english",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "supportedOrdinalitiesForLocale",
+      "input": {
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds"
+    },
+    {
+      "id": "classifier.cardinal.unsupported-locale-throws",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "integer",
+          "value": "1"
+        },
+        "locale": "zxx"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Plan section 3.7: unsupported classification throws UnsupportedLocaleError. Pins the throw identity so a JS port cannot return a silent default category for a locale it has no rules for."
+    }
+  ]
+}

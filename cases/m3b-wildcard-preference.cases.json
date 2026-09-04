@@ -1,0 +1,39 @@
+{
+  "formatVersion": 1,
+  "family": "m3b-wildcard-preference",
+  "description": "Plan v7 section 8.3 fixture family 'm3b-wildcard-preference'. Inputs only; the oracle emits expected.",
+  "cases": [
+    {
+      "id": "m3b-wildcard-preference.leading-wildcard-uses-fallback-language-tiebreakers",
+      "requirementIds": [],
+      "fixture": "m3b-wildcard-preference-multilingual-ch",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "*-ch",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings.matchFor:1845, TRUE arm, discriminated. '*-CH' structurally filters to [de-CH, fr-CH] -- two different primary languages -- so the leading-wildcard rule has a real choice. preferredLocaleForWildcard must be used: the fallback locale fr is not itself a candidate, so it consults the FALLBACK LANGUAGE's tiebreaker list ['fr-CH','fr'] and selects fr-CH. preferredLocaleForRange, the other arm, would derive no primary language from '*', find no tiebreaker list, find the fallback locale absent from the candidates, and return the first candidate de-CH. The two arms therefore name DIFFERENT catalogs for one input, which the existing '*-ch' row could not do because its candidate list had a single member."
+    },
+    {
+      "id": "m3b-wildcard-preference.anchored-wildcard-uses-range-language-tiebreakers",
+      "requirementIds": [],
+      "fixture": "m3b-wildcard-preference-multilingual-ch",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "de-*",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The FALSE arm of the same line, discriminated. 'de-*' filters to [de-CH, de-DE]; preferredLocaleForRange consults the RANGE's primary language 'de' and its tiebreaker order ['de-DE','de-CH'], selecting de-DE, which is deliberately NOT the first candidate in supported-locale order. preferredLocaleForWildcard, the other arm, would look for the fallback language 'fr' among the candidates, find nothing, and return de-CH. Read with the row above, the pair pins WHICH preference function each wildcard shape uses rather than merely that a wildcard matches something."
+    }
+  ]
+}

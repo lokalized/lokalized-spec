@@ -1,0 +1,11 @@
+{
+  "id": "dedup-and-candidates-ro-only",
+  "description": "Plan v7 section 8.3 'no policy call after the final distinct candidate'. Exactly one loaded catalog, ro, which is also the fallback locale. Requesting mo produces the raw candidate set [mo, ro, ro, ro] (CLDR fallback, likely-subtag match, identity tiebreaker, fallback locale), every entry of which resolves onto loaded ro, so the loop at DefaultStrings.java:2493-2500 hands the walk a ONE-element candidate list. The walk at DefaultStrings.java:731 then breaks on candidateIndex + 1 >= size BEFORE reaching the translationFallbackPolicy call on line 734, so the policy is never invoked. Cases pair the default policy against neverFallback on this fixture: Java must emit identical observations for both, which is the corpus's observable form of the no-trailing-policy-call rule.",
+  "fallbackLocale": "ro",
+  "tiebreakers": null,
+  "files": {
+    "ro": {
+      "Dedup.OnlyInRo": "ro: only here"
+    }
+  }
+}

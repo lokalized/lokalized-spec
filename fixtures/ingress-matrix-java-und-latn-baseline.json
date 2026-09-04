@@ -1,0 +1,14 @@
+{
+  "id": "ingress-matrix-java-und-latn-baseline",
+  "description": "Seed row 1 catalog (loaded en, fr; fallback and instance locale fr). NO ambient supplier, so only a per-call locale or a per-call language-range list can move the lookup off fr. MEASURED per-call locale und-Latn: match NONE, lookupLocale und-Latn, attempted [und-Latn, und, fr], resolved fr.",
+  "fallbackLocale": "fr",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Checkout.Title": "Checkout"
+    },
+    "fr": {
+      "Checkout.Title": "Paiement"
+    }
+  }
+}

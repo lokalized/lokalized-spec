@@ -1,0 +1,14 @@
+{
+  "id": "loading-limits-warnings-zero-clean-load",
+  "description": "A warning-free Russian catalog loaded with maximumWarnings lowered to 0. The builder accepts 0 and a load that emits nothing never charges the budget, so this establishes that the failure in the one-warning fixture comes from the warning rather than from the value 0.",
+  "fallbackLocale": "ru",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumWarnings": 0
+  },
+  "files": {
+    "ru": {
+      "Key.A": "a"
+    }
+  }
+}

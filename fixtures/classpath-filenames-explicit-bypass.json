@@ -1,0 +1,17 @@
+{
+  "id": "classpath-filenames-explicit-bypass",
+  "description": "A valid en catalog plus one file of each rejected class: 'catalog.json' (throws during discovery), '.de' (hidden), and 'notes.txt' (unrecognised, skipped in silence). Each is then also named as an EXPLICIT classpath resource, where the filename rules do not apply at all — same bytes, same package, different outcomes depending on the entry point. Also the host fixture for the three loadFromClasspathResources path-validation cases, which need only a classloader root.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "rawFiles": {
+    "catalog.json": "{\"Key.catalog\":\"catalog\"}",
+    ".de": "{\"Key.hidden\":\"hidden\"}",
+    "notes.txt": "{\"Key.notes\":\"notes\"}"
+  }
+}

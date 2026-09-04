@@ -1,0 +1,26 @@
+{
+  "id": "ingress-matrix-java-extlang-instance-sgn-be-fr",
+  "description": "Extlang arm catalog with the grandfathered spelling sgn-BE-FR as the INSTANCE locale.",
+  "fallbackLocale": "en",
+  "instanceLocale": "sgn-BE-FR",
+  "tiebreakers": {
+    "zh": [
+      "zh",
+      "cmn"
+    ]
+  },
+  "files": {
+    "zh": {
+      "Checkout.Title": "zh"
+    },
+    "cmn": {
+      "Checkout.Title": "cmn"
+    },
+    "yue": {
+      "Checkout.Title": "yue"
+    },
+    "en": {
+      "Checkout.Title": "en"
+    }
+  }
+}

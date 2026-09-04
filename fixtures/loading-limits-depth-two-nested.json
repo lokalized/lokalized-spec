@@ -1,0 +1,16 @@
+{
+  "id": "loading-limits-depth-two-nested",
+  "description": "The same depth-2 catalog loaded with maximumJsonNestingDepth at exactly 2.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumJsonNestingDepth": 2
+  },
+  "files": {
+    "en": {
+      "Key.A": {
+        "translation": "a"
+      }
+    }
+  }
+}

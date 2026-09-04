@@ -1,0 +1,26 @@
+{
+  "id": "ingress-matrix-java-zh-tw-match-supplier-ranges",
+  "description": "Seed row 4 catalog, supplied match from the whole-list solver on header 'zh-TW' — the plan's published browser-chooser request, moved from the call site into the ambient ingress.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "zh": [
+      "zh",
+      "zh-Hant"
+    ]
+  },
+  "localeMatchSupplier": {
+    "behavior": "match-ranges",
+    "ranges": "zh-TW"
+  },
+  "files": {
+    "zh": {
+      "Checkout.Title": "结账"
+    },
+    "zh-Hant": {
+      "Unrelated.Key": "無關"
+    },
+    "en": {
+      "Checkout.Title": "Checkout"
+    }
+  }
+}

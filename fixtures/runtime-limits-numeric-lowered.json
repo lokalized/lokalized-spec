@@ -1,0 +1,48 @@
+{
+  "id": "runtime-limits-numeric-lowered",
+  "description": "Plan v7 section 8.3 runtime-limits clause, numeric side: all four numeric limits lowered to small exact values — precision 4, absolute scale 3, visible decimal places 2, compact exponent 2 — so all three numeric ingress paths named by plan section 4.6 can be pinned at one boundary. 'Counted' drives a cardinality-tagged generated placeholder, which reaches PluralOperands.validateNumericValue and DefaultStrings.validatePluralOperands (defined at DefaultStrings.java:1494, called at 1451 and 1479) with the INSTANCE limits; 'Positive' drives the same values through an expression OPERAND, which validates inside ExpressionEvaluator with the same limits but a different exception identity; and 'Literal' carries the numeric LITERAL 1.234, whose precision 4 and scale 3 sit exactly on the two lowered limits and are checked by ExpressionEvaluator.validateNumericLiteralTokens at compile time, so the fixture only builds if literals are measured identically. The only other literals are 0 and 1, well inside every lowered limit.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "runtimeLimits": {
+    "maximumNumberPrecision": 4,
+    "maximumAbsoluteNumberScale": 3,
+    "maximumVisibleDecimalPlaces": 2,
+    "maximumCompactExponent": 2
+  },
+  "files": {
+    "en": {
+      "Counted": {
+        "translation": "{{label}}",
+        "placeholders": {
+          "label": {
+            "value": "n",
+            "translations": {
+              "CARDINALITY_ONE": "one",
+              "CARDINALITY_OTHER": "other"
+            }
+          }
+        }
+      },
+      "Positive": {
+        "translation": "non-positive",
+        "alternatives": [
+          {
+            "n > 0": {
+              "translation": "positive"
+            }
+          }
+        ]
+      },
+      "Literal": {
+        "translation": "literal-default",
+        "alternatives": [
+          {
+            "n == 1.234": {
+              "translation": "literal-matched"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

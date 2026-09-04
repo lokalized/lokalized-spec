@@ -1,0 +1,82 @@
+{
+  "id": "generated-placeholders-cycles",
+  "description": "Plan v7 section 8.3 generated-placeholder clause: cycles among generated placeholder definitions. Covers a self-reference, a minimal two-node ring, a cycle that exists only under a branch's replacement, a cycle that exists only in a fragment's unselected default text, and a shared diamond that must be memoized rather than misreported as a cycle. The last two conditional keys are what force detection to run against the effective post-inheritance bindings and against the text actually selected, rather than against the catalog as written.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Self referential fragment": {
+        "translation": "Loop: {{selfRef}}",
+        "placeholders": {
+          "selfRef": {
+            "translation": "x {{selfRef}}"
+          }
+        }
+      },
+      "Mutual fragments": {
+        "translation": "Loop: {{alpha}}",
+        "placeholders": {
+          "alpha": {
+            "translation": "A-{{beta}}"
+          },
+          "beta": {
+            "translation": "B-{{alpha}}"
+          }
+        }
+      },
+      "Branch introduces a cycle": {
+        "translation": "{{alpha}}",
+        "placeholders": {
+          "alpha": {
+            "translation": "A-{{beta}}"
+          },
+          "beta": {
+            "translation": "B-plain"
+          }
+        },
+        "alternatives": [
+          {
+            "mode == 1": {
+              "translation": "{{alpha}}",
+              "placeholders": {
+                "beta": {
+                  "translation": "B-{{alpha}}"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "Cycle only in unselected fragment": {
+        "translation": "{{ring}}",
+        "placeholders": {
+          "ring": {
+            "translation": "A-{{link}}"
+          },
+          "link": {
+            "translation": "B-{{ring}}",
+            "alternatives": [
+              {
+                "safe == 1": "B-plain"
+              }
+            ]
+          }
+        }
+      },
+      "Diamond reuse": {
+        "translation": "{{left}}|{{right}}",
+        "placeholders": {
+          "left": {
+            "translation": "L-{{shared}}"
+          },
+          "right": {
+            "translation": "R-{{shared}}"
+          },
+          "shared": {
+            "translation": "S"
+          }
+        }
+      }
+    }
+  }
+}

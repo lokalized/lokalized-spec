@@ -1,0 +1,16 @@
+{
+  "formatVersion": 1,
+  "family": "m3b-tag-validity",
+  "description": "Plan v7 section 8.3 fixture family 'm3b-tag-validity'. Inputs only; the oracle emits expected.",
+  "cases": [
+    {
+      "id": "m3b-tag-validity.loader-accepts-only-known-tags",
+      "requirementIds": [],
+      "fixture": "m3b-tag-validity-filenames",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "CldrLocaleData.isKnownLanguageTag:222 (unknown SCRIPT) and :227 (unknown REGION), whose rejecting arms no corpus case takes. The accepted/rejected split is the assertion, and each pair differs in exactly one subtag class: en-Abcd (unregistered script) must be REJECTED while en-Qaaa (an unassigned but table-valid script code) is accepted; en-ZX and en-000 (unassigned regions) must be REJECTED while en-QO (a valid macro-region) and en-062 (a DEPRECATED region rescued by REGION_ALIASES) are accepted; en-zzzzzzzz (unregistered variant) must be REJECTED while de-1901 (registered) and el-polytoni (unregistered but aliased) are accepted. A port that validated only the language subtag loads all ten; one that rejected everything outside the registry loses en-062 and el-polytoni and would then serve a different catalog for every request that used to reach them."
+    }
+  ]
+}

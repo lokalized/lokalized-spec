@@ -1,0 +1,17 @@
+{
+  "id": "owed-construct-locale-source-absent",
+  "description": "Construction refusal subject. DefaultStrings:254, both-ABSENT arm. Its files load cleanly; the refusal is at Strings construction, which is what makes it invisible without the 'construct' operation.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "refusesConstruction": true,
+  "constructionOverrides": {
+    "localeSource": "omit"
+  },
+  "files": {
+    "en": {
+      "Greeting": {
+        "translation": "Hello"
+      }
+    }
+  }
+}

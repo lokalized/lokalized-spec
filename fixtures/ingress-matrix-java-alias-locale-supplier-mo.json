@@ -1,0 +1,30 @@
+{
+  "id": "ingress-matrix-java-alias-locale-supplier-mo",
+  "description": "Alias arm catalog with a constant localeSupplier returning the deprecated spelling mo, which Locale.forLanguageTag leaves untouched.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "localeSupplier": {
+    "behavior": "constant",
+    "locale": "mo"
+  },
+  "files": {
+    "he": {
+      "Checkout.Title": "he"
+    },
+    "id": {
+      "Checkout.Title": "id"
+    },
+    "ro": {
+      "Checkout.Title": "ro"
+    },
+    "sr": {
+      "Checkout.Title": "sr"
+    },
+    "fil": {
+      "Checkout.Title": "fil"
+    },
+    "en": {
+      "Checkout.Title": "en"
+    }
+  }
+}

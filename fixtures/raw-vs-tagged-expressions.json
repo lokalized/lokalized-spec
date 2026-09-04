@@ -1,0 +1,27 @@
+{
+  "id": "raw-vs-tagged-expressions",
+  "description": "Plan v7 section 8.3 raw-vs-tagged clause, alternatives-expression half. Two keys whose single alternative compares a caller placeholder against a GENDER_* language-form literal and against a numeric literal, each with a default translation. The default is now actually exercised: fall-through cases supply a tagged form and a tagged integer that do NOT satisfy the alternative, so the positive controls prove discrimination rather than unconditional matching. Exists so the corpus pins that a raw string is never lifted to the constant the expression names, nor coerced to the number it spells.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "GenderAlternative": {
+        "translation": "[default]",
+        "commentary": "Reached when the alternative does not match; distinct text from the branch so a match and a fall-through are never confusable.",
+        "alternatives": [
+          {
+            "who == GENDER_FEMININE": "[feminine branch]"
+          }
+        ]
+      },
+      "NumericAlternative": {
+        "translation": "[default]",
+        "alternatives": [
+          {
+            "count == 1": "[one branch]"
+          }
+        ]
+      }
+    }
+  }
+}

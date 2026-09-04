@@ -1,0 +1,29 @@
+{
+  "id": "locale-identity-legacy-tags-on-disk",
+  "description": "The reverse of the canonicalization fixture: the DEPRECATED spellings are what the deployer put on disk (hy-SU, pap-AN, sh, mo, cmn) and callers ask with modern tags. Directly serves the 'candidate tags differing from loaded file tags' clause. The five canonical primary languages (hy, pap, sr, ro, zh) are distinct from each other and from en, so no tiebreakers are needed.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "hy-SU": {
+      "Greeting": "barev",
+      "Only.Hy": "hy only"
+    },
+    "pap-AN": {
+      "Greeting": "bon dia"
+    },
+    "sh": {
+      "Greeting": "zdravo"
+    },
+    "mo": {
+      "Greeting": "salut"
+    },
+    "cmn": {
+      "Greeting": "nihao"
+    },
+    "en": {
+      "Greeting": "hello"
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

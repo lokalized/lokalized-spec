@@ -1,0 +1,16 @@
+{
+  "id": "manifest-loads-partial-catalog",
+  "description": "A deliberately partial manifest at the KEY level: both locales load, but fr carries one of the three keys en carries. Serves the 'deliberately partial manifest loads' clause where partiality is inside a file rather than in the file set.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "A": "a",
+      "B": "b",
+      "C": "c"
+    },
+    "fr": {
+      "A": "a-fr"
+    }
+  }
+}

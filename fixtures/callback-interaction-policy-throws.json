@@ -1,0 +1,50 @@
+{
+  "id": "callback-interaction-policy-throws",
+  "description": "Every extension point is hostile: the resolver throws, the fallback policy throws, and the failure handler throws, each with its own sentinel message so the escaping exception names which callback won. Three candidates (en-US, en, fr) so a policy consultation actually happens, and the en catalog carries an inert plain-text entry so a permissive per-call policy can recover. Two loaded locales share 'en', so tiebreakers is mandatory.",
+  "fallbackLocale": "fr",
+  "tiebreakers": {
+    "en": [
+      "en-US",
+      "en"
+    ]
+  },
+  "translationFailureHandler": {
+    "behavior": "throw-in-handler",
+    "message": "handler-refused-delta"
+  },
+  "translationFallbackPolicy": {
+    "behavior": "throw-in-policy",
+    "message": "policy-refused-delta"
+  },
+  "phoneticResolver": {
+    "behavior": "throw",
+    "message": "sentinel-resolver-delta"
+  },
+  "files": {
+    "en-US": {
+      "Locale.Marker": "en-US",
+      "Article": {
+        "translation": "{{article}}",
+        "placeholders": {
+          "article": {
+            "value": "nounTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "an (en-US)",
+              "PHONETIC_CONSONANT": "a (en-US)"
+            }
+          }
+        }
+      }
+    },
+    "en": {
+      "Locale.Marker": "en",
+      "Article": "en plain article"
+    },
+    "fr": {
+      "Locale.Marker": "fr",
+      "Unrelated": "fr unrelated"
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

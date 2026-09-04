@@ -1,0 +1,67 @@
+{
+  "id": "m3b-canonicalization-aliases",
+  "description": "One catalog per CANONICALIZATION OUTCOME. Every locale here is the tag some deprecated, aliased or placeholder-bearing request is supposed to canonicalize TO, and nothing else in the set is reachable from that request, so the selected catalog names the canonical form the implementation actually computed. That is what makes these cases discriminating rather than merely reaching: CldrLocaleData has no public surface, and its output is only observable as WHICH CATALOG a negotiation lands on. en/en-Zinh, the three sr catalogs, and the two fa catalogs each need tiebreakers because they share a normalized language code; the tiebreaker orders are deliberately the ones that would win if canonicalization did NOT run, so a port that skipped an alias falls back to the tiebreaker's first entry and produces a different answer.",
+  "fallbackLocale": "fr",
+  "tiebreakers": {
+    "en": [
+      "en",
+      "en-Zinh"
+    ],
+    "sr": [
+      "sr-Cyrl",
+      "sr-Latn-BA",
+      "sr-Latn-fonipa"
+    ],
+    "fa": [
+      "fa-Arab-AF",
+      "fa-IR"
+    ]
+  },
+  "files": {
+    "fr": {
+      "Checkout.Title": "fr"
+    },
+    "en": {
+      "Checkout.Title": "en"
+    },
+    "en-Zinh": {
+      "Checkout.Title": "en-Zinh"
+    },
+    "sr-Cyrl": {
+      "Checkout.Title": "sr-Cyrl"
+    },
+    "sr-Latn-BA": {
+      "Checkout.Title": "sr-Latn-BA"
+    },
+    "sr-Latn-fonipa": {
+      "Checkout.Title": "sr-Latn-fonipa"
+    },
+    "fa-Arab-AF": {
+      "Checkout.Title": "fa-Arab-AF"
+    },
+    "fa-IR": {
+      "Checkout.Title": "fa-IR"
+    },
+    "nan-Hant": {
+      "Checkout.Title": "nan-Hant"
+    },
+    "nb-NO": {
+      "Checkout.Title": "nb-NO"
+    },
+    "zh-TW": {
+      "Checkout.Title": "zh-TW"
+    },
+    "el-polyton": {
+      "Checkout.Title": "el-polyton"
+    },
+    "de-1901": {
+      "Checkout.Title": "de-1901"
+    },
+    "x-private": {
+      "Checkout.Title": "x-private"
+    },
+    "cal-Cyrl-MP": {
+      "Checkout.Title": "cal-Cyrl-MP"
+    }
+  }
+}

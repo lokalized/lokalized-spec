@@ -1,0 +1,16 @@
+{
+  "id": "classpath-resources-nonascii",
+  "description": "NEW. One ordinary en catalog plus two rawFiles that are byte-for-byte twins except for the encoding of their NAME: 'messages' (ASCII) and '文字' (non-ASCII). CJK was chosen deliberately over a Latin accent because CJK ideographs have no canonical decomposition, so the name cannot differ between an NFC-writing build machine and an NFD-normalizing filesystem. Serves the clause's 'portable ASCII identifiers, and non-ASCII identifiers classified as informational' requirement. Not loadOnly: verified that both the filesystem and discovery loads pick up only 'en' and skip the two non-tag names silently, so Strings construction succeeds.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Common.Greeting": "Hello",
+      "Only.En": "en"
+    }
+  },
+  "rawFiles": {
+    "messages": "{\n  \"Common.Greeting\": \"ascii name\",\n  \"Only.Ascii\": \"a\"\n}\n",
+    "文字": "{\n  \"Common.Greeting\": \"non-ascii name\",\n  \"Only.NonAscii\": \"n\"\n}\n"
+  }
+}

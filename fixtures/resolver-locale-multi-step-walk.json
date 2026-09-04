@@ -1,0 +1,56 @@
+{
+  "id": "resolver-locale-multi-step-walk",
+  "description": "A multi-step walk in which an intermediate candidate FAILS after invoking the resolver. en-001's Article deliberately omits the PHONETIC_CONSONANT branch that the resolver returns when handed en-001, so that candidate raises IllegalStateException at DefaultStrings.java:1181 AFTER the resolver call has been made and recorded; the fixture policy is any-failure so the walk continues to en, whose Article carries every branch. resolverCalls therefore holds one entry PER CANDIDATE, each with a different locale. Per-call policy overrides on this same fixture truncate the walk at chosen points so the calls that must NOT happen are observable too.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "en": [
+      "en",
+      "en-001"
+    ]
+  },
+  "translationFallbackPolicy": "any-failure",
+  "phoneticResolver": {
+    "behavior": "by-locale",
+    "mapping": {
+      "en": "PHONETIC_VOWEL",
+      "en-001": "PHONETIC_CONSONANT",
+      "en-AU": "PHONETIC_H_SILENT"
+    },
+    "default": "PHONETIC_OTHER"
+  },
+  "files": {
+    "en-001": {
+      "Locale.Marker": "en-001",
+      "Article": {
+        "translation": "{{article}}",
+        "placeholders": {
+          "article": {
+            "value": "nounTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "got:en",
+              "PHONETIC_H_SILENT": "got:en-AU",
+              "PHONETIC_OTHER": "got:unmapped"
+            }
+          }
+        }
+      }
+    },
+    "en": {
+      "Locale.Marker": "en",
+      "Article": {
+        "translation": "{{article}}",
+        "placeholders": {
+          "article": {
+            "value": "nounTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "got:en",
+              "PHONETIC_CONSONANT": "got:en-001",
+              "PHONETIC_H_SILENT": "got:en-AU",
+              "PHONETIC_OTHER": "got:unmapped"
+            }
+          }
+        }
+      }
+    }
+  }
+}

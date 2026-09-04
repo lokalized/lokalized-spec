@@ -1,0 +1,18 @@
+{
+  "id": "manifest-loads-file-limit-exceeded",
+  "description": "Added by review: the same cap of 1 against TWO loadable files. The whole directory load aborts with the aggregate file-limit diagnostic. loadOnly. Its case is informational only, because the diagnostic names whichever file the directory stream reached second, and that is filesystem-dependent; the portable half of the proposition lives in manifest-loads-file-limit-skipped-entries.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumLocalizedStringsFiles": 1
+  },
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Greeting": "Hello"
+    },
+    "fr": {
+      "Greeting": "Bonjour"
+    }
+  }
+}

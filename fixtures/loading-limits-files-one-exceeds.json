@@ -1,0 +1,18 @@
+{
+  "id": "loading-limits-files-one-exceeds",
+  "description": "A two-file directory loaded with maximumLocalizedStringsFiles at 1. Two distinct primary languages, so no tiebreakers are required.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumLocalizedStringsFiles": 1
+  },
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    },
+    "fr": {
+      "Key.A": "a"
+    }
+  }
+}

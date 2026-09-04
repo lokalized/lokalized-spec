@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lokalized.org/schemas/registry-calibration/requirements.scratch.schema.json",
+  "title": "Lokalized JS requirement-registry calibration scratch schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "formatVersion",
+    "status",
+    "sourceSectionSha256",
+    "requirements"
+  ],
+  "properties": {
+    "formatVersion": {
+      "const": 1
+    },
+    "status": {
+      "const": "calibration-only"
+    },
+    "sourceSectionSha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "requirements": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/record"
+      }
+    }
+  },
+  "$defs": {
+    "milestone": {
+      "enum": [
+        "M0",
+        "M1",
+        "M2",
+        "M3a",
+        "M3b",
+        "M4",
+        "M5a",
+        "M5b",
+        "M6",
+        "M7",
+        "M8",
+        "M9",
+        "M-D",
+        "M-R",
+        "M-E",
+        "M-X"
+      ]
+    },
+    "record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "statement",
+        "registrationBefore",
+        "owner",
+        "parityClass",
+        "evidenceKinds",
+        "sourceAnchor"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^CAL-[A-Z][A-Z0-9-]*-[0-9]{3}$"
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 1
+        },
+        "registrationBefore": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/milestone"
+          }
+        },
+        "owner": {
+          "$ref": "#/$defs/milestone"
+        },
+        "parityClass": {
+          "enum": [
+            "portable",
+            "implementation-required",
+            "informational-nonportable"
+          ]
+        },
+        "evidenceKinds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "benchmark",
+              "compatibility-run",
+              "generated-partition",
+              "static-check",
+              "vector"
+            ]
+          }
+        },
+        "sourceAnchor": {
+          "type": "string",
+          "pattern": "^2\\.2:L[0-9]+(?:-L[0-9]+)?$"
+        }
+      }
+    }
+  }
+}

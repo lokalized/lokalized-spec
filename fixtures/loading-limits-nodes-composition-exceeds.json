@@ -1,0 +1,37 @@
+{
+  "id": "loading-limits-nodes-composition-exceeds",
+  "description": "The same five-node entry loaded with maximumTranslationNodes at 4, one short.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumTranslationNodes": 4
+  },
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": {
+        "translation": "{{x}}",
+        "placeholders": {
+          "x": {
+            "translation": "default",
+            "alternatives": [
+              {
+                "count == 1": "one"
+              },
+              {
+                "count == 2": "two"
+              }
+            ]
+          }
+        },
+        "alternatives": [
+          {
+            "count == 0": {
+              "translation": "zero"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

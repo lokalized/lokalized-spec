@@ -1,0 +1,17 @@
+{
+  "id": "owed-construct-catalog-omitted",
+  "description": "Construction refusal subject. DefaultStrings:250 -- no catalog source at all. Its files load cleanly; the refusal is at Strings construction, which is what makes it invisible without the 'construct' operation.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "refusesConstruction": true,
+  "constructionOverrides": {
+    "catalogSource": "omit"
+  },
+  "files": {
+    "en": {
+      "Greeting": {
+        "translation": "Hello"
+      }
+    }
+  }
+}

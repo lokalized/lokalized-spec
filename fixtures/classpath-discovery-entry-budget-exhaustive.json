@@ -1,0 +1,16 @@
+{
+  "id": "classpath-discovery-entry-budget-exhaustive",
+  "description": "Byte-identical content and budget to classpath-discovery-entry-budget, with exhaustiveClasspathSearch enabled. MEASURED: the exhaustive pass charges an additional 'classpath roots' discovery entry, so this half exceeds the same budget the control half fits inside — the one place this oracle can observe the option at all. loadOnly because the load is meant to fail.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumDiscoveryEntries": 2,
+    "exhaustiveClasspathSearch": true
+  },
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  }
+}

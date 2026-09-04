@@ -1,0 +1,22 @@
+{
+  "id": "dedup-and-candidates-equivalent-fallback-su-first",
+  "description": "Byte-identical files and fallbackLocale to dedup-and-candidates-equivalent-fallback-am-first, with the tiebreaker list reversed to hy-SU before hy-AM. The instance's effective fallback locale must flip to hy-SU, which is observable in every emitted match object as well as in the tail of every candidate chain.",
+  "fallbackLocale": "arm-SU",
+  "instanceLocale": "hy-AM",
+  "tiebreakers": {
+    "hy": [
+      "hy-SU",
+      "hy-AM"
+    ]
+  },
+  "files": {
+    "hy-AM": {
+      "Pair.InBoth": "hy-AM: in both",
+      "Pair.OnlyInAm": "hy-AM: only here"
+    },
+    "hy-SU": {
+      "Pair.InBoth": "hy-SU: in both",
+      "Pair.OnlyInSu": "hy-SU: only here"
+    }
+  }
+}

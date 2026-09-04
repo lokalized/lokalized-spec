@@ -1,0 +1,29 @@
+{
+  "id": "ingress-matrix-java-extlang-locale-supplier-ranges-zh-cmn",
+  "description": "Extlang arm catalog with a localeSupplier that negotiates the header 'zh-cmn' and collapses the answer to a bare Locale, erasing the three-range expansion and the CANONICAL diagnostic.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "zh": [
+      "zh",
+      "cmn"
+    ]
+  },
+  "localeSupplier": {
+    "behavior": "match-ranges",
+    "ranges": "zh-cmn"
+  },
+  "files": {
+    "zh": {
+      "Checkout.Title": "zh"
+    },
+    "cmn": {
+      "Checkout.Title": "cmn"
+    },
+    "yue": {
+      "Checkout.Title": "yue"
+    },
+    "en": {
+      "Checkout.Title": "en"
+    }
+  }
+}

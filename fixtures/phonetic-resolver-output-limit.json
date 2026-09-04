@@ -1,0 +1,31 @@
+{
+  "id": "phonetic-resolver-output-limit",
+  "description": "maximumInterpolatedOutputCharacters lowered to 8. The phonetic dispatch converts the CharSequence through CharSequenceUtils.toString under that limit BEFORE calling the resolver, so an over-long term must fail with no invocation while a term exactly at the limit resolves.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "runtimeLimits": {
+    "maximumInterpolatedOutputCharacters": 8
+  },
+  "phoneticResolver": {
+    "behavior": "constant",
+    "phonetic": "PHONETIC_VOWEL"
+  },
+  "files": {
+    "en": {
+      "Article": {
+        "translation": "{{a}}",
+        "placeholders": {
+          "a": {
+            "value": "term",
+            "translations": {
+              "PHONETIC_VOWEL": "an",
+              "PHONETIC_CONSONANT": "a"
+            }
+          }
+        }
+      }
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

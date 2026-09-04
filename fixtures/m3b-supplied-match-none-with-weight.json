@@ -1,0 +1,30 @@
+{
+  "id": "m3b-supplied-match-none-with-weight",
+  "description": "A localeMatchSupplier handing the library a LocaleMatchResult built through its PUBLIC constructor. The supplier is invoked lazily at lookup time, so the constructor's refusal surfaces as a per-case throw rather than as an unbuildable fixture. Caller-supplied match results are revalidated on every use, so each of these is a live validation path a port must reproduce rather than a Java-only assertion. An unmatched result carrying an effective weight.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "localeMatchSupplier": {
+    "behavior": "fabricated",
+    "ranges": [
+      {
+        "range": "fr",
+        "weight": 1
+      }
+    ],
+    "fallbackLocale": "en",
+    "consideredLocales": [
+      "en",
+      "fr"
+    ],
+    "matchType": "NONE",
+    "weight": 1
+  },
+  "files": {
+    "en": {
+      "Checkout.Title": "Checkout"
+    },
+    "fr": {
+      "Checkout.Title": "Paiement"
+    }
+  }
+}

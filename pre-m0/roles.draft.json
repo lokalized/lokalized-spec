@@ -1,0 +1,26 @@
+{
+  "formatVersion": 1,
+  "status": "approved-for-m0",
+  "preM0Coordinator": {
+    "name": "Codex primary task /root",
+    "kind": "agent"
+  },
+  "productionImplementer": {
+    "name": "Mark Allen",
+    "kind": "human"
+  },
+  "humanReviewer": {
+    "name": "Mark Allen",
+    "kind": "human"
+  },
+  "humanDecisionOwner": {
+    "name": "Mark Allen",
+    "kind": "human"
+  },
+  "requiredBeforeM0": [
+    "productionImplementer",
+    "humanReviewer",
+    "humanDecisionOwner"
+  ],
+  "note": "Solo maintainer. One human holds the implementer, reviewer and decision-owner roles; role separation is declared absent rather than simulated. Roles were named explicitly by Mark Allen on 2026-09-01T21:23:45Z, not inferred from an instruction to begin."
+}

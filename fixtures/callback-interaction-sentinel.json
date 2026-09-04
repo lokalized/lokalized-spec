@@ -1,0 +1,39 @@
+{
+  "id": "callback-interaction-sentinel",
+  "description": "One locale only, so no policy consultation is possible and the resolver-plus-handler pair is isolated. The resolver always throws a distinctively worded sentinel. Alongside the phonetic key sit a key that is simply absent from the catalog and an alternatives-only key whose sole predicate is false, so the two CAUSELESS failure reasons can be contrasted with the resolver's caused one under the same throwing handler.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "phoneticResolver": {
+    "behavior": "throw",
+    "message": "sentinel-resolver-charlie"
+  },
+  "files": {
+    "en": {
+      "Locale.Marker": "en",
+      "Article": {
+        "translation": "{{article}}",
+        "placeholders": {
+          "article": {
+            "value": "nounTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "an",
+              "PHONETIC_CONSONANT": "a"
+            }
+          }
+        }
+      },
+      "Guest.Welcome": {
+        "commentary": "Alternatives-only with no default translation: an unmatched predicate yields NO_MATCHING_ALTERNATIVE and no throwable.",
+        "alternatives": [
+          {
+            "guestGender == GENDER_FEMININE": {
+              "translation": "Welcome back, madam."
+            }
+          }
+        ]
+      }
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

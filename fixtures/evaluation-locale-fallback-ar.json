@@ -1,0 +1,40 @@
+{
+  "id": "evaluation-locale-fallback-ar",
+  "description": "Arabic is the fallback donor for en, pl, ru and fr requests. Arabic is the only one of the seven languages with ZERO and TWO categories, so a fallback that lands on CARDINALITY_ZERO or CARDINALITY_TWO is proof positive that evaluation used the donor's rules. The catalog also carries an RTL template with a caller-supplied placeholder, because interpolateTemplate decides bidi isolation from the same `locale` argument it uses for plural selection (shouldApplyBidiIsolation(locale, bidiIsolation) at DefaultStrings.java:1367), i.e. from the donor.",
+  "fallbackLocale": "ar",
+  "tiebreakers": null,
+  "files": {
+    "ar": {
+      "Locale.Marker": "ar",
+      "Items.Fallback": {
+        "translation": "{{noun}}",
+        "placeholders": {
+          "noun": {
+            "value": "itemCount",
+            "translations": {
+              "CARDINALITY_ZERO": "ar:ZERO",
+              "CARDINALITY_ONE": "ar:ONE",
+              "CARDINALITY_TWO": "ar:TWO",
+              "CARDINALITY_FEW": "ar:FEW",
+              "CARDINALITY_MANY": "ar:MANY",
+              "CARDINALITY_OTHER": "ar:OTHER"
+            }
+          }
+        }
+      },
+      "Greeting.Named": "مرحبا، {{name}}"
+    },
+    "en": {
+      "Locale.Marker": "en"
+    },
+    "pl": {
+      "Locale.Marker": "pl"
+    },
+    "ru": {
+      "Locale.Marker": "ru"
+    },
+    "fr": {
+      "Locale.Marker": "fr"
+    }
+  }
+}

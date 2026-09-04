@@ -1,0 +1,36 @@
+{
+  "id": "supplied-match-type-exact",
+  "description": "A fabricated match that differs from reality in matchType ALONE: it selects fr, names range fr at weight 1, and considers exactly the loaded locales, so matchType=EXACT is the only counterfactual field. TranslationResult.isFallback (TranslationResult.java:250-274) ORs negotiationUsedFallback, which switches on the SUPPLIED matchType, with a resolved-locale term that is inert when the key is served from the supplied locale.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "localeMatchSupplier": {
+    "behavior": "fabricated",
+    "locale": "fr",
+    "matchType": "EXACT",
+    "range": "fr",
+    "weight": 1,
+    "ranges": [
+      {
+        "range": "fr",
+        "weight": 1
+      }
+    ],
+    "fallbackLocale": "en",
+    "consideredLocales": [
+      "en",
+      "fr"
+    ]
+  },
+  "files": {
+    "fr": {
+      "Locale.Marker": "fr",
+      "Greeting.Hello": "Bonjour",
+      "Only.Fr": "fr-only"
+    },
+    "en": {
+      "Locale.Marker": "en",
+      "Greeting.Hello": "Hello",
+      "Only.En": "en-only"
+    }
+  }
+}

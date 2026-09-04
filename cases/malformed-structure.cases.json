@@ -1,0 +1,1269 @@
+{
+  "formatVersion": 1,
+  "family": "malformed-structure",
+  "description": "Plan v7 section 8.3 fixture family 'malformed-structure'. Inputs only; the oracle emits expected.",
+  "skipped": [
+    {
+      "what": "LocalizedStringValidator's own failure wrapper -- the \"semantic validation failed for localized string key <k>\" LocalizedStringLoadingException with an IllegalArgumentException cause (LocalizedStringLoader.java:1942-1946).",
+      "why": "Re-verified against the source in this review and still unreachable from filesystem loading. Every invariant LocalizedStringValidator.validateCurrent / validateLanguageFormTranslation / validateExpressionTranslation enforces has a strictly earlier loader counterpart with a different message: identifier and reserved-name checks go through ensureValidPlaceholderName (loader 2688+) before the validator's validateIdentifier; template references go through validatePlaceholderReferences (loader 2308), which calls the same StringInterpolator.placeholderNamesIn the validator's validateTemplate calls; alternative expressions go through validateWholeMessageAlternativeExpression and validateFragmentAlternativeExpression; mixed axes, empty translation tables and range-requires-cardinality are all caught in parseSingleAxisLanguageFormTranslation; and MAXIMUM_ALTERNATIVE_DEPTH of 128 sits above the loader's JSON-nesting ceiling (schema maximum 128, roughly three JSON levels per alternative), so the JSON depth limit always fires first -- which is exactly what the existing alternatives-structure depth-41/42 pair observes. The string 'semantic validation failed' appears zero times in the existing 842-case corpus. Reaching it needs the programmatic LocalizedString.Builder path, which the oracle does not expose."
+    },
+    {
+      "what": "Programmatic object-model violations: a null PlaceholderDefinition, a null entry in an alternatives list, an unsupported PlaceholderDefinition subtype, and a null language form or value inside a translations map (LocalizedStringValidator.java:176, 187, 216, 189).",
+      "why": "These are LocalizedStringValidator branches reachable only by constructing a LocalizedString through its Java Builder. No strings file can express them -- the loader's own parser rejects the JSON shapes that would produce them first -- and this corpus's fixtures are files on disk."
+    },
+    {
+      "what": "Structural rejection paths specific to classpath ingress: the INVALID_CLASSPATH_LOCALE_FILENAME warning, 'Ignoring classpath resource ...' downgrades, and 'Duplicate localized string key ... while merging classpath resources'.",
+      "why": "Classpath loading is listed as unsupported for this corpus; the oracle drives loadFromFilesystem and LocalizedStringLoader.parse only."
+    },
+    {
+      "what": "Interactions between structural violations and the loader's resource limits -- maximumJsonNestingDepth, maximumTranslationNodes, maximumWarnings, maximumInputBytes -- and the MAXIMUM_JSON_DIAGNOSTIC_PATH_CHARACTERS truncation of a very deep JSON path in a duplicate-member message.",
+      "why": "Owned by the loader-smoke, runtime-limits and alternatives-structure families; every fixture here leaves loadingOptions null so no limit can pre-empt the structural cause under test. The untruncated JSON-path rendering is pinned instead, which is the part this clause is about."
+    },
+    {
+      "what": "A nested (depth-2) declaration path such as 'Key.A -> alternative[count == 0] -> alternative[count == 1]' in a placeholder-reference error.",
+      "why": "Executable -- I ran it and it renders the chained path correctly -- but alternative NESTING depth is owned by the alternatives-structure family, and malformed-structure.reference.inside-alternative-reports-declaration-path already pins that the path is rendered at all. Left out to keep this family's propositions one-per-case rather than duplicating another family's axis."
+    }
+  ],
+  "cases": [
+    {
+      "id": "malformed-structure.value-type.number-translation-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-value-types",
+      "operation": "parse",
+      "input": {
+        "file": "en",
+        "locale": "en",
+        "source": "value-type-number"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A translation value that is a JSON number. Pins that the loader rejects it at parse rather than coercing it to '42'."
+    },
+    {
+      "id": "malformed-structure.value-type.boolean-translation-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-value-types",
+      "operation": "parse",
+      "input": {
+        "file": "fr",
+        "locale": "fr",
+        "source": "value-type-boolean"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A translation value that is a JSON boolean. A port using truthiness or String(value) would accept it and produce the text 'true'."
+    },
+    {
+      "id": "malformed-structure.value-type.array-translation-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-value-types",
+      "operation": "parse",
+      "input": {
+        "file": "de",
+        "locale": "de",
+        "source": "value-type-array"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A translation value that is a JSON array. A JS port branching on typeof value === 'object' would mistake an array for the object form and report a different error, or none. Verified to reach the same terminal else-branch message as the other three types, which is itself the portable fact."
+    },
+    {
+      "id": "malformed-structure.value-type.null-translation-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-value-types",
+      "operation": "parse",
+      "input": {
+        "file": "es",
+        "locale": "es",
+        "source": "value-type-null"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A translation value that is explicit JSON null. typeof null === 'object' in JS, so a port must not let null fall into the object branch; Java routes it to the same terminal else-branch as a number."
+    },
+    {
+      "id": "malformed-structure.load.one-bad-file-fails-whole-directory",
+      "requirementIds": [],
+      "fixture": "malformed-structure-load-halts-directory",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "Whole-directory load with one valid and one structurally invalid file. Pins that no locales are returned at all -- a port that logged and skipped the bad file would report locale en with two keys, turning a startup error into silent partial data. The failure message names the offending FILE, so it also pins that the loader reports which file failed."
+    },
+    {
+      "id": "malformed-structure.object.translation-must-be-string",
+      "requirementIds": [],
+      "fixture": "malformed-structure-object-members",
+      "operation": "parse",
+      "input": {
+        "file": "en",
+        "locale": "en",
+        "source": "object-translation-number"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'translation' present but a number. Distinct from the value-type family: here the entry IS an object, so the error names the translation member rather than the entry."
+    },
+    {
+      "id": "malformed-structure.object.translation-null-is-not-absent",
+      "requirementIds": [],
+      "fixture": "malformed-structure-object-members",
+      "operation": "parse",
+      "input": {
+        "file": "fr",
+        "locale": "fr",
+        "source": "object-translation-null"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'translation': null. Verified to produce the wrong-TYPE message, not the absent-member message: the loader's guard is `!= null` on the JSON member, then isString(). A port using `if (obj.translation)` would take the absent branch and report 'either a translation or at least one alternative expression is required' instead."
+    },
+    {
+      "id": "malformed-structure.object.commentary-must-be-string",
+      "requirementIds": [],
+      "fixture": "malformed-structure-object-members",
+      "operation": "parse",
+      "input": {
+        "file": "de",
+        "locale": "de",
+        "source": "object-commentary-number"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'commentary' is documentation only, but is still type-checked at load. A port that ignores commentary entirely would accept this file."
+    },
+    {
+      "id": "malformed-structure.object.unknown-member-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-object-members",
+      "operation": "parse",
+      "input": {
+        "file": "es",
+        "locale": "es",
+        "source": "object-unknown-member"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "An unknown member alongside a valid translation. Pins that the loader is strict rather than tolerant, and pins the enumerated, sorted set of valid localized-string fields carried in the message: [alternatives, commentary, placeholders, translation]."
+    },
+    {
+      "id": "malformed-structure.object.empty-object-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-object-members",
+      "operation": "parse",
+      "input": {
+        "file": "it",
+        "locale": "it",
+        "source": "object-empty"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "An empty object value: no unknown members, but nothing to translate either. Pins the 'translation or at least one alternative' requirement, which a port special-casing {} as an empty translation would violate."
+    },
+    {
+      "id": "malformed-structure.object.commentary-only-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-object-members",
+      "operation": "parse",
+      "input": {
+        "file": "nl",
+        "locale": "nl",
+        "source": "object-commentary-only"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Only a commentary member. Every member present is valid and well typed, yet the entry is still incomplete -- a port validating member-by-member without a whole-entry check would accept it. Verified to emit the same message as the empty object, so the two together pin one rule reached from two directions."
+    },
+    {
+      "id": "malformed-structure.placeholders.container-must-be-object",
+      "requirementIds": [],
+      "fixture": "malformed-structure-placeholders-container",
+      "operation": "parse",
+      "input": {
+        "file": "en",
+        "locale": "en",
+        "source": "placeholders-array"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'placeholders' as an array. A JS port using typeof === 'object' accepts arrays and would then iterate zero named placeholders; Java rejects the file. The check runs before the translation's own {{books}} reference is resolved, so this file isolates one cause."
+    },
+    {
+      "id": "malformed-structure.placeholders.null-container-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-placeholders-container",
+      "operation": "parse",
+      "input": {
+        "file": "ru",
+        "locale": "ru",
+        "source": "placeholders-null"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'placeholders': null. The sharpest JS trap in the family, because typeof null === 'object': a port that accepts it then calls Object.entries(null) and either throws an unrelated TypeError or silently sees no placeholders. Verified to emit the same must-be-an-object message as the array form."
+    },
+    {
+      "id": "malformed-structure.placeholders.definition-must-be-object",
+      "requirementIds": [],
+      "fixture": "malformed-structure-placeholders-container",
+      "operation": "parse",
+      "input": {
+        "file": "fr",
+        "locale": "fr",
+        "source": "placeholder-definition-string"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A placeholder definition that is a bare string. Pins that there is no string shorthand for a placeholder definition, and that the message names the KEY rather than the placeholder."
+    },
+    {
+      "id": "malformed-structure.placeholders.empty-definition-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-placeholders-container",
+      "operation": "parse",
+      "input": {
+        "file": "de",
+        "locale": "de",
+        "source": "placeholder-definition-empty"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "An empty placeholder definition declares neither placeholder mode. Pins the error that names both member sets, which is the only message stating the two-mode model."
+    },
+    {
+      "id": "malformed-structure.placeholders.unknown-definition-member-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-placeholders-container",
+      "operation": "parse",
+      "input": {
+        "file": "es",
+        "locale": "es",
+        "source": "placeholder-definition-unknown-member"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "An unknown member inside an otherwise valid placeholder definition. Pins the enumerated valid placeholder members [alternatives, range, translation, translations, value], which differ from the localized-string members -- two whitelists a port could easily merge into one."
+    },
+    {
+      "id": "malformed-structure.placeholders.invalid-identifier-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-placeholders-container",
+      "operation": "parse",
+      "input": {
+        "file": "it",
+        "locale": "it",
+        "source": "placeholder-name-invalid"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A placeholder named '1books', which the identifier grammar forbids. The translation deliberately does NOT reference it, so the case pins that the name is checked on the DEFINITION even when nothing uses it."
+    },
+    {
+      "id": "malformed-structure.placeholders.reserved-language-form-name-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-placeholders-container",
+      "operation": "parse",
+      "input": {
+        "file": "nl",
+        "locale": "nl",
+        "source": "placeholder-name-reserved"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A placeholder named CARDINALITY_ONE. A valid identifier, but reserved as an expression constant -- a port checking only the identifier regex would accept it and then shadow a language-form constant inside expressions. Pins the second, distinct branch of the same name check."
+    },
+    {
+      "id": "malformed-structure.placeholders.mixed-modes-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-placeholders-container",
+      "operation": "parse",
+      "input": {
+        "file": "pt",
+        "locale": "pt",
+        "source": "placeholder-modes-mixed"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A definition carrying both language-form members (value/translations) and a template member (translation). Pins that the two placeholder modes are mutually exclusive rather than merged or precedence-ordered, and that this check precedes every per-mode check."
+    },
+    {
+      "id": "malformed-structure.placeholders.unreferenced-definition-is-valid",
+      "requirementIds": [],
+      "fixture": "malformed-structure-placeholders-container",
+      "operation": "parse",
+      "input": {
+        "file": "sv",
+        "locale": "sv",
+        "source": "placeholder-unreferenced-control"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Control for this whole fixture: a well-formed placeholder the translation never references LOADS, with no warning (sv is one/other so the cardinality table is complete). Without it a port could pass every rejection above by rejecting any unreferenced definition, and it isolates the name rule in the two preceding cases from an unused-placeholder rule that does not exist."
+    },
+    {
+      "id": "malformed-structure.language-form.value-or-range-required",
+      "requirementIds": [],
+      "fixture": "malformed-structure-language-form-translations",
+      "operation": "parse",
+      "input": {
+        "file": "en",
+        "locale": "en",
+        "source": "language-form-no-value"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "translations without value or range: nothing says what to select on. Pins that the error reports the ROOT KEY rather than the placeholder name, unlike the neighbouring placeholder-definition errors."
+    },
+    {
+      "id": "malformed-structure.language-form.translations-required",
+      "requirementIds": [],
+      "fixture": "malformed-structure-language-form-translations",
+      "operation": "parse",
+      "input": {
+        "file": "fr",
+        "locale": "fr",
+        "source": "language-form-no-translations"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "value without translations: a selector with nothing to select. Pins the complementary requirement to the previous case."
+    },
+    {
+      "id": "malformed-structure.language-form.translations-must-be-object",
+      "requirementIds": [],
+      "fixture": "malformed-structure-language-form-translations",
+      "operation": "parse",
+      "input": {
+        "file": "de",
+        "locale": "de",
+        "source": "language-form-translations-string"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'translations' as a bare string. A port allowing a scalar shorthand for a single form would accept this."
+    },
+    {
+      "id": "malformed-structure.language-form.unknown-form-name-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-language-form-translations",
+      "operation": "parse",
+      "input": {
+        "file": "es",
+        "locale": "es",
+        "source": "language-form-bare-names"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Translation keys ONE/OTHER without the CARDINALITY_ prefix. Pins rejection AND pins the complete enumerated vocabulary of accepted language-form names, in the loader's own declaration order, carried in the message -- the strongest single check on a port's language-form name table and its ordering."
+    },
+    {
+      "id": "malformed-structure.language-form.translation-value-must-be-string",
+      "requirementIds": [],
+      "fixture": "malformed-structure-language-form-translations",
+      "operation": "parse",
+      "input": {
+        "file": "it",
+        "locale": "it",
+        "source": "language-form-value-number"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A language-form translation whose value is a number. Pins per-form value typing rather than only container typing, and pins that the per-form check fires on the FIRST offending member rather than after the whole table is read."
+    },
+    {
+      "id": "malformed-structure.language-form.axes-may-not-be-mixed",
+      "requirementIds": [],
+      "fixture": "malformed-structure-language-form-translations",
+      "operation": "parse",
+      "input": {
+        "file": "nl",
+        "locale": "nl",
+        "source": "language-form-mixed-axes"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "CARDINALITY_ONE alongside GENDER_MASCULINE in one table. Both names are valid; the combination is not. A port keying a flat map by name, with no notion of axis identity, would accept it. Verified to fire after every entry type-checks, so this file isolates the axis rule."
+    },
+    {
+      "id": "malformed-structure.language-form.translations-null-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-language-form-translations",
+      "operation": "parse",
+      "input": {
+        "file": "pt",
+        "locale": "pt",
+        "source": "language-form-translations-null"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'translations': null. Verified to take a DEDICATED explicit-null path whose message names both the member and the placeholder -- textually different from the 'placeholder translations are required' message that an ABSENT translations member produces two cases above. A port collapsing null into absent gets the wrong message."
+    },
+    {
+      "id": "malformed-structure.language-form.null-value-member-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-language-form-translations",
+      "operation": "parse",
+      "input": {
+        "file": "cs",
+        "locale": "cs",
+        "source": "language-form-value-null"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'value': null. The same dedicated explicit-null rejection as the previous case but for a different member, which pins that the message interpolates the member NAME rather than hard-coding one. A port with a single null guard would emit 'translations' here."
+    },
+    {
+      "id": "malformed-structure.language-form.value-and-range-are-exclusive",
+      "requirementIds": [],
+      "fixture": "malformed-structure-language-form-translations",
+      "operation": "parse",
+      "input": {
+        "file": "ru",
+        "locale": "ru",
+        "source": "language-form-value-and-range"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Both value and range declared. Pins that the loader rejects rather than preferring one, which two ports could otherwise resolve in opposite directions and both look correct."
+    },
+    {
+      "id": "malformed-structure.language-form.range-requires-cardinality",
+      "requirementIds": [],
+      "fixture": "malformed-structure-language-form-translations",
+      "operation": "parse",
+      "input": {
+        "file": "pl",
+        "locale": "pl",
+        "source": "language-form-range-gender"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A range-driven placeholder whose translations are gendered. A single axis, so the mixed-axis check passes; pins that ranges are cardinality-only, a constraint no other error path expresses."
+    },
+    {
+      "id": "malformed-structure.language-form.empty-translations-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-language-form-translations",
+      "operation": "parse",
+      "input": {
+        "file": "sv",
+        "locale": "sv",
+        "source": "language-form-translations-empty"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "An empty translations object: present, correctly typed, and useless. Verified to be folded into the SAME 'placeholder translations are required' message as an absent member, via a second emptiness check after the table is walked -- so a port must reject emptiness rather than treat it as 'no forms declared' and defer the failure to lookup."
+    },
+    {
+      "id": "malformed-structure.language-form.value-must-be-string",
+      "requirementIds": [],
+      "fixture": "malformed-structure-language-form-translations",
+      "operation": "parse",
+      "input": {
+        "file": "da",
+        "locale": "da",
+        "source": "language-form-value-mistyped"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'value': 42. The value names an INPUT placeholder, not a number to select on, so a numeric value is a type error rather than a literal. A port that stringified it would silently look up a placeholder named '42'."
+    },
+    {
+      "id": "malformed-structure.language-form.value-must-be-valid-identifier",
+      "requirementIds": [],
+      "fixture": "malformed-structure-language-form-translations",
+      "operation": "parse",
+      "input": {
+        "file": "fi",
+        "locale": "fi",
+        "source": "language-form-value-bad-identifier"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'value': '1count'. Correctly typed but not a legal identifier. Pins a THIRD distinct message on the value member -- null, mistyped, and ungrammatical each report differently -- and pins that the identifier grammar applies to placeholder inputs, not just to placeholder names."
+    },
+    {
+      "id": "malformed-structure.alternatives.must-be-array",
+      "requirementIds": [],
+      "fixture": "malformed-structure-alternatives",
+      "operation": "parse",
+      "input": {
+        "file": "en",
+        "locale": "en",
+        "source": "alternatives-object"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'alternatives' as an object rather than an array. Array order defines first-match precedence, so array-ness is load-bearing; a port accepting an object would silently depend on JS key-insertion order."
+    },
+    {
+      "id": "malformed-structure.alternatives.empty-array-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-alternatives",
+      "operation": "parse",
+      "input": {
+        "file": "fr",
+        "locale": "fr",
+        "source": "alternatives-empty"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "An empty alternatives array. Pins that it is rejected rather than ignored, even though a valid translation is present and the entry would otherwise resolve."
+    },
+    {
+      "id": "malformed-structure.alternatives.null-element-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-alternatives",
+      "operation": "parse",
+      "input": {
+        "file": "de",
+        "locale": "de",
+        "source": "alternatives-null-element"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A null element inside the array. Verified to take its own dedicated branch ahead of the not-an-object check, so it reports a different message than the next case -- two adjacent code paths a port would naturally merge."
+    },
+    {
+      "id": "malformed-structure.alternatives.non-object-element-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-alternatives",
+      "operation": "parse",
+      "input": {
+        "file": "es",
+        "locale": "es",
+        "source": "alternatives-string-element"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A bare expression string as an array element. Pins that there is no string shorthand for a whole-message alternative -- unlike a FRAGMENT alternative, whose result IS a bare string."
+    },
+    {
+      "id": "malformed-structure.alternatives.empty-element-object-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-alternatives",
+      "operation": "parse",
+      "input": {
+        "file": "it",
+        "locale": "it",
+        "source": "alternatives-empty-element"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "An alternative object with no members. Pins the at-least-one-expression requirement, separate from the empty-array requirement above."
+    },
+    {
+      "id": "malformed-structure.alternatives.multiple-expressions-per-element-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-alternatives",
+      "operation": "parse",
+      "input": {
+        "file": "nl",
+        "locale": "nl",
+        "source": "alternatives-two-expressions"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Two expressions inside one alternative object. Verified to be rejected BEFORE either expression is parsed. Rejected because array order, not object order, defines first-match precedence -- exactly the rule a JS port relying on object key order would get wrong without noticing."
+    },
+    {
+      "id": "malformed-structure.alternatives.unparseable-expression-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-alternatives",
+      "operation": "parse",
+      "input": {
+        "file": "pt",
+        "locale": "pt",
+        "source": "alternatives-bad-expression"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "An alternative keyed by 'count ==', a truncated expression. Pins that expressions are parsed and validated at LOAD time, not lazily at first lookup, and pins that the evaluator's own diagnostic is appended verbatim to the loader's contextual message."
+    },
+    {
+      "id": "malformed-structure.alternatives.element-value-wrong-node-type",
+      "requirementIds": [],
+      "fixture": "malformed-structure-alternatives",
+      "operation": "parse",
+      "input": {
+        "file": "ru",
+        "locale": "ru",
+        "source": "alternatives-number-value"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "An alternative whose value is a number, behind an expression that parses cleanly so the recursion is actually reached. Pins that the recursion reports the ALTERNATIVE EXPRESSION as the key, not the root key -- a diagnostic detail that only shows up on the recursive path."
+    },
+    {
+      "id": "malformed-structure.alternatives.element-value-null-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-alternatives",
+      "operation": "parse",
+      "input": {
+        "file": "pl",
+        "locale": "pl",
+        "source": "alternatives-null-value"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "An alternative whose value is explicit null. Verified to produce a different message than the null-ELEMENT case: null-as-element is caught by the array walk, null-as-value falls through to the recursive parse and is reported against the expression."
+    },
+    {
+      "id": "malformed-structure.fragment.default-translation-must-be-string",
+      "requirementIds": [],
+      "fixture": "malformed-structure-fragment-placeholders",
+      "operation": "parse",
+      "input": {
+        "file": "en",
+        "locale": "en",
+        "source": "fragment-translation-number"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A template placeholder whose default translation is a number. Pins that the template branch is chosen by the PRESENCE of the translation member and only then type-checked -- a port choosing the branch by type would fall into the language-form branch and report the wrong error."
+    },
+    {
+      "id": "malformed-structure.fragment.default-translation-required",
+      "requirementIds": [],
+      "fixture": "malformed-structure-fragment-placeholders",
+      "operation": "parse",
+      "input": {
+        "file": "ru",
+        "locale": "ru",
+        "source": "fragment-translation-missing"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A template placeholder with alternatives and NO default translation. The exact counterpart of malformed-structure.expression.alternatives-only-entry-is-valid, where an alternatives-only WHOLE-MESSAGE entry is legal: a fragment placeholder must always carry a default. A port sharing one alternatives-only rule between the two levels gets exactly one of them wrong."
+    },
+    {
+      "id": "malformed-structure.fragment.default-translation-null-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-fragment-placeholders",
+      "operation": "parse",
+      "input": {
+        "file": "pl",
+        "locale": "pl",
+        "source": "fragment-translation-null"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A template placeholder whose translation is explicit null. Verified to produce a DEDICATED null message, unlike the whole-message localized-string object where a null translation reports 'must be a string'. Two levels of the same format, two different treatments of null."
+    },
+    {
+      "id": "malformed-structure.fragment.alternatives-must-be-array",
+      "requirementIds": [],
+      "fixture": "malformed-structure-fragment-placeholders",
+      "operation": "parse",
+      "input": {
+        "file": "fr",
+        "locale": "fr",
+        "source": "fragment-alternatives-object"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Fragment alternatives as an object. Pins that fragment alternatives carry the same array-ordering rule as whole-message alternatives but a distinct message naming the placeholder and root key."
+    },
+    {
+      "id": "malformed-structure.fragment.alternatives-null-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-fragment-placeholders",
+      "operation": "parse",
+      "input": {
+        "file": "de",
+        "locale": "de",
+        "source": "fragment-alternatives-null"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Fragment alternatives explicitly null. Pins a dedicated null message rather than being treated as absent, which would make the file valid -- the strongest possible difference between two readings of null."
+    },
+    {
+      "id": "malformed-structure.fragment.empty-alternatives-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-fragment-placeholders",
+      "operation": "parse",
+      "input": {
+        "file": "es",
+        "locale": "es",
+        "source": "fragment-alternatives-empty"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "An empty fragment alternatives array. Pins rejection even though the default translation alone would be a perfectly valid definition."
+    },
+    {
+      "id": "malformed-structure.fragment.alternative-element-null-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-fragment-placeholders",
+      "operation": "parse",
+      "input": {
+        "file": "sv",
+        "locale": "sv",
+        "source": "fragment-alternative-null-element"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A null element inside the fragment alternatives array. Pins that the per-element message carries the alternative INDEX, which the whole-message path's equivalent message does not."
+    },
+    {
+      "id": "malformed-structure.fragment.alternative-element-must-be-object",
+      "requirementIds": [],
+      "fixture": "malformed-structure-fragment-placeholders",
+      "operation": "parse",
+      "input": {
+        "file": "da",
+        "locale": "da",
+        "source": "fragment-alternative-string-element"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A bare string as a fragment alternative ELEMENT. Easily confused with the legal bare-string RESULT inside an element; pins that the element itself must still be a one-member object."
+    },
+    {
+      "id": "malformed-structure.fragment.alternative-result-must-be-string",
+      "requirementIds": [],
+      "fixture": "malformed-structure-fragment-placeholders",
+      "operation": "parse",
+      "input": {
+        "file": "it",
+        "locale": "it",
+        "source": "fragment-alternative-object-result"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A fragment alternative whose result is an object -- the exact shape a whole-message alternative uses. Pins that fragments take a bare string result and do not nest, the likeliest confusion between the two alternative kinds, and pins that the result is type-checked BEFORE its expression is parsed."
+    },
+    {
+      "id": "malformed-structure.fragment.unparseable-expression-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-fragment-placeholders",
+      "operation": "parse",
+      "input": {
+        "file": "nl",
+        "locale": "nl",
+        "source": "fragment-alternative-bad-expression"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A truncated fragment expression behind a well-typed string result, so the expression check is actually reached. Pins load-time expression validation on the fragment path, including the alternative INDEX in the message."
+    },
+    {
+      "id": "malformed-structure.fragment.multiple-expressions-per-element-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-fragment-placeholders",
+      "operation": "parse",
+      "input": {
+        "file": "pt",
+        "locale": "pt",
+        "source": "fragment-alternative-two-expressions"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Two expressions in one fragment alternative object. Pins the exactly-one rule on the fragment path, with its own indexed message distinct from the whole-message one."
+    },
+    {
+      "id": "malformed-structure.range.must-be-object",
+      "requirementIds": [],
+      "fixture": "malformed-structure-range-shape",
+      "operation": "parse",
+      "input": {
+        "file": "en",
+        "locale": "en",
+        "source": "range-string"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'range' as a string. Pins that there is no 'lo..hi' shorthand for a range."
+    },
+    {
+      "id": "malformed-structure.range.end-required",
+      "requirementIds": [],
+      "fixture": "malformed-structure-range-shape",
+      "operation": "parse",
+      "input": {
+        "file": "fr",
+        "locale": "fr",
+        "source": "range-missing-end"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A range with only a start. Pins that both endpoints are mandatory rather than the missing one defaulting to open-ended."
+    },
+    {
+      "id": "malformed-structure.range.start-must-be-string",
+      "requirementIds": [],
+      "fixture": "malformed-structure-range-shape",
+      "operation": "parse",
+      "input": {
+        "file": "de",
+        "locale": "de",
+        "source": "range-start-number"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A numeric range start. Endpoints name INPUT placeholders, not values, so a number is a type error rather than a literal bound -- a port treating ranges as numeric intervals would accept it."
+    },
+    {
+      "id": "malformed-structure.range.end-must-be-string",
+      "requirementIds": [],
+      "fixture": "malformed-structure-range-shape",
+      "operation": "parse",
+      "input": {
+        "file": "pt",
+        "locale": "pt",
+        "source": "range-end-number"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A numeric range END, behind a valid string start so the end branch is actually reached. Pins the symmetric check: a port that validated only the start would accept this file."
+    },
+    {
+      "id": "malformed-structure.range.null-start-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-range-shape",
+      "operation": "parse",
+      "input": {
+        "file": "es",
+        "locale": "es",
+        "source": "range-start-null"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "An explicitly null range start. Verified to be FOLDED INTO the same 'range start is required' message as an absent start -- the guard is `start == null || start.isNull()`. Paired with malformed-structure.range.end-required, which reaches that same wording by absence, this pins that null and missing are ONE case inside the range object, unlike the placeholder members one level up where they are two. A JS port testing `'start' in range` would accept explicit null."
+    },
+    {
+      "id": "malformed-structure.range.start-must-be-valid-identifier",
+      "requirementIds": [],
+      "fixture": "malformed-structure-range-shape",
+      "operation": "parse",
+      "input": {
+        "file": "ru",
+        "locale": "ru",
+        "source": "range-start-bad-identifier"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A range start of '1lo': correctly typed, but not a legal identifier. Pins a third, distinct message on the same member and pins that range endpoints go through the placeholder identifier grammar -- direct evidence for the claim that endpoints name inputs rather than values."
+    },
+    {
+      "id": "malformed-structure.range.unknown-member-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-range-shape",
+      "operation": "parse",
+      "input": {
+        "file": "it",
+        "locale": "it",
+        "source": "range-unknown-member"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "An unknown 'step' member. Pins the range object's own member whitelist [end, start], which is narrower than the placeholder's -- a third whitelist a port must keep separate."
+    },
+    {
+      "id": "malformed-structure.range.well-formed-range-is-valid",
+      "requirementIds": [],
+      "fixture": "malformed-structure-range-shape",
+      "operation": "parse",
+      "input": {
+        "file": "nl",
+        "locale": "nl",
+        "source": "range-valid"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Control: the same shape with both endpoints as strings loads and reports its key. Proves the preceding rejections are about the specific violation and not about ranges generally."
+    },
+    {
+      "id": "malformed-structure.expression.empty-expression-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-invalid-expressions",
+      "operation": "parse",
+      "input": {
+        "file": "en",
+        "locale": "en",
+        "source": "expression-empty"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "An empty-string alternative key. Pins that an empty expression is a load-time error rather than a never-matching or always-matching branch, which are the two plausible silent alternatives."
+    },
+    {
+      "id": "malformed-structure.expression.operand-only-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-invalid-expressions",
+      "operation": "parse",
+      "input": {
+        "file": "fr",
+        "locale": "fr",
+        "source": "expression-operand-only"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'count 0': two operands and no operator. Pins the diagnostic for a well-tokenized but non-evaluable expression, which surfaces from the RPN stack check rather than the tokenizer, and pins that the leftover stack contents are listed in the message."
+    },
+    {
+      "id": "malformed-structure.expression.unbalanced-parentheses-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-invalid-expressions",
+      "operation": "parse",
+      "input": {
+        "file": "de",
+        "locale": "de",
+        "source": "expression-unbalanced-parens"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'(count == 0' with no closing parenthesis. Pins the shunting-yard grouping error at load time, and that it is NOT wrapped in the 'Invalid expression' prefix the RPN validator adds -- verified against the RPN cases in this same fixture."
+    },
+    {
+      "id": "malformed-structure.expression.unbalanced-closing-parenthesis-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-invalid-expressions",
+      "operation": "parse",
+      "input": {
+        "file": "ru",
+        "locale": "ru",
+        "source": "expression-unbalanced-close"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'count == 0)' with a closing parenthesis that opens nothing. Pins the symmetric shunting-yard branch, which names a different character than the unclosed case -- a port implementing only a depth counter would report the same message for both."
+    },
+    {
+      "id": "malformed-structure.expression.dangling-operator-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-invalid-expressions",
+      "operation": "parse",
+      "input": {
+        "file": "es",
+        "locale": "es",
+        "source": "expression-dangling-and"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'count == 0 &&' with a trailing conjunction. Pins a distinct arity diagnostic naming the specific operator that ran out of arguments."
+    },
+    {
+      "id": "malformed-structure.expression.unknown-operator-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-invalid-expressions",
+      "operation": "parse",
+      "input": {
+        "file": "it",
+        "locale": "it",
+        "source": "expression-unknown-operator"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'count =? 0' uses a symbol the tokenizer does not know. Pins that it fails during TOKENIZATION with a code-point and index diagnostic plus a did-you-mean hint, not later as an identifier or arity problem."
+    },
+    {
+      "id": "malformed-structure.expression.chained-comparison-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-invalid-expressions",
+      "operation": "parse",
+      "input": {
+        "file": "nl",
+        "locale": "nl",
+        "source": "expression-chained-comparison"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'count == 0 == 1'. Every token is legal and it converts to RPN cleanly; pins that the operand-TYPE check rejects the chained comparison at LOAD rather than deferring it to evaluation, where it would become a per-request failure. The message names the two operand types, so it also pins the type lattice."
+    },
+    {
+      "id": "malformed-structure.expression.alternatives-only-entry-is-valid",
+      "requirementIds": [],
+      "fixture": "malformed-structure-invalid-expressions",
+      "operation": "parse",
+      "input": {
+        "file": "pt",
+        "locale": "pt",
+        "source": "expression-alternatives-only"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The control for this whole family: a whole-message entry with alternatives and NO translation is valid and loads. Without it, a port could pass every rejection case by rejecting all alternatives outright. Contrast malformed-structure.fragment.default-translation-required, where the same shape one level down is an error."
+    },
+    {
+      "id": "malformed-structure.reference.malformed-name-rejected-at-load",
+      "requirementIds": [],
+      "fixture": "malformed-structure-placeholder-references",
+      "operation": "parse",
+      "input": {
+        "file": "en",
+        "locale": "en",
+        "source": "reference-malformed-name"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'{{1bad}}' in a translation. The SAME construction is left as a literal at interpolation time -- interpolation-escapes.lenient.malformed-placeholder-name-is-literal renders '{{2bad}}' verbatim -- so this pins that load-time reference checking is STRICT while lenient interpolation is not. A port sharing one interpolator for both phases will get exactly one of the two wrong."
+    },
+    {
+      "id": "malformed-structure.reference.unclosed-placeholder-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-placeholder-references",
+      "operation": "parse",
+      "input": {
+        "file": "fr",
+        "locale": "fr",
+        "source": "reference-unclosed"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'{{name' with no closing delimiter. Pins strict load-time rejection of an unclosed placeholder, including the reported character index -- while its lenient counterpart emits the remainder instead of failing."
+    },
+    {
+      "id": "malformed-structure.reference.stray-closing-delimiter-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-placeholder-references",
+      "operation": "parse",
+      "input": {
+        "file": "de",
+        "locale": "de",
+        "source": "reference-stray-close"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A '}}' with no opening. Pins a distinct strict-mode error from the unclosed case, catching a port that only scans for opening delimiters."
+    },
+    {
+      "id": "malformed-structure.reference.reserved-constant-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-placeholder-references",
+      "operation": "parse",
+      "input": {
+        "file": "es",
+        "locale": "es",
+        "source": "reference-reserved-constant"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'{{CARDINALITY_ONE}}' as a reference. A well-formed identifier that is nonetheless reserved; pins the reserved-name check on the REFERENCE path, not just on definitions, and its distinct message wording ('invalid translation placeholder reference')."
+    },
+    {
+      "id": "malformed-structure.reference.inside-placeholder-translation",
+      "requirementIds": [],
+      "fixture": "malformed-structure-placeholder-references",
+      "operation": "parse",
+      "input": {
+        "file": "it",
+        "locale": "it",
+        "source": "reference-in-placeholder-translation"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A malformed reference inside a language-form translation value. Pins that nested templates are checked too, and pins the description text naming the generated placeholder that owns the template."
+    },
+    {
+      "id": "malformed-structure.reference.inside-alternative-reports-declaration-path",
+      "requirementIds": [],
+      "fixture": "malformed-structure-placeholder-references",
+      "operation": "parse",
+      "input": {
+        "file": "nl",
+        "locale": "nl",
+        "source": "reference-in-alternative"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A malformed reference inside an alternative. Pins the 'declared at <rootKey> -> alternative[<expression>]' path rendering, which no other case in the corpus reaches and which a port must reproduce to make deep catalogs debuggable. Also pins that the reported key stays the ROOT key while the path carries the location."
+    },
+    {
+      "id": "malformed-structure.top-level.array-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-top-level-shape",
+      "operation": "parse",
+      "input": {
+        "file": "en",
+        "locale": "en",
+        "source": "top-level-array"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A top-level JSON array. Pins the single-JSON-object requirement, which a port doing Object.entries(parsed) would miss because arrays enumerate too."
+    },
+    {
+      "id": "malformed-structure.top-level.string-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-top-level-shape",
+      "operation": "parse",
+      "input": {
+        "file": "fr",
+        "locale": "fr",
+        "source": "top-level-string"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A top-level JSON string. Pins the same requirement for a scalar document."
+    },
+    {
+      "id": "malformed-structure.top-level.number-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-top-level-shape",
+      "operation": "parse",
+      "input": {
+        "file": "de",
+        "locale": "de",
+        "source": "top-level-number"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A top-level JSON number. Distinguishes the not-an-object error from the syntax error a stricter parser might raise instead."
+    },
+    {
+      "id": "malformed-structure.top-level.null-document-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-top-level-shape",
+      "operation": "parse",
+      "input": {
+        "file": "pt",
+        "locale": "pt",
+        "source": "top-level-null"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A top-level JSON null. The typeof-null trap at document scope: JSON.parse('null') returns null and typeof null === 'object', so a naive JS port's object check passes and the file is accepted as an empty catalog. Java reports the same not-an-object error as an array."
+    },
+    {
+      "id": "malformed-structure.top-level.whitespace-only-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-top-level-shape",
+      "operation": "parse",
+      "input": {
+        "file": "es",
+        "locale": "es",
+        "source": "top-level-whitespace"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A file containing all four characters the loader treats as JSON whitespace -- space, tab, LF and CR -- and nothing else. Pins a DEDICATED blank-file message emitted BEFORE JSON parsing, not the parser's own syntax error."
+    },
+    {
+      "id": "malformed-structure.top-level.non-json-whitespace-is-not-blank",
+      "requirementIds": [],
+      "fixture": "malformed-structure-top-level-shape",
+      "operation": "parse",
+      "input": {
+        "file": "ru",
+        "locale": "ru",
+        "source": "top-level-nbsp"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A file containing only U+00A0. Verified to take the PARSE-ERROR path with a line:column, not the blank path: the loader's blank test accepts exactly space, tab, LF and CR (isJsonWhitespaceOnly), unlike Java's String.isBlank() or JS's String.prototype.trim(), both of which would call this file blank and emit the wrong message. This is the case that pins the boundary the previous one only samples from inside."
+    },
+    {
+      "id": "malformed-structure.top-level.empty-file-rejected",
+      "requirementIds": [],
+      "fixture": "malformed-structure-top-level-shape",
+      "operation": "parse",
+      "input": {
+        "file": "it",
+        "locale": "it",
+        "source": "top-level-empty"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A zero-byte file. Pins that empty is treated as blank rather than as an empty catalog -- a port defaulting to {} would load it silently and lose the operator's mistake."
+    },
+    {
+      "id": "malformed-structure.top-level.empty-object-is-valid",
+      "requirementIds": [],
+      "fixture": "malformed-structure-top-level-shape",
+      "operation": "parse",
+      "input": {
+        "file": "nl",
+        "locale": "nl",
+        "source": "top-level-empty-object"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The control for the blank cases: an explicit empty object is a VALID catalog with zero keys, exactly as the blank-file message advises. Without this a port could pass by rejecting everything blank-ish."
+    },
+    {
+      "id": "malformed-structure.nested-duplicates.localized-string-object",
+      "requirementIds": [],
+      "fixture": "malformed-structure-nested-duplicate-members",
+      "operation": "parse",
+      "input": {
+        "file": "en",
+        "locale": "en",
+        "source": "nested-dup-translation"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A duplicated 'translation' member one level below the top. loader-smoke pins only TOP-LEVEL duplicates; this pins the recursive check and its reported JSON path ($.Key.A). A JS port using JSON.parse cannot see the duplicate at all and would silently take the last value."
+    },
+    {
+      "id": "malformed-structure.nested-duplicates.translations-table",
+      "requirementIds": [],
+      "fixture": "malformed-structure-nested-duplicate-members",
+      "operation": "parse",
+      "input": {
+        "file": "fr",
+        "locale": "fr",
+        "source": "nested-dup-language-form"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A duplicated CARDINALITY_ONE inside a translations table four levels deep. Pins the full dotted JSON path in the message, which is how an operator finds the offending line, and pins that detection happens during JSON parsing rather than during semantic validation."
+    },
+    {
+      "id": "malformed-structure.nested-duplicates.inside-alternatives-array",
+      "requirementIds": [],
+      "fixture": "malformed-structure-nested-duplicate-members",
+      "operation": "parse",
+      "input": {
+        "file": "de",
+        "locale": "de",
+        "source": "nested-dup-in-alternative"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A duplicate inside an alternatives array element. Pins that the recursive check descends through ARRAYS and renders an indexed path segment followed by the alternative's expression, verbatim spaces included."
+    },
+    {
+      "id": "malformed-structure.nested-duplicates.placeholder-name",
+      "requirementIds": [],
+      "fixture": "malformed-structure-nested-duplicate-members",
+      "operation": "parse",
+      "input": {
+        "file": "es",
+        "locale": "es",
+        "source": "nested-dup-placeholder-name"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same placeholder name declared twice. The highest-consequence duplicate: a JS port would silently keep the second definition and change which translation is produced, with no error anywhere."
+    },
+    {
+      "id": "malformed-structure.degenerate-keys.load-reports-every-key",
+      "requirementIds": [],
+      "fixture": "malformed-structure-degenerate-keys",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "Pins whether an empty key and a whitespace-only key survive loading and appear in the key list. Verified: translation keys are NOT held to the placeholder identifier grammar -- only placeholder names, placeholder inputs and range endpoints are -- so a port that validated keys would reject a file Java accepts."
+    },
+    {
+      "id": "malformed-structure.degenerate-keys.empty-key-lookup",
+      "requirementIds": [],
+      "fixture": "malformed-structure-degenerate-keys",
+      "operation": "getResult",
+      "input": {
+        "key": "",
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Looks the empty key up. The deferred half of the preceding load case: pins that it resolves TRANSLATED like any other key rather than failing, and pins the result's key field."
+    },
+    {
+      "id": "malformed-structure.degenerate-keys.whitespace-key-lookup",
+      "requirementIds": [],
+      "fixture": "malformed-structure-degenerate-keys",
+      "operation": "getResult",
+      "input": {
+        "key": "   ",
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Looks the whitespace-only key up. A port that trims keys on load or on lookup would miss it or mis-resolve it."
+    },
+    {
+      "id": "malformed-structure.degenerate-keys.trimmed-key-is-not-the-whitespace-key",
+      "requirementIds": [],
+      "fixture": "malformed-structure-degenerate-keys",
+      "operation": "getResult",
+      "input": {
+        "key": " ",
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A single space is a DIFFERENT key from three spaces, and misses with RETURNED_KEY. Pins verbatim key comparison, catching a port that normalizes or collapses whitespace in keys -- which would otherwise pass the two preceding cases."
+    },
+    {
+      "id": "malformed-structure.undefined-reference.catalog-loads-cleanly",
+      "requirementIds": [],
+      "fixture": "malformed-structure-undefined-references",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The load half of the deferred-failure clause: an undeclared placeholder reference and an alternative expression over an unbound variable are NOT load-time errors, and emit no warning. A port that resolved references or bound expression variables eagerly would fail startup here, turning a per-request failure into an outage."
+    },
+    {
+      "id": "malformed-structure.undefined-reference.unbound-placeholder-fails-at-lookup",
+      "requirementIds": [],
+      "fixture": "malformed-structure-undefined-references",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting",
+        "locale": "en",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The lookup half: the same entry that loaded cleanly now fails per-request as RESOLUTION_FAILURE. Pins the failure reason, the cause TYPE (java.lang.IllegalArgumentException) and its message, and the text the result still carries."
+    },
+    {
+      "id": "malformed-structure.undefined-reference.bound-placeholder-succeeds",
+      "requirementIds": [],
+      "fixture": "malformed-structure-undefined-references",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting",
+        "locale": "en",
+        "placeholders": {
+          "name": "Mark"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Control for the preceding case: the entry is not defective, only unbound. Distinguishes a deferred failure from a latent structural error, which a port could otherwise satisfy by always failing this key."
+    },
+    {
+      "id": "malformed-structure.undefined-reference.unbound-expression-variable-at-lookup",
+      "requirementIds": [],
+      "fixture": "malformed-structure-undefined-references",
+      "operation": "getResult",
+      "input": {
+        "key": "Books",
+        "locale": "en",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "An alternative expression over an unbound variable, evaluated at lookup. Pins whether it throws, counts as a non-match, or falls through to the parent translation -- three plausible port behaviors with identical load-time output. Verified to carry a DIFFERENT cause type (com.lokalized.ExpressionEvaluationException) than the unbound-placeholder case, which a port is likely to collapse into one error."
+    },
+    {
+      "id": "malformed-structure.undefined-reference.bound-expression-variable-matches",
+      "requirementIds": [],
+      "fixture": "malformed-structure-undefined-references",
+      "operation": "getResult",
+      "input": {
+        "key": "Books",
+        "locale": "en",
+        "placeholders": {
+          "bookCount": {
+            "$lokalized": "integer",
+            "value": "0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Control: with the variable bound the alternative matches and wins over the parent translation. Proves the alternative is reachable, so the preceding case measures evaluation of an unbound variable and not a broken catalog."
+    }
+  ]
+}

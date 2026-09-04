@@ -1,0 +1,33 @@
+{
+  "id": "owed-supplied-match-matched-without-weight",
+  "description": "A fabrication that selects a locale with a range and a non-NONE type but omits the effective WEIGHT -- the middle disjunct of the matched-state clause, which the corpus never takes.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "localeMatchSupplier": {
+    "behavior": "fabricated",
+    "locale": "fr",
+    "matchType": "EXACT",
+    "range": "fr",
+    "ranges": [
+      {
+        "range": "fr",
+        "weight": 1
+      }
+    ],
+    "fallbackLocale": "en",
+    "consideredLocales": [
+      "en",
+      "fr"
+    ]
+  },
+  "files": {
+    "en": {
+      "Locale.Marker": "en",
+      "Greeting.Hello": "Hello"
+    },
+    "fr": {
+      "Locale.Marker": "fr",
+      "Greeting.Hello": "Bonjour"
+    }
+  }
+}

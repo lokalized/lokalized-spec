@@ -1,0 +1,30 @@
+{
+  "id": "ingress-matrix-java-alias-locale-supplier-ranges-mo",
+  "description": "Alias arm catalog with a localeSupplier that negotiates the header 'mo' and collapses the answer to a bare Locale, erasing the mo/ro expansion from the reported ranges.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "localeSupplier": {
+    "behavior": "match-ranges",
+    "ranges": "mo"
+  },
+  "files": {
+    "he": {
+      "Checkout.Title": "he"
+    },
+    "id": {
+      "Checkout.Title": "id"
+    },
+    "ro": {
+      "Checkout.Title": "ro"
+    },
+    "sr": {
+      "Checkout.Title": "sr"
+    },
+    "fil": {
+      "Checkout.Title": "fil"
+    },
+    "en": {
+      "Checkout.Title": "en"
+    }
+  }
+}

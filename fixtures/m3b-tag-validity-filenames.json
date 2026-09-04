@@ -1,0 +1,39 @@
+{
+  "id": "m3b-tag-validity-filenames",
+  "description": "Ten strings files named after tags that sit on either side of CldrLocaleData.isKnownLanguageTag's three subtag-validity gates, loaded as a DIRECTORY so the loader's own accept/reject decision is the observation. LocalizedStringLoader gates every candidate filename on isKnownLanguageTag (LocalizedStringLoader.java:1672), so the set of locales that appear in the load result IS the predicate's truth table -- which is the only place the predicate is directly observable, since matchFor can only report which catalog it landed on. loadOnly, because several of these tags are deliberately unloadable and the fixture must never be asked to build a Strings.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Checkout.Title": "en"
+    },
+    "en-Abcd": {
+      "Checkout.Title": "en-Abcd"
+    },
+    "en-Qaaa": {
+      "Checkout.Title": "en-Qaaa"
+    },
+    "en-ZX": {
+      "Checkout.Title": "en-ZX"
+    },
+    "en-QO": {
+      "Checkout.Title": "en-QO"
+    },
+    "en-000": {
+      "Checkout.Title": "en-000"
+    },
+    "en-062": {
+      "Checkout.Title": "en-062"
+    },
+    "en-zzzzzzzz": {
+      "Checkout.Title": "en-zzzzzzzz"
+    },
+    "de-1901": {
+      "Checkout.Title": "de-1901"
+    },
+    "el-polytoni": {
+      "Checkout.Title": "el-polytoni"
+    }
+  }
+}

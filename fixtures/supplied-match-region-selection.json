@@ -1,0 +1,46 @@
+{
+  "id": "supplied-match-region-selection",
+  "description": "A supplied selection carrying a region: fr-CA, claimed as PRIMARY_LANGUAGE at effective weight 0.8 for range fr. Three locales load and two share the fr language code, so tiebreakers are mandatory and are given as the exact permutation [fr, fr-CA] of that language's loaded locales.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "fr": [
+      "fr",
+      "fr-CA"
+    ]
+  },
+  "localeMatchSupplier": {
+    "behavior": "fabricated",
+    "locale": "fr-CA",
+    "matchType": "PRIMARY_LANGUAGE",
+    "range": "fr",
+    "weight": 0.8,
+    "ranges": [
+      {
+        "range": "fr",
+        "weight": 1
+      }
+    ],
+    "fallbackLocale": "en",
+    "consideredLocales": [
+      "en",
+      "fr",
+      "fr-CA"
+    ]
+  },
+  "files": {
+    "fr": {
+      "Locale.Marker": "fr",
+      "Greeting.Hello": "Bonjour",
+      "Only.Fr": "fr-only"
+    },
+    "fr-CA": {
+      "Locale.Marker": "fr-CA",
+      "Only.FrCa": "fr-CA only"
+    },
+    "en": {
+      "Locale.Marker": "en",
+      "Greeting.Hello": "Hello",
+      "Only.En": "en-only"
+    }
+  }
+}

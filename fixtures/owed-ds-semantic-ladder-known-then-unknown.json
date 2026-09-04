@@ -1,0 +1,17 @@
+{
+  "id": "owed-ds-semantic-ladder-known-then-unknown",
+  "description": "Catalogs for the sign-language equivalence class the JDK materializes for sgn-be-fr. The range 'sgn-be-fr-x-a' is not a known tag, its JDK rendering (sgn-BE) is LOSSY and therefore appears in none of its identities, and its identity set carries a known member (sfb-x-a) followed by an unknown one (sgn-be-fx-x-a). That ordering is the only shape in which semanticLanguageRangeForDerivedMatching's known-tag rung has to REJECT a later candidate rather than accept it -- an exhaustive sweep of 879,768 range spellings found no other.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Checkout.Title": "en"
+    },
+    "sfb": {
+      "Checkout.Title": "sfb"
+    },
+    "sgn": {
+      "Checkout.Title": "sgn"
+    }
+  }
+}

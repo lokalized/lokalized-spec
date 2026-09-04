@@ -1,0 +1,30 @@
+{
+  "id": "evaluation-locale-uncatalogued-request",
+  "description": "Separates 'the requested locale has a catalog but not this key' from 'the requested locale has no catalog at all'. Only pl and en are loaded; ru and ar are requested and never loaded, so localeFallbackCandidates yields a candidate whose localizedStrings map is null and the Polish fallback locale supplies. The distinction matters because an implementation could plausibly consult the donor's rules only when it had a catalog to skip, and default to the requested locale otherwise. Verified against the oracle: attemptedLocales is ['ru','pl'] / ['ar','pl'] and resolvedLocale is pl.",
+  "fallbackLocale": "pl",
+  "tiebreakers": null,
+  "files": {
+    "pl": {
+      "Locale.Marker": "pl",
+      "Items.Fallback": {
+        "translation": "{{noun}}",
+        "placeholders": {
+          "noun": {
+            "value": "itemCount",
+            "translations": {
+              "CARDINALITY_ZERO": "pl:ZERO",
+              "CARDINALITY_ONE": "pl:ONE",
+              "CARDINALITY_TWO": "pl:TWO",
+              "CARDINALITY_FEW": "pl:FEW",
+              "CARDINALITY_MANY": "pl:MANY",
+              "CARDINALITY_OTHER": "pl:OTHER"
+            }
+          }
+        }
+      }
+    },
+    "en": {
+      "Locale.Marker": "en"
+    }
+  }
+}

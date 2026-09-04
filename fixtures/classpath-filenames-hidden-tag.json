@@ -1,0 +1,15 @@
+{
+  "id": "classpath-filenames-hidden-tag",
+  "description": "A valid en catalog plus a file named '.de' — a leading dot over a valid tag. isHiddenFileName (LocalizedStringLoader.java:1682) is consulted BEFORE any tag parsing on all three discovery paths (:1257 filesystem, :1313 classpath directory, :1406 JAR).",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "rawFiles": {
+    ".de": "{\"Key.hiddende\":\"hiddende\"}"
+  }
+}

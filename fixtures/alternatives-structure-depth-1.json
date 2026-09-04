@@ -1,0 +1,23 @@
+{
+  "id": "alternatives-structure-depth-1",
+  "description": "Alternatives nested 1 levels deep. JSON container depth of the entry is 4. Generated, not hand-authored.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumJsonNestingDepth": 128
+  },
+  "files": {
+    "en": {
+      "Nested.Alternatives": {
+        "translation": "depth-1",
+        "alternatives": [
+          {
+            "count == 1": {
+              "translation": "leaf"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

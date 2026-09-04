@@ -1,0 +1,4087 @@
+{
+  "formatVersion": 1,
+  "status": "pre-m0-inventory-draft",
+  "sourcePlanSha256": "4ace5e349bedd45b16cd87182aed3306d33fae92b034ed01ddb93bc733c5f62d",
+  "scope": [
+    "1",
+    "2",
+    "3",
+    "4"
+  ],
+  "blocks": [
+    {
+      "id": "INV-1-4-001",
+      "lineStart": 3,
+      "lineEnd": 3,
+      "sourceAnchor": "document-status",
+      "synopsis": "Revision 7 is a draft not yet approved for implementation.",
+      "disposition": "nonnormative",
+      "registrationBefore": [],
+      "owner": "none",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 0,
+      "reason": "Document workflow status, not product behavior."
+    },
+    {
+      "id": "INV-1-4-002",
+      "lineStart": 5,
+      "lineEnd": 5,
+      "sourceAnchor": "document-target",
+      "synopsis": "Target vanilla JavaScript parity with Java 3.0.0 and CLDR 48.2.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 3,
+      "reason": "Pins the implementation and data baselines before contract freeze."
+    },
+    {
+      "id": "INV-1-4-003",
+      "lineStart": 7,
+      "lineEnd": 14,
+      "sourceAnchor": "document-audience-and-revision-summary",
+      "synopsis": "Audience and explanatory revision history.",
+      "disposition": "nonnormative",
+      "registrationBefore": [],
+      "owner": "none",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 0,
+      "reason": "Editorial context; later sections state the enforceable rules."
+    },
+    {
+      "id": "INV-1-4-004",
+      "lineStart": 22,
+      "lineEnd": 23,
+      "sourceAnchor": "1.goal.shared-vector-parity",
+      "synopsis": "Produce Java-equivalent semantics for shared vectors under identical pinned versions.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 2,
+      "reason": "Top-level parity release contract."
+    },
+    {
+      "id": "INV-1-4-005",
+      "lineStart": 24,
+      "lineEnd": 25,
+      "sourceAnchor": "1.goal.semantic-result-fields",
+      "synopsis": "Define the complete observable semantic-result surface.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 8,
+      "reason": "Each named observable becomes a traceable parity proposition."
+    },
+    {
+      "id": "INV-1-4-006",
+      "lineStart": 26,
+      "lineEnd": 27,
+      "sourceAnchor": "1.goal.environments",
+      "synopsis": "Support Node, bundlers, and build-free browser modules without runtime dependencies.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 5,
+      "reason": "Release environments and dependency posture must be fixed at M0."
+    },
+    {
+      "id": "INV-1-4-007",
+      "lineStart": 28,
+      "lineEnd": 29,
+      "sourceAnchor": "1.goal.sync-runtime-async-loading",
+      "synopsis": "Keep loading explicit and asynchronous while core lookup and construction stay synchronous.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 6,
+      "reason": "Foundational API timing contract."
+    },
+    {
+      "id": "INV-1-4-008",
+      "lineStart": 30,
+      "lineEnd": 31,
+      "sourceAnchor": "1.goal.language-neutral-contracts",
+      "synopsis": "Publish language-neutral data and behavior contracts for future ports.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M3a",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 3,
+      "reason": "Cross-language artifact commitment belongs in the approved profile."
+    },
+    {
+      "id": "INV-1-4-009",
+      "lineStart": 33,
+      "lineEnd": 35,
+      "sourceAnchor": "1.strict-data-source-of-truth",
+      "synopsis": "Strict rendering uses only pinned locale and plural artifacts, never host ICU.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M1"
+      ],
+      "owner": "M1",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 9,
+      "reason": "M1 must establish every rendering-sensitive deterministic input."
+    },
+    {
+      "id": "INV-1-4-010",
+      "lineStart": 41,
+      "lineEnd": 41,
+      "sourceAnchor": "1.1.node-floor",
+      "synopsis": "Node floor is 22 with CI on 24 and current using packed installs.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 4,
+      "reason": "Compatibility floor and verification lane are M0 decisions."
+    },
+    {
+      "id": "INV-1-4-011",
+      "lineStart": 42,
+      "lineEnd": 42,
+      "sourceAnchor": "1.1.browser-floors",
+      "synopsis": "Browser floors and exact-floor/current-engine verification.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 5,
+      "reason": "Browser compatibility promise must be registered before scaffolding."
+    },
+    {
+      "id": "INV-1-4-012",
+      "lineStart": 43,
+      "lineEnd": 43,
+      "sourceAnchor": "1.1.module-format",
+      "synopsis": "ESM-only modules; CommonJS require unsupported.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 3,
+      "reason": "Package-format contract."
+    },
+    {
+      "id": "INV-1-4-013",
+      "lineStart": 44,
+      "lineEnd": 44,
+      "sourceAnchor": "1.1.typescript-resolution",
+      "synopsis": "Declarations support node16/nodenext and bundler resolution and are packed-install tested.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 3,
+      "reason": "Consumer declaration contract."
+    },
+    {
+      "id": "INV-1-4-014",
+      "lineStart": 46,
+      "lineEnd": 47,
+      "sourceAnchor": "1.1.provisional-browser-floor",
+      "synopsis": "Browser floors remain provisional until actual versions run in CI.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 2,
+      "reason": "Prevents current-engine smoke tests from overclaiming floor support."
+    },
+    {
+      "id": "INV-1-4-015",
+      "lineStart": 51,
+      "lineEnd": 51,
+      "sourceAnchor": "1.2.strict-data-scope",
+      "synopsis": "Strict pinned locale and plural data are in first-release scope.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M1"
+      ],
+      "owner": "M1",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 2,
+      "reason": "M1 data scope."
+    },
+    {
+      "id": "INV-1-4-016",
+      "lineStart": 52,
+      "lineEnd": 52,
+      "sourceAnchor": "1.2.catalog-input-scope",
+      "synopsis": "Raw parsing, validation, warnings, and programmatic construction are in scope.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M2"
+      ],
+      "owner": "M5a",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 4,
+      "reason": "M2 skeleton consumes the source/model contract even though full parser closes later."
+    },
+    {
+      "id": "INV-1-4-017",
+      "lineStart": 53,
+      "lineEnd": 54,
+      "sourceAnchor": "1.2.rendering-feature-scope",
+      "synopsis": "Interpolation, bidi, expressions, language forms, generated placeholders, exact numerics, ordinals, and ranges are in scope.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 8,
+      "reason": "Approved release-profile feature boundary."
+    },
+    {
+      "id": "INV-1-4-018",
+      "lineStart": 55,
+      "lineEnd": 56,
+      "sourceAnchor": "1.2.fallback-and-result-scope",
+      "synopsis": "Fallback, tiebreaker, result, failure, and negotiation diagnostics are in scope.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 9,
+      "reason": "M3a seeds these high-risk semantic families."
+    },
+    {
+      "id": "INV-1-4-019",
+      "lineStart": 57,
+      "lineEnd": 57,
+      "sourceAnchor": "1.2.manifest-loading-scope",
+      "synopsis": "Explicit manifest planning and browser/Node loading are in scope.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 3,
+      "reason": "Public delivery surface must be decided at M0."
+    },
+    {
+      "id": "INV-1-4-020",
+      "lineStart": 58,
+      "lineEnd": 59,
+      "sourceAnchor": "1.2.server-negotiation-scope",
+      "synopsis": "Server RFC 4647 and Accept-Language negotiation use pinned IANA equivalence.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M1"
+      ],
+      "owner": "M9",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 4,
+      "reason": "Pinned IANA source artifact is an M1 deliverable."
+    },
+    {
+      "id": "INV-1-4-021",
+      "lineStart": 60,
+      "lineEnd": 61,
+      "sourceAnchor": "1.2.distribution-docs-parity-scope",
+      "synopsis": "npm/browser distribution, declarations, docs, and parity declaration are in scope.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 5,
+      "reason": "Release-profile boundary and M0 package scaffold commitment."
+    },
+    {
+      "id": "INV-1-4-022",
+      "lineStart": 65,
+      "lineEnd": 65,
+      "sourceAnchor": "1.3.formatting-exclusions",
+      "synopsis": "Formatting, collation, and list formatting are excluded.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 7,
+      "reason": "Negative scope is part of the approved release profile."
+    },
+    {
+      "id": "INV-1-4-023",
+      "lineStart": 66,
+      "lineEnd": 67,
+      "sourceAnchor": "1.3.ecosystem-deferrals",
+      "synopsis": "React, lint, standalone conformance, dashboards, and Intl optimizations are post-MVP.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 5,
+      "reason": "Explicit deferral prevents accidental release requirements."
+    },
+    {
+      "id": "INV-1-4-024",
+      "lineStart": 68,
+      "lineEnd": 68,
+      "sourceAnchor": "1.3.tms-exclusion",
+      "synopsis": "TMS/XLIFF round-tripping is excluded from v1.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 3,
+      "reason": "Explicit negative scope."
+    },
+    {
+      "id": "INV-1-4-025",
+      "lineStart": 69,
+      "lineEnd": 69,
+      "sourceAnchor": "1.3.no-hidden-io",
+      "synopsis": "No automatic lookup I/O, hidden global caches, or mutable live-reload instances.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 3,
+      "reason": "Core architectural exclusions."
+    },
+    {
+      "id": "INV-1-4-026",
+      "lineStart": 70,
+      "lineEnd": 70,
+      "sourceAnchor": "1.3.fixed-runtime-limits",
+      "synopsis": "V1 runtime limits are fixed rather than configurable.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M6",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 2,
+      "reason": "Public configuration boundary."
+    },
+    {
+      "id": "INV-1-4-027",
+      "lineStart": 71,
+      "lineEnd": 71,
+      "sourceAnchor": "1.3.intl-no-parity",
+      "synopsis": "Optional host-Intl implementations carry no strict parity claim.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 2,
+      "reason": "This is a binding profile/claim disposition rather than an informational runtime case."
+    },
+    {
+      "id": "INV-1-4-028",
+      "lineStart": 72,
+      "lineEnd": 76,
+      "sourceAnchor": "1.3.browser-negotiation-split",
+      "synopsis": "Keep exact whole-list solver optional while root retains strict single-locale kernel and small chooser.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M9",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 7,
+      "reason": "Root graph and parity-boundary decision."
+    },
+    {
+      "id": "INV-1-4-029",
+      "lineStart": 84,
+      "lineEnd": 85,
+      "sourceAnchor": "2.1.public-locale-representation",
+      "synopsis": "Use BCP-47 strings publicly; strict mode does not trust Intl.Locale.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M1"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 2,
+      "reason": "Deterministic locale representation is required by the M1 artifact."
+    },
+    {
+      "id": "INV-1-4-030",
+      "lineStart": 87,
+      "lineEnd": 90,
+      "sourceAnchor": "2.1.normalization-boundaries",
+      "synopsis": "One Java-compatible normalizer defines validation, identity, and malformed-input behavior.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M1"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 8,
+      "reason": "Canonical source/artifact and public-boundary contract."
+    },
+    {
+      "id": "INV-1-4-031",
+      "lineStart": 92,
+      "lineEnd": 101,
+      "sourceAnchor": "2.1.strict-locale-kernel",
+      "synopsis": "Port parser, aliases, likely subtags, parents, script boundaries, bridges, full triples, presence, and exact/equivalent identity rules.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M1"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 18,
+      "reason": "M1 must generate the complete lossless deterministic locale kernel."
+    },
+    {
+      "id": "INV-1-4-032",
+      "lineStart": 103,
+      "lineEnd": 104,
+      "sourceAnchor": "2.1.special-tag-cases",
+      "synopsis": "Preserve und/root semantics and cover private-use and alias edge cases with shared IDs.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 7,
+      "reason": "M3a registers the shared cases; M7 owns the complete locale runtime behavior."
+    },
+    {
+      "id": "INV-1-4-033",
+      "lineStart": 108,
+      "lineEnd": 114,
+      "sourceAnchor": "2.2.candidate-tier-raw-canonical-parent-m3a",
+      "synopsis": "Seed the first-wins candidate sequence, traversal insertion/truncation, and exact one-subtag behavior before M3a.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 4,
+      "reason": "The reviewed section-2.2 calibration assigns these four seed propositions to M3a."
+    },
+    {
+      "id": "INV-1-4-034",
+      "lineStart": 115,
+      "lineEnd": 115,
+      "sourceAnchor": "2.2.candidate-tier-likely-match",
+      "synopsis": "Second fallback tier adds at most one supported likely language/script match.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M3b"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 1,
+      "reason": "The reviewed calibration assigns this coverage-expansion proposition to M3b."
+    },
+    {
+      "id": "INV-1-4-035",
+      "lineStart": 116,
+      "lineEnd": 116,
+      "sourceAnchor": "2.2.candidate-tier-tiebreaker",
+      "synopsis": "Third fallback tier follows script-compatible primary-language tiebreaker order.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M3b"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 1,
+      "reason": "The reviewed calibration assigns this coverage-expansion proposition to M3b."
+    },
+    {
+      "id": "INV-1-4-036",
+      "lineStart": 117,
+      "lineEnd": 117,
+      "sourceAnchor": "2.2.candidate-tier-fallback",
+      "synopsis": "Fourth fallback tier is the resolved exact fallback file.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 1,
+      "reason": "This exact tier-four proposition belongs in the minimal M3a seed."
+    },
+    {
+      "id": "INV-1-4-037",
+      "lineStart": 119,
+      "lineEnd": 123,
+      "sourceAnchor": "2.2.candidate-to-file-resolution-m3a",
+      "synopsis": "Seed exact-file resolution and the catalog-less outcome before M3a.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 2,
+      "reason": "The reviewed calibration assigns these two minimal resolution propositions to M3a."
+    },
+    {
+      "id": "INV-1-4-038",
+      "lineStart": 125,
+      "lineEnd": 130,
+      "sourceAnchor": "2.2.attempt-dedup-and-attempted-list-m3a",
+      "synopsis": "Seed attempted-locale identity, post-resolution deduplication, and successful-attempt list behavior before M3a.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 5,
+      "reason": "The reviewed calibration assigns these five minimal attempt/dedup propositions to M3a."
+    },
+    {
+      "id": "INV-1-4-039",
+      "lineStart": 132,
+      "lineEnd": 141,
+      "sourceAnchor": "2.2.tiebreaker-validation-core",
+      "synopsis": "Derive normalized primary languages and validate or synthesize exact loaded-tag tiebreaker permutations.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M3b"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 10,
+      "reason": "Core tiebreaker coverage expands at M3b; loader-specific rules are split separately."
+    },
+    {
+      "id": "INV-1-4-040",
+      "lineStart": 143,
+      "lineEnd": 148,
+      "sourceAnchor": "2.2.fallback-tag-resolution-m3a",
+      "synopsis": "Seed exact configured-fallback resolution, propagation, and lookupLocale non-rewriting before M3a.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 5,
+      "reason": "The reviewed calibration assigns these five minimal configured-fallback propositions to M3a."
+    },
+    {
+      "id": "INV-1-4-041",
+      "lineStart": 150,
+      "lineEnd": 156,
+      "sourceAnchor": "2.2.fallback-cache",
+      "synopsis": "Optional per-instance deterministic 256-entry LRU with probe, adversarial, and forced-GC tests.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M7"
+      ],
+      "owner": "M7",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 13,
+      "reason": "The reviewed calibration assigns the optional cache and retained-memory propositions to M7."
+    },
+    {
+      "id": "INV-1-4-042",
+      "lineStart": 158,
+      "lineEnd": 164,
+      "sourceAnchor": "2.2.direct-locale-contract-m3a",
+      "synopsis": "Seed direct-locale lookup identity, well-formed unloaded-tag acceptance, full fallback, and diagnostic-only matching before M3a.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 5,
+      "reason": "The reviewed calibration assigns the five direct-lookup seed propositions to M3a."
+    },
+    {
+      "id": "INV-1-4-043",
+      "lineStart": 168,
+      "lineEnd": 170,
+      "sourceAnchor": "2.3.supplying-locale-evaluation",
+      "synopsis": "Evaluate entries under the exact supplying file locale for all locale-sensitive behavior.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 7,
+      "reason": "The source-verified donor rule spans expressions, plurals, bidi, phonetics, and final resolution, all integrated by M7."
+    },
+    {
+      "id": "INV-1-4-044",
+      "lineStart": 172,
+      "lineEnd": 174,
+      "sourceAnchor": "2.3.exact-locale-only-merge",
+      "synopsis": "Merge catalogs only for identical exact loaded tags; equivalent language/script tags remain separate.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M5b",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 5,
+      "reason": "The pt/pt-PT discriminator is an early high-risk fixture."
+    },
+    {
+      "id": "INV-1-4-045",
+      "lineStart": 176,
+      "lineEnd": 181,
+      "sourceAnchor": "2.3.safe-sharding-example",
+      "synopsis": "Illustrative same-locale sharding paths.",
+      "disposition": "nonnormative",
+      "registrationBefore": [],
+      "owner": "none",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 0,
+      "reason": "Example paths do not introduce behavior beyond the following paragraph."
+    },
+    {
+      "id": "INV-1-4-046",
+      "lineStart": 183,
+      "lineEnd": 189,
+      "sourceAnchor": "2.3.merge-helper-contract",
+      "synopsis": "V1 assembles one resource per locale; helper preserves source order/origins, deduplicates equal definitions, and rejects conflicts.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M5b"
+      ],
+      "owner": "M5b",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 11,
+      "reason": "Full merge implementation and evidence close with the catalog model."
+    },
+    {
+      "id": "INV-1-4-047",
+      "lineStart": 193,
+      "lineEnd": 196,
+      "sourceAnchor": "2.4.placeholder-snapshot",
+      "synopsis": "Each lookup shallow-snapshots caller placeholders once for all attempts and failure processing.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M2"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 6,
+      "reason": "M2 seeds snapshot behavior; M7 owns consistency across every locale attempt and final failure."
+    },
+    {
+      "id": "INV-1-4-048",
+      "lineStart": 200,
+      "lineEnd": 203,
+      "sourceAnchor": "2.4.generated-rule-message-selection",
+      "synopsis": "Whole-message and expression-fragment alternatives select first match then their specified default behavior.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M2"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 6,
+      "reason": "Explicit M2 generated-placeholder spike behavior."
+    },
+    {
+      "id": "INV-1-4-049",
+      "lineStart": 204,
+      "lineEnd": 206,
+      "sourceAnchor": "2.4.generated-rule-raw-operands",
+      "synopsis": "Predicates and selectors read raw caller values; generated values never become operands or endpoints.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M2"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 5,
+      "reason": "M2 spike must fix raw-versus-generated data flow."
+    },
+    {
+      "id": "INV-1-4-050",
+      "lineStart": 207,
+      "lineEnd": 208,
+      "sourceAnchor": "2.4.generated-rule-committed-branch",
+      "synopsis": "A selected alternative remains committed even when its resolution fails.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M2"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 2,
+      "reason": "Core first-match spike proposition."
+    },
+    {
+      "id": "INV-1-4-051",
+      "lineStart": 209,
+      "lineEnd": 210,
+      "sourceAnchor": "2.4.generated-rule-branch-inheritance",
+      "synopsis": "Definitions inherit only along the selected branch; siblings are invisible.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M2"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 3,
+      "reason": "Explicit M2 branch-inheritance spike."
+    },
+    {
+      "id": "INV-1-4-052",
+      "lineStart": 211,
+      "lineEnd": 212,
+      "sourceAnchor": "2.4.generated-rule-whole-replacement",
+      "synopsis": "A descendant definition replaces the complete ancestor definition across kinds.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M2"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 4,
+      "reason": "Explicit M2 whole-definition/cross-kind replacement spike."
+    },
+    {
+      "id": "INV-1-4-053",
+      "lineStart": 213,
+      "lineEnd": 214,
+      "sourceAnchor": "2.4.generated-rule-freeze-and-late-bind",
+      "synopsis": "Freeze effective definitions after branch selection while allowing inherited definitions to late-bind replacements.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M2"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 3,
+      "reason": "Explicit M2 late-binding spike."
+    },
+    {
+      "id": "INV-1-4-054",
+      "lineStart": 215,
+      "lineEnd": 216,
+      "sourceAnchor": "2.4.generated-rule-shadowing",
+      "synopsis": "Generated definitions shadow caller output values but not raw predicate/selector inputs.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M5b"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 3,
+      "reason": "Full generated rendering behavior closes with catalog/interpolation."
+    },
+    {
+      "id": "INV-1-4-055",
+      "lineStart": 217,
+      "lineEnd": 217,
+      "sourceAnchor": "2.4.generated-rule-reachability",
+      "synopsis": "Evaluate only generated placeholders reachable from selected translation.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M2"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 2,
+      "reason": "Explicit M2 unreachable-definition laziness spike."
+    },
+    {
+      "id": "INV-1-4-056",
+      "lineStart": 218,
+      "lineEnd": 219,
+      "sourceAnchor": "2.4.generated-rule-resolution-failures",
+      "synopsis": "Cycles, limits, dependencies, expression, selector, and interpolation errors are candidate resolution failures.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M2"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 8,
+      "reason": "M2 spike includes reachable cycle and end-to-end failure result."
+    },
+    {
+      "id": "INV-1-4-057",
+      "lineStart": 223,
+      "lineEnd": 224,
+      "sourceAnchor": "2.5.candidate-outcomes",
+      "synopsis": "Each candidate has exactly one of four outcomes.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M2"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 5,
+      "reason": "M2 success/failure result contract."
+    },
+    {
+      "id": "INV-1-4-058",
+      "lineStart": 226,
+      "lineEnd": 227,
+      "sourceAnchor": "2.5.builtin-fallback-policies",
+      "synopsis": "Define default, permissive, and never-fallback policy behavior.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 5,
+      "reason": "M3a fallback observation and failure cases."
+    },
+    {
+      "id": "INV-1-4-059",
+      "lineStart": 229,
+      "lineEnd": 235,
+      "sourceAnchor": "2.5.fallback-policy-signature",
+      "synopsis": "Synchronous custom fallback policy receives reason, attempted locale, and nullable cause.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 5,
+      "reason": "Public callback signature freezes at M0."
+    },
+    {
+      "id": "INV-1-4-060",
+      "lineStart": 237,
+      "lineEnd": 237,
+      "sourceAnchor": "2.5.fallback-policy-call-condition",
+      "synopsis": "Call policy only when another candidate exists; cause is non-null only for resolution failure.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 3,
+      "reason": "M3a observation fixture dependency."
+    },
+    {
+      "id": "INV-1-4-061",
+      "lineStart": 241,
+      "lineEnd": 241,
+      "sourceAnchor": "2.5.final-precedence-resolution",
+      "synopsis": "Final failure prefers the first resolution failure and cause.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 2,
+      "reason": "High-risk failure precedence case."
+    },
+    {
+      "id": "INV-1-4-062",
+      "lineStart": 242,
+      "lineEnd": 242,
+      "sourceAnchor": "2.5.final-precedence-no-match",
+      "synopsis": "Without resolution failure, any no-match wins over missing.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 2,
+      "reason": "High-risk failure precedence case."
+    },
+    {
+      "id": "INV-1-4-063",
+      "lineStart": 243,
+      "lineEnd": 243,
+      "sourceAnchor": "2.5.final-precedence-missing",
+      "synopsis": "Otherwise final failure is missing translation.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 1,
+      "reason": "Completes final failure precedence."
+    },
+    {
+      "id": "INV-1-4-064",
+      "lineStart": 245,
+      "lineEnd": 245,
+      "sourceAnchor": "2.5.discard-earlier-failures",
+      "synopsis": "A later permissive-policy success discards earlier failures.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M7"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 2,
+      "reason": "Full resolution-core fallback evidence."
+    },
+    {
+      "id": "INV-1-4-065",
+      "lineStart": 247,
+      "lineEnd": 256,
+      "sourceAnchor": "2.5.final-handler-and-cause-identity",
+      "synopsis": "Define lenient failure-key rendering, lookup-locale bidi, throw identity, mapped contextual errors, and nullish thrown normalization.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M5b",
+        "M6"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 16,
+      "reason": "Requires interpolation, bidi, expression, and generated-placeholder implementations."
+    },
+    {
+      "id": "INV-1-4-066",
+      "lineStart": 260,
+      "lineEnd": 262,
+      "sourceAnchor": "2.6.bidi-isolation-semantics",
+      "synopsis": "Isolate caller values by evaluation locale, not generated text, and allow a per-call override.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M5b"
+      ],
+      "owner": "M5b",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 4,
+      "reason": "Failure-key lookup-locale behavior is already counted in INV-1-4-065; the remaining bidi behavior closes in M5b."
+    },
+    {
+      "id": "INV-1-4-067",
+      "lineStart": 264,
+      "lineEnd": 265,
+      "sourceAnchor": "2.6.bidi-documentation",
+      "synopsis": "Document string isolation versus DOM lang/dir and HTML safety.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-D"
+      ],
+      "owner": "M-D",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 3,
+      "reason": "Documentation evidence is produced at M-D."
+    },
+    {
+      "id": "INV-1-4-068",
+      "lineStart": 269,
+      "lineEnd": 280,
+      "sourceAnchor": "2.7.expression-grammar",
+      "synopsis": "Versioned expression grammar for boolean composition, comparisons, operands, and exact numeric literals.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M6"
+      ],
+      "owner": "M6",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 9,
+      "reason": "Expression parser/evaluator closes at M6."
+    },
+    {
+      "id": "INV-1-4-069",
+      "lineStart": 282,
+      "lineEnd": 286,
+      "sourceAnchor": "2.7.expression-precedence-and-lexing",
+      "synopsis": "Fix precedence, short circuiting, prohibited constructs, and ASCII whitespace.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M6"
+      ],
+      "owner": "M6",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 13,
+      "reason": "M6 tokenizer/compiler contract."
+    },
+    {
+      "id": "INV-1-4-070",
+      "lineStart": 290,
+      "lineEnd": 290,
+      "sourceAnchor": "2.7.operand-numeric",
+      "synopsis": "Numeric operands support six exact-decimal comparisons.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M6"
+      ],
+      "owner": "M6",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 2,
+      "reason": "M6 exact comparison evidence."
+    },
+    {
+      "id": "INV-1-4-071",
+      "lineStart": 291,
+      "lineEnd": 291,
+      "sourceAnchor": "2.7.operand-same-axis",
+      "synopsis": "Same-axis language forms support equality and inequality only.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M6"
+      ],
+      "owner": "M6",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 3,
+      "reason": "M6 operand matrix."
+    },
+    {
+      "id": "INV-1-4-072",
+      "lineStart": 292,
+      "lineEnd": 293,
+      "sourceAnchor": "2.7.operand-numeric-plural-constant",
+      "synopsis": "Classify numeric operands under evaluation locale before plural-form equality.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M6"
+      ],
+      "owner": "M6",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 3,
+      "reason": "Depends on M4 exact plural engine and closes at M6."
+    },
+    {
+      "id": "INV-1-4-073",
+      "lineStart": 294,
+      "lineEnd": 294,
+      "sourceAnchor": "2.7.operand-phonetic",
+      "synopsis": "Compare raw strings only with phonetic values after resolver processing.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M6"
+      ],
+      "owner": "M6",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 3,
+      "reason": "M6 operand and callback integration."
+    },
+    {
+      "id": "INV-1-4-074",
+      "lineStart": 295,
+      "lineEnd": 296,
+      "sourceAnchor": "2.7.operand-invalid-combinations",
+      "synopsis": "Reject textual string comparison and missing/null/thenable/unsupported/cross-axis operands.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M6"
+      ],
+      "owner": "M6",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 7,
+      "reason": "M6 failure matrix."
+    },
+    {
+      "id": "INV-1-4-075",
+      "lineStart": 298,
+      "lineEnd": 304,
+      "sourceAnchor": "2.7.eager-expression-compilation",
+      "synopsis": "Compile every expression eagerly; construction rejects statically provable faults while dynamic value faults fail the locale attempt.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M6"
+      ],
+      "owner": "M6",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 12,
+      "reason": "M6 compile/runtime phase distinction."
+    },
+    {
+      "id": "INV-1-4-076",
+      "lineStart": 306,
+      "lineEnd": 311,
+      "sourceAnchor": "2.7.identifier-contract.portable-sentences",
+      "synopsis": "Use the portable ASCII identifier grammar for placeholders and variables, preserve arbitrary JSON translation keys, and reserve all language-form names.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M6"
+      ],
+      "owner": "M6",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 6,
+      "reason": "Portable identifier validation and reserved-name evidence close at M6; the Java-only Unicode disposition is split separately."
+    },
+    {
+      "id": "INV-1-4-077",
+      "lineStart": 315,
+      "lineEnd": 322,
+      "sourceAnchor": "2.8.interpolation-scanner",
+      "synopsis": "Define placeholder syntax, backslash escapes, strict malformed/unresolved failures, eager syntax checks, and runtime missing-value failures.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M2"
+      ],
+      "owner": "M5b",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 14,
+      "reason": "M2 end-to-end interpolation requires the scanner baseline; exhaustive escapes close later."
+    },
+    {
+      "id": "INV-1-4-078",
+      "lineStart": 324,
+      "lineEnd": 328,
+      "sourceAnchor": "2.8.interpolation-presence-and-failure-key",
+      "synopsis": "Only nullish values are unresolved; apply typed conversion/isolation and lenient failure-key fallback.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M5b"
+      ],
+      "owner": "M5b",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 9,
+      "reason": "Full interpolation and failure-key bidi evidence closes at M5b."
+    },
+    {
+      "id": "INV-1-4-079",
+      "lineStart": 330,
+      "lineEnd": 336,
+      "sourceAnchor": "2.8.interpolation-conversion",
+      "synopsis": "Fix primitive/tagged/thenable/object conversion and classify JS object coercion as nonportable.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M5b"
+      ],
+      "owner": "M5b",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 13,
+      "reason": "Mixed portable and JS-native conversion behavior requires M5b evidence."
+    },
+    {
+      "id": "INV-1-4-080",
+      "lineStart": 342,
+      "lineEnd": 343,
+      "sourceAnchor": "3.api-notation-and-declarations",
+      "synopsis": "Implement vanilla JavaScript with checked JSDoc and declarations matching the TypeScript-notated contract.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 4,
+      "reason": "M0 scaffolds package and declarations from this contract."
+    },
+    {
+      "id": "INV-1-4-081",
+      "lineStart": 345,
+      "lineEnd": 346,
+      "sourceAnchor": "3.return-immutability-and-bound-methods",
+      "synopsis": "Defensively copy/freeze returned structures and expose stable bound lookup functions with t/get identity.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 7,
+      "reason": "Cross-cutting public API invariant."
+    },
+    {
+      "id": "INV-1-4-082",
+      "lineStart": 350,
+      "lineEnd": 354,
+      "sourceAnchor": "3.1.entry-root",
+      "synopsis": "Root entry owns strict core, parser, cardinal/locale/direct-match data, and small chooser across browser, edge, and Node.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 6,
+      "reason": "M0 export-map and graph contract."
+    },
+    {
+      "id": "INV-1-4-083",
+      "lineStart": 355,
+      "lineEnd": 355,
+      "sourceAnchor": "3.1.entry-core",
+      "synopsis": "Core entry exposes strict runtime plus synchronous raw-catalog parsing in all environments.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 4,
+      "reason": "M0 public subpath contract."
+    },
+    {
+      "id": "INV-1-4-084",
+      "lineStart": 356,
+      "lineEnd": 356,
+      "sourceAnchor": "3.1.entry-parse",
+      "synopsis": "Parse entry exposes parser, validator, schema model, and warnings in all environments.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 5,
+      "reason": "M0 public subpath contract."
+    },
+    {
+      "id": "INV-1-4-085",
+      "lineStart": 357,
+      "lineEnd": 357,
+      "sourceAnchor": "3.1.entry-load",
+      "synopsis": "Load entry exposes manifest validation/planning, Fetch loading, and identity in all environments.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 5,
+      "reason": "M0 public subpath contract."
+    },
+    {
+      "id": "INV-1-4-086",
+      "lineStart": 358,
+      "lineEnd": 358,
+      "sourceAnchor": "3.1.entry-ssr",
+      "synopsis": "SSR entry exposes stamp creation/validation in browser, edge, and Node.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 3,
+      "reason": "M0 public subpath contract."
+    },
+    {
+      "id": "INV-1-4-087",
+      "lineStart": 359,
+      "lineEnd": 359,
+      "sourceAnchor": "3.1.entry-negotiate",
+      "synopsis": "Negotiate entry exposes RFC 4647, pinned IANA closure, and headers, with a size-heavy browser graph.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 6,
+      "reason": "M0 subpath and browser graph boundary."
+    },
+    {
+      "id": "INV-1-4-088",
+      "lineStart": 360,
+      "lineEnd": 360,
+      "sourceAnchor": "3.1.entry-node",
+      "synopsis": "Node loading/generation entry is Node-only.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 3,
+      "reason": "M0 environment/export contract."
+    },
+    {
+      "id": "INV-1-4-089",
+      "lineStart": 361,
+      "lineEnd": 361,
+      "sourceAnchor": "3.1.entry-ordinal",
+      "synopsis": "Optional ordinal data/classifier entry is available in all environments.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 3,
+      "reason": "M0 optional-module public surface."
+    },
+    {
+      "id": "INV-1-4-090",
+      "lineStart": 362,
+      "lineEnd": 362,
+      "sourceAnchor": "3.1.entry-ranges",
+      "synopsis": "Optional cardinal-range data/classifier entry is available in all environments.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 4,
+      "reason": "M0 optional-module public surface."
+    },
+    {
+      "id": "INV-1-4-091",
+      "lineStart": 364,
+      "lineEnd": 368,
+      "sourceAnchor": "3.1.symbol-owner-core",
+      "synopsis": "Core owns the enumerated runtime, structural, match, failure, tagged-value, cardinal, data, and error symbols and root re-exports them.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 27,
+      "reason": "Machine-checkable symbol ownership freezes at M0."
+    },
+    {
+      "id": "INV-1-4-092",
+      "lineStart": 369,
+      "lineEnd": 369,
+      "sourceAnchor": "3.1.symbol-owner-parse",
+      "synopsis": "Parse owns the enumerated parser/model/warning/limit symbols and root re-exports them.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 7,
+      "reason": "Machine-checkable symbol ownership freezes at M0."
+    },
+    {
+      "id": "INV-1-4-093",
+      "lineStart": 370,
+      "lineEnd": 370,
+      "sourceAnchor": "3.1.symbol-owner-load",
+      "synopsis": "Load owns manifest and loading symbols but does not re-own core identity/coverage and root does not re-export it.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 13,
+      "reason": "Machine-checkable ownership and non-re-export constraints."
+    },
+    {
+      "id": "INV-1-4-094",
+      "lineStart": 371,
+      "lineEnd": 371,
+      "sourceAnchor": "3.1.symbol-owner-ssr",
+      "synopsis": "SSR owns stamp/context types and stamp create/validate functions without root re-export.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 4,
+      "reason": "M0 symbol allowlist."
+    },
+    {
+      "id": "INV-1-4-095",
+      "lineStart": 372,
+      "lineEnd": 372,
+      "sourceAnchor": "3.1.symbol-owner-negotiate",
+      "synopsis": "Negotiate owns matcher/negotiator/range helpers, re-exports shared range/IANA metadata, and is absent from root.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 8,
+      "reason": "M0 symbol and graph boundary."
+    },
+    {
+      "id": "INV-1-4-096",
+      "lineStart": 373,
+      "lineEnd": 373,
+      "sourceAnchor": "3.1.symbol-owner-node",
+      "synopsis": "Node owns filesystem/directory functions and options and re-exports applicable load types, not via root.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 10,
+      "reason": "M0 symbol allowlist."
+    },
+    {
+      "id": "INV-1-4-097",
+      "lineStart": 374,
+      "lineEnd": 374,
+      "sourceAnchor": "3.1.symbol-owner-ordinal",
+      "synopsis": "Ordinal subpath owns ordinal data, classifiers, and probes without root runtime re-export.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 5,
+      "reason": "M0 symbol allowlist."
+    },
+    {
+      "id": "INV-1-4-098",
+      "lineStart": 375,
+      "lineEnd": 375,
+      "sourceAnchor": "3.1.symbol-owner-ranges",
+      "synopsis": "Range subpath owns cardinal range data/classifier without root runtime re-export.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 3,
+      "reason": "M0 symbol allowlist."
+    },
+    {
+      "id": "INV-1-4-099",
+      "lineStart": 377,
+      "lineEnd": 381,
+      "sourceAnchor": "3.1.export-allowlist-and-tree-shaking",
+      "synopsis": "Check exports/declarations against allowlist and prevent root from pulling optional runtime graphs while permitting type-only carriers.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 11,
+      "reason": "M0 symbol/subpath allowlist and package-graph contract."
+    },
+    {
+      "id": "INV-1-4-100",
+      "lineStart": 383,
+      "lineEnd": 386,
+      "sourceAnchor": "3.1.environment-dependencies",
+      "synopsis": "Ban Node globals from non-Node paths, state load-platform capabilities, and omit deferred export paths.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 13,
+      "reason": "Environment and dependency constraints affect initial scaffolding."
+    },
+    {
+      "id": "INV-1-4-101",
+      "lineStart": 388,
+      "lineEnd": 388,
+      "sourceAnchor": "3.1.browser-and-npm-names",
+      "synopsis": "Direct-browser files keep .js; npm public subpaths are extensionless.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 2,
+      "reason": "Package naming contract."
+    },
+    {
+      "id": "INV-1-4-102",
+      "lineStart": 392,
+      "lineEnd": 413,
+      "sourceAnchor": "3.2.core-scalar-types",
+      "synopsis": "Declare locale, bidi, failure, status, error-code, and built-in fallback-policy string unions.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 6,
+      "reason": "Public declaration surface."
+    },
+    {
+      "id": "INV-1-4-103",
+      "lineStart": 415,
+      "lineEnd": 418,
+      "sourceAnchor": "3.2.language-range-type",
+      "synopsis": "LanguageRange has readonly range and numeric weight.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 3,
+      "reason": "Public negotiation wire type."
+    },
+    {
+      "id": "INV-1-4-104",
+      "lineStart": 420,
+      "lineEnd": 434,
+      "sourceAnchor": "3.2.warning-types",
+      "synopsis": "Declare warning discriminants and frozen warning fields.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 9,
+      "reason": "Public warning declaration surface."
+    },
+    {
+      "id": "INV-1-4-105",
+      "lineStart": 436,
+      "lineEnd": 454,
+      "sourceAnchor": "3.2.data-provenance-and-runtime-metadata",
+      "synopsis": "Declare source/derivative provenance and pinned CLDR, behavior, mode, and IANA metadata constants.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M1"
+      ],
+      "owner": "M1",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 14,
+      "reason": "M1 source and generated artifact identity contract."
+    },
+    {
+      "id": "INV-1-4-106",
+      "lineStart": 455,
+      "lineEnd": 463,
+      "sourceAnchor": "3.2.optional-data-carriers",
+      "synopsis": "Ordinal and cardinal-range carriers are structurally tagged with provenance.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 6,
+      "reason": "Optional-module type carriers freeze at M0."
+    },
+    {
+      "id": "INV-1-4-107",
+      "lineStart": 465,
+      "lineEnd": 496,
+      "sourceAnchor": "3.2.catalog-identity-and-load-verification",
+      "synopsis": "Declare catalog identity, lookup/whole coverage, and complete verified-loader provenance including plan and covered tags.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 24,
+      "reason": "M0 must freeze loading/SSR propagation types even though evidence closes at M8."
+    },
+    {
+      "id": "INV-1-4-108",
+      "lineStart": 498,
+      "lineEnd": 529,
+      "sourceAnchor": "3.2.configuration-catalog-input-maps",
+      "synopsis": "Declare locale configuration, placeholder, parsed catalog, catalog input/map, and tiebreaker map structures.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 19,
+      "reason": "Core construction input and inspection types."
+    },
+    {
+      "id": "INV-1-4-109",
+      "lineStart": 531,
+      "lineEnd": 546,
+      "sourceAnchor": "3.2.behavior-options",
+      "synopsis": "Declare optional plural data, callbacks, policies, bidi, warnings, and forbidden v1 runtime-limits override.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 11,
+      "reason": "Public construction behavior options."
+    },
+    {
+      "id": "INV-1-4-110",
+      "lineStart": 548,
+      "lineEnd": 563,
+      "sourceAnchor": "3.2.locale-source-options",
+      "synopsis": "Declare mutually exclusive constant locale, locale resolver, or match resolver source variants.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 9,
+      "reason": "Public locale-source discriminated union."
+    },
+    {
+      "id": "INV-1-4-111",
+      "lineStart": 565,
+      "lineEnd": 588,
+      "sourceAnchor": "3.2.create-options",
+      "synopsis": "Declare mutually exclusive direct-catalog and LoadedStrings construction options.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 17,
+      "reason": "Core factory input contract."
+    },
+    {
+      "id": "INV-1-4-112",
+      "lineStart": 590,
+      "lineEnd": 590,
+      "sourceAnchor": "3.2.create-strings-signature",
+      "synopsis": "createStrings synchronously returns Strings from the union options.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 1,
+      "reason": "Primary public factory signature."
+    },
+    {
+      "id": "INV-1-4-113",
+      "lineStart": 593,
+      "lineEnd": 600,
+      "sourceAnchor": "3.2.direct-locale-source-behavior",
+      "synopsis": "Require exactly one locale source; normalize direct values, preserve lookupLocale, and attach strict diagnostics without redirecting fallback.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M2"
+      ],
+      "owner": "M7",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 12,
+      "reason": "M2 unloaded-direct-lookup skeleton depends on this behavior."
+    },
+    {
+      "id": "INV-1-4-114",
+      "lineStart": 602,
+      "lineEnd": 608,
+      "sourceAnchor": "3.2.match-source-and-catalog-source.through-preserved-sentence",
+      "synopsis": "Supplied match selects lookup locale; exact negotiation stays optional; exactly one direct or loaded catalog source is required and loader metadata is preserved.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 15,
+      "reason": "Public factory source split and preserved metadata contract; the anchor ends after the preserved-metadata sentence sharing physical line 608."
+    },
+    {
+      "id": "INV-1-4-115",
+      "lineStart": 608,
+      "lineEnd": 611,
+      "sourceAnchor": "3.2.eager-construction-and-data-coherence.m2-sentences",
+      "synopsis": "Construction is synchronous, eager, and fallible; it snapshots and validates all inputs and never returns a Promise.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M2"
+      ],
+      "owner": "M5b",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 9,
+      "reason": "M2 establishes the synchronous construction path; eager expression compilation is already counted in INV-1-4-075."
+    },
+    {
+      "id": "INV-1-4-116",
+      "lineStart": 619,
+      "lineEnd": 623,
+      "sourceAnchor": "3.2.lookup-coverage-use",
+      "synopsis": "Validate subset coverage against effective direct or matched lookup; whole coverage permits either; partial missing files remain catalog-less.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 8,
+      "reason": "Subset/whole loader coverage closes with delivery."
+    },
+    {
+      "id": "INV-1-4-117",
+      "lineStart": 625,
+      "lineEnd": 633,
+      "sourceAnchor": "3.2.catalog-key-limits-warning-order",
+      "synopsis": "Require exact map/file locale identity, assign direct sources/limits, accumulate aggregate limits, define warning order, and abort on handler throw.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M5b"
+      ],
+      "owner": "M5b",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 14,
+      "reason": "Full catalog construction and warning evidence closes at M5b."
+    },
+    {
+      "id": "INV-1-4-118",
+      "lineStart": 635,
+      "lineEnd": 639,
+      "sourceAnchor": "3.2.catalog-identity-and-completeness",
+      "synopsis": "Direct construction is complete but identity is optional/unverified; SSR requires verified loaded provenance; loaded coverage/completeness is preserved.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 8,
+      "reason": "Verified loader and SSR lifecycle evidence closes at M8."
+    },
+    {
+      "id": "INV-1-4-119",
+      "lineStart": 641,
+      "lineEnd": 642,
+      "sourceAnchor": "3.2.plain-object-property-reading",
+      "synopsis": "Read only own enumerable string properties and prefer Map for untrusted/generated keys.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M5b"
+      ],
+      "owner": "M5b",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 3,
+      "reason": "Safe keyed-data implementation closes with catalog model."
+    },
+    {
+      "id": "INV-1-4-120",
+      "lineStart": 646,
+      "lineEnd": 662,
+      "sourceAnchor": "3.3.translation-options-and-helpers",
+      "synopsis": "Declare per-call behavior options, mutually exclusive direct/match locale source, and frozen option factories.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 9,
+      "reason": "Public lookup options and helper surface."
+    },
+    {
+      "id": "INV-1-4-121",
+      "lineStart": 664,
+      "lineEnd": 667,
+      "sourceAnchor": "3.3.direct-locale-context-type",
+      "synopsis": "DirectLocaleContext contains readonly lookup locale and match diagnostic.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 2,
+      "reason": "Public direct-diagnostic type."
+    },
+    {
+      "id": "INV-1-4-122",
+      "lineStart": 669,
+      "lineEnd": 687,
+      "sourceAnchor": "3.3.strings-translation-methods",
+      "synopsis": "Strings exposes get/t/getResult and direct-locale diagnostic methods with fixed signatures.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 11,
+      "reason": "Primary lookup API surface."
+    },
+    {
+      "id": "INV-1-4-123",
+      "lineStart": 688,
+      "lineEnd": 699,
+      "sourceAnchor": "3.3.strings-inspection-methods",
+      "synopsis": "Strings exposes supported/key/missing/configuration/identity/completeness/verification/warning inspections.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 10,
+      "reason": "Public inspection surface."
+    },
+    {
+      "id": "INV-1-4-124",
+      "lineStart": 702,
+      "lineEnd": 709,
+      "sourceAnchor": "3.3.direct-locale-context-behavior",
+      "synopsis": "Context inspection validates/normalizes without callbacks or lookup and returns renderer-kernel diagnostics equal to same-tag translation diagnostics.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M7",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 12,
+      "reason": "Automatic direct diagnostic is a named early corpus requirement."
+    },
+    {
+      "id": "INV-1-4-125",
+      "lineStart": 711,
+      "lineEnd": 723,
+      "sourceAnchor": "3.3.load-verification-structural-channel",
+      "synopsis": "Expose deep-frozen cross-copy structural verification only for validated loader construction and source renderer metadata from the rendering instance.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 20,
+      "reason": "SSR provenance and module-duplication evidence closes at M8."
+    },
+    {
+      "id": "INV-1-4-126",
+      "lineStart": 724,
+      "lineEnd": 733,
+      "sourceAnchor": "3.3.load-plan-recomputation",
+      "synopsis": "Renderer recomputes plan/coverage, rejects mismatches, enforces completeness, and preserves its own pinned IANA identity.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 16,
+      "reason": "Delivery/SSR coherence contract."
+    },
+    {
+      "id": "INV-1-4-127",
+      "lineStart": 734,
+      "lineEnd": 738,
+      "sourceAnchor": "3.3.verification-trust-boundary-tests",
+      "synopsis": "Treat provenance as integrity rather than hostile-object security and test separate entry graphs and version skew.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 7,
+      "reason": "M8 package and SSR duplication test family."
+    },
+    {
+      "id": "INV-1-4-128",
+      "lineStart": 740,
+      "lineEnd": 741,
+      "sourceAnchor": "3.3.per-call-option-replacement",
+      "synopsis": "Defined per-call behavior replaces rather than merges instance behavior; omissions inherit.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M7"
+      ],
+      "owner": "M7",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 3,
+      "reason": "Full lookup override semantics close with the resolution core."
+    },
+    {
+      "id": "INV-1-4-129",
+      "lineStart": 743,
+      "lineEnd": 745,
+      "sourceAnchor": "3.3.locale-source-precedence",
+      "synopsis": "Resolve locale sources in fixed per-call-to-instance precedence and never combine/rematch direct and supplied match values.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M7",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 7,
+      "reason": "Early direct-versus-supplied-match diagnostic corpus."
+    },
+    {
+      "id": "INV-1-4-130",
+      "lineStart": 747,
+      "lineEnd": 748,
+      "sourceAnchor": "3.3.lookup-call-shape",
+      "synopsis": "Options are always the third argument, callers without placeholders pass undefined, and getResult follows the same rule.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 4,
+      "reason": "M0 freezes the public call shape before the M2 implementation."
+    },
+    {
+      "id": "INV-1-4-131",
+      "lineStart": 755,
+      "lineEnd": 757,
+      "sourceAnchor": "3.3.placeholder-snapshot-properties",
+      "synopsis": "Snapshot placeholder records shallowly into Map, evaluate own getters once, propagate getter errors early, and ignore symbols.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M2"
+      ],
+      "owner": "M5b",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 6,
+      "reason": "M2 caller-snapshot behavior."
+    },
+    {
+      "id": "INV-1-4-132",
+      "lineStart": 759,
+      "lineEnd": 763,
+      "sourceAnchor": "3.3.inspection-order-and-immutability",
+      "synopsis": "Fix inspection sort and retained attempt orders and expose only frozen immutable arrays, records, and configuration objects.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M7"
+      ],
+      "owner": "M7",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 8,
+      "reason": "Core inspection order and immutability close with M7."
+    },
+    {
+      "id": "INV-1-4-133",
+      "lineStart": 771,
+      "lineEnd": 774,
+      "sourceAnchor": "3.3.exact-locale-inspection",
+      "synopsis": "Key inspections validate exact supported tags only, with case normalization but no equivalence, negotiation, or fallback.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M7"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 8,
+      "reason": "Resolution-core inspection evidence closes with M7."
+    },
+    {
+      "id": "INV-1-4-134",
+      "lineStart": 778,
+      "lineEnd": 798,
+      "sourceAnchor": "3.4.locale-match-result-types",
+      "synopsis": "Declare match-type union and complete LocaleMatchResult diagnostic record.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 16,
+      "reason": "M0 freezes match/result structural types."
+    },
+    {
+      "id": "INV-1-4-135",
+      "lineStart": 800,
+      "lineEnd": 824,
+      "sourceAnchor": "3.4.translation-result-types",
+      "synopsis": "Declare translation-result base and discriminated success/failure fields.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 19,
+      "reason": "M0 freezes result structural types and M2 emits them."
+    },
+    {
+      "id": "INV-1-4-136",
+      "lineStart": 827,
+      "lineEnd": 830,
+      "sourceAnchor": "3.4.is-fallback-semantics",
+      "synopsis": "Compute isFallback from match type or non-equivalent successful locale; handler failures are not automatically fallback.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M7"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 7,
+      "reason": "Final resolution/result semantics close at M7."
+    },
+    {
+      "id": "INV-1-4-137",
+      "lineStart": 832,
+      "lineEnd": 837,
+      "sourceAnchor": "3.4.match-shape-and-considered-configuration",
+      "synopsis": "Enforce matched/unmatched nullable fields and choose considered locales from full manifest or direct loaded configuration.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 10,
+      "reason": "M3a automatic-direct diagnostic shape and partial-manifest cases."
+    },
+    {
+      "id": "INV-1-4-138",
+      "lineStart": 839,
+      "lineEnd": 848,
+      "sourceAnchor": "3.4.supplied-match-invariants",
+      "synopsis": "Validate range count/form/weights, winning-pair membership, unique normalized considered locales, fallback/selected membership, isMatch, and exact applicable configuration.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M9"
+      ],
+      "owner": "M9",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 20,
+      "reason": "Full supplied-list negotiation validation closes at M9."
+    },
+    {
+      "id": "INV-1-4-139",
+      "lineStart": 850,
+      "lineEnd": 856,
+      "sourceAnchor": "3.4.lookup-coverage-validation",
+      "synopsis": "Validate direct or supplied effective lookup against subset coverage; whole coverage accepts any valid source; violations are configuration errors.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 12,
+      "reason": "Delivery coverage evidence closes at M8."
+    },
+    {
+      "id": "INV-1-4-140",
+      "lineStart": 858,
+      "lineEnd": 859,
+      "sourceAnchor": "3.4.requested-range-diagnostic-order",
+      "synopsis": "Preserve caller/parser requested-range order regardless of solver sorting/expansion.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M9"
+      ],
+      "owner": "M9",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 3,
+      "reason": "Whole-list diagnostic contract."
+    },
+    {
+      "id": "INV-1-4-141",
+      "lineStart": 861,
+      "lineEnd": 866,
+      "sourceAnchor": "3.4.automatic-direct-diagnostic",
+      "synopsis": "Every event has a diagnostic; direct locale computes Java-equivalent weight-1 matching without redirecting lookup; supplied match selects lookup locale.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 10,
+      "reason": "Named M3a direct-diagnostic family and M2 skeleton."
+    },
+    {
+      "id": "INV-1-4-142",
+      "lineStart": 868,
+      "lineEnd": 872,
+      "sourceAnchor": "3.4.one-match-object-per-call",
+      "synopsis": "Compute/validate one frozen match object per translation and reuse it across result/failure/fallback/error; direct requested range is exact weight one.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M7",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 9,
+      "reason": "M3a callback and identity-token corpus."
+    },
+    {
+      "id": "INV-1-4-143",
+      "lineStart": 874,
+      "lineEnd": 877,
+      "sourceAnchor": "3.4.supplied-result-revalidation-order",
+      "synopsis": "Revalidate supplied results on every use; library results sort considered locales while caller values retain unique order under set validation.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M9"
+      ],
+      "owner": "M9",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 7,
+      "reason": "Full negotiator and supplied-result evidence closes at M9."
+    },
+    {
+      "id": "INV-1-4-144",
+      "lineStart": 879,
+      "lineEnd": 898,
+      "sourceAnchor": "3.4.negotiator-interfaces",
+      "synopsis": "Declare single-locale and language-range matcher/negotiator method surface.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 12,
+      "reason": "M0 public negotiation interface freeze."
+    },
+    {
+      "id": "INV-1-4-145",
+      "lineStart": 900,
+      "lineEnd": 915,
+      "sourceAnchor": "3.4.negotiator-functions-and-metadata",
+      "synopsis": "Declare range parsing, negotiator creation, option helpers, and IANA metadata exports.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 11,
+      "reason": "M0 public negotiation surface."
+    },
+    {
+      "id": "INV-1-4-146",
+      "lineStart": 917,
+      "lineEnd": 923,
+      "sourceAnchor": "3.4.strict-match-and-best-match",
+      "synopsis": "Strict match returns unmatched rather than fabricated fallback; best-match returns selection/fallback; direct matching uses one public weight-1 range plus pinned internal identities.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M9",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 10,
+      "reason": "Direct matcher must differentially equal core's early diagnostic kernel."
+    },
+    {
+      "id": "INV-1-4-147",
+      "lineStart": 924,
+      "lineEnd": 928,
+      "sourceAnchor": "3.4.range-limit-and-iana-provenance",
+      "synopsis": "Apply the 32-range limit to public/materialized members but not internal identities and pin IANA provenance without host registry calls.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M1"
+      ],
+      "owner": "M9",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 9,
+      "reason": "M1 generates the pinned IANA artifact and direct-identity closure."
+    },
+    {
+      "id": "INV-1-4-148",
+      "lineStart": 929,
+      "lineEnd": 936,
+      "sourceAnchor": "3.4.accept-language-fail-soft",
+      "synopsis": "Fail soft on absent/blank/malformed/oversized headers without truncation and negotiate option helpers immediately outside the root graph.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M9"
+      ],
+      "owner": "M9",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 14,
+      "reason": "Whole-list/header behavior closes at M9."
+    },
+    {
+      "id": "INV-1-4-149",
+      "lineStart": 938,
+      "lineEnd": 946,
+      "sourceAnchor": "3.4.small-chooser-api",
+      "synopsis": "Root exposes pure preferred-language and navigator-based chooser functions returning locale tags.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 6,
+      "reason": "Root public chooser surface and graph budget freeze at M0."
+    },
+    {
+      "id": "INV-1-4-150",
+      "lineStart": 948,
+      "lineEnd": 959,
+      "sourceAnchor": "3.4.small-chooser-semantics",
+      "synopsis": "Snapshot navigator languages, examine at most 32, ignore malformed tags, delegate each to strict single-locale kernel, continue unmatched, then fallback; exclude list/header parity.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M7"
+      ],
+      "owner": "M7",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 18,
+      "reason": "Chooser implementation and non-parity evidence close with final core graph at M7."
+    },
+    {
+      "id": "INV-1-4-151",
+      "lineStart": 963,
+      "lineEnd": 963,
+      "sourceAnchor": "3.5.structural-failure-responses",
+      "synopsis": "Discriminate failure responses structurally rather than by singleton identity.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M7",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 2,
+      "reason": "Public response representation freezes at M0."
+    },
+    {
+      "id": "INV-1-4-152",
+      "lineStart": 965,
+      "lineEnd": 983,
+      "sourceAnchor": "3.5.failure-response-types",
+      "synopsis": "Declare return-key, return-string, and throw responses plus frozen helpers/constants.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 10,
+      "reason": "Public failure-response surface."
+    },
+    {
+      "id": "INV-1-4-153",
+      "lineStart": 985,
+      "lineEnd": 995,
+      "sourceAnchor": "3.5.translation-failure-type",
+      "synopsis": "Declare complete TranslationFailure fields including safe placeholder record, nullable cause, and redacted message.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 14,
+      "reason": "Public failure callback and error payload."
+    },
+    {
+      "id": "INV-1-4-154",
+      "lineStart": 997,
+      "lineEnd": 1014,
+      "sourceAnchor": "3.5.callback-types",
+      "synopsis": "Declare failure handler, fallback event/observer, preceding failures, and phonetic resolver signatures.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 14,
+      "reason": "M0 callback and identity contract."
+    },
+    {
+      "id": "INV-1-4-155",
+      "lineStart": 1017,
+      "lineEnd": 1021,
+      "sourceAnchor": "3.5.callback-locale-resolver",
+      "synopsis": "Locale resolver and match resolver faults propagate immediately without fallback or failure handling.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M7",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 4,
+      "reason": "Early callback phase/identity evidence."
+    },
+    {
+      "id": "INV-1-4-156",
+      "lineStart": 1022,
+      "lineEnd": 1022,
+      "sourceAnchor": "3.5.callback-phonetic-resolver",
+      "synopsis": "Phonetic resolver faults become candidate resolution failure while unrecognized application errors retain identity.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M5b"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 3,
+      "reason": "Phonetic/generated resolution closes with catalog/interpolation."
+    },
+    {
+      "id": "INV-1-4-157",
+      "lineStart": 1023,
+      "lineEnd": 1023,
+      "sourceAnchor": "3.5.callback-fallback-policy",
+      "synopsis": "Custom fallback-policy exceptions propagate immediately.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M7"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 2,
+      "reason": "Full resolution-core policy behavior."
+    },
+    {
+      "id": "INV-1-4-158",
+      "lineStart": 1024,
+      "lineEnd": 1024,
+      "sourceAnchor": "3.5.callback-fallback-observer",
+      "synopsis": "Call fallback observer once after later success and before return; propagate exceptions.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 4,
+      "reason": "M3a fallback-observation fixture family."
+    },
+    {
+      "id": "INV-1-4-159",
+      "lineStart": 1025,
+      "lineEnd": 1025,
+      "sourceAnchor": "3.5.callback-failure-handler",
+      "synopsis": "Failure-handler exceptions propagate immediately.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M2"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 2,
+      "reason": "M2 end-to-end failure path."
+    },
+    {
+      "id": "INV-1-4-160",
+      "lineStart": 1027,
+      "lineEnd": 1034,
+      "sourceAnchor": "3.5.callback-sync-and-invalid-return",
+      "synopsis": "All callbacks are synchronous; classify invalid phonetic returns as candidate failures, other invalid value callbacks as configuration errors, and observer thenables as errors.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M5b"
+      ],
+      "owner": "M7",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 14,
+      "reason": "Requires complete callback and generated-placeholder integration."
+    },
+    {
+      "id": "INV-1-4-161",
+      "lineStart": 1036,
+      "lineEnd": 1063,
+      "sourceAnchor": "3.5.core-error-interfaces",
+      "synopsis": "Declare base, missing, unsupported, expression, and resolution error fields/codes including nullish thrown marker.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 15,
+      "reason": "Public error declaration contract."
+    },
+    {
+      "id": "INV-1-4-162",
+      "lineStart": 1065,
+      "lineEnd": 1084,
+      "sourceAnchor": "3.5.parse-loading-digest-configuration-errors",
+      "synopsis": "Declare structured parse/loading errors and digest/configuration codes.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 13,
+      "reason": "Public cross-subpath error declaration contract."
+    },
+    {
+      "id": "INV-1-4-163",
+      "lineStart": 1086,
+      "lineEnd": 1100,
+      "sourceAnchor": "3.5.catch-only-error-values",
+      "synopsis": "Expose catch-only error class values with instanceof support and no public constructors.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 13,
+      "reason": "M0 public symbol/type disposition."
+    },
+    {
+      "id": "INV-1-4-164",
+      "lineStart": 1103,
+      "lineEnd": 1106,
+      "sourceAnchor": "3.5.error-runtime-construction",
+      "synopsis": "Runtime errors are genuine catchable Error subclasses whose internal token rejects direct construction and subclass instantiation.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M2"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 7,
+      "reason": "The runtime mechanism is needed from M2 onward and its complete error family closes with M8; constructor declaration shape is already counted in INV-1-4-163."
+    },
+    {
+      "id": "INV-1-4-165",
+      "lineStart": 1111,
+      "lineEnd": 1112,
+      "sourceAnchor": "3.5.error-vector-assertions",
+      "synopsis": "All errors expose stable codes; vectors assert code, fields, and cause identity rather than messages/stacks.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M3a",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 5,
+      "reason": "M3a vector schema includes identity tokens and structured errors."
+    },
+    {
+      "id": "INV-1-4-166",
+      "lineStart": 1114,
+      "lineEnd": 1116,
+      "sourceAnchor": "3.5.error-map-expression",
+      "synopsis": "Expression evaluation maps to ExpressionEvaluationError/EXPRESSION_EVALUATION.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M6"
+      ],
+      "owner": "M6",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 1,
+      "reason": "M6 expression error evidence."
+    },
+    {
+      "id": "INV-1-4-167",
+      "lineStart": 1117,
+      "lineEnd": 1117,
+      "sourceAnchor": "3.5.error-map-invalid-value",
+      "synopsis": "Recognized invalid resolution value maps to RESOLUTION_INVALID_ARGUMENT.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M6"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 1,
+      "reason": "M6 mapped error evidence."
+    },
+    {
+      "id": "INV-1-4-168",
+      "lineStart": 1118,
+      "lineEnd": 1118,
+      "sourceAnchor": "3.5.error-map-invalid-state",
+      "synopsis": "Recognized invalid resolution state maps to RESOLUTION_INVALID_STATE.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M6"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 1,
+      "reason": "M6 mapped error evidence."
+    },
+    {
+      "id": "INV-1-4-169",
+      "lineStart": 1119,
+      "lineEnd": 1119,
+      "sourceAnchor": "3.5.error-map-missing",
+      "synopsis": "Final missing/no-match throw maps to MissingTranslationError/MISSING_TRANSLATION.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M2"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 1,
+      "reason": "M2 failure result/throw path."
+    },
+    {
+      "id": "INV-1-4-170",
+      "lineStart": 1120,
+      "lineEnd": 1120,
+      "sourceAnchor": "3.5.error-map-configuration",
+      "synopsis": "Configuration/catalog construction faults map to ConfigurationError/CONFIGURATION.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M2"
+      ],
+      "owner": "M5b",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 1,
+      "reason": "M2 synchronous construction failure path."
+    },
+    {
+      "id": "INV-1-4-171",
+      "lineStart": 1121,
+      "lineEnd": 1121,
+      "sourceAnchor": "3.5.error-map-digest",
+      "synopsis": "Missing browser digest capability maps to DigestUnavailableError/DIGEST_UNAVAILABLE.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 1,
+      "reason": "Browser digest capability closes with delivery."
+    },
+    {
+      "id": "INV-1-4-172",
+      "lineStart": 1123,
+      "lineEnd": 1123,
+      "sourceAnchor": "3.5.error-structured-loading-failures",
+      "synopsis": "Freeze loading failures and order them by fetch-plan order.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 2,
+      "reason": "The loading-error collection and its order close with delivery."
+    },
+    {
+      "id": "INV-1-4-173",
+      "lineStart": 1130,
+      "lineEnd": 1140,
+      "sourceAnchor": "3.5.error-contextualization",
+      "synopsis": "Contextualize recognized generated-placeholder errors by category, preserve other thrown identities, and normalize nullish throws to a leaf invalid-state ResolutionError.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M6"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 20,
+      "reason": "Generated-placeholder/expression error mapping closes at M6."
+    },
+    {
+      "id": "INV-1-4-174",
+      "lineStart": 1142,
+      "lineEnd": 1146,
+      "sourceAnchor": "3.5.wrapper-eager-expression",
+      "synopsis": "Eager expression compile contributes exactly one ExpressionEvaluationError wrapper.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M6"
+      ],
+      "owner": "M6",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 2,
+      "reason": "M6 wrapper-count evidence."
+    },
+    {
+      "id": "INV-1-4-175",
+      "lineStart": 1147,
+      "lineEnd": 1147,
+      "sourceAnchor": "3.5.wrapper-generated-expression",
+      "synopsis": "Recognized generated-fragment expression failure contributes exactly two same-category wrappers.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M6"
+      ],
+      "owner": "M6",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 3,
+      "reason": "M6 wrapper-count evidence."
+    },
+    {
+      "id": "INV-1-4-176",
+      "lineStart": 1148,
+      "lineEnd": 1148,
+      "sourceAnchor": "3.5.wrapper-other-generated",
+      "synopsis": "Other recognized generated-placeholder failures add one wrapper per active boundary under the stated direct/nested rules.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M6"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 5,
+      "reason": "M6 generated-boundary cause-chain evidence."
+    },
+    {
+      "id": "INV-1-4-177",
+      "lineStart": 1149,
+      "lineEnd": 1149,
+      "sourceAnchor": "3.5.wrapper-whole-message-runtime",
+      "synopsis": "Runtime whole-message expression failure adds no wrapper and propagates original error.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M6"
+      ],
+      "owner": "M6",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 2,
+      "reason": "M6 phase-specific wrapper evidence."
+    },
+    {
+      "id": "INV-1-4-178",
+      "lineStart": 1151,
+      "lineEnd": 1154,
+      "sourceAnchor": "3.5.wrapper-composition-and-identity",
+      "synopsis": "Nested wrapper counts compose; each cause points to the preceding object; storage/final throw adds no wrapper.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M6"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 6,
+      "reason": "Cause-chain identity evidence closes at M6."
+    },
+    {
+      "id": "INV-1-4-179",
+      "lineStart": 1156,
+      "lineEnd": 1161,
+      "sourceAnchor": "3.5.first-cause-storage-and-final-throw",
+      "synopsis": "Store first resolution cause unchanged, do not replace it during fallback, rethrow by identity, otherwise create missing error, and compare structured identity tokens.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M7"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 10,
+      "reason": "Full fallback/final failure evidence closes with resolution core."
+    },
+    {
+      "id": "INV-1-4-180",
+      "lineStart": 1165,
+      "lineEnd": 1181,
+      "sourceAnchor": "3.6.localized-string-node-types",
+      "synopsis": "Declare localized-string nodes, roots, and expression-bearing whole-message alternatives.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 10,
+      "reason": "Programmatic model declaration surface."
+    },
+    {
+      "id": "INV-1-4-181",
+      "lineStart": 1183,
+      "lineEnd": 1201,
+      "sourceAnchor": "3.6.placeholder-definition-types",
+      "synopsis": "Declare discriminated language-form and expression placeholder definitions, range/value and alternatives.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 13,
+      "reason": "Programmatic generated-placeholder model surface."
+    },
+    {
+      "id": "INV-1-4-182",
+      "lineStart": 1203,
+      "lineEnd": 1209,
+      "sourceAnchor": "3.6.definition-helper-signatures",
+      "synopsis": "Declare defineLocalizedString and defineCatalog validation/freezing helpers.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 4,
+      "reason": "Public model-helper surface."
+    },
+    {
+      "id": "INV-1-4-183",
+      "lineStart": 1212,
+      "lineEnd": 1223,
+      "sourceAnchor": "3.6.model-validation",
+      "synopsis": "Require translation/alternative content, nonempty ordered alternatives, depth/cycle-safe DAG validation, exclusive value/range, single-axis nonempty maps, and defensive freezing.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M5b"
+      ],
+      "owner": "M5b",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 20,
+      "reason": "Complete programmatic model validation closes at M5b; eager expression compilation is already counted in INV-1-4-075."
+    },
+    {
+      "id": "INV-1-4-184",
+      "lineStart": 1225,
+      "lineEnd": 1227,
+      "sourceAnchor": "3.6.commentary-retention",
+      "synopsis": "Retain commentary through parsed/defined values without affecting rendering or adding mutable inspection.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M5b"
+      ],
+      "owner": "M5b",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 4,
+      "reason": "Catalog model and commentary evidence closes at M5b."
+    },
+    {
+      "id": "INV-1-4-185",
+      "lineStart": 1231,
+      "lineEnd": 1232,
+      "sourceAnchor": "3.7.nominal-runtime-dispatch",
+      "synopsis": "Preserve Java distinctions among text, numbers, operands, and nominal language-form values.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M4"
+      ],
+      "owner": "M4",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 5,
+      "reason": "Exact numeric/typed engine begins at M4."
+    },
+    {
+      "id": "INV-1-4-186",
+      "lineStart": 1234,
+      "lineEnd": 1235,
+      "sourceAnchor": "3.7.raw-string-is-text",
+      "synopsis": "Raw JavaScript strings are always text, never inferred as numeric or language-form values.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M4"
+      ],
+      "owner": "M4",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 3,
+      "reason": "JS dispatch rule feeding portable tagged-value semantics."
+    },
+    {
+      "id": "INV-1-4-187",
+      "lineStart": 1236,
+      "lineEnd": 1240,
+      "sourceAnchor": "3.7.number-conversion",
+      "synopsis": "Treat finite numbers as binary64 and implement JDK21 shortest-roundtrip decimal conversion including exponent/negative zero without assuming JS toString parity.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M4"
+      ],
+      "owner": "M4",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 9,
+      "reason": "M4 exact-number engine and Java oracle."
+    },
+    {
+      "id": "INV-1-4-188",
+      "lineStart": 1241,
+      "lineEnd": 1241,
+      "sourceAnchor": "3.7.bigint",
+      "synopsis": "Treat bigint as exact integral input subject to fixed limits.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M4"
+      ],
+      "owner": "M4",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 2,
+      "reason": "M4 exact numeric conversion."
+    },
+    {
+      "id": "INV-1-4-189",
+      "lineStart": 1242,
+      "lineEnd": 1242,
+      "sourceAnchor": "3.7.nonfinite-number",
+      "synopsis": "Non-finite numbers fail when used numerically.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M4"
+      ],
+      "owner": "M4",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 1,
+      "reason": "M4 numeric invalid-input evidence."
+    },
+    {
+      "id": "INV-1-4-190",
+      "lineStart": 1243,
+      "lineEnd": 1243,
+      "sourceAnchor": "3.7.tagged-exact-values",
+      "synopsis": "Represent exact decimals and explicit plural operands as serializable tagged records.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M4"
+      ],
+      "owner": "M4",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 3,
+      "reason": "M4 cross-language exact-value representation."
+    },
+    {
+      "id": "INV-1-4-191",
+      "lineStart": 1245,
+      "lineEnd": 1266,
+      "sourceAnchor": "3.7.decimal-and-operand-types",
+      "synopsis": "Declare DecimalValue, PluralOperandValue, and their factories/options.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 12,
+      "reason": "Public tagged numeric surface freezes at M0."
+    },
+    {
+      "id": "INV-1-4-192",
+      "lineStart": 1268,
+      "lineEnd": 1273,
+      "sourceAnchor": "3.7.tag-recognition-and-decimal-grammar",
+      "synopsis": "Factories freeze structurally recognized records and decimal text follows the versioned signed-decimal/exponent grammar.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M4"
+      ],
+      "owner": "M4",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 8,
+      "reason": "M4 serializable exact-number grammar."
+    },
+    {
+      "id": "INV-1-4-193",
+      "lineStart": 1275,
+      "lineEnd": 1281,
+      "sourceAnchor": "3.7.operand-validation-and-derivation",
+      "synopsis": "Reject non-decimal spellings, validate/infer visible places and compact exponent, derive shifted plural operands exactly, preserve sign for comparison, and validate before expansion.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M4"
+      ],
+      "owner": "M4",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 16,
+      "reason": "M4 exact operand derivation and limits."
+    },
+    {
+      "id": "INV-1-4-194",
+      "lineStart": 1283,
+      "lineEnd": 1331,
+      "sourceAnchor": "3.7.language-form-axis-and-name-types",
+      "synopsis": "Declare ten axes and the complete 61-name language-form union.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 72,
+      "reason": "M0 freezes every named public language-form constant/type."
+    },
+    {
+      "id": "INV-1-4-195",
+      "lineStart": 1333,
+      "lineEnd": 1359,
+      "sourceAnchor": "3.7.tagged-language-form-types",
+      "synopsis": "Declare structural axis/name/renderName tag and axis-specific language-form unions/aliases.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 19,
+      "reason": "Public nominal tagged-value representation."
+    },
+    {
+      "id": "INV-1-4-196",
+      "lineStart": 1361,
+      "lineEnd": 1375,
+      "sourceAnchor": "3.7.cardinal-public-api",
+      "synopsis": "Declare plural number union and root cardinal number/operand classifiers and support probes.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 7,
+      "reason": "M0 exact public cardinal API; M2 exercises one classifier."
+    },
+    {
+      "id": "INV-1-4-197",
+      "lineStart": 1377,
+      "lineEnd": 1390,
+      "sourceAnchor": "3.7.ordinal-public-api",
+      "synopsis": "Declare optional ordinal data, number/operand classifiers, and support probes.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 6,
+      "reason": "M0 optional ordinal public surface."
+    },
+    {
+      "id": "INV-1-4-198",
+      "lineStart": 1392,
+      "lineEnd": 1402,
+      "sourceAnchor": "3.7.range-api-and-exported-constant",
+      "synopsis": "Declare optional cardinal-range classifier/data and specifically typed exported language-form constants.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 7,
+      "reason": "M0 optional range and constant export surface."
+    },
+    {
+      "id": "INV-1-4-199",
+      "lineStart": 1405,
+      "lineEnd": 1409,
+      "sourceAnchor": "3.7.language-form-recognition-and-selector-inputs",
+      "synopsis": "Recognize only allowlisted structural tuples, export every frozen constant, forbid string prefix inference, and constrain selector/range endpoint input axes.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M4"
+      ],
+      "owner": "M4",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 11,
+      "reason": "Typed-value engine implementation closes at M4/M5b."
+    },
+    {
+      "id": "INV-1-4-200",
+      "lineStart": 1411,
+      "lineEnd": 1419,
+      "sourceAnchor": "3.7.classification-and-support-probes",
+      "synopsis": "Return canonical frozen constants, define unsupported-locale behavior and ordering, list direct rule tags, route explicit operands, test public classifiers, and defer examples tooling.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M4"
+      ],
+      "owner": "M4",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 14,
+      "reason": "M4 classifier and generated-case evidence."
+    },
+    {
+      "id": "INV-1-4-201",
+      "lineStart": 1421,
+      "lineEnd": 1428,
+      "sourceAnchor": "3.7.render-name-and-tagged-interpolation",
+      "synopsis": "Pin every axis/name/renderName tuple, reject forgeries, define decimal/operand rendering, and distinguish portable tagged text from JS-native number/bigint conversion.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M5b"
+      ],
+      "owner": "M5b",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 14,
+      "reason": "Tagged interpolation and renderName close with M5b."
+    },
+    {
+      "id": "INV-1-4-202",
+      "lineStart": 1430,
+      "lineEnd": 1433,
+      "sourceAnchor": "3.7.phonetic-definition-resolution",
+      "synopsis": "Raw phonetic terms invoke resolver, tagged values bypass it, bare strings are invalid, and missing resolver fails when reached.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M5b"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 8,
+      "reason": "Phonetic generated-value integration closes at M5b."
+    },
+    {
+      "id": "INV-1-4-203",
+      "lineStart": 1435,
+      "lineEnd": 1437,
+      "sourceAnchor": "3.7.optional-plural-data-validation",
+      "synopsis": "Detect ordinal/range use eagerly and reject missing, wrong-axis, incomplete, or provenance-incompatible optional data at construction.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M4"
+      ],
+      "owner": "M4",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 7,
+      "reason": "M4 optional data/provenance integration."
+    },
+    {
+      "id": "INV-1-4-204",
+      "lineStart": 1445,
+      "lineEnd": 1481,
+      "sourceAnchor": "4.1.parser-and-merge-api",
+      "synopsis": "Declare loading-limit fields, parsed aggregate subset, parser options/signature, and parsed-file merge signature.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 22,
+      "reason": "M0 public parser and limit type surface; M2 consumes bounded parse."
+    },
+    {
+      "id": "INV-1-4-205",
+      "lineStart": 1483,
+      "lineEnd": 1486,
+      "sourceAnchor": "4.1.raw-input-decode-and-result-origins",
+      "synopsis": "Decode bytes as fatal UTF-8, handle one BOM, reject blank files, enforce string characters, default source, and return null-prototype origins.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M2"
+      ],
+      "owner": "M5a",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 10,
+      "reason": "M2 bounded raw-text parse baseline."
+    },
+    {
+      "id": "INV-1-4-206",
+      "lineStart": 1487,
+      "lineEnd": 1492,
+      "sourceAnchor": "4.1.merge-parsed-semantics.through-diagnostics-sentence",
+      "synopsis": "Require same exact locale and nonempty inputs, preserve sources/origins/warnings/order, merge structurally equal definitions, enforce aggregate limits, and diagnose conflicts.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M5b"
+      ],
+      "owner": "M5b",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 16,
+      "reason": "Full merge/catalog implementation closes at M5b; the anchor ends after the merge-diagnostics sentence sharing physical line 1492."
+    },
+    {
+      "id": "INV-1-4-207",
+      "lineStart": 1492,
+      "lineEnd": 1496,
+      "sourceAnchor": "4.1.raw-versus-parsed-limit-boundaries.from-raw-input-byte-sentence",
+      "synopsis": "Enforce raw byte/character/nesting limits only where raw inputs are observed; parsed inputs revalidate model/file/node/warning limits only.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M5a"
+      ],
+      "owner": "M5a",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 9,
+      "reason": "M5a bounded parser defines the observation boundary; the anchor begins at the raw-input-byte sentence sharing physical line 1492."
+    },
+    {
+      "id": "INV-1-4-208",
+      "lineStart": 1498,
+      "lineEnd": 1501,
+      "sourceAnchor": "4.1.programmatic-json-object-boundary",
+      "synopsis": "Plain JSON.parse objects are not raw strings files; programmatic arrays get model/node validation but not source guarantees.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M5a"
+      ],
+      "owner": "M5a",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 5,
+      "reason": "M5a source-form guarantees."
+    },
+    {
+      "id": "INV-1-4-209",
+      "lineStart": 1505,
+      "lineEnd": 1505,
+      "sourceAnchor": "4.2.no-direct-json-parse",
+      "synopsis": "Never pass raw strings-file text directly to JSON.parse; perform a bounded lexical pass first.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M5a"
+      ],
+      "owner": "M5a",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 2,
+      "reason": "M5a duplicate-aware bounded parsing architecture."
+    },
+    {
+      "id": "INV-1-4-210",
+      "lineStart": 1507,
+      "lineEnd": 1508,
+      "sourceAnchor": "4.2.prepass-limits",
+      "synopsis": "Enforce character, nesting, and translation-node limits before object materialization.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M5a"
+      ],
+      "owner": "M5a",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 4,
+      "reason": "M5a bounded invalid-file corpus."
+    },
+    {
+      "id": "INV-1-4-211",
+      "lineStart": 1509,
+      "lineEnd": 1509,
+      "sourceAnchor": "4.2.prepass-string-escapes",
+      "synopsis": "Track JSON string escapes and validate paired UTF-16 surrogates.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M5a"
+      ],
+      "owner": "M5a",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 2,
+      "reason": "M5a lexical correctness."
+    },
+    {
+      "id": "INV-1-4-212",
+      "lineStart": 1510,
+      "lineEnd": 1511,
+      "sourceAnchor": "4.2.prepass-duplicate-members",
+      "synopsis": "Record member names and reject duplicates at every JSON path including root translation keys.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M5a"
+      ],
+      "owner": "M5a",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 3,
+      "reason": "M5a duplicate-aware parser gate."
+    },
+    {
+      "id": "INV-1-4-213",
+      "lineStart": 1512,
+      "lineEnd": 1513,
+      "sourceAnchor": "4.2.prepass-syntax",
+      "synopsis": "Reject malformed tokens or preserve duplicate knowledge through final JSON syntax confirmation.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M5a"
+      ],
+      "owner": "M5a",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 3,
+      "reason": "Allows either bounded architecture without losing required duplicate semantics."
+    },
+    {
+      "id": "INV-1-4-214",
+      "lineStart": 1514,
+      "lineEnd": 1514,
+      "sourceAnchor": "4.2.prepass-diagnostics",
+      "synopsis": "Report bounded source name, line, column, and JSON path.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M5a"
+      ],
+      "owner": "M5a",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 5,
+      "reason": "M5a invalid-file diagnostic corpus."
+    },
+    {
+      "id": "INV-1-4-215",
+      "lineStart": 1516,
+      "lineEnd": 1517,
+      "sourceAnchor": "4.2.parser-implementation-choice",
+      "synopsis": "Use a dedicated bounded parser if simpler/smaller; never accept last-write-wins duplicates.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M5a"
+      ],
+      "owner": "M5a",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 3,
+      "reason": "M5a measured implementation choice and invariant."
+    },
+    {
+      "id": "INV-1-4-216",
+      "lineStart": 1519,
+      "lineEnd": 1521,
+      "sourceAnchor": "4.2.schema-portability-layer",
+      "synopsis": "Treat shared Java schema as structural superset and apply/named-report the stricter portable ASCII identifier rule in JS.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M5a"
+      ],
+      "owner": "M5a",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 5,
+      "reason": "M5a schema and portability validation."
+    },
+    {
+      "id": "INV-1-4-217",
+      "lineStart": 1523,
+      "lineEnd": 1528,
+      "sourceAnchor": "4.2.streamed-decoded-byte-limits",
+      "synopsis": "Enforce decoded byte limits while streaming before allocation; Content-Length is not authoritative except limited telemetry/identity-coded early rejection.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 10,
+      "reason": "Network streaming is explicitly an M8 responsibility."
+    },
+    {
+      "id": "INV-1-4-218",
+      "lineStart": 1532,
+      "lineEnd": 1534,
+      "sourceAnchor": "4.3.safe-internal-keyed-data",
+      "synopsis": "Use Map/Set/null-prototype records and own-property operations; ban unsafe enumeration/spread/assign for untrusted keyed merges.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M5b"
+      ],
+      "owner": "M5b",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 9,
+      "reason": "Catalog safe-key implementation closes at M5b."
+    },
+    {
+      "id": "INV-1-4-219",
+      "lineStart": 1536,
+      "lineEnd": 1539,
+      "sourceAnchor": "4.3.safe-public-keyed-records",
+      "synopsis": "Defensively copy/freeze null-prototype public catalog/manifest/locale/caller-keyed records and never expose mutable Map/Set as frozen.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M5b"
+      ],
+      "owner": "M5b",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 10,
+      "reason": "M5b public model and magic-key evidence."
+    },
+    {
+      "id": "INV-1-4-220",
+      "lineStart": 1541,
+      "lineEnd": 1543,
+      "sourceAnchor": "4.3.magic-keys",
+      "synopsis": "Treat __proto__, prototype, constructor, and toString as ordinary valid keys without prototype mutation or inherited collisions.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M5b"
+      ],
+      "owner": "M5b",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 7,
+      "reason": "Named M5b magic-key fixture family."
+    },
+    {
+      "id": "INV-1-4-221",
+      "lineStart": 1545,
+      "lineEnd": 1547,
+      "sourceAnchor": "4.3.locale-key-duplicates-and-equivalence",
+      "synopsis": "Reject duplicate exact normalized locale tags, preserve distinct CLDR-equivalent catalogs, and resolve ambiguity only by explicit order/tiebreakers.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 7,
+      "reason": "Early exact-versus-equivalent and tiebreaker semantic cases."
+    },
+    {
+      "id": "INV-1-4-222",
+      "lineStart": 1551,
+      "lineEnd": 1552,
+      "sourceAnchor": "4.4.portable-warning-types",
+      "synopsis": "Only incomplete-cardinality and incomplete-ordinality warnings are portable and their frozen shape matches declarations.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M5b"
+      ],
+      "owner": "M5b",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 4,
+      "reason": "Warnings close with catalog validation."
+    },
+    {
+      "id": "INV-1-4-223",
+      "lineStart": 1554,
+      "lineEnd": 1554,
+      "sourceAnchor": "4.4.warning-locale-source",
+      "synopsis": "Warnings carry locale and source.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M5b"
+      ],
+      "owner": "M5b",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 2,
+      "reason": "Warning record field evidence."
+    },
+    {
+      "id": "INV-1-4-224",
+      "lineStart": 1555,
+      "lineEnd": 1555,
+      "sourceAnchor": "4.4.warning-key-placeholder",
+      "synopsis": "Warnings carry root translation key and placeholder name.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M5b"
+      ],
+      "owner": "M5b",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 2,
+      "reason": "Warning record field evidence."
+    },
+    {
+      "id": "INV-1-4-225",
+      "lineStart": 1556,
+      "lineEnd": 1556,
+      "sourceAnchor": "4.4.warning-missing-forms",
+      "synopsis": "Warnings carry missing language forms.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M5b"
+      ],
+      "owner": "M5b",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 1,
+      "reason": "Warning record field evidence."
+    },
+    {
+      "id": "INV-1-4-226",
+      "lineStart": 1558,
+      "lineEnd": 1558,
+      "sourceAnchor": "4.4.warning-form-order",
+      "synopsis": "Order missing forms by declared cardinal/ordinal order rather than hash iteration.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M5b"
+      ],
+      "owner": "M5b",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 2,
+      "reason": "Deterministic warning evidence."
+    },
+    {
+      "id": "INV-1-4-227",
+      "lineStart": 1560,
+      "lineEnd": 1560,
+      "sourceAnchor": "4.4.discovery-warning-surface-disposition",
+      "synopsis": "Do not expose Java's discovery-specific invalid-classpath-locale-filename warning in the portable JavaScript surface.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 1,
+      "reason": "M0 freezes this Java-surface disposition; the discovery-specific explanation is rationale rather than a second requirement."
+    },
+    {
+      "id": "INV-1-4-228",
+      "lineStart": 1563,
+      "lineEnd": 1564,
+      "sourceAnchor": "4.4.warning-limit-and-handler",
+      "synopsis": "Bound warnings, fail rather than truncate on excess, and otherwise keep valid catalogs unless warning handler throws.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M5b"
+      ],
+      "owner": "M5b",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 5,
+      "reason": "Warning boundary and callback behavior closes at M5b."
+    },
+    {
+      "id": "INV-1-4-229",
+      "lineStart": 1568,
+      "lineEnd": 1572,
+      "sourceAnchor": "4.5.limit-per-file-bytes",
+      "synopsis": "Default per-file input-byte limit is 8 MiB.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M2"
+      ],
+      "owner": "M5a",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 1,
+      "reason": "M2 bounded parse uses fixed portable loading defaults."
+    },
+    {
+      "id": "INV-1-4-230",
+      "lineStart": 1573,
+      "lineEnd": 1573,
+      "sourceAnchor": "4.5.limit-reader-characters",
+      "synopsis": "Default reader/string limit is 8,388,608 UTF-16 code units.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M2"
+      ],
+      "owner": "M5a",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 1,
+      "reason": "M2 bounded parse uses fixed portable loading defaults."
+    },
+    {
+      "id": "INV-1-4-231",
+      "lineStart": 1574,
+      "lineEnd": 1574,
+      "sourceAnchor": "4.5.limit-json-depth",
+      "synopsis": "Default JSON nesting depth is 64.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M2"
+      ],
+      "owner": "M5a",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 1,
+      "reason": "M2 bounded parse uses fixed portable loading defaults."
+    },
+    {
+      "id": "INV-1-4-232",
+      "lineStart": 1575,
+      "lineEnd": 1575,
+      "sourceAnchor": "4.5.limit-aggregate-bytes",
+      "synopsis": "Default aggregate input-byte limit is 32 MiB.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M2"
+      ],
+      "owner": "M5a",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 1,
+      "reason": "M2 construction/parse aggregate boundary."
+    },
+    {
+      "id": "INV-1-4-233",
+      "lineStart": 1576,
+      "lineEnd": 1576,
+      "sourceAnchor": "4.5.limit-file-count",
+      "synopsis": "Default localized-strings-file limit is 256.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M2"
+      ],
+      "owner": "M5a",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 1,
+      "reason": "M2 construction/parse aggregate boundary."
+    },
+    {
+      "id": "INV-1-4-234",
+      "lineStart": 1577,
+      "lineEnd": 1577,
+      "sourceAnchor": "4.5.limit-translation-nodes",
+      "synopsis": "Default translation-node limit is 100,000.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M2"
+      ],
+      "owner": "M5a",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 1,
+      "reason": "M2 construction/parse aggregate boundary."
+    },
+    {
+      "id": "INV-1-4-235",
+      "lineStart": 1578,
+      "lineEnd": 1578,
+      "sourceAnchor": "4.5.limit-warnings",
+      "synopsis": "Default warning limit is 1,000.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M2"
+      ],
+      "owner": "M5a",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 1,
+      "reason": "M2 construction/parse aggregate boundary."
+    },
+    {
+      "id": "INV-1-4-236",
+      "lineStart": 1580,
+      "lineEnd": 1582,
+      "sourceAnchor": "4.5.loading-limit-overrides",
+      "synopsis": "Overrides are safe integers with positive/zero rules, JSON depth at most 128, and overflow-safe aggregate checks.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M5a"
+      ],
+      "owner": "M5a",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 10,
+      "reason": "Full configurable loading-limit validation closes at M5a."
+    },
+    {
+      "id": "INV-1-4-237",
+      "lineStart": 1584,
+      "lineEnd": 1585,
+      "sourceAnchor": "4.5.classpath-controls-excluded",
+      "synopsis": "Classpath discovery controls are not part of the portable parser.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 1,
+      "reason": "This is a required negative JavaScript parser-surface check, not merely informational Java behavior."
+    },
+    {
+      "id": "INV-1-4-238",
+      "lineStart": 1589,
+      "lineEnd": 1589,
+      "sourceAnchor": "4.6.no-runtime-limit-customization-navigation",
+      "synopsis": "Restate the fixed-runtime-limit policy before listing its constants.",
+      "disposition": "nonnormative",
+      "registrationBefore": [],
+      "owner": "none",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 0,
+      "reason": "Both propositions are already registered by INV-1-4-026; this line only introduces the per-limit rows INV-1-4-239 through INV-1-4-248."
+    },
+    {
+      "id": "INV-1-4-239",
+      "lineStart": 1593,
+      "lineEnd": 1593,
+      "sourceAnchor": "4.6.limit-decimal-precision",
+      "synopsis": "Decimal precision limit is 1,024 digits.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M6",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 1,
+      "reason": "Fixed v1 runtime constant."
+    },
+    {
+      "id": "INV-1-4-240",
+      "lineStart": 1594,
+      "lineEnd": 1594,
+      "sourceAnchor": "4.6.limit-decimal-scale",
+      "synopsis": "Absolute decimal scale limit is 1,024.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M6",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 1,
+      "reason": "Fixed v1 runtime constant."
+    },
+    {
+      "id": "INV-1-4-241",
+      "lineStart": 1595,
+      "lineEnd": 1595,
+      "sourceAnchor": "4.6.limit-visible-decimals",
+      "synopsis": "Explicit visible decimal places limit is 1,024.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M6",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 1,
+      "reason": "Fixed v1 runtime constant."
+    },
+    {
+      "id": "INV-1-4-242",
+      "lineStart": 1596,
+      "lineEnd": 1596,
+      "sourceAnchor": "4.6.limit-compact-exponent",
+      "synopsis": "Compact exponent limit is 64.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M6",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 1,
+      "reason": "Fixed v1 runtime constant."
+    },
+    {
+      "id": "INV-1-4-243",
+      "lineStart": 1597,
+      "lineEnd": 1597,
+      "sourceAnchor": "4.6.limit-expression-characters",
+      "synopsis": "Expression character limit is 2,048 UTF-16 code units.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M6",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 1,
+      "reason": "Fixed v1 runtime constant."
+    },
+    {
+      "id": "INV-1-4-244",
+      "lineStart": 1598,
+      "lineEnd": 1598,
+      "sourceAnchor": "4.6.limit-expression-tokens",
+      "synopsis": "Expression token limit is 256.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M6",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 1,
+      "reason": "Fixed v1 runtime constant."
+    },
+    {
+      "id": "INV-1-4-245",
+      "lineStart": 1599,
+      "lineEnd": 1599,
+      "sourceAnchor": "4.6.limit-expression-depth",
+      "synopsis": "Expression nesting depth limit is 32.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M6",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 1,
+      "reason": "Fixed v1 runtime constant."
+    },
+    {
+      "id": "INV-1-4-246",
+      "lineStart": 1600,
+      "lineEnd": 1600,
+      "sourceAnchor": "4.6.limit-generated-depth",
+      "synopsis": "Generated-placeholder depth limit is 32.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M6",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 1,
+      "reason": "Fixed v1 runtime constant."
+    },
+    {
+      "id": "INV-1-4-247",
+      "lineStart": 1601,
+      "lineEnd": 1601,
+      "sourceAnchor": "4.6.limit-output-characters",
+      "synopsis": "Per interpolated message, fragment, or phonetic input limit is 262,144 UTF-16 code units.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M6",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 1,
+      "reason": "Fixed v1 runtime constant."
+    },
+    {
+      "id": "INV-1-4-248",
+      "lineStart": 1602,
+      "lineEnd": 1602,
+      "sourceAnchor": "4.6.limit-cumulative-expansion",
+      "synopsis": "Cumulative generated expansion limit is 1,048,576 UTF-16 code units per locale attempt.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M6",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 1,
+      "reason": "Fixed v1 runtime constant."
+    },
+    {
+      "id": "INV-1-4-249",
+      "lineStart": 1604,
+      "lineEnd": 1605,
+      "sourceAnchor": "4.6.limit-counting-units",
+      "synopsis": "Count JavaScript strings as UTF-16 code units and apply numeric limits to every numeric representation and expression literal.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M6"
+      ],
+      "owner": "M6",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 6,
+      "reason": "Full fixed-limit enforcement spans M4 and M6."
+    },
+    {
+      "id": "INV-1-4-250",
+      "lineStart": 1607,
+      "lineEnd": 1610,
+      "sourceAnchor": "4.6.limit-failure-phases",
+      "synopsis": "Construction expression limit faults fail construction; lookup faults are candidate failures; generated budgets reset per attempt; runtimeLimits override is a configuration error.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M6"
+      ],
+      "owner": "M6",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 8,
+      "reason": "M6 fixed-limit phase and reset evidence."
+    },
+    {
+      "id": "INV-1-4-251",
+      "lineStart": 108,
+      "lineEnd": 114,
+      "sourceAnchor": "2.2.candidate-tier-raw-canonical-parent-m3b",
+      "synopsis": "Complete explicit-parent, likely-script-stop, and nonrecursive no/nb bridge coverage.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M3b"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 7,
+      "reason": "The reviewed section-2.2 calibration assigns these coverage-expansion propositions to M3b."
+    },
+    {
+      "id": "INV-1-4-252",
+      "lineStart": 119,
+      "lineEnd": 123,
+      "sourceAnchor": "2.2.candidate-to-file-resolution-m3b",
+      "synopsis": "Complete sole-equivalent, tiebreaker, fallback, and lexical equivalent file-resolution precedence.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M3b"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 4,
+      "reason": "The reviewed calibration assigns these file-resolution expansion propositions to M3b."
+    },
+    {
+      "id": "INV-1-4-253",
+      "lineStart": 125,
+      "lineEnd": 130,
+      "sourceAnchor": "2.2.fallback-policy-observation-m3b",
+      "synopsis": "Complete fallback-policy truncation and last-candidate invocation behavior.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M3b"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 2,
+      "reason": "The reviewed calibration assigns policy-observation expansion to M3b."
+    },
+    {
+      "id": "INV-1-4-254",
+      "lineStart": 138,
+      "lineEnd": 141,
+      "sourceAnchor": "2.2.manifest-tiebreaker-validation-m8",
+      "synopsis": "Validate manifest tiebreakers against the full file set, then stable-filter them to successful exact loaded tags.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 3,
+      "reason": "These JavaScript manifest/loader propositions close with M8 delivery."
+    },
+    {
+      "id": "INV-1-4-255",
+      "lineStart": 143,
+      "lineEnd": 146,
+      "sourceAnchor": "2.2.fallback-tag-resolution-m3b",
+      "synopsis": "Complete sole-equivalent, tiebreaker, and unambiguous configured-fallback validation behavior.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M3b"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 4,
+      "reason": "The reviewed calibration assigns configured-fallback expansion to M3b."
+    },
+    {
+      "id": "INV-1-4-256",
+      "lineStart": 145,
+      "lineEnd": 147,
+      "sourceAnchor": "2.2.manifest-fallback-propagation-m8",
+      "synopsis": "Validate manifest fallback resolution and propagate the resolved exact tag to loading and SSR metadata.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 3,
+      "reason": "These JavaScript manifest/loading propositions close with M8 delivery."
+    },
+    {
+      "id": "INV-1-4-257",
+      "lineStart": 150,
+      "lineEnd": 150,
+      "sourceAnchor": "2.2.lookup-dependent-candidate-chain-m3a",
+      "synopsis": "Derive candidate-chain output from each supplied lookup locale rather than one instance-wide constant.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 1,
+      "reason": "The reviewed calibration includes this lookup-dependent seed proposition in M3a."
+    },
+    {
+      "id": "INV-1-4-258",
+      "lineStart": 161,
+      "lineEnd": 164,
+      "sourceAnchor": "2.2.direct-locale-rejection-m3b",
+      "synopsis": "Reject malformed direct-locale input before resolution, policy, observation, or failure handling, and restrict exact-supported checks to explicit inspection APIs.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M3b"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 6,
+      "reason": "The reviewed calibration assigns malformed-input and inspection-API expansion to M3b."
+    },
+    {
+      "id": "INV-1-4-259",
+      "lineStart": 1124,
+      "lineEnd": 1125,
+      "sourceAnchor": "3.5.error-structured-parse-location",
+      "synopsis": "Expose one-based parse line and column and a bounded parse path.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M5a"
+      ],
+      "owner": "M5a",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 2,
+      "reason": "Field existence and nullability are already frozen in the declarations; M5a owns location/path behavior."
+    },
+    {
+      "id": "INV-1-4-260",
+      "lineStart": 1126,
+      "lineEnd": 1127,
+      "sourceAnchor": "3.5.error-structured-resolution-fields",
+      "synopsis": "Freeze the missing-translation failure and expose the rejected normalized unsupported locale.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M7"
+      ],
+      "owner": "M7",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 2,
+      "reason": "These structured resolution-error values close with the resolution core."
+    },
+    {
+      "id": "INV-1-4-261",
+      "lineStart": 1127,
+      "lineEnd": 1128,
+      "sourceAnchor": "3.5.error-cause-and-redaction",
+      "synopsis": "Use Error.cause for library-owned causal chains without copying cause text into redacted messages.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M5a",
+        "M6"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 2,
+      "reason": "Parser and expression paths independently establish the shared cause/redaction rule before later delivery errors consume it."
+    },
+    {
+      "id": "INV-1-4-262",
+      "lineStart": 611,
+      "lineEnd": 614,
+      "sourceAnchor": "3.2.loaded-limit-reuse.sentences",
+      "synopsis": "The loaded construction branch reuses frozen normalized loading limits and cannot bypass or replace them.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 4,
+      "reason": "These loaded-value integrity rules close with the M8 loader; the anchor begins at the loaded-branch sentence sharing line 611 and ends at the bypass sentence sharing line 614."
+    },
+    {
+      "id": "INV-1-4-263",
+      "lineStart": 614,
+      "lineEnd": 617,
+      "sourceAnchor": "3.2.loaded-data-coherence.sentences",
+      "synopsis": "Reject a loaded catalog whose CLDR version or data fingerprint differs from the rendering core, even when its immediate plan matches.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 3,
+      "reason": "Pinned loader/core data coherence closes with M8; the anchor begins at the data-coherence sentence sharing physical line 614."
+    },
+    {
+      "id": "INV-1-4-264",
+      "lineStart": 749,
+      "lineEnd": 749,
+      "sourceAnchor": "3.3.per-call-locale-source-exclusivity",
+      "synopsis": "Per-call locale and localeMatch are mutually exclusive in declarations and runtime validation.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M7",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 2,
+      "reason": "M0 freezes both the declaration and runtime-validation contract; M7 owns final resolution integration."
+    },
+    {
+      "id": "INV-1-4-265",
+      "lineStart": 750,
+      "lineEnd": 753,
+      "sourceAnchor": "3.3.direct-validation-and-forLocale",
+      "synopsis": "Accept well-formed unknown or unloaded direct tags as lookup requests, reject malformed tags before resolution, and split forLocale syntax from instance validation.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M2"
+      ],
+      "owner": "M7",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 7,
+      "reason": "M2 implements the direct-lookup path while M7 owns its final resolution semantics."
+    },
+    {
+      "id": "INV-1-4-266",
+      "lineStart": 764,
+      "lineEnd": 765,
+      "sourceAnchor": "3.3.loaded-inspection-and-direct-configuration.sentences",
+      "synopsis": "Inspection methods describe loaded catalogs, and direct construction reports that loaded set as its locale configuration.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M7"
+      ],
+      "owner": "M7",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 3,
+      "reason": "Core loaded-catalog inspection closes with M7; the anchor ends at the direct-construction sentence sharing physical line 765."
+    },
+    {
+      "id": "INV-1-4-267",
+      "lineStart": 765,
+      "lineEnd": 768,
+      "sourceAnchor": "3.3.manifest-backed-configuration.sentences",
+      "synopsis": "Manifest-backed construction preserves the full resolved fallback, declared locale set, and validated tiebreakers for external negotiation.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 3,
+      "reason": "Full manifest configuration is created and preserved by M8; the sentence anchor starts on line 765 and ends before the documentation sentence on line 768."
+    },
+    {
+      "id": "INV-1-4-268",
+      "lineStart": 768,
+      "lineEnd": 769,
+      "sourceAnchor": "3.3.configuration-distinction-documentation.sentences",
+      "synopsis": "API documentation names the deliberate distinction between loaded-catalog inspection and full manifest configuration.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-D"
+      ],
+      "owner": "M-D",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 1,
+      "reason": "This is a documentation obligation beginning at the second sentence on physical line 768."
+    },
+    {
+      "id": "INV-1-4-269",
+      "lineStart": 1107,
+      "lineEnd": 1108,
+      "sourceAnchor": "3.5.error-catch-only-test-families",
+      "synopsis": "Declaration tests reject construction and subclass declarations, while runtime tests accept catching/instanceof and reject direct construction/subclassing.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M-R",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 6,
+      "reason": "M0 registers the two package-surface test families and M-R owns their packed-artifact closure."
+    },
+    {
+      "id": "INV-1-4-270",
+      "lineStart": 1109,
+      "lineEnd": 1109,
+      "sourceAnchor": "3.5.catch-only-helper-private",
+      "synopsis": "CatchOnlyErrorClass is declaration-private and is not a package export.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 2,
+      "reason": "M0 freezes the negative public symbol surface."
+    },
+    {
+      "id": "INV-1-4-271",
+      "lineStart": 1561,
+      "lineEnd": 1561,
+      "sourceAnchor": "4.4.invalid-manifest-tag-validation",
+      "synopsis": "Invalid manifest locale tags fail validation.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 1,
+      "reason": "This required JavaScript manifest validation closes with M8 and must not inherit the Java-only warning's informational class."
+    },
+    {
+      "id": "INV-1-4-272",
+      "lineStart": 308,
+      "lineEnd": 310,
+      "sourceAnchor": "2.7.identifier-contract.java-unicode-disposition.sentences",
+      "synopsis": "Treat the wider host-JDK-dependent non-ASCII identifier grammar as an explicitly nonportable Java-only input until shared Unicode tables are pinned.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M6"
+      ],
+      "owner": "M6",
+      "parityClass": "informational-nonportable",
+      "anticipatedAtomicRecords": 2,
+      "reason": "This records the Java-only Unicode input disposition separately from the portable ASCII grammar; its sentence anchor begins after the translation-key clause on line 308."
+    }
+  ]
+}

@@ -1,0 +1,187 @@
+{
+  "formatVersion": 1,
+  "family": "classpath-smoke",
+  "description": "Plan v7 section 8.3 fixture family 'classpath-smoke'. Inputs only; the oracle emits expected.",
+  "cases": [
+    {
+      "id": "classpath-smoke.agreement.filesystem-load",
+      "requirementIds": [],
+      "fixture": "classpath-smoke-basic",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The filesystem half of the agreement pair."
+    },
+    {
+      "id": "classpath-smoke.agreement.classpath-load",
+      "requirementIds": [],
+      "fixture": "classpath-smoke-basic",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "The classpath half. Identical inputs must give identical locales and keys; a port implementing one path in terms of the other needs this pinned."
+    },
+    {
+      "id": "classpath-smoke.badname.unrecognized-names-are-skipped-without-warning",
+      "requirementIds": [],
+      "fixture": "classpath-smoke-bad-filename",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "MEASURED: unrecognized names produce NO warning on the classpath path either — they are skipped as silently as on the filesystem. INVALID_CLASSPATH_LOCALE_FILENAME is reserved for names that make tag parsing THROW, which these do not."
+    },
+    {
+      "id": "classpath-smoke.badname.filesystem-skips-silently",
+      "requirementIds": [],
+      "fixture": "classpath-smoke-bad-filename",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The same directory through the filesystem loader, which skips without warning. Paired with the case above, this is the assertion."
+    },
+    {
+      "id": "classpath-smoke.package.nonexistent-yields-nothing",
+      "requirementIds": [],
+      "fixture": "classpath-smoke-basic",
+      "operation": "loadClasspath",
+      "input": {
+        "package": "no-such-package"
+      },
+      "partition": "informationalIds",
+      "notes": "A package no resource resolves to. Pins whether that is an empty result or a failure."
+    },
+    {
+      "id": "classpath-smoke.package.empty-is-rejected",
+      "requirementIds": [],
+      "fixture": "classpath-smoke-basic",
+      "operation": "loadClasspath",
+      "input": {
+        "package": ""
+      },
+      "partition": "informationalIds",
+      "notes": "validateClasspathPackage requires a nonempty slash-relative path."
+    },
+    {
+      "id": "classpath-smoke.package.leading-slash-is-rejected",
+      "requirementIds": [],
+      "fixture": "classpath-smoke-basic",
+      "operation": "loadClasspath",
+      "input": {
+        "package": "/classpath-smoke-basic"
+      },
+      "partition": "informationalIds",
+      "notes": "An absolute resource path is rejected rather than normalized."
+    },
+    {
+      "id": "classpath-smoke.package.dot-dot-segment-is-rejected",
+      "requirementIds": [],
+      "fixture": "classpath-smoke-basic",
+      "operation": "loadClasspath",
+      "input": {
+        "package": "classpath-smoke-basic/../classpath-smoke-basic"
+      },
+      "partition": "informationalIds",
+      "notes": "Traversal segments are rejected even when they resolve back inside the root — a port normalizing first would accept this."
+    },
+    {
+      "id": "classpath-smoke.package.backslash-is-rejected",
+      "requirementIds": [],
+      "fixture": "classpath-smoke-basic",
+      "operation": "loadClasspath",
+      "input": {
+        "package": "classpath-smoke-basic\\en"
+      },
+      "partition": "informationalIds",
+      "notes": "Backslashes are rejected outright, so a Windows-style path cannot smuggle a separator through."
+    },
+    {
+      "id": "classpath-smoke.package.trailing-slash-is-normalized",
+      "requirementIds": [],
+      "fixture": "classpath-smoke-basic",
+      "operation": "loadClasspath",
+      "input": {
+        "package": "classpath-smoke-basic/"
+      },
+      "partition": "informationalIds",
+      "notes": "Trailing slashes ARE stripped, unlike the rejections above. The contrast is the point."
+    },
+    {
+      "id": "classpath-smoke.package.multi-release-namespace-rejected-for-discovery",
+      "requirementIds": [],
+      "fixture": "classpath-smoke-basic",
+      "operation": "loadClasspath",
+      "input": {
+        "package": "META-INF/versions/9"
+      },
+      "partition": "informationalIds",
+      "notes": "Discovery reserves META-INF/versions and points the caller at loadFromClasspathResources, which permits it."
+    },
+    {
+      "id": "classpath-smoke.resources.explicit-map-loads",
+      "requirementIds": [],
+      "fixture": "classpath-smoke-basic",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "en": "classpath-smoke-basic/en",
+          "fr": "classpath-smoke-basic/fr"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "Exact resources by locale, bypassing discovery. The locale comes from the caller's key, not from the filename."
+    },
+    {
+      "id": "classpath-smoke.resources.locale-key-overrides-filename",
+      "requirementIds": [],
+      "fixture": "classpath-smoke-basic",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "de": "classpath-smoke-basic/en"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "The en FILE mapped under the de key. Proves the caller's locale key wins over the filename, which discovery could never express."
+    },
+    {
+      "id": "classpath-smoke.resources.missing-resource",
+      "requirementIds": [],
+      "fixture": "classpath-smoke-basic",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "en": "classpath-smoke-basic/does-not-exist"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "A named resource that is absent — an explicit request, so silence would be wrong."
+    },
+    {
+      "id": "classpath-smoke.exhaustive.search-enabled",
+      "requirementIds": [],
+      "fixture": "classpath-smoke-exhaustive",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "exhaustiveClasspathSearch enabled against a catalog a normal search already finds, so the option's effect is isolated."
+    },
+    {
+      "id": "classpath-smoke.badname.json-extension-on-classpath",
+      "requirementIds": [],
+      "fixture": "classpath-smoke-json-extension",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "The filename shape that hard-fails a filesystem load. Determines whether classpath discovery fails the same way or downgrades it to INVALID_CLASSPATH_LOCALE_FILENAME."
+    },
+    {
+      "id": "classpath-smoke.badname.json-extension-on-filesystem",
+      "requirementIds": [],
+      "fixture": "classpath-smoke-json-extension",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The filesystem half of the pair, where this shape is known to hard-fail."
+    }
+  ]
+}

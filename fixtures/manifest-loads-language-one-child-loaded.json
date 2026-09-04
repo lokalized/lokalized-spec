@@ -1,0 +1,17 @@
+{
+  "id": "manifest-loads-language-one-child-loaded",
+  "description": "The contrast to manifest-loads-language-entirely-absent: the de file is again unrecognized, but de-CH loads. German therefore has exactly one loaded locale and DefaultStrings synthesizes the identity tiebreaker de:[de-CH] (DefaultStrings.java: 'If there is exactly 1 locale for the language code, it's its own identity tiebreaker'), which visibly changes the attempted-locale chain for de and de-AT requests. de-CH is chosen over de-AT deliberately so the loaded child is NOT the likely-subtag expansion of the requests, isolating the tiebreaker route.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Greeting": "Hello"
+    },
+    "de-CH": {
+      "Greeting": "Gruezi"
+    }
+  },
+  "rawFiles": {
+    "de.txt": "{\"Greeting\":\"Hallo\"}"
+  }
+}

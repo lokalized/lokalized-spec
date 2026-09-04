@@ -1,0 +1,25 @@
+{
+  "id": "loading-limits-warnings-zero-one-warning",
+  "description": "A Russian catalog whose cardinality placeholder declares only CARDINALITY_ONE, loaded with maximumWarnings lowered to 0. The first warning the validator emits has no budget to be delivered under, so the non-fatal warning becomes a hard load failure. Also the fixture behind the warning-limit parse case.",
+  "fallbackLocale": "ru",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumWarnings": 0
+  },
+  "loadOnly": true,
+  "files": {
+    "ru": {
+      "Items": {
+        "translation": "{{noun}}",
+        "placeholders": {
+          "noun": {
+            "value": "count",
+            "translations": {
+              "CARDINALITY_ONE": "книга"
+            }
+          }
+        }
+      }
+    }
+  }
+}

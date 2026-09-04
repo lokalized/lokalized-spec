@@ -1,0 +1,24 @@
+{
+  "id": "loading-limits-warnings-one-single-warning",
+  "description": "The same one-warning Russian catalog loaded with maximumWarnings at exactly 1. Verified: the load succeeds and the single INCOMPLETE_CARDINALITY_TRANSLATIONS warning is delivered.",
+  "fallbackLocale": "ru",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumWarnings": 1
+  },
+  "files": {
+    "ru": {
+      "Items": {
+        "translation": "{{noun}}",
+        "placeholders": {
+          "noun": {
+            "value": "count",
+            "translations": {
+              "CARDINALITY_ONE": "книга"
+            }
+          }
+        }
+      }
+    }
+  }
+}

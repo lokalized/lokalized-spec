@@ -1,0 +1,78 @@
+{
+  "id": "supplied-match-failure-identity",
+  "description": "The identity fixture. A match no matcher could have produced -- it selects fr with type CLDR_FALLBACK at effective weight 0.25 while naming de, which is not loaded, as its only requested range -- over a catalog engineered so every failure reason is reachable: Missing.Everywhere is absent from both locales, NoMatch.Alternatives is an alternatives-only root whose predicate is false for the counts these cases pass, and Res.Failure declares only CARDINALITY_ONE. Section 8.3 requires the SAME match object through the result and failure paths; every existing observation of that in the corpus comes from a matcher-derived match, so this asserts it for a supplied one.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "localeMatchSupplier": {
+    "behavior": "fabricated",
+    "locale": "fr",
+    "matchType": "CLDR_FALLBACK",
+    "range": "de",
+    "weight": 0.25,
+    "ranges": [
+      {
+        "range": "de",
+        "weight": 1
+      }
+    ],
+    "fallbackLocale": "en",
+    "consideredLocales": [
+      "en",
+      "fr"
+    ]
+  },
+  "files": {
+    "fr": {
+      "Locale.Marker": "fr",
+      "Greeting.Hello": "Bonjour",
+      "NoMatch.Alternatives": {
+        "commentary": "Alternatives-only root with no default translation, so a predicate miss is NO_MATCHING_ALTERNATIVE rather than MISSING_TRANSLATION.",
+        "alternatives": [
+          {
+            "itemCount > 100": {
+              "translation": "fr: many"
+            }
+          }
+        ]
+      },
+      "Res.Failure": {
+        "commentary": "Only CARDINALITY_ONE is declared, so any count French classifies as OTHER throws inside resolution and getResult classifies the attempt as RESOLUTION_FAILURE.",
+        "translation": "{{noun}}",
+        "placeholders": {
+          "noun": {
+            "value": "itemCount",
+            "translations": {
+              "CARDINALITY_ONE": "fr:ONE"
+            }
+          }
+        }
+      }
+    },
+    "en": {
+      "Locale.Marker": "en",
+      "Greeting.Hello": "Hello",
+      "NoMatch.Alternatives": {
+        "commentary": "The fallback candidate misses the same way, so the walk ends in a failure rather than resolving.",
+        "alternatives": [
+          {
+            "itemCount > 100": {
+              "translation": "en: many"
+            }
+          }
+        ]
+      },
+      "Res.Failure": {
+        "commentary": "The fallback candidate is under-declared the same way, so a permissive policy still ends in a failure.",
+        "translation": "{{noun}}",
+        "placeholders": {
+          "noun": {
+            "value": "itemCount",
+            "translations": {
+              "CARDINALITY_ONE": "en:ONE"
+            }
+          }
+        }
+      }
+    }
+  }
+}

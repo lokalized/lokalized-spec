@@ -1,0 +1,24 @@
+{
+  "id": "classpath-resources-file-limit",
+  "description": "Three loadable files under an aggregate maximumLocalizedStringsFiles of 2, so a mapping of three trips the limit, a mapping of two sits exactly at it, and discovery over the whole package trips it with different wording. loadOnly because the filesystem load of three files also exceeds the limit — verified.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumLocalizedStringsFiles": 2
+  },
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Common.Greeting": "Hello",
+      "Only.En": "en"
+    },
+    "de": {
+      "Common.Greeting": "Hallo",
+      "Only.De": "de"
+    },
+    "fr": {
+      "Common.Greeting": "Bonjour",
+      "Only.Fr": "fr"
+    }
+  }
+}

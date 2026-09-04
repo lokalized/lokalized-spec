@@ -1,0 +1,18 @@
+{
+  "id": "classpath-filenames-exhaustive-search",
+  "description": "A valid en catalog plus one offending name, loaded with exhaustiveClasspathSearch enabled. classpath-smoke pins the option against a clean catalog only; this asks whether a broader scan re-visits the same directory entry and emits the warning twice. Exactly one offending file, so no ordering can vary.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "exhaustiveClasspathSearch": true
+  },
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "rawFiles": {
+    "zz.json": "{\"Key.zz\":\"zz\"}"
+  }
+}

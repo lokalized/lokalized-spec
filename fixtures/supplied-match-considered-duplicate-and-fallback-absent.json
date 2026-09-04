@@ -1,0 +1,27 @@
+{
+  "id": "supplied-match-considered-duplicate-and-fallback-absent",
+  "description": "A fabrication whose considered list is [fr, fr]: it repeats a tag AND omits the fallback locale, so the duplicate check and the fallback-containment check are both violated inside the same constructor. The locale is null and the type NONE so no matched-state check can fire first.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "localeMatchSupplier": {
+    "behavior": "fabricated",
+    "matchType": "NONE",
+    "fallbackLocale": "en",
+    "consideredLocales": [
+      "fr",
+      "fr"
+    ]
+  },
+  "files": {
+    "fr": {
+      "Locale.Marker": "fr",
+      "Greeting.Hello": "Bonjour",
+      "Only.Fr": "fr-only"
+    },
+    "en": {
+      "Locale.Marker": "en",
+      "Greeting.Hello": "Hello",
+      "Only.En": "en-only"
+    }
+  }
+}

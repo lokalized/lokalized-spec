@@ -1,0 +1,15 @@
+{
+  "id": "manifest-loads-json-extension-invalid-tag",
+  "description": "The same stem that manifest-loads-unrecognized-filenames skips silently, here given a .json extension. Discovery rejects it with a hard LocalizedStringLoadingException naming the file, so the whole load fails and the fixture is loadOnly. The skip-vs-reject asymmetry turns entirely on the extension. The diagnostic quotes only the bare filename, no path, so it is iteration-order independent.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Greeting": "Hello"
+    }
+  },
+  "rawFiles": {
+    "strings.json": "{\"Greeting\":\"from strings.json\"}"
+  }
+}

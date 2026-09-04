@@ -1,0 +1,15 @@
+{
+  "id": "classpath-filenames-accented-latin-precomposed",
+  "description": "A valid en catalog plus a file named with PRECOMPOSED accented Latin — 'caf', U+00E9, '.json' — carrying the .json extension. Authoring note: the fixture is only meaningful if that single code point survives into the repository; verify the rawFiles key is 9 code points long. Informational: how a non-ASCII name reaches the loader depends on the platform's filename encoding and normalization policy.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "rawFiles": {
+    "café.json": "{\"Key.nfc\":\"nfc\"}"
+  }
+}

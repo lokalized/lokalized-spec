@@ -1,0 +1,544 @@
+{
+  "formatVersion": 1,
+  "family": "dedup-and-candidates",
+  "description": "Plan v7 section 8.3 fixture family 'dedup-and-candidates'. Inputs only; the oracle emits expected.",
+  "skipped": [
+    {
+      "what": "A fixture that loads `mo` and `ro` simultaneously and then RESOLVES against them (requesting mo and reaching the mo catalog, attemptedLocales [mo]).",
+      "why": "Blocked by tools/vector-oracle/ingest.mjs, not by Java. DefaultStrings keys its ambiguity map by LocaleUtils.normalizedLanguage, which CANONICALIZES first, so loaded {mo, ro} both fall under language code 'ro' and construction demands tiebreakers {\"ro\": [\"mo\",\"ro\"]}. Verified in Java through my own copy of the oracle: with those tiebreakers the instance builds and requesting mo yields translation from the mo catalog with attemptedLocales [\"mo\"] and match mo/EXACT; without them construction throws. But ingest.mjs derives the language with `tag.split(\"-\")[0]`, so it rejects that fixture twice over ('tiebreakers for ro must be an exact permutation of its loaded locales [ro]' and 'tiebreaker mo listed under language ro but its primary language is mo'), reproduced with --dry-run. The LOAD half of the clause's named pair is now covered anyway by dedup-and-candidates-equivalent-mo-ro-load, which is loadOnly and needs no tiebreakers; the resolution half is covered equivalently by hy-AM/hy-SU, whose literal primary subtags agree with their canonical language code. Canonicalizing ingest.mjs's primaryLanguage helper would unblock mo/ro, plus tl/fil and cmn/zh."
+    },
+    {
+      "what": "Direct observation of how many times translationFallbackPolicy.shouldTryNextLocale was called.",
+      "why": "The oracle installs a recording wrapper around the failure HANDLER only; policyFrom maps the three named library policies with no recording seam, and a policy call has no observable side effect on TranslationResult. 'No policy call after the final distinct candidate' is therefore locked indirectly, by the dedup-and-candidates.single.* pair that must emit identical observations under the default and never policies (a late-deduping port emits [ro, ro, ro] versus [ro] and fails), plus the truncation cases whose list contents only match if the final candidate was reached by exhaustion."
+    },
+    {
+      "what": "A second filename-collision case for `en` plus `en.json` (dropped from the batch under review).",
+      "why": "Its only unique proposition - that languageTagForFileName strips a .json extension before parsing the tag - belongs to loader filename hygiene, not to this clause, and I verified it emits the same DirectoryStream-order-dependent message as the he/iw case (the oracle recorded '.../en' there, i.e. the OPPOSITE discovery order from he/iw on the same volume). Shipping both would double the corpus's exposure to filesystem-iteration order for no additional dedup proposition. The he/iw collision is retained because it is the direct contrast to 'distinct-but-equivalent tags stay separate'."
+    },
+    {
+      "what": "A collision case whose emitted failure message is filesystem-order independent.",
+      "why": "LocalizedStringLoader quotes the path of the file discovered SECOND, and discovery order is DirectoryStream order. No two-file collision can avoid this. The retained he/iw case is authored anyway because the failure type and the locale tag in the message are order independent; the corpus owner should know the trailing path segment may differ if the corpus is ever regenerated on a non-APFS filesystem, and that it is stable on this machine across repeated runs and across file-creation order (both verified)."
+    },
+    {
+      "what": "A standalone `matchFor` case for this family (present in the batch under review as dedup-and-candidates.moro.match-for-mo).",
+      "why": "Removed as a strict subset: the oracle's getResult handler already calls strings.matchFor(locale) and emits the identical `match` block whenever input.locale is present, so the standalone operation added no observation that dedup-and-candidates.moro.requested-mo-attempts-loaded-ro does not already emit byte for byte. Every request tag used in this family is exercised through getResult, so the match channel is fully covered."
+    },
+    {
+      "what": "Classpath loading of two equivalent or colliding locale resources, and the merge-conflict diagnostic naming both sources.",
+      "why": "The oracle drives loadFromFilesystem only; the classpath path (mergeLocalizedStrings, INVALID_CLASSPATH_LOCALE_FILENAME) has no ingress in the harness."
+    },
+    {
+      "what": "Dedup observed through localeMatchSupplier / localeMatchResolver / negotiation ingress, and through JS-side delivery (SSR, Fetch planning).",
+      "why": "Listed as unsupported in the task brief; no oracle operation reaches those entry points."
+    }
+  ],
+  "cases": [
+    {
+      "id": "dedup-and-candidates.moro.load-control",
+      "requirementIds": [],
+      "fixture": "dedup-and-candidates-mo-ro",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "Control for every mo case in this family: the directory loads exactly [en, ro] with those key sets and NO warnings. No mo catalog exists, so any mo observation below is candidate-walk behavior and not loading behavior. A port whose loader invented a mo catalog would show it here instead of failing the resolution cases mysteriously."
+    },
+    {
+      "id": "dedup-and-candidates.moro.requested-mo-attempts-loaded-ro",
+      "requirementIds": [],
+      "fixture": "dedup-and-candidates-mo-ro",
+      "operation": "getResult",
+      "input": {
+        "key": "Dedup.OnlyInRo",
+        "locale": "mo"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The clause's named case. DefaultStrings.java:2493-2499 resolves each raw candidate through localizedStringsFor BEFORE recording it, so the attempted locale for mo is the loaded ro and attemptedLocales is exactly one entry long. A port that pushes the requested tag and only later maps it to a catalog emits [\"mo\"] here; a port that records both emits [\"mo\",\"ro\"]."
+    },
+    {
+      "id": "dedup-and-candidates.moro.mo-chain-dedups-to-two-entries",
+      "requirementIds": [],
+      "fixture": "dedup-and-candidates-mo-ro",
+      "operation": "getResult",
+      "input": {
+        "key": "Dedup.OnlyInEn",
+        "locale": "mo"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "First-wins dedup shortens the list: raw candidates [mo, ro, en] collapse to two because mo and ro resolve to the same loaded catalog (putIfAbsent, DefaultStrings.java:2498). The key resolves in the fallback, so isFallback and resolvedLocale are pinned too. A non-deduping port reports three attempted locales for a translation that is otherwise identical."
+    },
+    {
+      "id": "dedup-and-candidates.moro.missing-key-attempted-list",
+      "requirementIds": [],
+      "fixture": "dedup-and-candidates-mo-ro",
+      "operation": "getResult",
+      "input": {
+        "key": "Dedup.Missing",
+        "locale": "mo"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same collapse observed through the failure channel: the handler's attemptedLocales must be the deduped [ro, en], identical to the result's, and the failure reason must be MISSING_TRANSLATION rather than anything the extra duplicate attempt would have produced."
+    },
+    {
+      "id": "dedup-and-candidates.moro.never-policy-truncates-at-ro",
+      "requirementIds": [],
+      "fixture": "dedup-and-candidates-mo-ro",
+      "operation": "getResult",
+      "input": {
+        "key": "Dedup.Missing",
+        "locale": "mo",
+        "translationFallbackPolicy": "never"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Policy truncation whose CONTENT is decided by dedup: neverFallback stops after the first distinct candidate, and that candidate is ro, not the requested mo. A port that stops after the first raw candidate produces a list of the same length with the wrong locale in it - length alone would not catch this, which is why the case asserts the whole list."
+    },
+    {
+      "id": "dedup-and-candidates.moro.never-policy-forfeits-reachable-en",
+      "requirementIds": [],
+      "fixture": "dedup-and-candidates-mo-ro",
+      "operation": "getResult",
+      "input": {
+        "key": "Dedup.OnlyInEn",
+        "locale": "mo",
+        "translationFallbackPolicy": "never"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Truncation with a visible cost: the key exists in en and is one candidate away, but neverFallback halts at the deduped ro, so the status is RETURNED_KEY. Pairs with dedup-and-candidates.moro.mo-chain-dedups-to-two-entries, which resolves the same key under the default policy."
+    },
+    {
+      "id": "dedup-and-candidates.moro.default-policy-halts-on-resolution-failure",
+      "requirementIds": [],
+      "fixture": "dedup-and-candidates-mo-ro",
+      "operation": "getResult",
+      "input": {
+        "key": "Dedup.ResolutionFailure",
+        "locale": "mo"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The ro catalog's cardinality placeholder reads a context name the call does not supply and throws (DefaultStrings.java:966-968); the default policy, fallbackOnMissingTranslationOrNoMatchingAlternative, refuses to continue on RESOLUTION_FAILURE, so attemptedLocales truncates to the deduped ro and the plain en text one candidate later is forfeited. Pins the failure reason, the cause type and the truncated list together, and the fixture's ro catalog is otherwise warning-clean so this is the only defect in play."
+    },
+    {
+      "id": "dedup-and-candidates.moro.any-failure-policy-reaches-en",
+      "requirementIds": [],
+      "fixture": "dedup-and-candidates-mo-ro",
+      "operation": "getResult",
+      "input": {
+        "key": "Dedup.ResolutionFailure",
+        "locale": "mo",
+        "translationFallbackPolicy": "any-failure"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Same fixture, same key, per-call fallbackOnAnyFailure: the walk continues past the throwing ro catalog and resolves in en with status TRANSLATED and no failure recorded. Paired with the default-policy sibling this proves the shorter list came from the POLICY, while the pair against the ro-request control proves the list's contents came from DEDUP."
+    },
+    {
+      "id": "dedup-and-candidates.moro.ro-request-matches-mo-request",
+      "requirementIds": [],
+      "fixture": "dedup-and-candidates-mo-ro",
+      "operation": "getResult",
+      "input": {
+        "key": "Dedup.Missing",
+        "locale": "ro"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Control: requesting the loaded tag directly must yield the SAME attempted list as requesting mo, differing only in the diagnostic channel (match type EXACT here versus CANONICAL for mo). Proves the two requests converge after dedup rather than mo being special-cased, and keeps the two channels distinguishable."
+    },
+    {
+      "id": "dedup-and-candidates.moro.first-wins-picks-ro-over-en",
+      "requirementIds": [],
+      "fixture": "dedup-and-candidates-mo-ro",
+      "operation": "getResult",
+      "input": {
+        "key": "Dedup.Shared",
+        "locale": "mo"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The key exists in both catalogs. First-wins dedup keeps the ro entry at position 0, so ro's text wins and attemptedLocales never reaches en. A port that deduped last-wins, or that ordered the fallback locale first, returns en's text."
+    },
+    {
+      "id": "dedup-and-candidates.moro.mo-md-interleaved-chain",
+      "requirementIds": [],
+      "fixture": "dedup-and-candidates-mo-ro",
+      "operation": "getResult",
+      "input": {
+        "key": "Dedup.OnlyInEn",
+        "locale": "mo-MD"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The ordering trap. fallbackLocalesFor(mo-MD) is [mo-MD, mo, ro-MD, ro] (verified); only mo resolves onto loaded ro, ro-MD resolves to nothing and is recorded as itself, and the later raw ro is dropped as a duplicate. attemptedLocales must be [mo-MD, ro, ro-MD, en] - ro occupies mo's SLOT and therefore precedes ro-MD. A port that dedups after the walk, or that sorts candidates, or that resolves aliases lazily, gets this order wrong even when it gets the set right."
+    },
+    {
+      "id": "dedup-and-candidates.moro.mo-md-policy-truncates-after-dedup",
+      "requirementIds": [],
+      "fixture": "dedup-and-candidates-mo-ro",
+      "operation": "getResult",
+      "input": {
+        "key": "Dedup.ResolutionFailure",
+        "locale": "mo-MD"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Flagship policy-truncation-through-dedup case: the resolution failure fires at chain position 2, which is ro only because dedup moved it there, so the default policy truncates attemptedLocales to [mo-MD, ro]. A port that records the requested tag instead of the resolved one, or that keeps both, truncates at a different locale or a different length with the same failure reason."
+    },
+    {
+      "id": "dedup-and-candidates.single.missing-key-default-policy",
+      "requirementIds": [],
+      "fixture": "dedup-and-candidates-ro-only",
+      "operation": "getResult",
+      "input": {
+        "key": "Dedup.Missing",
+        "locale": "mo"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Every raw candidate for mo collapses onto the single loaded ro, so the walk has exactly ONE candidate: attemptedLocales is [ro] even though the default policy would happily continue. A port that dedups the attempted list only for display would call the policy twice more and emit [ro, ro, ro]."
+    },
+    {
+      "id": "dedup-and-candidates.single.missing-key-never-policy",
+      "requirementIds": [],
+      "fixture": "dedup-and-candidates-ro-only",
+      "operation": "getResult",
+      "input": {
+        "key": "Dedup.Missing",
+        "locale": "mo",
+        "translationFallbackPolicy": "never"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "No policy call after the final distinct candidate, made observable: DefaultStrings.java:731 breaks before the policy call on line 734 when the candidate is last, so neverFallback must produce an observation IDENTICAL to its default-policy sibling above. The oracle has no policy-invocation counter, so this identity pair is the strongest available lock - and it does discriminate, because a port that dedups late emits [ro, ro, ro] under the default policy and [ro] under never."
+    },
+    {
+      "id": "dedup-and-candidates.single.present-key",
+      "requirementIds": [],
+      "fixture": "dedup-and-candidates-ro-only",
+      "operation": "getResult",
+      "input": {
+        "key": "Dedup.OnlyInRo",
+        "locale": "mo"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Success control for the single-distinct-candidate fixture: the one deduped candidate is also the fallback locale, resolvedLocale is ro, attemptedLocales has one entry, and isFallback is pinned for the case where the resolved locale and the fallback locale coincide."
+    },
+    {
+      "id": "dedup-and-candidates.alias.hy-su-missing-key-chain",
+      "requirementIds": [],
+      "fixture": "dedup-and-candidates-alias-region",
+      "operation": "getResult",
+      "input": {
+        "key": "Alias.Missing",
+        "locale": "hy-SU"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Dedup through a REGION alias rather than a language alias, and the sharpest ordering evidence in the family: the requested hy-SU resolves onto loaded hy-AM, so the alias target leads the attempted list and the bare hy candidate - which CLDR's fallback order places BEFORE hy-AM - lands second. The requested tag never appears at all."
+    },
+    {
+      "id": "dedup-and-candidates.alias.hy-su-resolves-in-hy-am",
+      "requirementIds": [],
+      "fixture": "dedup-and-candidates-alias-region",
+      "operation": "getResult",
+      "input": {
+        "key": "Alias.OnlyInAm",
+        "locale": "hy-SU"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A one-entry attempted list for a request spelled hy-SU, resolving in hy-AM. Pins that equivalence resolution happens during candidate construction, not as a post-hoc rename of a failed lookup."
+    },
+    {
+      "id": "dedup-and-candidates.alias.hy-su-reaches-fallback",
+      "requirementIds": [],
+      "fixture": "dedup-and-candidates-alias-region",
+      "operation": "getResult",
+      "input": {
+        "key": "Alias.OnlyInEn",
+        "locale": "hy-SU"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The full deduped chain walked to the fallback catalog, with isFallback and resolvedLocale pinned. Complements the missing-key case by proving the same three-entry chain is walked whether or not it ends in a translation."
+    },
+    {
+      "id": "dedup-and-candidates.alias.never-policy-stops-at-alias-target",
+      "requirementIds": [],
+      "fixture": "dedup-and-candidates-alias-region",
+      "operation": "getResult",
+      "input": {
+        "key": "Alias.Missing",
+        "locale": "hy-SU",
+        "translationFallbackPolicy": "never"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Truncation lands on hy-AM, the post-resolution first candidate, never on the requested hy-SU. Same discriminator shape as the mo case but through a region alias, so a port that hard-codes a language-alias table passes one and fails the other."
+    },
+    {
+      "id": "dedup-and-candidates.equivalent.load-keeps-catalogs-separate",
+      "requirementIds": [],
+      "fixture": "dedup-and-candidates-equivalent-am-first",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "Distinct-but-equivalent loaded tags must remain SEPARATE catalogs: the load reports en, hy-AM and hy-SU with different key sets. A port that canonicalizes filenames before keying (hy-SU to hy-AM) merges them and loses a key set here; a port that treats them as a conflict fails the load outright."
+    },
+    {
+      "id": "dedup-and-candidates.equivalent.mo-and-ro-load-as-separate-catalogs",
+      "requirementIds": [],
+      "fixture": "dedup-and-candidates-equivalent-mo-ro-load",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The clause's named mo/ro pair at the LOADER boundary: two files whose tags are canonically equivalent must load as two locales, mo and ro, each keeping its own keys. A port that canonicalizes the filename before keying reports one locale here. Load-only because the corresponding Strings instance is not constructible without tiebreakers this repository's ingest tool cannot express (see skipped)."
+    },
+    {
+      "id": "dedup-and-candidates.equivalent.hy-am-exact-identity",
+      "requirementIds": [],
+      "fixture": "dedup-and-candidates-equivalent-am-first",
+      "operation": "getResult",
+      "input": {
+        "key": "Pair.OnlyInAm",
+        "locale": "hy-AM"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Exact identity beats equivalence: requesting hy-AM resolves in hy-AM with a one-entry attempted list and match type EXACT, even though an equivalent catalog is also loaded and listed in the tiebreakers."
+    },
+    {
+      "id": "dedup-and-candidates.equivalent.hy-su-exact-identity",
+      "requirementIds": [],
+      "fixture": "dedup-and-candidates-equivalent-am-first",
+      "operation": "getResult",
+      "input": {
+        "key": "Pair.OnlyInSu",
+        "locale": "hy-SU"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The mirror image, and the case that fails loudest if the two catalogs were merged or if the tiebreaker order were allowed to override an exact hit: a key present only in hy-SU must resolve in hy-SU with no detour through hy-AM, despite hy-AM being first in the tiebreaker list."
+    },
+    {
+      "id": "dedup-and-candidates.equivalent.hy-su-request-dedups-repeat",
+      "requirementIds": [],
+      "fixture": "dedup-and-candidates-equivalent-am-first",
+      "operation": "getResult",
+      "input": {
+        "key": "Pair.OnlyInEn",
+        "locale": "hy-SU"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "First-wins dedup of a candidate that recurs for a DIFFERENT reason: hy-SU enters the raw set once from CLDR fallbacks and again from the tiebreaker list (DefaultStrings.java:2482-2488), and must appear once. The chain is [hy-SU, hy, hy-AM, en]; a port that appends tiebreaker candidates without dedup emits five entries."
+    },
+    {
+      "id": "dedup-and-candidates.equivalent.bare-hy-am-first-tiebreaker",
+      "requirementIds": [],
+      "fixture": "dedup-and-candidates-equivalent-am-first",
+      "operation": "getResult",
+      "input": {
+        "key": "Pair.InBoth",
+        "locale": "hy"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A key present in BOTH equivalent catalogs, requested at the bare language tag, so nothing but the tiebreaker list can decide. Under hy-AM-first the translation, the resolved locale and the two-entry attempted list all come from hy-AM. Read against its su-first twin, this is the discriminator for 'resolving through exact identity plus tiebreakers'."
+    },
+    {
+      "id": "dedup-and-candidates.equivalent.bare-hy-am-first-missing-chain",
+      "requirementIds": [],
+      "fixture": "dedup-and-candidates-equivalent-am-first",
+      "operation": "getResult",
+      "input": {
+        "key": "Pair.Missing",
+        "locale": "hy"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The whole deduped order under the AM-first list: [hy, hy-AM, hy-SU, en]. The likely-subtag winner and the tiebreaker list contribute overlapping candidates that must collapse to one entry each, in first-appearance order."
+    },
+    {
+      "id": "dedup-and-candidates.equivalent.bare-hy-su-first-tiebreaker",
+      "requirementIds": [],
+      "fixture": "dedup-and-candidates-equivalent-su-first",
+      "operation": "getResult",
+      "input": {
+        "key": "Pair.InBoth",
+        "locale": "hy"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Identical files, reversed tiebreaker list: the same request must now resolve in hy-SU. Since load order, tag order and canonical form are unchanged between the two fixtures, any port that passes both cases is genuinely reading the tiebreakers rather than a stable-sort artifact."
+    },
+    {
+      "id": "dedup-and-candidates.equivalent.bare-hy-su-first-missing-chain",
+      "requirementIds": [],
+      "fixture": "dedup-and-candidates-equivalent-su-first",
+      "operation": "getResult",
+      "input": {
+        "key": "Pair.Missing",
+        "locale": "hy"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The deduped order flips to [hy, hy-SU, hy-AM, en]. Compared with the am-first sibling this pins that the tiebreaker list governs BOTH the likely-subtag selection and the order in which the equivalent catalogs are appended to the candidate set."
+    },
+    {
+      "id": "dedup-and-candidates.equivalent.su-first-hy-am-still-exact",
+      "requirementIds": [],
+      "fixture": "dedup-and-candidates-equivalent-su-first",
+      "operation": "getResult",
+      "input": {
+        "key": "Pair.OnlyInAm",
+        "locale": "hy-AM"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Tiebreaker order must not override exact identity: with hy-SU listed first, an explicit hy-AM request still resolves in hy-AM with a one-entry attempted list. A port that consults tiebreakers before checking the exact catalog map fails here while passing every other case in this fixture."
+    },
+    {
+      "id": "dedup-and-candidates.equivalent.likely-script-gate-excludes-tiebreakers",
+      "requirementIds": [],
+      "fixture": "dedup-and-candidates-equivalent-am-first",
+      "operation": "getResult",
+      "input": {
+        "key": "Pair.InBoth",
+        "locale": "hy-Latn"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The gate on the tiebreaker candidates, DefaultStrings.java:2486: a tiebreaker locale joins the candidate set only when matchesLikelyLanguageScript agrees with the request. hy-Latn's likely script is Latn while both loaded catalogs are Armn, so NEITHER tiebreaker is appended and the chain is [hy-Latn, en] - the key is returned even though it exists in both hy catalogs. A port that appends the tiebreaker list unconditionally translates this case instead of failing it, which is the loudest possible difference."
+    },
+    {
+      "id": "dedup-and-candidates.equivalent.never-policy-stops-at-unloaded-hy",
+      "requirementIds": [],
+      "fixture": "dedup-and-candidates-equivalent-am-first",
+      "operation": "getResult",
+      "input": {
+        "key": "Pair.InBoth",
+        "locale": "hy",
+        "translationFallbackPolicy": "never"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Truncation on a candidate that has NO catalog: the deduped chain for bare hy starts with hy itself, which is not loaded and is therefore recorded verbatim (DefaultStrings.java:2495), so neverFallback stops there and returns the key even though the very next candidate would have translated. A port that omits catalog-less candidates from the chain resolves this in hy-AM instead."
+    },
+    {
+      "id": "dedup-and-candidates.equivalent.tiebreaker-resolved-fallback-am-first",
+      "requirementIds": [],
+      "fixture": "dedup-and-candidates-equivalent-fallback-am-first",
+      "operation": "getResult",
+      "input": {
+        "key": "Pair.InBoth",
+        "locale": "fr"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The configured fallback locale arm-SU is equivalent to two loaded catalogs at once, so construction resolves it through the tiebreaker list (DefaultStrings.java:452-465) and adopts hy-AM. Every unrelated request therefore ends at hy-AM, and match.fallbackLocale reports hy-AM rather than the configured arm-SU. Paired with its su-first twin."
+    },
+    {
+      "id": "dedup-and-candidates.equivalent.tiebreaker-resolved-fallback-su-first",
+      "requirementIds": [],
+      "fixture": "dedup-and-candidates-equivalent-fallback-su-first",
+      "operation": "getResult",
+      "input": {
+        "key": "Pair.InBoth",
+        "locale": "fr"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Same files, same configured fallback tag, reversed tiebreaker list: the effective fallback locale must flip to hy-SU, changing both the tail of the attempted chain and the fallbackLocale carried in every match object. A port that resolves an ambiguous fallback by sorting, or by first-loaded, produces the am-first answer for both fixtures."
+    },
+    {
+      "id": "dedup-and-candidates.equivalent.alias-request-picks-am-first",
+      "requirementIds": [],
+      "fixture": "dedup-and-candidates-equivalent-fallback-am-first",
+      "operation": "getResult",
+      "input": {
+        "key": "Pair.InBoth",
+        "locale": "arm-SU"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Requesting the alias tag arm-SU itself, where every raw candidate resolves onto one of two equivalent catalogs: localizedStringsFor's equivalence branch chooses through the tiebreakers, so the chain dedups to the single entry hy-AM and the translation comes from that catalog."
+    },
+    {
+      "id": "dedup-and-candidates.equivalent.alias-request-picks-su-first",
+      "requirementIds": [],
+      "fixture": "dedup-and-candidates-equivalent-fallback-su-first",
+      "operation": "getResult",
+      "input": {
+        "key": "Pair.InBoth",
+        "locale": "arm-SU"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same alias request under the reversed list must select hy-SU, with the same one-entry chain shape. The pair proves the tiebreakers govern equivalence resolution for a REQUESTED tag, not only for the fallback locale and the likely-subtag match."
+    },
+    {
+      "id": "dedup-and-candidates.legacy.load-normalizes-iw-filename",
+      "requirementIds": [],
+      "fixture": "dedup-and-candidates-legacy-filename",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The file named iw is keyed by Locale.forLanguageTag('iw'), whose language tag is he (LocalizedStringLoader.java:1260-1269), so the loaded locale set is [en, he] and the keys sit under he. A port that keys catalogs by the literal filename reports iw and then silently misses every he request."
+    },
+    {
+      "id": "dedup-and-candidates.legacy.request-iw",
+      "requirementIds": [],
+      "fixture": "dedup-and-candidates-legacy-filename",
+      "operation": "getResult",
+      "input": {
+        "key": "Legacy.OnlyInHebrew",
+        "locale": "iw"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Requesting the superseded spelling reaches the catalog and reports resolvedLocale he, not iw - the requested tag is normalized by Locale identity before the walk starts, unlike mo and hy-SU which stay distinct Locale values and are resolved by CLDR equivalence instead."
+    },
+    {
+      "id": "dedup-and-candidates.legacy.request-he",
+      "requirementIds": [],
+      "fixture": "dedup-and-candidates-legacy-filename",
+      "operation": "getResult",
+      "input": {
+        "key": "Legacy.OnlyInHebrew",
+        "locale": "he"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The modern spelling must produce an observation identical to the iw request, including match type EXACT. The pair pins that he and iw are one locale here, in contrast with hy-AM/hy-SU, which are two."
+    },
+    {
+      "id": "dedup-and-candidates.collision.he-and-iw-filenames",
+      "requirementIds": [],
+      "fixture": "dedup-and-candidates-legacy-collision",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "Two filenames naming the same locale are a load FAILURE, not a merge and not last-wins (LocalizedStringLoader.java:1265-1267). Pins the exception type and the locale tag the message names. CAVEAT for the corpus owner: the message also quotes the path of whichever of the two files directory iteration reached SECOND. That is 'iw' on the authoring machine's APFS volume and is stable there across repeated runs and across file-creation order (verified by creating the pair in both orders), but it is DirectoryStream order, so regenerating the corpus on a different filesystem could flip that one path segment. The failure type and the locale tag are order independent."
+    },
+    {
+      "id": "dedup-and-candidates.fallbackalias.unrelated-request-ends-at-ro",
+      "requirementIds": [],
+      "fixture": "dedup-and-candidates-fallback-alias",
+      "operation": "getResult",
+      "input": {
+        "key": "FallbackAlias.Missing",
+        "locale": "fr"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The configured fallback locale is itself resolved through equivalence at construction (DefaultStrings.java:448-449): fallbackLocale mo becomes ro because ro is the only canonically-equivalent loaded locale. An unrelated request therefore attempts [fr, ro] and the emitted match.fallbackLocale is ro. A port that stores the configured tag verbatim attempts mo, finds nothing, and reports a fallbackLocale of mo in every match object it ever emits."
+    },
+    {
+      "id": "dedup-and-candidates.fallbackalias.en-catalog-unreachable",
+      "requirementIds": [],
+      "fixture": "dedup-and-candidates-fallback-alias",
+      "operation": "getResult",
+      "input": {
+        "key": "FallbackAlias.OnlyInEn",
+        "locale": "fr"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Proof that the resolved fallback really is ro and not en: a key that exists only in the en catalog is unreachable from an unrelated request and the key is returned. Guards against a port that quietly treats every loaded locale as a terminal fallback."
+    },
+    {
+      "id": "dedup-and-candidates.fallbackalias.en-reachable-when-requested",
+      "requirementIds": [],
+      "fixture": "dedup-and-candidates-fallback-alias",
+      "operation": "getResult",
+      "input": {
+        "key": "FallbackAlias.OnlyInEn",
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The control that keeps the previous case honest: en is not dead, merely not the fallback. Requesting en resolves the same key in one attempt with match type EXACT, while match.fallbackLocale still reports ro."
+    },
+    {
+      "id": "dedup-and-candidates.fallbackalias.mo-request-resolves-ro",
+      "requirementIds": [],
+      "fixture": "dedup-and-candidates-fallback-alias",
+      "operation": "getResult",
+      "input": {
+        "key": "FallbackAlias.OnlyInRo",
+        "locale": "mo"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Requesting the configured-but-unloaded fallback tag itself: candidate resolution and fallback resolution must agree on ro, and the whole chain dedups to a single entry."
+    }
+  ]
+}

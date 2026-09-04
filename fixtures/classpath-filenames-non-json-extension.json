@@ -1,0 +1,15 @@
+{
+  "id": "classpath-filenames-non-json-extension",
+  "description": "A valid en catalog plus a file named 'de.txt' — a VALID tag under a non-.json extension. The extension is not stripped, so the whole name is tested against the tag pattern, which the embedded dot defeats. MEASURED: skipped in silence on both paths, no warning.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "rawFiles": {
+    "de.txt": "{\"Key.detxt\":\"detxt\"}"
+  }
+}

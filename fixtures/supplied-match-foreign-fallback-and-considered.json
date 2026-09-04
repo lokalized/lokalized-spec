@@ -1,0 +1,35 @@
+{
+  "id": "supplied-match-foreign-fallback-and-considered",
+  "description": "Both INSTANCE-level invariants broken at once: the fabrication's fallback is fr and its considered list is fr alone, which also differs from the supported locales. The constructor is satisfied (fr is considered), so the two instance checks are the only candidates and exactly one can win.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "localeMatchSupplier": {
+    "behavior": "fabricated",
+    "locale": "fr",
+    "matchType": "EXACT",
+    "range": "fr",
+    "weight": 1,
+    "ranges": [
+      {
+        "range": "fr",
+        "weight": 1
+      }
+    ],
+    "fallbackLocale": "fr",
+    "consideredLocales": [
+      "fr"
+    ]
+  },
+  "files": {
+    "fr": {
+      "Locale.Marker": "fr",
+      "Greeting.Hello": "Bonjour",
+      "Only.Fr": "fr-only"
+    },
+    "en": {
+      "Locale.Marker": "en",
+      "Greeting.Hello": "Hello",
+      "Only.En": "en-only"
+    }
+  }
+}

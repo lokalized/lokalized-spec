@@ -1,0 +1,22 @@
+{
+  "id": "ingress-matrix-java-case-baseline",
+  "description": "Case-spelling arm. Loaded zh, zh-Hant, en; tiebreaker zh:[zh, zh-Hant]. Unlike the zh-TW seed row EVERY catalog carries the key and each translation is its own tag, so the resolved locale and the translation together name which catalog served the request. No ambient supplier.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "zh": [
+      "zh",
+      "zh-Hant"
+    ]
+  },
+  "files": {
+    "zh": {
+      "Checkout.Title": "zh"
+    },
+    "zh-Hant": {
+      "Checkout.Title": "zh-Hant"
+    },
+    "en": {
+      "Checkout.Title": "en"
+    }
+  }
+}

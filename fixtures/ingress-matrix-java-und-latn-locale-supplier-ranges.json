@@ -1,0 +1,18 @@
+{
+  "id": "ingress-matrix-java-und-latn-locale-supplier-ranges",
+  "description": "Seed row 1 catalog with a localeSupplier that negotiates the header 'und-Latn' and hands back a bare Locale — the winning locale, or the fallback locale when nothing matches, which is what happens here (und-Latn matches nothing, so the supplier returns fr). DefaultStrings then RE-DERIVES a match from that Locale, so the lossy collapse is observable: EXACT/fr instead of the NONE every other route in this row reports.",
+  "fallbackLocale": "fr",
+  "tiebreakers": null,
+  "localeSupplier": {
+    "behavior": "match-ranges",
+    "ranges": "und-Latn"
+  },
+  "files": {
+    "en": {
+      "Checkout.Title": "Checkout"
+    },
+    "fr": {
+      "Checkout.Title": "Paiement"
+    }
+  }
+}

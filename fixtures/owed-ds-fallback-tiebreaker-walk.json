@@ -1,0 +1,26 @@
+{
+  "id": "owed-ds-fallback-tiebreaker-walk",
+  "description": "The configured fallback locale 'sr-Latn' is loaded under NEITHER of its two canonically equivalent spellings: hbs and sh both canonicalize to sr-Latn, and sr-Cyrl does not. Construction must therefore disambiguate the fallback through the language's tiebreaker list, and that list deliberately leads with sr-Cyrl -- a member of the language's tiebreaker permutation that is NOT equivalent to the fallback. The walk must SKIP it and land on sh. A port that took the first tiebreaker unconditionally serves every fallback translation from the Cyrillic catalog.",
+  "fallbackLocale": "sr-Latn",
+  "tiebreakers": {
+    "sr": [
+      "sr-Cyrl",
+      "sh",
+      "hbs"
+    ]
+  },
+  "files": {
+    "en": {
+      "Checkout.Title": "en"
+    },
+    "hbs": {
+      "Checkout.Title": "hbs"
+    },
+    "sh": {
+      "Checkout.Title": "sh"
+    },
+    "sr-Cyrl": {
+      "Checkout.Title": "sr-Cyrl"
+    }
+  }
+}

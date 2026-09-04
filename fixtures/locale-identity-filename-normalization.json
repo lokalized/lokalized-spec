@@ -1,0 +1,35 @@
+{
+  "id": "locale-identity-filename-normalization",
+  "description": "Section 8.3 locale-identity clause: filenames spelled zh-hant, nb-no, und, private use, and the three alias-bearing tags hy-SU/ru-SU/pap-AN loaded together, so the emitted locale list shows exactly which normalization the loader applies to a filename. Load-only, and necessarily so: no `en` file is present, so the `en` fallback locale has no canonically equivalent loaded locale and DefaultStrings could not be constructed even if a case wanted one.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "zh-hant": {
+      "Greeting": "g"
+    },
+    "nb-no": {
+      "Greeting": "g"
+    },
+    "und": {
+      "Greeting": "g"
+    },
+    "x-private": {
+      "Greeting": "g"
+    },
+    "en-x-custom": {
+      "Greeting": "g"
+    },
+    "hy-SU": {
+      "Greeting": "g"
+    },
+    "ru-SU": {
+      "Greeting": "g"
+    },
+    "pap-AN": {
+      "Greeting": "g"
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

@@ -1,0 +1,2126 @@
+{
+  "formatVersion": 1,
+  "family": "evaluation-locale",
+  "description": "Plan v7 section 8.3 fixture family 'evaluation-locale'. Inputs only; the oracle emits expected.",
+  "skipped": [
+    {
+      "what": "Cases that vary TranslationFallbackPolicy (fallbackOnAnyFailure / neverFallback) to observe a THIRD locale supplying after a donor's RESOLUTION_FAILURE",
+      "why": "Verified in source: VectorOracle.buildStrings never calls a policy setter, and its getResult path builds TranslationOptions.forLocale(...) only, so every case runs on the default DefaultTranslationFallbackPolicy.MISSING_OR_NO_MATCH, whose shouldTryNextLocale returns `reason != RESOLUTION_FAILURE`. The path where a later candidate supplies AFTER an earlier candidate threw -- and is then evaluated under that later candidate's locale -- is therefore unreachable. A genuine coverage hole in the clause. The NO_MATCHING_ALTERNATIVE pass-through in evaluation-locale-alternative-passthrough is the closest reachable substitute and does exercise two donors under two locales in one call."
+    },
+    {
+      "what": "Cases that set BidiIsolation explicitly to NONE or ALWAYS to separate the donor-locale rule from the default RTL_LOCALES policy",
+      "why": "BidiIsolation is not settable per fixture or per case in the oracle (buildStrings sets none; execute() passes TranslationOptions.forLocale only). The four bidi cases here observe the donor-locale rule only through the default policy, so a port could in principle satisfy them by hard-coding 'isolate when the donor's script is RTL' without ever consulting the configured policy."
+    },
+    {
+      "what": "A phonetic-axis fallback case (a donor entry whose placeholder branches on Phonetic, resolved for a different requesting locale)",
+      "why": "The phonetic axis is resolved through a PhoneticResolver callback and the oracle supports neither configuring one nor observing the default resolver's locale-sensitivity surface. Phonetic is the one remaining language-form axis that plausibly varies with the evaluation locale, so this is a real gap; it belongs with the phonetic-resolver milestone. (Gender, grammatical case, definiteness, classifier, formality, clusivity and animacy were all read in DefaultStrings.java:1001-1200 and are plain map lookups on the caller's value with no locale argument, so they cannot vary with the donor and need no per-axis fallback case.)"
+    },
+    {
+      "what": "Loader-level cases proving the donor locale recorded in the result matches the locale the loader assigned to the file that supplied the entry (manifest loading, loader options, warning capture)",
+      "why": "Listed by the task as unsupported by the oracle. These fixtures rely on filesystem loading with locale-tag filenames, which the oracle does exercise (build.mjs writes each fixture's files as extensionless locale-tag files and calls LocalizedStringLoader.loadFromFilesystem), so the identity of the donor is still observed through resolvedLocale and attemptedLocales -- just not through any alternative loading path."
+    },
+    {
+      "what": "A pt / pt-PT pair discriminated on a compact-notation count (compactExponent) where the two variants' many-rules could diverge",
+      "why": "Verified in GeneratedCldrPluralData: pt and pt-PT carry the byte-identical many-rule 'e = 0 and i != 0 and i % 1000000 = 0 and v = 0 or e != 0..5', so no compact count discriminates them. The pair is instead discriminated on 0 and 1.5, which the same table shows are the only two values where their rule sets disagree. Recorded so a future reviewer does not read the absence of a compact case as an oversight."
+    },
+    {
+      "what": "A French requester served by a Portuguese (pt) donor",
+      "why": "ADDED IN REVIEW. GeneratedCldrPluralData gives fr one:'i = 0,1' / many:'e = 0 and i != 0 and i % 1000000 = 0 and v = 0 or e != 0..5' / other:'', and pt one:'i = 0..1' with the identical many-rule. 'i = 0,1' and 'i = 0..1' are the same predicate, so fr and pt classify every possible value identically and no fr->pt case could ever discriminate donor-locale from requested-locale evaluation. The fr requester is instead covered against the pt-PT donor, where the pair does diverge (at 0 and at 1.5). This is why evaluation-locale-fallback-pt deliberately does not load fr."
+    },
+    {
+      "what": "An en requester served by a pt-PT donor at any count other than an integer multiple of a million",
+      "why": "ADDED IN REVIEW. pt-PT's one-rule 'i = 1 and v = 0' is identical to English's, and their other-rules are both the catch-all, so the two rule sets differ only on pt-PT's many-rule. 1000000 is therefore the only discriminating shape for that pair (plus compact exponents outside 0..5, which the plural-operands tag could reach but which add no new information about the donor rule). One case covers it; more would be decoration."
+    }
+  ],
+  "cases": [
+    {
+      "id": "evaluation-locale.ru-donor.en-request-count-2",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-ru",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "en",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The English catalog exists but lacks Items.Fallback, so the Russian fallback locale supplies it. 2 is FEW under ru (v=0 and i%10=2..4 and i%100!=12..14) and OTHER under en. A port that classified the count under the requested locale would emit the OTHER branch of a Russian catalog for every English request served by a Slavic donor."
+    },
+    {
+      "id": "evaluation-locale.ru-donor.en-request-count-5",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-ru",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "en",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "5"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Same donor, a second Russian category: 5 is MANY under ru (i%10=5..9) and OTHER under en. Covers a different limb of ru's many-rule than the count-0 and count-11 cases, so a port with a partially correct rule table cannot pass all three by accident."
+    },
+    {
+      "id": "evaluation-locale.ru-donor.en-request-count-11",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-ru",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "en",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "11"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "11 exercises ru's `i%100 = 11..14` limb of the many-rule -- the limb that overrides what would otherwise be ONE at i%10=1. en says OTHER. CORRECTION applied during review: the authored note claimed 11 is where ru and pl diverge on MANY membership. It is not. pl reaches MANY at 11 through its own `i != 1 and i%10 = 0..1` limb, so both say MANY; this case's discriminating power is en-versus-ru only."
+    },
+    {
+      "id": "evaluation-locale.ru-donor.en-request-count-21",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-ru",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "en",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "21"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "21 is ONE under ru (v=0 and i%10=1 and i%100!=11) -- a category English reserves for exactly 1. Catches a port that 'optimizes' the fallback path by reusing the requested locale's ONE test."
+    },
+    {
+      "id": "evaluation-locale.ru-donor.en-request-count-0-three-way",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-ru",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "en",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Three-way discriminator: 0 is MANY under the supplying locale ru (i%10=0), OTHER under the requested locale en, and ONE under this fixture's ambient instanceLocale fr (i = 0,1). Without it, a port that leaked the ambient locale into evaluation would be indistinguishable from one that used the requested locale."
+    },
+    {
+      "id": "evaluation-locale.ru-donor.pl-request-count-21",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-ru",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "pl",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "21"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Polish requests, Russian supplies. Verified against GeneratedCldrPluralData: pl and ru agree at every integer except where i%10=1 and i!=1 and i%100!=11 (21, 31, ..., 101, 1001), where pl says MANY and ru says ONE. This is the only shape that discriminates the pair, so without it the pl->ru direction is untested."
+    },
+    {
+      "id": "evaluation-locale.ru-donor.pl-request-count-101",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-ru",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "pl",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "101"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Second instance of the pl/ru divergence, at three digits, so a port cannot pass the pair by special-casing two-digit numbers. 101 is ONE under ru and MANY under pl."
+    },
+    {
+      "id": "evaluation-locale.ru-donor.fr-request-count-0",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-ru",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "fr",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "French requests, Russian supplies. Zero is ONE in fr (i = 0,1) and MANY in ru. A port that used the requested locale would emit the singular branch of a Russian catalog for a count of zero."
+    },
+    {
+      "id": "evaluation-locale.ru-donor.fr-request-count-2",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-ru",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "fr",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "2 is FEW under the ru donor and OTHER under the fr requester. Pairs with the count-0 case so the fr->ru direction is covered on both sides of the French one/other boundary."
+    },
+    {
+      "id": "evaluation-locale.ru-donor.fr-request-count-5",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-ru",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "fr",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "5"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "5 is MANY under ru and OTHER under fr. Proves the donor's four-way split survives a request from a locale whose only non-catch-all categories are ONE and a millions-only MANY."
+    },
+    {
+      "id": "evaluation-locale.ru-donor.ar-request-count-0",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-ru",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "ar",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Arabic requests, Russian supplies. ar has a ZERO category (n = 0) and ru does not; 0 must select the Russian MANY branch. The donor catalog declares CARDINALITY_ZERO precisely so a wrong port produces visible wrong text instead of a throw."
+    },
+    {
+      "id": "evaluation-locale.ru-donor.ar-request-count-2",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-ru",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "ar",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "2 is TWO in ar (n = 2) and FEW in ru. The TWO category is reachable from no other locale in this family, so this is the sharpest available evidence that the ar->ru direction evaluates under the donor."
+    },
+    {
+      "id": "evaluation-locale.ru-donor.ar-request-count-100",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-ru",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "ar",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "100"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "100 is OTHER in ar (n%100 = 0 falls through zero/one/two/few/many) and MANY in ru (i%10 = 0). Covers the ar->ru direction at a count where Arabic lands on its catch-all, so a port cannot pass the pair merely by never emitting ZERO or TWO."
+    },
+    {
+      "id": "evaluation-locale.ru-donor.en-own-catalog-count-2",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-ru",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Own",
+        "locale": "en",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Paired control for en-request-count-2: same fixture, same locale, same count, but the key IS in the English catalog so no fallback occurs and English rules legitimately apply. Without this pairing a port that always evaluated under the requested locale would look merely 'different' rather than provably wrong, and one that always evaluated under the fallback locale would go undetected."
+    },
+    {
+      "id": "evaluation-locale.ru-donor.pl-own-catalog-count-21",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-ru",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Own",
+        "locale": "pl",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "21"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Paired control for pl-request-count-21. Resolving locally must give the Polish MANY branch at the same count where the fallback path gives the Russian ONE branch, so the difference is attributable to which catalog supplied the entry and nothing else."
+    },
+    {
+      "id": "evaluation-locale.ru-donor.fr-own-catalog-count-0",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-ru",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Own",
+        "locale": "fr",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Paired control for fr-request-count-0: locally resolved French must select ONE at zero. Without it a reviewer could not tell whether the fallback case's MANY came from the donor's rules or from a broken French rule table."
+    },
+    {
+      "id": "evaluation-locale.ru-donor.ar-own-catalog-count-2",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-ru",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Own",
+        "locale": "ar",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Paired control for ar-request-count-2: locally resolved Arabic must select TWO. Confirms the port CAN produce TWO, so the fallback case's FEW is a deliberate donor-locale result rather than a missing Arabic rule."
+    },
+    {
+      "id": "evaluation-locale.ru-donor.en-request-ordinal-3",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-ru",
+      "operation": "getResult",
+      "input": {
+        "key": "Rank.Fallback",
+        "locale": "en",
+        "placeholders": {
+          "rank": {
+            "$lokalized": "integer",
+            "value": "3"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Ordinality travels the same donor-locale path as cardinality (ordinalityForValue is handed the same `locale` argument). ru has exactly one ordinal category, so the donor entry declares only ORDINALITY_OTHER and resolution succeeds; English would classify 3 as ORDINALITY_FEW and hit the 'Missing Ordinality translation' IllegalStateException. Without this case a port could route cardinality through the donor and ordinality through the requester and still pass every plural case here."
+    },
+    {
+      "id": "evaluation-locale.ru-donor.en-request-ordinal-1",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-ru",
+      "operation": "getResult",
+      "input": {
+        "key": "Rank.Fallback",
+        "locale": "en",
+        "placeholders": {
+          "rank": {
+            "$lokalized": "integer",
+            "value": "1"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Second ordinal count on the same donor: 1 is ORDINALITY_ONE in en (n%10=1 and n%100!=11) and ORDINALITY_OTHER in ru. Guards the case where a port special-cases 1 as a universal singular before consulting any locale's ordinal rules."
+    },
+    {
+      "id": "evaluation-locale.ru-donor.en-request-gender-is-locale-independent",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-ru",
+      "operation": "getResult",
+      "input": {
+        "key": "Actor.Fallback",
+        "locale": "en",
+        "placeholders": {
+          "heOrShe": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_FEMININE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Deliberate NEGATIVE pin, and the one case in this family that would NOT change if the donor-locale rule were inverted -- that is exactly its point, and the authored note overclaimed by calling it a discriminator. DefaultStrings selects a gender branch by a direct map lookup on the caller's Gender value with no locale consulted anywhere (verified at DefaultStrings.java:1001-1020), so a fallback must not perturb it. It also confirms the fallback path reaches gender resolution at all. A port that 'improved' gender handling per-locale would otherwise pass the whole corpus."
+    },
+    {
+      "id": "evaluation-locale.ru-donor.en-request-alternative-count-2",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-ru",
+      "operation": "getResult",
+      "input": {
+        "key": "Basket.Alt",
+        "locale": "en",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The second locale-sensitive channel: a whole-message alternative gated on `itemCount == CARDINALITY_FEW`. ExpressionEvaluator classifies the number under the locale alternativeMatches was handed, which for a fallback entry is the donor. 2 is FEW in ru and OTHER in en, so a port that evaluated alternatives against the requested locale would fall through all three alternatives to the default translation."
+    },
+    {
+      "id": "evaluation-locale.ru-donor.en-request-alternative-count-5",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-ru",
+      "operation": "getResult",
+      "input": {
+        "key": "Basket.Alt",
+        "locale": "en",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "5"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Same expression channel at a count that selects the MANY alternative under the donor. The FEW alternative is ordered ahead of it, so this also confirms first-match ordering is decided with the donor's classification."
+    },
+    {
+      "id": "evaluation-locale.ru-donor.en-request-alternative-count-21",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-ru",
+      "operation": "getResult",
+      "input": {
+        "key": "Basket.Alt",
+        "locale": "en",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "21"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "21 matches the CARDINALITY_ONE alternative (third in order) under the ru donor but no alternative at all under en, where it is OTHER and would reach the default translation. Distinguishes 'matched a different branch' from 'matched no branch', which are different failure shapes in a port."
+    },
+    {
+      "id": "evaluation-locale.ru-donor.pl-request-alternative-count-21",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-ru",
+      "operation": "getResult",
+      "input": {
+        "key": "Basket.Alt",
+        "locale": "pl",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "21"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Expression channel across the pl/ru divergence: 21 matches the ONE alternative under the ru donor and would match the MANY alternative under pl. Both branches exist, so this case discriminates purely on which locale drove the comparison -- a port cannot pass it by falling through to the default text."
+    },
+    {
+      "id": "evaluation-locale.pl-donor.ru-request-count-21",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-pl",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "21"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The reverse of the ru-donor pl-request case: Russian requests, Polish supplies, and 21 is MANY under pl where ru says ONE. Direction matters because a port could hard-code 'Slavic donor wins' in one direction only."
+    },
+    {
+      "id": "evaluation-locale.pl-donor.ru-request-count-101",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-pl",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "101"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Three-digit instance of the ru->pl divergence, guarding against a port whose Polish many-rule tests only the last two digits."
+    },
+    {
+      "id": "evaluation-locale.pl-donor.en-request-count-2",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-pl",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "en",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "English requests, Polish supplies: 2 is FEW in pl and OTHER in en. Covers the en->pl pair, which the ru-donor fixture cannot since a fixture has one fallback donor."
+    },
+    {
+      "id": "evaluation-locale.pl-donor.en-request-count-5",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-pl",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "en",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "5"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "5 is MANY in pl, OTHER in en. Together with the count-2 case this proves the en->pl direction distinguishes the donor's FEW and MANY, not merely 'not OTHER'."
+    },
+    {
+      "id": "evaluation-locale.pl-donor.en-request-count-0",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-pl",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "en",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Zero is MANY in pl (v=0 and i!=1 and i%10=0..1) and OTHER in en. Zero is the count implementations most often special-case outside the rule engine, so pinning it on a fallback path is worth its own case."
+    },
+    {
+      "id": "evaluation-locale.pl-donor.ar-request-count-0",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-pl",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "ar",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Arabic requests, Polish supplies: zero must select Polish MANY, not Arabic ZERO. The ZERO category is unreachable from Polish rules at any count, so a wrong answer here is unambiguous."
+    },
+    {
+      "id": "evaluation-locale.pl-donor.ar-request-count-2",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-pl",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "ar",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "2 is TWO in ar and FEW in pl. Second exotic-category guard for the ar->pl direction, and specific-versus-specific rather than specific-versus-catch-all."
+    },
+    {
+      "id": "evaluation-locale.pl-donor.ar-request-count-100",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-pl",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "ar",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "100"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "100 is OTHER in ar (n%100 = 0) and MANY in pl -- the direction where the DONOR has the more specific category. Without a case in this direction, a port that always preferred whichever locale had the more specific category would still pass the ZERO and TWO cases."
+    },
+    {
+      "id": "evaluation-locale.pl-donor.fr-request-count-0",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-pl",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "fr",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "French requests, Polish supplies: zero is ONE in fr and MANY in pl -- the count where the two disagree most sharply."
+    },
+    {
+      "id": "evaluation-locale.pl-donor.fr-request-count-2",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-pl",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "fr",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "2 is OTHER in fr and FEW in pl. Second fr->pl count so the pair is covered on both sides of the French one/other boundary."
+    },
+    {
+      "id": "evaluation-locale.pl-donor.fr-request-decimal-one-point-five",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-pl",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "fr",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "decimal",
+            "value": "1.5"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A fractional count carried as a tagged decimal so the visible decimal place reaches Java as BigDecimal rather than being flattened by JSON's single number type. 1.5 is OTHER in pl because every pl rule requires v = 0, but ONE in fr because fr's rule tests i alone. Without this case a port could evaluate the v operand under the requested locale while evaluating i under the donor and still pass every integer case in the family."
+    },
+    {
+      "id": "evaluation-locale.pl-donor.pt-request-count-0",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-pl",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "pt",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Portuguese requests, Polish supplies: zero is ONE in pt (i = 0..1) and MANY in pl. Gives Portuguese a requester role against a Slavic donor, which the pt-pair fixture cannot provide."
+    },
+    {
+      "id": "evaluation-locale.pl-donor.pt-request-count-2",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-pl",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "pt",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "2 is OTHER in pt and FEW in pl. Second pt->pl count, so the pair is discriminated on both sides of the Portuguese one/other boundary."
+    },
+    {
+      "id": "evaluation-locale.ar-donor.en-request-count-0-selects-zero",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-ar",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "en",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The single most decisive case in the family: CARDINALITY_ZERO can only be produced by Arabic rules, and here Arabic is the donor for an English request. Any implementation that evaluates under the requested locale is structurally incapable of emitting this branch."
+    },
+    {
+      "id": "evaluation-locale.ar-donor.en-request-count-2-selects-two",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-ar",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "en",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "CARDINALITY_TWO is likewise unreachable from any other locale in this family. Pairs with the ZERO case so the en->ar direction is proved by two categories rather than one, guarding against a port that special-cases zero."
+    },
+    {
+      "id": "evaluation-locale.ar-donor.en-request-count-3",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-ar",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "en",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "3"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "3 is FEW under the Arabic donor (n%100 = 3..10) and OTHER under en. Covers a mainstream Arabic category, so a port cannot pass the en->ar direction by hard-coding zero and two."
+    },
+    {
+      "id": "evaluation-locale.ar-donor.en-request-count-11",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-ar",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "en",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "11"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "11 is MANY under ar (n%100 = 11..99) and OTHER under en. Completes en->ar coverage across all four of Arabic's non-catch-all categories."
+    },
+    {
+      "id": "evaluation-locale.ar-donor.pl-request-count-0",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-ar",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "pl",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Polish requests, Arabic supplies: zero is MANY in pl and ZERO in ar. Both languages have rich category sets, so this pair is not covered by the English cases."
+    },
+    {
+      "id": "evaluation-locale.ar-donor.pl-request-count-2",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-ar",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "pl",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "2 is FEW in pl and TWO in ar -- two different specific categories. This is the shape that catches a port implementing 'prefer the more specific category across both locales'."
+    },
+    {
+      "id": "evaluation-locale.ar-donor.pl-request-count-200",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-ar",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "pl",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "200"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "200 is OTHER in ar (n%100 = 0) and MANY in pl -- the direction where the REQUESTING locale has the more specific category. Without this direction the pl->ar pair could be passed by a specificity-biased port."
+    },
+    {
+      "id": "evaluation-locale.ar-donor.ru-request-count-0",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-ar",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Russian requests, Arabic supplies: zero is MANY in ru and ZERO in ar. Distinct from pl->ar because pl and ru reach MANY at zero through different rule limbs."
+    },
+    {
+      "id": "evaluation-locale.ar-donor.ru-request-count-2",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-ar",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "2 is FEW in ru and TWO in ar. Specific-versus-specific across the ru->ar pair."
+    },
+    {
+      "id": "evaluation-locale.ar-donor.ru-request-count-21",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-ar",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "21"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "21 is ONE in ru and MANY in ar -- singular/plural polarity inverted between requester and donor. A port evaluating under the requested locale would serve an Arabic singular for twenty-one items."
+    },
+    {
+      "id": "evaluation-locale.ar-donor.ru-request-count-200",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-ar",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "200"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "200 is MANY in ru and OTHER in ar. Completes the ru->ar direction at a count where the donor lands on its catch-all."
+    },
+    {
+      "id": "evaluation-locale.ar-donor.fr-request-count-0",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-ar",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "fr",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "French requests, Arabic supplies: zero is ONE in fr and ZERO in ar. A wrong answer here produces a grammatical singular for an empty count in an RTL catalog."
+    },
+    {
+      "id": "evaluation-locale.ar-donor.fr-request-count-2",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-ar",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "fr",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "2 is OTHER in fr and TWO in ar. Covers the fr->ar pair on Arabic's dual category, which French does not have at all."
+    },
+    {
+      "id": "evaluation-locale.ar-donor.fr-request-count-11",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-ar",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "fr",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "11"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "11 is OTHER in fr and MANY in ar. Third fr->ar count, so the pair is discriminated across three different Arabic categories."
+    },
+    {
+      "id": "evaluation-locale.ar-donor.en-request-rtl-donor-isolates-caller-value",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-ar",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Named",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Bidi isolation of a caller-supplied value is decided by shouldApplyBidiIsolation(locale, bidiIsolation) inside interpolateTemplate, where `locale` is the same donor locale used for plural selection. With the default BidiIsolation.RTL_LOCALES an English request served by the Arabic donor must therefore still be isolated -- confirmed against the oracle, which emits U+2068 Sarah U+2069. Without this case a port would key isolation off the requested locale and silently drop the isolate marks that keep a Latin name from reordering inside Arabic text."
+    },
+    {
+      "id": "evaluation-locale.ar-donor.ar-request-rtl-direct-isolates-caller-value",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-ar",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Named",
+        "locale": "ar",
+        "placeholders": {
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Control for the previous case: the same entry resolved directly, with no fallback, must isolate identically. Establishes that the isolation seen on the English request comes from the donor locale rather than from something specific to the fallback path. This case alone does not discriminate; it exists to attribute the sibling's result."
+    },
+    {
+      "id": "evaluation-locale.fr-donor.pl-request-count-0",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-fr",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "pl",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Polish requests, French supplies. French's one-rule is the broadest in the family, so zero must select ONE where Polish would say MANY. Mirror of fr->pl in the pl-donor fixture."
+    },
+    {
+      "id": "evaluation-locale.fr-donor.pl-request-count-2",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-fr",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "pl",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "2 is OTHER in fr and FEW in pl -- here the DONOR has the coarser category set. A port biased toward the richer of the two rule sets would pick FEW and be wrong."
+    },
+    {
+      "id": "evaluation-locale.fr-donor.ru-request-count-0",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-fr",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Russian requests, French supplies: zero is MANY in ru and ONE in fr."
+    },
+    {
+      "id": "evaluation-locale.fr-donor.ru-request-count-2",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-fr",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "2 is FEW in ru and OTHER in fr. Second ru->fr count, on the coarse-donor side."
+    },
+    {
+      "id": "evaluation-locale.fr-donor.ru-request-count-21",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-fr",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "21"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "21 is ONE in ru and OTHER in fr: the requester would produce a singular where the donor produces a plural. Inverts the polarity of the count-0 case in the same pair, so a port cannot pass both with a single directional bias."
+    },
+    {
+      "id": "evaluation-locale.fr-donor.ar-request-count-0",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-fr",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "ar",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Arabic requests, French supplies: zero is ZERO in ar and ONE in fr. Mirror of fr->ar in the ar-donor fixture."
+    },
+    {
+      "id": "evaluation-locale.fr-donor.ar-request-count-2",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-fr",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "ar",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "2 is TWO in ar and OTHER in fr. Second ar->fr count on Arabic's dual category."
+    },
+    {
+      "id": "evaluation-locale.fr-donor.ar-request-count-3",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-fr",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "ar",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "3"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "3 is FEW in ar and OTHER in fr. Third ar->fr count, covering Arabic's few-rule under a coarse donor."
+    },
+    {
+      "id": "evaluation-locale.fr-donor.en-request-count-0",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-fr",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "en",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "English requests, French supplies: zero is ONE in fr and OTHER in en. The en/fr pair is the one a port author is most likely to assume equivalent, since both have small category sets -- but they disagree at zero, the count a fallback is most likely to be exercised with."
+    },
+    {
+      "id": "evaluation-locale.fr-donor.en-request-count-1000000",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-fr",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "en",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "1000000"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "One million is MANY in fr (e = 0 and i != 0 and i%1000000 = 0 and v = 0) and OTHER in en. English has no MANY category at all, so this proves the donor's full rule runs rather than a reduced version derived from the requester."
+    },
+    {
+      "id": "evaluation-locale.fr-donor.en-request-decimal-one-point-five",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-fr",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "en",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "decimal",
+            "value": "1.5"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Tagged decimal so the visible decimal place reaches Java intact. 1.5 is ONE in fr because its rule tests i = 0,1 and ignores v, but OTHER in en because en's rule requires v = 0. Catches a port that evaluates the integer operand under the donor while applying the requester's v-guard."
+    },
+    {
+      "id": "evaluation-locale.en-donor.pl-request-count-2",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-en",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "pl",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Polish requests, an English catalog declaring only ONE and OTHER supplies. Under English rules 2 is OTHER and resolution succeeds; a port evaluating under Polish selects FEW, finds no branch, and takes the missing-branch failure path. Correct behavior succeeds and wrong behavior fails loudly -- and this is the realistic configuration, because real English catalogs do not carry Slavic branches."
+    },
+    {
+      "id": "evaluation-locale.en-donor.pl-request-count-5",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-en",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "pl",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "5"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Same detector at a count that maps to Polish MANY rather than FEW, so a port that happened to declare a FEW widening but not a MANY one is still caught."
+    },
+    {
+      "id": "evaluation-locale.en-donor.ru-request-count-2",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-en",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Russian requests, English supplies. This is the single most common real-world fallback in a shipped application, so its regression would be the widest."
+    },
+    {
+      "id": "evaluation-locale.en-donor.ru-request-count-5",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-en",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "5"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Second Russian count against the English donor, mapping to ru's many-rule rather than its few-rule."
+    },
+    {
+      "id": "evaluation-locale.en-donor.ru-request-count-21",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-en",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "21"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "21 is ONE in ru and OTHER in en. Unlike the FEW and MANY cases this one does NOT fail under wrong evaluation -- it silently emits the singular branch. That makes it the case that catches a port whose only defense against wrong-locale evaluation is that a missing branch happens to throw."
+    },
+    {
+      "id": "evaluation-locale.en-donor.ar-request-count-0",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-en",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "ar",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Arabic requests, English supplies: zero must select the English OTHER branch. A port evaluating under Arabic would look for CARDINALITY_ZERO, which this realistic English catalog does not declare."
+    },
+    {
+      "id": "evaluation-locale.en-donor.ar-request-count-2",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-en",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "ar",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Same detector on Arabic's dual category, which an English catalog can never satisfy."
+    },
+    {
+      "id": "evaluation-locale.en-donor.ar-request-count-3",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-en",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "ar",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "3"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Third Arabic count against the English donor, this time on Arabic's few-rule. Three counts across three Arabic categories make an accidental pass implausible."
+    },
+    {
+      "id": "evaluation-locale.en-donor.fr-request-count-0",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-en",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "fr",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "French requests, English supplies: zero must select OTHER, not the ONE branch French rules would choose. Both branches exist in the English catalog, so a wrong port succeeds with different text rather than failing -- the silent-divergence shape."
+    },
+    {
+      "id": "evaluation-locale.en-donor.pt-request-count-0",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-en",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "pt",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Portuguese requests, English supplies: zero is ONE in pt and OTHER in en, and both branches exist, so this is a silent-divergence detector for the pt->en direction."
+    },
+    {
+      "id": "evaluation-locale.en-donor.ru-request-ordinal-3",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-en",
+      "operation": "getResult",
+      "input": {
+        "key": "Rank.Fallback",
+        "locale": "ru",
+        "placeholders": {
+          "rank": {
+            "$lokalized": "integer",
+            "value": "3"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The ordinality mirror of the ru-donor ordinal cases: here the donor is the language WITH ordinal categories and the requester is the one without. 3 is ORDINALITY_FEW in en and ORDINALITY_OTHER in ru, and both branches exist, so a port evaluating under the requester silently degrades every ordinal served by an English fallback to the catch-all form."
+    },
+    {
+      "id": "evaluation-locale.en-donor.ru-request-ordinal-2",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-en",
+      "operation": "getResult",
+      "input": {
+        "key": "Rank.Fallback",
+        "locale": "ru",
+        "placeholders": {
+          "rank": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "2 is ORDINALITY_TWO in en. Second English ordinal category through a Russian request, so a port cannot pass by implementing only the ordinal few-rule."
+    },
+    {
+      "id": "evaluation-locale.en-donor.ru-request-ordinal-21",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-en",
+      "operation": "getResult",
+      "input": {
+        "key": "Rank.Fallback",
+        "locale": "ru",
+        "placeholders": {
+          "rank": {
+            "$lokalized": "integer",
+            "value": "21"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "21 is ORDINALITY_ONE in en (n%10 = 1 and n%100 != 11). Proves the donor's full ordinal rule including its modulus limbs runs, not a truncated 1/2/3 lookup table."
+    },
+    {
+      "id": "evaluation-locale.en-donor.ar-request-ordinal-3",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-en",
+      "operation": "getResult",
+      "input": {
+        "key": "Rank.Fallback",
+        "locale": "ar",
+        "placeholders": {
+          "rank": {
+            "$lokalized": "integer",
+            "value": "3"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Arabic also has exactly one ordinal category and is RTL, so this checks the ordinal donor path for a requester differing from the donor in both category count and script direction."
+    },
+    {
+      "id": "evaluation-locale.pt-pair.pt-pt-request-served-by-pt-count-0",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-pt-pair",
+      "operation": "getResult",
+      "input": {
+        "key": "Boxes.PtOnly",
+        "locale": "pt-PT",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The pt-PT -> pt leg, reached through the CLDR parent chain. Zero is ONE under the pt donor and OTHER under the pt-PT requester. Without this case a port could treat pt-PT as a pure alias of pt -- the shortcut most i18n libraries take -- and never be caught."
+    },
+    {
+      "id": "evaluation-locale.pt-pair.pt-pt-request-served-by-pt-decimal-one-point-five",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-pt-pair",
+      "operation": "getResult",
+      "input": {
+        "key": "Boxes.PtOnly",
+        "locale": "pt-PT",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "decimal",
+            "value": "1.5"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The second and only other place pt and pt-PT disagree: 1.5 is ONE under pt (its rule ignores v) and OTHER under pt-PT (its rule requires v = 0). Tagged as a decimal so the visible decimal place is not erased by JSON. Covers the v-operand half of the divergence, which the count-0 case does not reach."
+    },
+    {
+      "id": "evaluation-locale.pt-pair.pt-pt-request-served-by-pt-count-1-agrees",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-pt-pair",
+      "operation": "getResult",
+      "input": {
+        "key": "Boxes.PtOnly",
+        "locale": "pt-PT",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "1"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Agreement control: 1 is ONE under both pt and pt-PT. Pins that the donor-locale rule does not introduce a difference where the two rule sets genuinely coincide, so a port cannot pass the pair by always choosing the opposite of the requester."
+    },
+    {
+      "id": "evaluation-locale.pt-pair.pt-request-served-by-pt-pt-count-0",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-pt-pair",
+      "operation": "getResult",
+      "input": {
+        "key": "Boxes.PtPtOnly",
+        "locale": "pt",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The reverse leg: a bare pt request for a key that exists only in pt-PT. pt-PT enters pt's candidate list through the tiebreaker limb of localeFallbackCandidates rather than the parent chain. CORRECTION applied during review: the authored note hedged that the leg might not fire. It does -- the oracle reports attemptedLocales ['pt','pt-PT'] and resolvedLocale pt-PT -- so the case pins BOTH that the tiebreaker limb contributes candidates and that what it contributes is evaluated under its own rules; zero is OTHER under pt-PT and ONE under pt."
+    },
+    {
+      "id": "evaluation-locale.pt-pair.pt-request-served-by-pt-pt-decimal-one-point-five",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-pt-pair",
+      "operation": "getResult",
+      "input": {
+        "key": "Boxes.PtPtOnly",
+        "locale": "pt",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "decimal",
+            "value": "1.5"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Reverse leg on the v-operand divergence: 1.5 is OTHER under pt-PT and ONE under pt. Pairs with the count-0 case so the pt -> pt-PT direction is covered by both of the two counts where the variants disagree."
+    },
+    {
+      "id": "evaluation-locale.pt-pair.pt-request-served-by-en-count-0",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-pt-pair",
+      "operation": "getResult",
+      "input": {
+        "key": "Boxes.EnOnly",
+        "locale": "pt",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Three-candidate chain: pt, then pt-PT, then the English fallback locale, with the key present only in the last. Zero is OTHER in en and ONE in pt, so this proves the LAST candidate in a chain is evaluated under its own locale and not under the first one that happened to have a catalog."
+    },
+    {
+      "id": "evaluation-locale.pt-pair.pt-request-served-by-en-count-1000000",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-pt-pair",
+      "operation": "getResult",
+      "input": {
+        "key": "Boxes.EnOnly",
+        "locale": "pt",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "1000000"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "One million is MANY in both pt and pt-PT but OTHER in en, and this English catalog declares no MANY branch. Correct behavior resolves; a port evaluating under either Portuguese variant hits the missing-branch path. Asymmetric detector for the three-candidate chain."
+    },
+    {
+      "id": "evaluation-locale.pt-pair.pt-pt-request-served-by-en-count-1000000",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-pt-pair",
+      "operation": "getResult",
+      "input": {
+        "key": "Boxes.EnOnly",
+        "locale": "pt-PT",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "1000000"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Same detector entered from pt-PT, which reaches the English donor after two intermediate candidates (attemptedLocales ['pt-PT','pt','en']) whose catalogs both lack the key. Confirms the number of skipped candidates does not change which locale governs evaluation."
+    },
+    {
+      "id": "evaluation-locale.pt-donor.en-request-count-0",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-pt",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "en",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED IN REVIEW. English requests, Portuguese supplies: zero is ONE in pt (i = 0..1) and OTHER in en. The plainest en->pt discriminator, and the first case in the corpus where Portuguese is the SUPPLYING locale for a non-Portuguese request -- a role the clause names but the authored set never exercised."
+    },
+    {
+      "id": "evaluation-locale.pt-donor.en-request-decimal-one-point-five",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-pt",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "en",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "decimal",
+            "value": "1.5"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED IN REVIEW. Tagged decimal: 1.5 is ONE in pt because i = 1 and pt's rule ignores v, and OTHER in en because en requires v = 0. Same operand distinction as the pt/pt-PT pair, but observed across a language boundary rather than a variant boundary."
+    },
+    {
+      "id": "evaluation-locale.pt-donor.en-request-count-1000000",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-pt",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "en",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "1000000"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED IN REVIEW. One million is MANY in pt and OTHER in en. English has no MANY category at all, so the branch is only reachable if the donor's rule ran."
+    },
+    {
+      "id": "evaluation-locale.pt-donor.ru-request-count-0",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-pt",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED IN REVIEW. Russian requests, Portuguese supplies: zero is ONE in pt and MANY in ru -- singular versus plural, the most visible possible divergence."
+    },
+    {
+      "id": "evaluation-locale.pt-donor.ru-request-count-2",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-pt",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED IN REVIEW. 2 is OTHER in pt and FEW in ru: the direction where the REQUESTER has the richer category set. Guards a port biased toward whichever locale is more specific."
+    },
+    {
+      "id": "evaluation-locale.pt-donor.ar-request-count-0",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-pt",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "ar",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED IN REVIEW. Arabic requests, Portuguese supplies: zero is ONE in pt and ZERO in ar. Uses Arabic's exclusive ZERO category so a wrong answer is unambiguous."
+    },
+    {
+      "id": "evaluation-locale.pt-donor.ar-request-count-2",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-pt",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "ar",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED IN REVIEW. 2 is OTHER in pt and TWO in ar. Second exotic-category guard for the ar->pt direction."
+    },
+    {
+      "id": "evaluation-locale.pt-donor.ar-request-count-1000000",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-pt",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "ar",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "1000000"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED IN REVIEW. One million is MANY in pt and OTHER in ar (n%100 = 0). The direction where the DONOR has the more specific category, completing the ar->pt pair on both polarities."
+    },
+    {
+      "id": "evaluation-locale.pt-pt-donor.en-request-count-1000000",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-pt-pt",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "en",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "1000000"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED IN REVIEW. English requests, pt-PT supplies. pt-PT and en agree at every count EXCEPT integer multiples of a million (and compact exponents outside 0..5), where pt-PT says MANY and en says OTHER. This is therefore the only count that can discriminate the en->pt-PT direction at all, and it is the reason pt-PT must not be flattened into en-like two-category handling."
+    },
+    {
+      "id": "evaluation-locale.pt-pt-donor.ru-request-count-0",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-pt-pt",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED IN REVIEW. Russian requests, pt-PT supplies: zero is OTHER in pt-PT (its one-rule requires i = 1) and MANY in ru. Note this is the OPPOSITE donor answer from the pt-donor fixture's ru@0 case, which is exactly the pt/pt-PT distinction carried into a cross-language fallback."
+    },
+    {
+      "id": "evaluation-locale.pt-pt-donor.ar-request-count-0",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-pt-pt",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "ar",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED IN REVIEW. Arabic requests, pt-PT supplies: zero is OTHER in pt-PT and ZERO in ar."
+    },
+    {
+      "id": "evaluation-locale.pt-pt-donor.ar-request-count-2",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-pt-pt",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "ar",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED IN REVIEW. 2 is OTHER in pt-PT and TWO in ar. Second Arabic exclusive category through a pt-PT donor."
+    },
+    {
+      "id": "evaluation-locale.pt-pt-donor.fr-request-count-0",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-pt-pt",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "fr",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED IN REVIEW. French requests, pt-PT supplies: zero is ONE in fr and OTHER in pt-PT. Pairs with the pt-donor fixture's deliberate omission of French -- fr cannot be discriminated from pt at any value, but it IS discriminated from pt-PT, and this case is where that shows."
+    },
+    {
+      "id": "evaluation-locale.pt-pt-donor.fr-request-decimal-one-point-five",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-fallback-pt-pt",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "fr",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "decimal",
+            "value": "1.5"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED IN REVIEW. Tagged decimal: 1.5 is ONE in fr (rule tests i only) and OTHER in pt-PT (rule requires v = 0). The v-operand half of the fr->pt-PT pair."
+    },
+    {
+      "id": "evaluation-locale.uncatalogued.ru-request-count-21",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-uncatalogued-request",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "21"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Russian is requested but never loaded, so its candidate carries a null strings map and Polish supplies (attemptedLocales ['ru','pl']). 21 is ONE in ru and MANY in pl. Distinct from every other case in the family, which all have a catalog for the requested locale."
+    },
+    {
+      "id": "evaluation-locale.uncatalogued.ar-request-count-0",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-uncatalogued-request",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "ar",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Arabic requested and never loaded: zero must select Polish MANY, not Arabic ZERO. Uses the exotic-category signal on the no-catalog path so a wrong answer is unmistakable."
+    },
+    {
+      "id": "evaluation-locale.uncatalogued.ar-request-count-2",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-uncatalogued-request",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Fallback",
+        "locale": "ar",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Second no-catalog Arabic count: 2 is TWO in ar and FEW in pl. Two counts on this path guard against a port that special-cases zero when no catalog is present."
+    },
+    {
+      "id": "evaluation-locale.sparse-donor.en-request-count-2-has-no-few-branch",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-donor-missing-branch",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Sparse",
+        "locale": "en",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The inverse asymmetry from the en-donor fixture: here CORRECT behavior fails and wrong behavior succeeds. Under the Russian donor's rules 2 is FEW, the under-translated donor has no FEW branch, and the missing-translation IllegalStateException is raised; the oracle records status RETURNED_KEY with failureReason RESOLUTION_FAILURE. Under English rules 2 would be OTHER and resolve cleanly. Without this case a port could pass every other vector in the family by silently widening a missing branch to OTHER, and the corpus would call that correct."
+    },
+    {
+      "id": "evaluation-locale.sparse-donor.en-request-count-5-has-no-many-branch",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-donor-missing-branch",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Sparse",
+        "locale": "en",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "5"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Second missing-branch count, on MANY rather than FEW, so a port that implements a widening fallback for only one category is still caught, and a second category name is recorded in the failure."
+    },
+    {
+      "id": "evaluation-locale.sparse-donor.en-request-count-1-resolves",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-donor-missing-branch",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Sparse",
+        "locale": "en",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "1"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Success control in the same fixture: 1 is ONE under Russian rules and the branch exists, so resolution completes normally. Proves the sibling failures come from the selected category rather than from a broken fixture."
+    },
+    {
+      "id": "evaluation-locale.sparse-donor.en-request-count-21-resolves-to-one",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-donor-missing-branch",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Sparse",
+        "locale": "en",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "21"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "21 is ONE under ru and OTHER under en, and both branches exist in this sparse catalog. So unlike its siblings this case discriminates by TEXT rather than by failure -- a port whose only symptom of wrong-locale evaluation is a thrown missing branch would pass the other two and fail here."
+    },
+    {
+      "id": "evaluation-locale.sparse-donor.ru-request-count-2-fails-without-fallback",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-donor-missing-branch",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Sparse",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Control that isolates the variable: the identical missing-branch failure must occur when Russian is requested directly, with no fallback in play (attemptedLocales ['ru'] versus ['en','ru'] for the sibling). Establishes that the failure belongs to the donor catalog's incompleteness and not to the fallback mechanism, so a port cannot 'fix' the sibling cases by suppressing failures on fallback paths."
+    },
+    {
+      "id": "evaluation-locale.bidi.ar-request-served-by-en-donor-does-not-isolate",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-bidi-donor-en",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Named",
+        "locale": "ar",
+        "placeholders": {
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The killer bidi case. Arabic is requested, the English donor supplies, and because the RTL_LOCALES policy is evaluated against the DONOR locale the caller-supplied value is NOT isolated even though the request was for an RTL locale -- confirmed against the oracle, which emits a bare 'Hello, Sarah'. A JS port that keys isolation off the requested locale emits stray U+2068/U+2069 around every value in this situation, which is invisible in most assertions and corrupts exact string comparisons downstream."
+    },
+    {
+      "id": "evaluation-locale.bidi.en-request-served-by-en-donor-does-not-isolate",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-bidi-donor-en",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Named",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Control for the previous case: the same entry resolved directly under English must also be un-isolated, so the absence of isolate marks in the Arabic request is attributable to the donor locale rather than to isolation being off everywhere. Does not discriminate on its own."
+    },
+    {
+      "id": "evaluation-locale.bidi.ar-request-returned-key-uses-requested-locale",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-bidi-donor-en",
+      "operation": "getResult",
+      "input": {
+        "key": "Farewell.Named {{name}}",
+        "locale": "ar",
+        "placeholders": {
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The asymmetry that makes the donor rule worth stating precisely. This key exists in no catalog, so the default returnKey handler interpolates the key itself -- and interpolateFailureKey is handed the REQUESTED locale, because there is no donor. Confirmed against the oracle: the Arabic request yields 'Farewell.Named ⁨Sarah⁩' (isolated) while the sibling resolved case, which had an English donor, is not isolated. Without this case a port would plausibly unify the two paths on one locale and be wrong on exactly one of them."
+    },
+    {
+      "id": "evaluation-locale.bidi.en-request-returned-key-does-not-isolate",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-bidi-donor-en",
+      "operation": "getResult",
+      "input": {
+        "key": "Farewell.Named {{name}}",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Control for the returned-key path: the same missing key requested under English must not isolate. Together with the Arabic returned-key case this pins the two-rule picture -- donor locale for resolved entries, requested locale for returned keys."
+    },
+    {
+      "id": "evaluation-locale.chain.pl-request-count-2-first-donor-matches",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-alternative-passthrough",
+      "operation": "getResult",
+      "input": {
+        "key": "Chain.Alt",
+        "locale": "pl",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "2 is FEW under Polish, so the pl entry's alternative matches and resolution stops at the first candidate with resolvedLocale pl. CORRECTION applied during review: the authored note claimed this discriminates a requested-locale port. It does not -- the requester and the first donor are the same locale here, so both behave identically. What it actually catches is a port that evaluates every candidate under the FALLBACK locale, which would classify 2 as OTHER, fall through to the en entry, and return en:OTHER-branch with resolvedLocale en."
+    },
+    {
+      "id": "evaluation-locale.chain.pl-request-count-5-second-donor-evaluates-under-en",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-alternative-passthrough",
+      "operation": "getResult",
+      "input": {
+        "key": "Chain.Alt",
+        "locale": "pl",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "5"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The discriminating case in this fixture. 5 is MANY in pl so the first candidate's FEW-gated alternative does not match and, having no default translation, yields NO_MATCHING_ALTERNATIVE and the chain continues. The en candidate then classifies the same 5 as OTHER under ENGLISH rules and matches its OTHER-gated alternative (oracle: 'en:OTHER-branch', resolvedLocale en). A port that reused the requested locale (pl) for the second candidate would classify 5 as MANY there too, match nothing, and fall to the en entry's default translation instead."
+    },
+    {
+      "id": "evaluation-locale.chain.pl-request-count-21-second-donor-evaluates-under-en",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-alternative-passthrough",
+      "operation": "getResult",
+      "input": {
+        "key": "Chain.Alt",
+        "locale": "pl",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "21"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Same two-locale traversal at a count where Polish says MANY through a different rule limb (i%10 = 1 and i != 1) and English says OTHER, so the pass-through and the second evaluation are exercised again on different rule machinery. Guards against a port that re-evaluates under the second donor but caches the first donor's classification of the number."
+    },
+    {
+      "id": "evaluation-locale.chain.pl-request-count-1-neither-alternative-matches",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-alternative-passthrough",
+      "operation": "getResult",
+      "input": {
+        "key": "Chain.Alt",
+        "locale": "pl",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "1"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "1 is ONE under both pl and en, so neither candidate's alternative matches and the en entry's default translation is used. CORRECTION applied during review: this case does NOT discriminate on evaluation locale, and the authored note implied it did. Its real proposition is that NO_MATCHING_ALTERNATIVE really does continue the chain -- a port that stopped at the first candidate would return the key instead of en:default."
+    },
+    {
+      "id": "evaluation-locale.chain.en-request-count-2-resolves-locally",
+      "requirementIds": [],
+      "fixture": "evaluation-locale-alternative-passthrough",
+      "operation": "getResult",
+      "input": {
+        "key": "Chain.Alt",
+        "locale": "en",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Control: requesting English resolves in the English catalog with no Polish candidate involved, and 2 is OTHER so the OTHER-gated alternative matches. Establishes what the en entry does on its own, so the pass-through cases can be attributed to the chain."
+    }
+  ]
+}

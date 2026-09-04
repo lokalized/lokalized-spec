@@ -1,0 +1,70 @@
+{
+  "id": "fallback-policy-return-string-handler",
+  "description": "Same catalogs with the instance handler returning a fixed substitute string. Third arm of the final-response fan-out at DefaultStrings.java:751-766 (RETURN_KEY / RETURN_STRING / THROW_EXCEPTION); it is the only arm that neither interpolates the failure key nor throws. Cases here use the get operation rather than getResult because the RETURN_STRING arm emits TranslationResultStatus.RETURNED_STRING, which the corpus schema's translationResult.status enum does not yet admit; see the skipped entry. The de catalog fails four structurally different ways for four keys (missing gender branch -> IllegalStateException; alternative predicate over an unbound placeholder -> ExpressionEvaluationException; cardinality placeholder whose value name is never supplied -> IllegalArgumentException; alternatives-only entry whose sole predicate is false -> NO_MATCHING_ALTERNATIVE with no throw), plus one key absent from de entirely (MISSING_TRANSLATION) and one present in both (the control). Every en entry is inert plain text with no placeholders, so the donor can never fail for an unrelated reason. Requesting de loads exactly two candidates, de then en, so no language is ambiguous and tiebreakers is null.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "translationFailureHandler": {
+    "behavior": "return-string",
+    "text": "[translation unavailable]"
+  },
+  "files": {
+    "de": {
+      "Order.Both": "de: both catalogs have this",
+      "Order.Confirmation": {
+        "commentary": "GENDER_NEUTER is deliberately absent from this map. A NEUTER value reaches the gender branch at DefaultStrings.java:1014-1015 and throws IllegalStateException 'Missing Gender translation for NEUTER' (the enum's own name(), not the JS constant spelling), which contextualizePlaceholderFailure re-wraps at DefaultStrings.java:1265-1268. getResult records it as RESOLUTION_FAILURE.",
+        "translation": "de: order confirmed by {{subject}}",
+        "placeholders": {
+          "subject": {
+            "value": "orderGender",
+            "translations": {
+              "GENDER_MASCULINE": "him",
+              "GENDER_FEMININE": "her"
+            }
+          }
+        }
+      },
+      "Order.Expression": {
+        "commentary": "The root translation is usable, but getInternal scans alternatives BEFORE returning it and this predicate references a placeholder no case binds, so evaluation throws com.lokalized.ExpressionEvaluationException \"No value was provided for placeholder 'absentFlag'\".",
+        "translation": "de: expression key",
+        "alternatives": [
+          {
+            "absentFlag == 1": {
+              "translation": "de: expression key, flag one"
+            }
+          }
+        ]
+      },
+      "Order.PlaceholderValue": {
+        "commentary": "The cardinality placeholder reads a context name no case supplies, reaching the non-range cardinality branch at DefaultStrings.java:966-968: IllegalArgumentException \"Missing value for placeholder 'absentCount' in key ...\", contextualized at DefaultStrings.java:1265-1268.",
+        "translation": "de: {{itemWord}}",
+        "placeholders": {
+          "itemWord": {
+            "value": "absentCount",
+            "translations": {
+              "CARDINALITY_ONE": "item",
+              "CARDINALITY_OTHER": "items"
+            }
+          }
+        }
+      },
+      "Order.Note": {
+        "commentary": "Alternatives-only with no translation of its own: an unmatched predicate yields Optional.empty and therefore NO_MATCHING_ALTERNATIVE, with no throwable. orderCount == 0 is matchable, so a control case can prove the entry really loaded.",
+        "alternatives": [
+          {
+            "orderCount == 0": {
+              "translation": "de: no orders"
+            }
+          }
+        ]
+      }
+    },
+    "en": {
+      "Order.Both": "en: both catalogs have this",
+      "Order.Confirmation": "en: the order is confirmed",
+      "Order.Expression": "en: the expression key resolved here",
+      "Order.PlaceholderValue": "en: the placeholder key resolved here",
+      "Order.Note": "en: a note is attached",
+      "Order.Tracking": "en: tracking is available"
+    }
+  }
+}

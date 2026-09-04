@@ -1,0 +1,87 @@
+{
+  "formatVersion": 1,
+  "family": "owed-m3b-election-guard",
+  "description": "Plan v7 section 8.3 fixture family 'owed-m3b-election-guard'. Inputs only; the oracle emits expected.",
+  "cases": [
+    {
+      "id": "owed.m3b.electionguard.single-elected-member",
+      "requirementIds": [],
+      "fixture": "owed-m3b-election-guard-exact-nsl",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "sgn-nsl",
+            "weight": 1
+          },
+          {
+            "range": "en",
+            "weight": 1
+          },
+          {
+            "range": "nsl",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Reference leg. Three members at equal weight: 'sgn-nsl' is unrecognized and is the group representative (its semantic range is the extlang equivalent 'nsl'), 'en' forms its own group at index 1, and 'nsl' joins the representative's group at index 2 and is ELECTED as its semantic member because its range is exactly the representative's semantic range. Exactly one member is ever electable here, so matchFor:1622's 'already elected' guard is evaluated only in its unfired arm. Recorded rather than asserted: this is the row a port that re-elects on every active member also passes, which is what makes the four-member row below -- and only that row -- the discriminating one."
+    },
+    {
+      "id": "owed.m3b.electionguard.duplicate-member-does-not-reelect",
+      "requirementIds": [],
+      "fixture": "owed-m3b-election-guard-exact-nsl",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "sgn-nsl",
+            "weight": 1
+          },
+          {
+            "range": "en",
+            "weight": 1
+          },
+          {
+            "range": "nsl",
+            "weight": 1
+          },
+          {
+            "range": "nsl",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings.matchFor:1622, the 'this representative has not already elected' guard, in the arm where it FIRES and suppresses a second election. The header repeats 'nsl' at index 3; it is active (its weight compares equal to the representative's) and its range is again exactly the representative's semantic range, so conjunct 3 would elect it -- the guard is the only thing that stops that. DISCRIMINATION, measured against a build of lokalized-java 3.0.0 with the guard deleted and nothing else changed: with the guard the answer is the nsl catalog; without it the answer is the en catalog. The mechanism is matchFor:1772 -- index 2 governs the nsl catalog through an EXACT (syntactic) relationship, so when index 2 is still the elected semantic member that locale is served at the group's representative position 0, which precedes en's position 1; re-electing index 3 makes index 2 a nonsemantic syntactic governor, which moves the nsl catalog to position 2, and the preference-order walk at matchFor:1803 then reaches en at position 1 first. The interleaved 'en' member is therefore not decoration: with the header sgn-nsl,nsl,nsl the two arms agree, which is exactly the shape that would have closed this branch while specifying nothing. Both nsl members are byte-identical in range and weight (Locale.LanguageRange lowercases at construction), so nothing here can be attributed to a difference between them -- only to WHICH index the election records."
+    },
+    {
+      "id": "owed.m3b.electionguard.duplicate-member-uppercase-spelling",
+      "requirementIds": [],
+      "fixture": "owed-m3b-election-guard-exact-nsl",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "sgn-nsl",
+            "weight": 1
+          },
+          {
+            "range": "en",
+            "weight": 1
+          },
+          {
+            "range": "nsl",
+            "weight": 1
+          },
+          {
+            "range": "NSL",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same guard reached through a differently-spelled duplicate. Locale.LanguageRange lowercases its range at construction, so 'NSL' and 'nsl' are the same member content and the row must answer identically to owed.m3b.electionguard.duplicate-member-does-not-reelect -- also verified against the guard-deleted build, where it likewise degrades to the en catalog. This is the spelling axis the two M5b defects were found on: a port that compared the later member's range case-sensitively, or that normalized ranges only at some later stage, would take a different path to the same election and this row is what would catch it."
+    }
+  ]
+}

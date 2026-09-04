@@ -1,0 +1,15 @@
+{
+  "id": "classpath-filenames-nine-letter-stem",
+  "description": "A valid en catalog plus an extensionless file whose stem is nine ASCII letters, one past LANGUAGE_TAG_PATTERN's 8-character subtag ceiling. The extensionless half of the length-boundary pair; the .json half throws on the identical stem.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "rawFiles": {
+    "aaaaaaaaa": "{\"Key.nine\":\"nine\"}"
+  }
+}

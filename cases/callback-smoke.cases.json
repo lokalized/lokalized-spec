@@ -1,0 +1,154 @@
+{
+  "formatVersion": 1,
+  "family": "callback-smoke",
+  "description": "Plan v7 section 8.3 fixture family 'callback-smoke'. Inputs only; the oracle emits expected.",
+  "cases": [
+    {
+      "id": "callback-smoke.resolver.raw-term-is-resolved",
+      "requirementIds": [],
+      "fixture": "callback-smoke-first-letter",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "nounTerm": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A raw string term reaches the resolver and its answer selects the branch. The resolverCalls channel pins the term and locale it was handed."
+    },
+    {
+      "id": "callback-smoke.resolver.raw-consonant-term",
+      "requirementIds": [],
+      "fixture": "callback-smoke-first-letter",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "nounTerm": "book"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The other branch, so the resolver's return value is proven to drive selection rather than a constant."
+    },
+    {
+      "id": "callback-smoke.resolver.tagged-value-bypasses-resolver",
+      "requirementIds": [],
+      "fixture": "callback-smoke-first-letter",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "nounTerm": {
+            "$lokalized": "language-form",
+            "axis": "phonetic",
+            "name": "PHONETIC_VOWEL"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Section 3.7: an explicitly tagged PHONETIC_* value bypasses the resolver entirely. The absence of a resolverCalls channel IS the assertion — the term 'book' would have given the other branch."
+    },
+    {
+      "id": "callback-smoke.resolver.tagged-consonant-bypasses-resolver",
+      "requirementIds": [],
+      "fixture": "callback-smoke-first-letter",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "nounTerm": {
+            "$lokalized": "language-form",
+            "axis": "phonetic",
+            "name": "PHONETIC_CONSONANT"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The bypass proven on the other branch too."
+    },
+    {
+      "id": "callback-smoke.resolver.missing-resolver-fails-lazily",
+      "requirementIds": [],
+      "fixture": "callback-smoke-no-resolver",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "nounTerm": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "No resolver configured. The default throws only when first reached, so this is a resolution failure at lookup rather than a construction error."
+    },
+    {
+      "id": "callback-smoke.resolver.tagged-value-needs-no-resolver",
+      "requirementIds": [],
+      "fixture": "callback-smoke-no-resolver",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "nounTerm": {
+            "$lokalized": "language-form",
+            "axis": "phonetic",
+            "name": "PHONETIC_VOWEL"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "With no resolver configured, a tagged value must still succeed — proving the fail-fast default is only reached on the raw-term path."
+    },
+    {
+      "id": "callback-smoke.resolver.null-return-is-rejected",
+      "requirementIds": [],
+      "fixture": "callback-smoke-returns-null",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "nounTerm": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A resolver returning null is an error, not a silent skip."
+    },
+    {
+      "id": "callback-smoke.resolver.exception-propagates",
+      "requirementIds": [],
+      "fixture": "callback-smoke-throws",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "nounTerm": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The resolver's own exception, recorded in both the resolverCalls channel and the failure cause."
+    },
+    {
+      "id": "callback-smoke.resolver.receives-donor-locale-not-requested",
+      "requirementIds": [],
+      "fixture": "callback-smoke-donor-locale",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "nounTerm": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "THE SHARP CASE: an en request served by the fr catalog. The rendered text names which locale the resolver was handed, so a port passing the requested locale instead of the supplying one fails visibly."
+    }
+  ]
+}

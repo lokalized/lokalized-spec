@@ -1,3 +1,8 @@
+Lokalized is Open Source Software released under the terms of the Apache 2.0 License.
+
+This repository includes generated data derived from Unicode CLDR data files,
+which are released under Unicode License v3. See THIRD-PARTY-NOTICES.md.
+
                                  Apache License
                            Version 2.0, January 2004
                         http://www.apache.org/licenses/

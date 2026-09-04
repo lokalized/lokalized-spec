@@ -1,0 +1,15 @@
+{
+  "id": "ingress-matrix-java-en-us-match-supplier-ranges",
+  "description": "Seed row 5 catalog, supplied match from the whole-list solver on header 'en-US'.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "localeMatchSupplier": {
+    "behavior": "match-ranges",
+    "ranges": "en-US"
+  },
+  "files": {
+    "en": {
+      "Checkout.Title": "Checkout"
+    }
+  }
+}

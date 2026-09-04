@@ -1,0 +1,70 @@
+{
+  "id": "generated-placeholders-late-binding",
+  "description": "Plan v7 section 8.3 generated-placeholder clause: dependencies discovered only after another placeholder resolves. A generated fragment's selected text and a language form's selected text are both rescanned for further generated placeholders, so only the branch that was actually chosen pulls its dependency into resolution.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Late bound fragment dependency": {
+        "translation": "Status: {{status}}",
+        "placeholders": {
+          "status": {
+            "translation": "idle",
+            "alternatives": [
+              {
+                "jobCount > 0": "running {{jobLabel}}"
+              }
+            ]
+          },
+          "jobLabel": {
+            "value": "jobCount",
+            "translations": {
+              "CARDINALITY_ONE": "one job",
+              "CARDINALITY_OTHER": "jobs"
+            }
+          }
+        }
+      },
+      "Unselected dependency stays unresolved": {
+        "translation": "Result: {{outcome}}",
+        "placeholders": {
+          "outcome": {
+            "translation": "pending",
+            "alternatives": [
+              {
+                "finished == 1": "done {{missingLabel}}"
+              }
+            ]
+          },
+          "missingLabel": {
+            "value": "neverSupplied",
+            "translations": {
+              "CARDINALITY_ONE": "item",
+              "CARDINALITY_OTHER": "items"
+            }
+          }
+        }
+      },
+      "Cardinality selected text carries a dependency": {
+        "translation": "{{shelf}}",
+        "placeholders": {
+          "shelf": {
+            "value": "bookCount",
+            "translations": {
+              "CARDINALITY_ONE": "a single book by {{author}}",
+              "CARDINALITY_OTHER": "{{bookCount}} books by {{author}}"
+            }
+          },
+          "author": {
+            "translation": "an unknown author",
+            "alternatives": [
+              {
+                "authorId == 7": "Ada Lovelace"
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

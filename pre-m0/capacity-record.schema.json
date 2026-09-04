@@ -1,0 +1,518 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lokalized.org/schemas/pre-m0/capacity-record.schema.json",
+  "title": "Lokalized JS pre-M0 capacity record",
+  "description": "Structural schema only. pre-m0/validate-artifacts.mjs is authoritative for exact artifact bindings, derivations, role identity, approval history, dates, and capacity-feasibility invariants.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "formatVersion",
+    "status",
+    "sourceCalibration",
+    "inventoryBasis",
+    "agentThroughput",
+    "humanAttention",
+    "m0Envelope",
+    "m2Envelope",
+    "tripwirePolicy",
+    "eventLog",
+    "approval",
+    "predecessorCapacitySha256",
+    "history",
+    "blockingReasons"
+  ],
+  "properties": {
+    "formatVersion": { "const": 1 },
+    "status": {
+      "enum": [
+        "blocked-pending-human-calibration-and-capacity",
+        "blocked-pending-human-calibration-and-inventory",
+        "approved-and-started-m0"
+      ]
+    },
+    "sourceCalibration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "requiredStatus"],
+      "properties": {
+        "path": { "$ref": "#/$defs/name" },
+        "sha256": { "$ref": "#/$defs/hash" },
+        "requiredStatus": { "const": "approved" }
+      }
+    },
+    "inventoryBasis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "sourcePlanSha256",
+        "anticipatedInitialSliceRecords",
+        "sourceInventorySha256",
+        "reviewAttestation"
+      ],
+      "properties": {
+        "status": { "$ref": "#/$defs/name" },
+        "sourcePlanSha256": { "$ref": "#/$defs/hash" },
+        "anticipatedInitialSliceRecords": { "type": "integer", "minimum": 1 },
+        "sourceInventorySha256": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/hash" }
+        },
+        "reviewAttestation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path", "sha256", "requiredStatus"],
+          "properties": {
+            "path": { "$ref": "#/$defs/name" },
+            "sha256": { "$ref": "#/$defs/hash" },
+            "requiredStatus": { "const": "human-approved" }
+          }
+        }
+      }
+    },
+    "agentThroughput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "minutesPerAcceptedRecord",
+        "contingencyFactor",
+        "initialSliceRecordCount",
+        "allowanceMinutes",
+        "classification"
+      ],
+      "properties": {
+        "minutesPerAcceptedRecord": { "$ref": "#/$defs/nullableNonnegative" },
+        "contingencyFactor": { "type": "number", "minimum": 1.5 },
+        "initialSliceRecordCount": { "$ref": "#/$defs/nullablePositiveInteger" },
+        "allowanceMinutes": { "$ref": "#/$defs/nullableNonnegative" },
+        "classification": { "const": "planning-only" }
+      }
+    },
+    "humanAttention": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "implementerMinutesPerAcceptedRecord",
+        "reviewerMinutesPerAcceptedRecord",
+        "decisionOwnerMinutesPerAcceptedRecord",
+        "fixedDecisionOwnerMinutes",
+        "schemaLinterToolingMinutes",
+        "schemaLinterToolingRole",
+        "contingencyFactor",
+        "initialSliceRecordCount",
+        "allowanceMinutes"
+      ],
+      "properties": {
+        "implementerMinutesPerAcceptedRecord": { "$ref": "#/$defs/nullableNonnegative" },
+        "reviewerMinutesPerAcceptedRecord": { "$ref": "#/$defs/nullableNonnegative" },
+        "decisionOwnerMinutesPerAcceptedRecord": { "$ref": "#/$defs/nullableNonnegative" },
+        "fixedDecisionOwnerMinutes": { "$ref": "#/$defs/nullableNonnegative" },
+        "schemaLinterToolingMinutes": { "$ref": "#/$defs/nullableNonnegative" },
+        "schemaLinterToolingRole": {
+          "type": ["string", "null"],
+          "enum": ["productionImplementer", "humanReviewer", "humanDecisionOwner", null]
+        },
+        "contingencyFactor": { "type": "number", "minimum": 1.5 },
+        "initialSliceRecordCount": { "$ref": "#/$defs/nullablePositiveInteger" },
+        "allowanceMinutes": { "$ref": "#/$defs/nullableNonnegative" }
+      }
+    },
+    "m0Envelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "targetDate",
+        "combinedHumanEffortCapHours",
+        "committedImplementerHoursPerWeek",
+        "committedReviewerHoursPerWeek",
+        "committedDecisionOwnerHoursPerWeek"
+      ],
+      "properties": {
+        "targetDate": {
+          "anyOf": [
+            { "type": "null" },
+            { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" }
+          ]
+        },
+        "combinedHumanEffortCapHours": { "$ref": "#/$defs/nullableNonnegative" },
+        "committedImplementerHoursPerWeek": { "$ref": "#/$defs/nullableNonnegative" },
+        "committedReviewerHoursPerWeek": { "$ref": "#/$defs/nullableNonnegative" },
+        "committedDecisionOwnerHoursPerWeek": { "$ref": "#/$defs/nullableNonnegative" }
+      }
+    },
+    "m2Envelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["elapsedDurationDays", "combinedHumanEffortCapHours"],
+      "properties": {
+        "elapsedDurationDays": { "$ref": "#/$defs/nullablePositiveInteger" },
+        "combinedHumanEffortCapHours": { "$ref": "#/$defs/nullableNonnegative" }
+      }
+    },
+    "tripwirePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["checkpoint", "stop", "m0RequiredArtifacts", "m2RequiredArtifacts"],
+      "properties": {
+        "checkpoint": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["triggerRule", "elapsedFraction", "effortFraction", "requiredApprovers", "allowedPauseOutcomes"],
+          "properties": {
+            "triggerRule": { "const": "earlier-of-elapsed-or-effort" },
+            "elapsedFraction": { "const": 0.5 },
+            "effortFraction": { "const": 0.5 },
+            "requiredApprovers": {
+              "const": ["humanReviewer", "humanDecisionOwner"]
+            },
+            "allowedPauseOutcomes": {
+              "const": ["stop", "claim-cut-migration", "in-cap-remediation", "new-envelope"]
+            }
+          }
+        },
+        "stop": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["triggerRule", "elapsedFraction", "effortFraction", "continuationRequires"],
+          "properties": {
+            "triggerRule": { "const": "either-date-or-effort-cap" },
+            "elapsedFraction": { "const": 1 },
+            "effortFraction": { "const": 1 },
+            "continuationRequires": {
+              "const": ["new-envelope", "claim-cuts-or-funded-capacity"]
+            }
+          }
+        },
+        "m0RequiredArtifacts": {
+          "const": [
+            "corrected-direct-locale-contract",
+            "executable-registry-linter-result",
+            "reproducible-lossless-candidate-results"
+          ]
+        },
+        "m2RequiredArtifacts": {
+          "const": [
+            "node-root-core-result",
+            "exact-floor-browser-result",
+            "m1-m3a-evidence-closure"
+          ]
+        }
+      }
+    },
+    "eventLog": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/capacityEvent" }
+    },
+    "approval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "planSha256",
+        "rolesSha256",
+        "inventoryReviewSha256",
+        "calibrationSha256",
+        "profileRegistrySha256",
+        "bootstrapRequirementsSha256",
+        "selectionRecordSha256",
+        "approvalCommit",
+        "approvedAt",
+        "startEvent",
+        "ledgerSource",
+        "countedWorkCategories",
+        "otherM0WorkItems",
+        "registryHumanAllowanceHours",
+        "otherM0WorkAllowanceHours",
+        "thresholdCalculationHours",
+        "humanReviewer",
+        "humanDecisionOwner"
+      ],
+      "properties": {
+        "planSha256": { "$ref": "#/$defs/nullableHash" },
+        "rolesSha256": { "$ref": "#/$defs/nullableHash" },
+        "inventoryReviewSha256": { "$ref": "#/$defs/nullableHash" },
+        "calibrationSha256": { "$ref": "#/$defs/nullableHash" },
+        "profileRegistrySha256": { "$ref": "#/$defs/nullableHash" },
+        "bootstrapRequirementsSha256": { "$ref": "#/$defs/nullableHash" },
+        "selectionRecordSha256": { "$ref": "#/$defs/nullableHash" },
+        "approvalCommit": {
+          "anyOf": [
+            { "type": "null" },
+            { "type": "string", "pattern": "^[0-9a-f]{40}([0-9a-f]{24})?$" }
+          ]
+        },
+        "approvedAt": { "$ref": "#/$defs/nullableName" },
+        "startEvent": { "$ref": "#/$defs/nullableName" },
+        "ledgerSource": { "$ref": "#/$defs/nullableName" },
+        "countedWorkCategories": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/name" }
+        },
+        "otherM0WorkItems": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/otherM0WorkItem" }
+        },
+        "registryHumanAllowanceHours": { "$ref": "#/$defs/nullableNonnegative" },
+        "otherM0WorkAllowanceHours": { "$ref": "#/$defs/nullableNonnegative" },
+        "thresholdCalculationHours": { "$ref": "#/$defs/nullableNonnegative" },
+        "humanReviewer": { "$ref": "#/$defs/nullableName" },
+        "humanDecisionOwner": { "$ref": "#/$defs/nullableName" }
+      }
+    },
+    "predecessorCapacitySha256": { "$ref": "#/$defs/nullableHash" },
+    "history": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/capacityRevision" }
+    },
+    "blockingReasons": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/name" }
+    }
+  },
+  "$defs": {
+    "hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "nullableHash": {
+      "anyOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/hash" }
+      ]
+    },
+    "artifactBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": { "$ref": "#/$defs/name" },
+        "sha256": { "$ref": "#/$defs/hash" }
+      }
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": ".*\\S.*"
+    },
+    "nullableName": {
+      "anyOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/name" }
+      ]
+    },
+    "nullableNonnegative": {
+      "anyOf": [
+        { "type": "null" },
+        { "type": "number", "minimum": 0 }
+      ]
+    },
+    "nullablePositiveInteger": {
+      "anyOf": [
+        { "type": "null" },
+        { "type": "integer", "minimum": 1 }
+      ]
+    },
+    "capacityEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "gate",
+        "kind",
+        "recordedAt",
+        "cumulativeEffortHours",
+        "artifacts",
+        "humanReviewer",
+        "humanDecisionOwner",
+        "outcome",
+        "details",
+        "recordSha256"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/name" },
+        "gate": { "enum": ["M0", "M2"] },
+        "kind": { "enum": ["start", "checkpoint", "pause", "stop", "rebaseline", "toll", "exit"] },
+        "recordedAt": { "$ref": "#/$defs/name" },
+        "cumulativeEffortHours": { "type": "number", "minimum": 0 },
+        "artifacts": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/capacityEventArtifact" }
+        },
+        "humanReviewer": { "$ref": "#/$defs/name" },
+        "humanDecisionOwner": { "$ref": "#/$defs/name" },
+        "outcome": {
+          "enum": ["start", "pass", "stop", "claim-cut-migration", "in-cap-remediation", "new-envelope", "approved-toll", "complete"]
+        },
+        "details": { "$ref": "#/$defs/capacityEventDetails" },
+        "recordSha256": {
+          "description": "SHA-256 of the UTF-8 JCS encoding of this event with recordSha256 omitted.",
+          "$ref": "#/$defs/hash"
+        }
+      }
+    },
+    "capacityRevision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["capacitySha256", "commit"],
+      "properties": {
+        "capacitySha256": { "$ref": "#/$defs/hash" },
+        "commit": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}([0-9a-f]{24})?$"
+        }
+      }
+    },
+    "otherM0WorkItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["category", "responsibleRole", "estimatedHours", "basis", "evidence"],
+      "properties": {
+        "category": { "$ref": "#/$defs/name" },
+        "responsibleRole": {
+          "enum": ["productionImplementer", "humanReviewer", "humanDecisionOwner"]
+        },
+        "estimatedHours": { "type": "number", "exclusiveMinimum": 0 },
+        "basis": { "$ref": "#/$defs/name" },
+        "evidence": { "$ref": "#/$defs/artifactBinding" }
+      }
+    },
+    "capacityEventArtifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "sha256"],
+      "properties": {
+        "label": {
+          "enum": [
+            "plan",
+            "roles",
+            "inventory-review",
+            "calibration",
+            "profile-registry",
+            "bootstrap-requirements",
+            "selection-record",
+            "corrected-direct-locale-contract",
+            "executable-registry-linter-result",
+            "reproducible-lossless-candidate-results",
+            "node-root-core-result",
+            "exact-floor-browser-result",
+            "m1-m3a-evidence-closure",
+            "external-block-evidence",
+            "m2-envelope-decision",
+            "gate-closure"
+          ]
+        },
+        "sha256": { "$ref": "#/$defs/hash" }
+      }
+    },
+    "capacityEventDetails": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type"],
+          "properties": { "type": { "const": "m0-start" } }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "m0ExitedAt",
+            "confirmedElapsedDurationDays",
+            "confirmedCombinedHumanEffortCapHours",
+            "absoluteDeadline",
+            "envelopeDecisionSha256"
+          ],
+          "properties": {
+            "type": { "const": "m2-start" },
+            "m0ExitedAt": { "$ref": "#/$defs/name" },
+            "confirmedElapsedDurationDays": { "type": "integer", "minimum": 1 },
+            "confirmedCombinedHumanEffortCapHours": { "type": "number", "exclusiveMinimum": 0 },
+            "absoluteDeadline": { "$ref": "#/$defs/name" },
+            "envelopeDecisionSha256": { "$ref": "#/$defs/hash" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type"],
+          "properties": { "type": { "const": "checkpoint-pass" } }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "reason"],
+          "properties": {
+            "type": { "const": "stop" },
+            "reason": { "$ref": "#/$defs/name" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "reason", "profileRegistrySha256", "requirementsSha256", "selectionRecordSha256"],
+          "properties": {
+            "type": { "const": "claim-cut-migration" },
+            "reason": { "$ref": "#/$defs/name" },
+            "profileRegistrySha256": { "$ref": "#/$defs/hash" },
+            "requirementsSha256": { "$ref": "#/$defs/hash" },
+            "selectionRecordSha256": { "$ref": "#/$defs/hash" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "remainingWork", "owner", "deadline", "reviewerApprovalSha256"],
+          "properties": {
+            "type": { "const": "in-cap-remediation" },
+            "remainingWork": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": { "$ref": "#/$defs/name" }
+            },
+            "owner": { "$ref": "#/$defs/name" },
+            "deadline": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+            "reviewerApprovalSha256": { "$ref": "#/$defs/hash" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "predecessorCapacitySha256", "continuationBasis", "identifiedAdditionalCapacity", "selectionRecordSha256", "fundedCapacityEvidenceSha256"],
+          "properties": {
+            "type": { "const": "new-envelope" },
+            "predecessorCapacitySha256": { "$ref": "#/$defs/hash" },
+            "continuationBasis": { "enum": ["claim-cuts", "funded-additional-capacity"] },
+            "identifiedAdditionalCapacity": { "$ref": "#/$defs/name" },
+            "selectionRecordSha256": { "$ref": "#/$defs/nullableHash" },
+            "fundedCapacityEvidenceSha256": { "$ref": "#/$defs/nullableHash" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "reason", "start", "end", "elapsedSeconds"],
+          "properties": {
+            "type": { "const": "external-block-toll" },
+            "reason": { "$ref": "#/$defs/name" },
+            "start": { "$ref": "#/$defs/name" },
+            "end": { "$ref": "#/$defs/name" },
+            "elapsedSeconds": { "type": "number", "exclusiveMinimum": 0 }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "closureSha256"],
+          "properties": {
+            "type": { "const": "gate-exit" },
+            "closureSha256": { "$ref": "#/$defs/hash" }
+          }
+        }
+      ]
+    }
+  }
+}

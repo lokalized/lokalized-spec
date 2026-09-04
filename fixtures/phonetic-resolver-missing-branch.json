@@ -1,0 +1,28 @@
+{
+  "id": "phonetic-resolver-missing-branch",
+  "description": "A constant resolver returning PHONETIC_S_IMPURE against a definition that declares only VOWEL and CONSONANT, so the returned constant has no branch. Also serves the tagged half: an explicitly tagged constant with no branch fails identically without any resolver call.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "phoneticResolver": {
+    "behavior": "constant",
+    "phonetic": "PHONETIC_S_IMPURE"
+  },
+  "files": {
+    "en": {
+      "Article": {
+        "translation": "[{{a}}]",
+        "placeholders": {
+          "a": {
+            "value": "term",
+            "translations": {
+              "PHONETIC_VOWEL": "an",
+              "PHONETIC_CONSONANT": "a"
+            }
+          }
+        }
+      }
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

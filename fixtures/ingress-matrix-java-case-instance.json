@@ -1,0 +1,23 @@
+{
+  "id": "ingress-matrix-java-case-instance",
+  "description": "Case arm with the mixed-case spelling ZH-hant as the INSTANCE locale.",
+  "fallbackLocale": "en",
+  "instanceLocale": "ZH-hant",
+  "tiebreakers": {
+    "zh": [
+      "zh",
+      "zh-Hant"
+    ]
+  },
+  "files": {
+    "zh": {
+      "Checkout.Title": "zh"
+    },
+    "zh-Hant": {
+      "Checkout.Title": "zh-Hant"
+    },
+    "en": {
+      "Checkout.Title": "en"
+    }
+  }
+}

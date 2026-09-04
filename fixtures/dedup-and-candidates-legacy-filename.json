@@ -1,0 +1,14 @@
+{
+  "id": "dedup-and-candidates-legacy-filename",
+  "description": "Distinct-spelling filename that is NOT distinct as a locale. LocalizedStringLoader.java:1260-1269 turns a filename into Locale.forLanguageTag(tag) and keys the catalog by that Locale; Locale.forLanguageTag('iw') and Locale.forLanguageTag('he') are the SAME value, whose toLanguageTag() is 'he' (verified against the pinned JDK). So the file written as 'iw' surfaces as loaded locale he, and both spellings of the request reach it. Contrast with dedup-and-candidates-equivalent-am-first, where the equivalent tags stay separate because their Locale values differ.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "iw": {
+      "Legacy.OnlyInHebrew": "iw file: only here"
+    },
+    "en": {
+      "Legacy.OnlyInEn": "en: only here"
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "id": "runtime-limits-numeric-defaults",
+  "description": "Plan v7 section 8.3: the numeric limits at their DEFAULTS, with no override, so a port cannot ship different default values unnoticed. Absolute scale 1024 versus 1025 is expressed compactly as 1E+1024 and 1E+1025 (BigDecimal scale -1024 and -1025). Visible decimal places 1024/1025 and compact exponent 64/65 straddle DEFAULT_MAXIMUM_VISIBLE_DECIMAL_PLACES and DEFAULT_MAXIMUM_COMPACT_EXPONENT; note that those two exceed-side values are rejected by the PluralOperands.Builder itself, which seeds its own limits from TranslationRuntimeLimits.defaults(), so they surface as a throw from operand construction rather than a resolution failure. That is the library's real behavior and is what the oracle records.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Counted": {
+        "translation": "{{label}}",
+        "placeholders": {
+          "label": {
+            "value": "n",
+            "translations": {
+              "CARDINALITY_ONE": "one",
+              "CARDINALITY_OTHER": "other"
+            }
+          }
+        }
+      }
+    }
+  }
+}

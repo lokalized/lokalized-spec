@@ -1,0 +1,144 @@
+{
+  "id": "malformed-structure-range-shape",
+  "description": "Violations of the range object inside a language-form placeholder: not an object, a missing end, a non-string start, a non-string end, an explicitly null start, an endpoint that is not a legal identifier, and an unknown member -- plus a well-formed range as the control. The range shape has its own member whitelist and its own error messages.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": {
+        "translation": "I read {{books}}",
+        "placeholders": {
+          "books": {
+            "range": "lo..hi",
+            "translations": {
+              "CARDINALITY_ONE": "book",
+              "CARDINALITY_OTHER": "books"
+            }
+          }
+        }
+      }
+    },
+    "fr": {
+      "Key.A": {
+        "translation": "I read {{books}}",
+        "placeholders": {
+          "books": {
+            "range": {
+              "start": "lo"
+            },
+            "translations": {
+              "CARDINALITY_ONE": "book",
+              "CARDINALITY_OTHER": "books"
+            }
+          }
+        }
+      }
+    },
+    "de": {
+      "Key.A": {
+        "translation": "I read {{books}}",
+        "placeholders": {
+          "books": {
+            "range": {
+              "start": 1,
+              "end": "hi"
+            },
+            "translations": {
+              "CARDINALITY_ONE": "book",
+              "CARDINALITY_OTHER": "books"
+            }
+          }
+        }
+      }
+    },
+    "pt": {
+      "Key.A": {
+        "translation": "I read {{books}}",
+        "placeholders": {
+          "books": {
+            "range": {
+              "start": "lo",
+              "end": 2
+            },
+            "translations": {
+              "CARDINALITY_ONE": "book",
+              "CARDINALITY_OTHER": "books"
+            }
+          }
+        }
+      }
+    },
+    "es": {
+      "Key.A": {
+        "translation": "I read {{books}}",
+        "placeholders": {
+          "books": {
+            "range": {
+              "start": null,
+              "end": "hi"
+            },
+            "translations": {
+              "CARDINALITY_ONE": "book",
+              "CARDINALITY_OTHER": "books"
+            }
+          }
+        }
+      }
+    },
+    "ru": {
+      "Key.A": {
+        "translation": "I read {{books}}",
+        "placeholders": {
+          "books": {
+            "range": {
+              "start": "1lo",
+              "end": "hi"
+            },
+            "translations": {
+              "CARDINALITY_ONE": "book",
+              "CARDINALITY_OTHER": "books"
+            }
+          }
+        }
+      }
+    },
+    "it": {
+      "Key.A": {
+        "translation": "I read {{books}}",
+        "placeholders": {
+          "books": {
+            "range": {
+              "start": "lo",
+              "end": "hi",
+              "step": "1"
+            },
+            "translations": {
+              "CARDINALITY_ONE": "book",
+              "CARDINALITY_OTHER": "books"
+            }
+          }
+        }
+      }
+    },
+    "nl": {
+      "Key.A": {
+        "translation": "I read {{books}}",
+        "placeholders": {
+          "books": {
+            "range": {
+              "start": "lo",
+              "end": "hi"
+            },
+            "translations": {
+              "CARDINALITY_ONE": "book",
+              "CARDINALITY_OTHER": "books"
+            }
+          }
+        }
+      }
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

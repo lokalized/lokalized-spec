@@ -1,0 +1,36 @@
+{
+  "id": "custom-policy-instance-continue-for-locales",
+  "description": "A caller-supplied policy installed at the INSTANCE, not per call, so DefaultStrings.java:685-686 (options.getTranslationFallbackPolicy().orElse(getTranslationFallbackPolicy())) is exercised in both directions for a policy that is not one of the three library singletons. Requesting es-AR against loaded es-AR, es-419, es with fallback en yields the four-candidate chain [es-AR, es-419, es, en], verified by execution. The instance policy continues only for es-AR and es-419, so it halts at es and forfeits the en catalog that holds Inst.OnlyInFallback unless a per-call policy replaces it. Inst.InEveryCatalog is the no-consultation control and Inst.MissingEverywhere exists nowhere. Three loaded locales share the primary language es, so tiebreakers lists that exact permutation.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "es": [
+      "es-AR",
+      "es-419",
+      "es"
+    ]
+  },
+  "translationFallbackPolicy": {
+    "behavior": "continue-for-locales",
+    "locales": [
+      "es-AR",
+      "es-419"
+    ]
+  },
+  "files": {
+    "es-AR": {
+      "Inst.InEveryCatalog": "es-AR: in every catalog"
+    },
+    "es-419": {
+      "Inst.InEveryCatalog": "es-419: in every catalog"
+    },
+    "es": {
+      "Inst.InEveryCatalog": "es: in every catalog"
+    },
+    "en": {
+      "Inst.InEveryCatalog": "en: in every catalog",
+      "Inst.OnlyInFallback": "en: only the fallback catalog has this"
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

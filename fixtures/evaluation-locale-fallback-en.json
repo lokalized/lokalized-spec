@@ -1,0 +1,55 @@
+{
+  "id": "evaluation-locale-fallback-en",
+  "description": "English is the fallback donor for pl, ru, ar, fr and pt requests, and its Items.Fallback entry declares ONLY CARDINALITY_ONE and CARDINALITY_OTHER. That makes the fixture an asymmetric detector: under correct behavior every count resolves under English rules to ONE or OTHER and succeeds, while an implementation that evaluated under the REQUESTING locale would select FEW / MANY / ZERO / TWO, find no branch, raise the 'Missing Cardinality translation' IllegalStateException, and -- because the default TranslationFallbackPolicy does not fall past a RESOLUTION_FAILURE -- return the key. Rank.Fallback declares all six ordinality constants so English's ONE/TWO/FEW ordinal categories (which pl, ru, ar and pt do not have at all) are observable through a fallback as text rather than as a throw.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Locale.Marker": "en",
+      "Items.Fallback": {
+        "translation": "{{noun}}",
+        "commentary": "Deliberately only the two categories English actually has, which is what a real shipped English catalog looks like.",
+        "placeholders": {
+          "noun": {
+            "value": "itemCount",
+            "translations": {
+              "CARDINALITY_ONE": "en:ONE",
+              "CARDINALITY_OTHER": "en:OTHER"
+            }
+          }
+        }
+      },
+      "Rank.Fallback": {
+        "translation": "{{suffix}}",
+        "placeholders": {
+          "suffix": {
+            "value": "rank",
+            "translations": {
+              "ORDINALITY_ZERO": "en:ORD_ZERO",
+              "ORDINALITY_ONE": "en:ORD_ONE",
+              "ORDINALITY_TWO": "en:ORD_TWO",
+              "ORDINALITY_FEW": "en:ORD_FEW",
+              "ORDINALITY_MANY": "en:ORD_MANY",
+              "ORDINALITY_OTHER": "en:ORD_OTHER"
+            }
+          }
+        }
+      }
+    },
+    "pl": {
+      "Locale.Marker": "pl"
+    },
+    "ru": {
+      "Locale.Marker": "ru"
+    },
+    "ar": {
+      "Locale.Marker": "ar"
+    },
+    "fr": {
+      "Locale.Marker": "fr"
+    },
+    "pt": {
+      "Locale.Marker": "pt"
+    }
+  }
+}

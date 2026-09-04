@@ -1,0 +1,24 @@
+{
+  "id": "browser-chooser-en-regional",
+  "description": "Supported {en-US, en-GB} with NO bare en source, tiebreaker en:[en-US, en-GB], and a French fallback. Every en-flavored request therefore has to be resolved heuristically among two same-language regional sources, which is the configuration in which tiebreaker order, q=0 exclusion, and wildcard fallback preference each become observable. The fallback is deliberately fr, so a wildcard returning 'the first supported locale' (en-GB in sorted order) differs from one returning the configured fallback.",
+  "fallbackLocale": "fr",
+  "tiebreakers": {
+    "en": [
+      "en-US",
+      "en-GB"
+    ]
+  },
+  "files": {
+    "en-US": {
+      "Checkout.Title": "Checkout"
+    },
+    "en-GB": {
+      "Checkout.Title": "Chequeout"
+    },
+    "fr": {
+      "Checkout.Title": "Paiement"
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

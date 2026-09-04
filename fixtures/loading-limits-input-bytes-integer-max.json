@@ -1,0 +1,14 @@
+{
+  "id": "loading-limits-input-bytes-integer-max",
+  "description": "The same two-byte file with maximumInputBytes at Integer.MAX_VALUE (2147483647). The per-resource byte guard excludes the sentinel as well as 0, because the reader allocates limit+1; this is the second, non-obvious arm of the same refusal, and it is expressible under the corpus schema as it stands today.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumInputBytes": 2147483647
+  },
+  "loadOnly": true,
+  "files": {},
+  "rawFiles": {
+    "en": "{}"
+  }
+}

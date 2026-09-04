@@ -1,0 +1,11 @@
+{
+  "id": "loader-smoke-duplicate-members",
+  "description": "Duplicate JSON member names in one object. JSON.stringify cannot produce this, so the file is written verbatim. Which value wins (or whether it is rejected) is exactly what section 8.3 asks to pin.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {},
+  "rawFiles": {
+    "en": "{\"Key.A\":\"first\",\"Key.A\":\"second\",\"Key.B\":\"only\"}"
+  }
+}

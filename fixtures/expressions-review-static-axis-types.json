@@ -1,0 +1,105 @@
+{
+  "id": "expressions-review-static-axis-types",
+  "description": "Adversarial-review addendum to expressions-owed. The M3b owed cases closed expressionValueTypeForToken's per-axis arms (ExpressionEvaluator:1893/1895/1897/1901/1903) by putting a CASE_*, DEFINITENESS_*, CLASSIFIER_*, CLUSIVITY_* and ANIMACY_* literal into an expression for the first time -- but every one of those expressions is 'variable == CONSTANT', whose static validation succeeds whatever type the constant is given, because canBeEqualExpressionValue returns true the moment either side is UNKNOWN_VARIABLE. A port that typed those constants as UNKNOWN_VARIABLE at load would execute the same arm and produce byte-identical output on every corpus case. These files put each constant where its STATIC type decides load success: paired with a NUMBER under an operator that refuses the pairing, so the diagnostic names the type. FORMALITY, ORDINALITY and PHONETIC are included on the same argument even though their arms were already covered. loadOnly because every file here is meant to fail at load.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": {
+        "translation": "t",
+        "alternatives": [
+          {
+            "1 == CASE_GENITIVE": {
+              "translation": "none"
+            }
+          }
+        ]
+      }
+    },
+    "fr": {
+      "Key.A": {
+        "translation": "t",
+        "alternatives": [
+          {
+            "1 == DEFINITENESS_DEFINITE": {
+              "translation": "none"
+            }
+          }
+        ]
+      }
+    },
+    "de": {
+      "Key.A": {
+        "translation": "t",
+        "alternatives": [
+          {
+            "1 == CLASSIFIER_PERSON": {
+              "translation": "none"
+            }
+          }
+        ]
+      }
+    },
+    "es": {
+      "Key.A": {
+        "translation": "t",
+        "alternatives": [
+          {
+            "1 == CLUSIVITY_INCLUSIVE": {
+              "translation": "none"
+            }
+          }
+        ]
+      }
+    },
+    "it": {
+      "Key.A": {
+        "translation": "t",
+        "alternatives": [
+          {
+            "1 == ANIMACY_ANIMATE": {
+              "translation": "none"
+            }
+          }
+        ]
+      }
+    },
+    "nl": {
+      "Key.A": {
+        "translation": "t",
+        "alternatives": [
+          {
+            "1 == FORMALITY_HONORIFIC": {
+              "translation": "none"
+            }
+          }
+        ]
+      }
+    },
+    "pt": {
+      "Key.A": {
+        "translation": "t",
+        "alternatives": [
+          {
+            "1 == PHONETIC_VOWEL": {
+              "translation": "none"
+            }
+          }
+        ]
+      }
+    },
+    "ru": {
+      "Key.A": {
+        "translation": "t",
+        "alternatives": [
+          {
+            "ORDINALITY_TWO < 1": {
+              "translation": "none"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

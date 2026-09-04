@@ -1,0 +1,63 @@
+{
+  "id": "resolver-locale-no-matching-alternative",
+  "description": "ADDED IN REVIEW. A candidate that fails ALTERNATIVE SELECTION rather than placeholder resolution. en-001's Article has no top-level translation, only a single alternative guarded by 'count == 1', and the phonetic placeholder is declared alongside it. When the predicate holds the placeholder is evaluated and the resolver is handed en-001; when it does not, the candidate ends in NO_MATCHING_ALTERNATIVE and the resolver is never reached at that candidate at all — the two cases differ only in the value of count, which makes the absence falsifiable rather than vacuous. Under any-failure the walk then reaches en. Tiebreakers are mandatory: en and en-001 share a language code.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "en": [
+      "en",
+      "en-001"
+    ]
+  },
+  "translationFallbackPolicy": "any-failure",
+  "phoneticResolver": {
+    "behavior": "by-locale",
+    "mapping": {
+      "en": "PHONETIC_VOWEL",
+      "en-001": "PHONETIC_CONSONANT",
+      "en-AU": "PHONETIC_H_SILENT"
+    },
+    "default": "PHONETIC_OTHER"
+  },
+  "files": {
+    "en-001": {
+      "Locale.Marker": "en-001",
+      "Article": {
+        "placeholders": {
+          "article": {
+            "value": "nounTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "got:en",
+              "PHONETIC_CONSONANT": "got:en-001",
+              "PHONETIC_H_SILENT": "got:en-AU",
+              "PHONETIC_OTHER": "got:unmapped"
+            }
+          }
+        },
+        "alternatives": [
+          {
+            "count == 1": {
+              "translation": "{{article}}"
+            }
+          }
+        ]
+      }
+    },
+    "en": {
+      "Locale.Marker": "en",
+      "Article": {
+        "translation": "{{article}}",
+        "placeholders": {
+          "article": {
+            "value": "nounTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "got:en",
+              "PHONETIC_CONSONANT": "got:en-001",
+              "PHONETIC_H_SILENT": "got:en-AU",
+              "PHONETIC_OTHER": "got:unmapped"
+            }
+          }
+        }
+      }
+    }
+  }
+}

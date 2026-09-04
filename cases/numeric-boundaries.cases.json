@@ -1,0 +1,1301 @@
+{
+  "formatVersion": 1,
+  "family": "numeric-boundaries",
+  "description": "Plan v7 section 8.3 fixture family 'numeric-boundaries'. Inputs only; the oracle emits expected.",
+  "skipped": [
+    {
+      "what": "A separate `numeric-boundaries-no-catalog` fixture for the classifier cases.",
+      "why": "REMOVED as a duplicate. /Users/Shared/ai-shared/lokalized/lokalized-spec/fixtures/no-catalog.json already exists with identical content and near-identical wording, and the repo's own language-forms family already uses it for exactly this purpose. All 57 classifier cases now name `no-catalog`. It is emitted above with its existing description verbatim plus an explicit `instanceLocale: \"en\"`, which is the value build.mjs already injects, so re-writing the file produces a byte-identical corpus; if the parent prefers, leave fixtures/no-catalog.json untouched and simply do not re-create it."
+    },
+    {
+      "what": "`numeric-boundaries.getresult.ru.two-to-the-53-plus-one-as-double-selects-the-same-form-as-two-to-the-53`.",
+      "why": "DROPPED: the case could not exercise its claim. Russian cardinals read i % 10, and both 9007199254740992 (i % 10 = 2) and 9007199254740993 (i % 10 = 3) fall in `few`, so the binary64 collapse the case existed to observe produces the SAME translation either way -- the oracle returns \"ru-few\" whether or not a port loses precision. Replaced by the 10^18 + 1 long/double pair on the same key, where the collapse moves the answer from \"ru-one\" to \"ru-many\"."
+    },
+    {
+      "what": "`numeric-boundaries.trailing-zeros.si.decimal-zero-point-one-zero-zero-is-other` (a third Sinhala trailing-zero row at 0.100).",
+      "why": "Authored and executed during review, then dropped: Sinhala returns `other` for both 0.10 (f = 10) and 0.100 (f = 100), so the third row fails and passes in lockstep with the second and adds no discriminating power. The lv 0.1 / 0.11 / 0.110 trio already supplies three DIFFERENT categories separated by trailing zeros alone."
+    },
+    {
+      "what": "`supportedCardinalitiesForLocale` for an Indic locale, to prove the family really has only one/other.",
+      "why": "The `supported*ForLocale` entry points belong to the 8.3 clause on \"the public cardinal/ordinal/range classifier functions\", which the existing language-forms family already covers with pl cardinalities and en ordinalities. Duplicating them here would inflate this family without adding a proposition it owns."
+    },
+    {
+      "what": "A `1` / `1.0` / `1.00` trio in English or Russian that separates v = 1 from v = 2 by category.",
+      "why": "No CLDR 48.2 cardinal or ordinal rule distinguishes v = 1 from v = 2 at the value 1: Latvian is the only rule set reading `v = 2` / `v != 2`, and its v = 2 clauses are conjoined with f % 10 / f % 100, which are 0 for both 1.0 and 1.00. The trio IS authored, at 0.1 / 0.11 / 0.110 in lv (v = 1, 2, 3, giving one / zero / other) and at 0.1 / 0.10 in si (f = 1 vs f = 10), which is where the distinction is observable. The plain decimal 1 and 1.00 rows in en are kept as the v = 0 vs v != 0 anchors; the 1.0 row is already in the corpus."
+    },
+    {
+      "what": "Number-precision and absolute-scale limit boundaries (DEFAULT_MAXIMUM_NUMBER_PRECISION = 1024, DEFAULT_MAXIMUM_ABSOLUTE_NUMBER_SCALE = 1024) reached with 1024- and 1025-digit bigints/decimals.",
+      "why": "These are genuinely 'beyond safe-integer boundary' values, but section 8.3 assigns limit boundaries to the duplicate-JSON / malformed-UTF-8 / limit-boundaries family, and a 1025-character literal per case would bloat this file for behavior that family owns. The compact-exponent limit at 64/65 IS authored here because the compact exponent is named by this clause directly, and it uses the defaults rather than a limit override."
+    },
+    {
+      "what": "Exercising the same magnitudes with a raised TranslationRuntimeLimits so that compact exponents above 64 or precisions above 1024 succeed.",
+      "why": "Runtime limit overrides are outside the oracle's supported surface; the fixture shape has no place to declare them and VectorOracle always constructs PluralOperands with TranslationRuntimeLimits.defaults()."
+    },
+    {
+      "what": "cardinalityForRange at safe-integer magnitudes.",
+      "why": "Cardinality.forRange takes two already-classified Cardinality forms, not numbers, so no numeric magnitude can reach it. The range API cannot express this clause."
+    },
+    {
+      "what": "A JS-side assertion that 9007199254740993 and 9007199254740992 differ.",
+      "why": "Not a Java-observable behavior. The corpus pins Java's answers for both, which is what forces the JS port's numeric representation; the port's own type choice is an implementation concern, not a vector."
+    },
+    {
+      "what": "`requirementIds: []` on each case.",
+      "why": "NOT skippable -- it is REQUIRED by /Users/Shared/ai-shared/lokalized/lokalized-spec/schema/behavioral-vectors.schema.json (`cases.items.required` lists it, and `additionalProperties` is false), and every existing case file carries it. This task's output schema has no field for it, so the parent MUST add `\"requirementIds\": []` to each of the 78 cases when writing cases/numeric-boundaries.cases.json, alongside the file-level `formatVersion`, `family`, `description`, and `requirementIdsDeferred` keys the other case files carry. Without it the corpus fails schema validation."
+    }
+  ],
+  "cases": [
+    {
+      "id": "numeric-boundaries.ordinal.en.max-safe-integer-is-ordinal-one",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "ordinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "long",
+          "value": "9007199254740991"
+        },
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "9007199254740991 is Number.MAX_SAFE_INTEGER. English ordinals key on n % 10 and n % 100, so this value, 2^53 and 2^53+1 land in three different categories -- the only place in the corpus where the three safe-integer boundary values are separable by category alone. Verified against the oracle: ONE. Without it a JS port could round every boundary value to the same double and still look correct."
+    },
+    {
+      "id": "numeric-boundaries.ordinal.en.two-to-the-53-is-ordinal-two",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "ordinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "long",
+          "value": "9007199254740992"
+        },
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "2^53 is the first integer whose successor a binary64 cannot represent. It is itself exact, so this case (TWO) is the control against which the inexact 2^53+1 cases are read."
+    },
+    {
+      "id": "numeric-boundaries.ordinal.en.two-to-the-53-plus-one-as-long-is-ordinal-few",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "ordinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "long",
+          "value": "9007199254740993"
+        },
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "2^53+1 has no binary64 representation. Carried as an exact integral value its last digit is 3, so the oracle records FEW. A JS port that routes plural input through `number` would see ...992 and pick the n % 10 = 2 category instead; this case is the tripwire that forces bigint/decimal on the classifier path."
+    },
+    {
+      "id": "numeric-boundaries.ordinal.en.two-to-the-53-plus-one-as-double-collapses",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "ordinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "double",
+          "value": "9007199254740993"
+        },
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same digits delivered as a binary64. NumberUtils.decimalForDouble routes through Double.toString, which has already collapsed the value to 2^53, so the oracle records TWO -- matching the ...992 case, not the ...993 case. Together with the long case this pins that the TYPE of the caller's value, not its text, decides the operands; a JS port with a single numeric type cannot reproduce both rows."
+    },
+    {
+      "id": "numeric-boundaries.ordinal.en.two-to-the-53-plus-one-as-bigint-matches-long",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "ordinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "bigint",
+          "value": "9007199254740993"
+        },
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "BigInteger and long reach identical operands for the same integer even though NumberUtils.toBigDecimal builds them by different routes (BigDecimal.valueOf(long).stripTrailingZeros vs new BigDecimal(BigInteger)). Recorded FEW, same as the long row. Without this, a port could implement the exact-integer path with a subtly different digit extraction and never be caught."
+    },
+    {
+      "id": "numeric-boundaries.ordinal.en.negative-two-to-the-53-plus-one-classifies-by-absolute-value",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "ordinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "long",
+          "value": "-9007199254740993"
+        },
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Number.MIN_SAFE_INTEGER territory. PluralOperands.Builder.build calls abs() on the value while retaining sourceNumber for expression comparison, so the recorded category is FEW -- the same as the positive twin -- instead of falling through to `other`."
+    },
+    {
+      "id": "numeric-boundaries.ordinal.en.beyond-long-range-bigint-hundreds-exclusion-applies",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "ordinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "bigint",
+          "value": "9223372036854775811"
+        },
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "9223372036854775811 is above Long.MAX_VALUE (9223372036854775807), so only an arbitrary-precision integer can carry it. Its last two digits are 11, which English ordinals explicitly exclude from `one`, and the oracle records OTHER. Pins that the n % 100 exclusion is still evaluated exactly at a magnitude no 64-bit integer holds."
+    },
+    {
+      "id": "numeric-boundaries.ordinal.en.beyond-long-range-bigint-hundreds-exclusion-does-not-apply",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "ordinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "bigint",
+          "value": "9223372036854775821"
+        },
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The partner of the ...811 case: same magnitude, last two digits 21, so the n % 100 exclusion does not fire and the oracle records ONE. A port computing n % 100 in floating point would produce the same answer for both of these values and fail exactly one of the pair."
+    },
+    {
+      "id": "numeric-boundaries.cardinal.ru.max-safe-integer-is-one",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "long",
+          "value": "9007199254740991"
+        },
+        "locale": "ru"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Russian cardinals read i % 10 and i % 100 with v = 0. MAX_SAFE_INTEGER ends in 91, so it takes ONE at a magnitude where a naive implementation would assume plurality. Pins that i is derived from the exact integer, not from a rounded double."
+    },
+    {
+      "id": "numeric-boundaries.cardinal.ru.two-to-the-53-is-few",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "long",
+          "value": "9007199254740992"
+        },
+        "locale": "ru"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The immediate successor of MAX_SAFE_INTEGER takes a different Russian category (FEW, via i % 10 = 2). Adjacent integers straddling the safe-integer boundary must not collapse to one answer."
+    },
+    {
+      "id": "numeric-boundaries.cardinal.ru.ten-to-the-17-is-many",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "long",
+          "value": "100000000000000000"
+        },
+        "locale": "ru"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "10^17 with i % 10 = 0, recorded MANY. Anchors the first of the three magnitudes named by the clause in a locale whose rules actually read the last digit of i."
+    },
+    {
+      "id": "numeric-boundaries.cardinal.ru.ten-to-the-18-is-many",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "long",
+          "value": "1000000000000000000"
+        },
+        "locale": "ru"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The control for the 10^18 + 1 cases: MANY. Without the pair, the +1 case proves nothing about precision loss."
+    },
+    {
+      "id": "numeric-boundaries.cardinal.ru.ten-to-the-18-plus-one-is-one",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "long",
+          "value": "1000000000000000001"
+        },
+        "locale": "ru"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "10^18 + 1 is not representable as a binary64: 1e18 + 1 === 1e18 in JavaScript. Its last digit 1 puts it in ONE while 10^18 itself is MANY, so a port that loses the trailing unit changes the visible category. This is the 10^18 magnitude the clause names, made observable."
+    },
+    {
+      "id": "numeric-boundaries.cardinal.ru.ten-to-the-18-plus-one-as-double-collapses-to-many",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "double",
+          "value": "1000000000000000001"
+        },
+        "locale": "ru"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The mirror of the long 10^18 + 1 case: the same digits as a binary64 collapse to exactly 10^18, so i % 10 becomes 0 and the oracle records MANY. The long/double pair pins the collapse in BOTH directions -- a port that kept full precision for a JS number would report one here, and a port that lost it would report many for the long row. Added in review; the family previously pinned the collapse only in English ordinals."
+    },
+    {
+      "id": "numeric-boundaries.cardinal.ru.ten-to-the-20-is-many",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "bigint",
+          "value": "100000000000000000000"
+        },
+        "locale": "ru"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "10^20 exceeds Long.MAX_VALUE and must travel as an arbitrary-precision integer. Recorded MANY; control for the 10^20 + 1 case."
+    },
+    {
+      "id": "numeric-boundaries.cardinal.ru.ten-to-the-20-plus-one-is-one",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "bigint",
+          "value": "100000000000000000001"
+        },
+        "locale": "ru"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "10^20 + 1 is indistinguishable from 10^20 in binary64 and does not fit a 64-bit integer either, yet the oracle records ONE against MANY for 10^20. The strongest single argument in this family for a bigint-backed operand pipeline: the category flips on a unit a `number` cannot hold."
+    },
+    {
+      "id": "numeric-boundaries.cardinal.fr.ten-to-the-17-is-many",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "long",
+          "value": "100000000000000000"
+        },
+        "locale": "fr"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "French `many` requires e = 0 and i != 0 and i % 1000000 = 0 and v = 0. 10^17 satisfies it (MANY). Exercises an exact modulus against a million at a magnitude beyond binary64's integer precision, in a rule shape unlike Russian's last-digit tests."
+    },
+    {
+      "id": "numeric-boundaries.cardinal.fr.ten-to-the-18-is-many",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "long",
+          "value": "1000000000000000000"
+        },
+        "locale": "fr"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The 10^18 magnitude through the French million-modulus rule (MANY). Kept alongside the 10^17 row because the clause names all three magnitudes explicitly; on its own it is a near-duplicate of 10^17."
+    },
+    {
+      "id": "numeric-boundaries.cardinal.fr.ten-to-the-20-is-many",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "bigint",
+          "value": "100000000000000000000"
+        },
+        "locale": "fr"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The 10^20 magnitude through the French million-modulus rule, beyond 64-bit integer range (MANY). Control for the 10^20 + 1 case."
+    },
+    {
+      "id": "numeric-boundaries.cardinal.fr.ten-to-the-20-plus-one-is-not-many",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "bigint",
+          "value": "100000000000000000001"
+        },
+        "locale": "fr"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "10^20 + 1 is not divisible by a million, so the oracle records OTHER, but 1e20 + 1 === 1e20 in JavaScript and a `number`-backed port would report many. Pins the French rule's exact remainder arithmetic above the safe-integer boundary."
+    },
+    {
+      "id": "numeric-boundaries.indic.hi.ten-to-the-17-is-other",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "long",
+          "value": "100000000000000000"
+        },
+        "locale": "hi"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The clause names the Indic `i = 0 or n = 1` family at 10^17 specifically. Hindi has only `one` and `other`, so this pins that an 18-digit integer neither has a zero integer part nor equals one (OTHER) -- the trap being an implementation that overflows or truncates i and accidentally produces 0. Meaningful only in combination with the 0.5 and 1.0 rows below, which show the rule is not a constant `other`."
+    },
+    {
+      "id": "numeric-boundaries.indic.bn.ten-to-the-18-is-other",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "long",
+          "value": "1000000000000000000"
+        },
+        "locale": "bn"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Bengali shares the `i = 0 or n = 1` rule with Hindi. Repeating the family across locales at 10^18 pins that the rule group is shared data, not per-locale code."
+    },
+    {
+      "id": "numeric-boundaries.indic.gu.ten-to-the-20-is-other",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "bigint",
+          "value": "100000000000000000000"
+        },
+        "locale": "gu"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Gujarati at 10^20, the third magnitude named by the clause, beyond 64-bit integer range. A port that coerces to `number` before computing i still gets a finite value here, so the real risk this catches is an i derived by string length or by a 64-bit cast."
+    },
+    {
+      "id": "numeric-boundaries.indic.hi.ten-to-the-17-as-double-matches-the-integer-path",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "double",
+          "value": "1e17"
+        },
+        "locale": "hi"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "1e17 as a binary64 is exact and reaches BigDecimal through Double.toString, which yields the negative-scale form 1.0E17 and is then stripped to 1E+17. Recorded OTHER, matching the integer path. A port that read the mantissa instead of the expanded value would find n = 1 and report `one`, so this is discriminating despite Hindi's small category set."
+    },
+    {
+      "id": "numeric-boundaries.indic.hi.fraction-below-one-is-one-through-the-i-equals-zero-branch",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "decimal",
+          "value": "0.5"
+        },
+        "locale": "hi"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Without this case every Indic case in the family returns `other` and none of them proves the rule is `i = 0 OR n = 1` rather than just `n = 1`. 0.5 has a zero integer part, so it takes ONE in Hindi while English calls it `other`. This is the branch the clause is actually about."
+    },
+    {
+      "id": "numeric-boundaries.indic.hi.one-point-zero-is-one-through-the-n-equals-one-branch",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "decimal",
+          "value": "1.0"
+        },
+        "locale": "hi"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The Indic `n = 1` comparison is numeric, not textual: CldrPluralRules compares operands with BigDecimal compareTo, so 1.0 equals 1 even though v = 1, and the oracle records ONE. English calls the identical value `other` because its rule additionally demands v = 0. Pins that a port must compare plural operand values by numeric equality while still tracking visible decimal places separately."
+    },
+    {
+      "id": "numeric-boundaries.indic.hi.compact-mantissa-one-at-exponent-seventeen-is-other",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForOperands",
+      "input": {
+        "value": {
+          "$lokalized": "plural-operands",
+          "value": "1",
+          "compactExponent": 17
+        },
+        "locale": "hi"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A compact display of `1` with exponent 17 means 10^17, not 1. PluralOperands' constructor calls movePointRight(compactExponent) BEFORE deriving n/i/v/w/f/t, so the oracle records OTHER. A port that derived n from the mantissa first would find n = 1 and report `one`. This makes that mistake visible in the family the clause names, at the magnitude the clause names."
+    },
+    {
+      "id": "numeric-boundaries.indic.hi.compact-mantissa-one-at-exponent-twenty-is-other",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForOperands",
+      "input": {
+        "value": {
+          "$lokalized": "plural-operands",
+          "value": "1",
+          "compactExponent": 20
+        },
+        "locale": "hi"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same mantissa-shift trap at 10^20, where the shifted value also exceeds binary64 integer precision. Pins that the shift is performed in exact decimal arithmetic rather than by multiplying a double."
+    },
+    {
+      "id": "numeric-boundaries.compact.en.mantissa-one-at-exponent-seventeen-is-other",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForOperands",
+      "input": {
+        "value": {
+          "$lokalized": "plural-operands",
+          "value": "1",
+          "compactExponent": 17
+        },
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "English `one` requires i = 1 and v = 0. The unshifted mantissa satisfies both, the shifted value does not, and the oracle records OTHER. Paired with the Hindi case this proves the shift happens before the operands are derived, in a locale whose rule is sensitive to i rather than to n."
+    },
+    {
+      "id": "numeric-boundaries.compact.en.mantissa-shift-consumes-visible-decimals-to-produce-one",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForOperands",
+      "input": {
+        "value": {
+          "$lokalized": "plural-operands",
+          "value": "0.001",
+          "compactExponent": 3
+        },
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The mirror image: mantissa 0.001 shifted right by 3 becomes exactly 1 with v = 0, so English reports ONE. Unshifted it would be i = 0, v = 3 and `other`. Together with the previous case, the two directions pin the shift; either alone could be satisfied by ignoring the exponent in one direction."
+    },
+    {
+      "id": "numeric-boundaries.compact.en.ordinal-mantissa-one-at-exponent-zero-is-one",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "ordinalityForOperands",
+      "input": {
+        "value": {
+          "$lokalized": "plural-operands",
+          "value": "1"
+        },
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The control for the ordinal compact-exponent pair: explicit operands with no exponent give n = 1 and English ordinal ONE. Added in review -- nothing else in the corpus reaches Ordinality.forOperands with caller-supplied operands, so the ordinal operand entry point was previously untested."
+    },
+    {
+      "id": "numeric-boundaries.compact.en.ordinal-mantissa-one-at-exponent-one-is-other",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "ordinalityForOperands",
+      "input": {
+        "value": {
+          "$lokalized": "plural-operands",
+          "value": "1",
+          "compactExponent": 1
+        },
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same mantissa shifted right by one gives n = 10, whose last digit is 0, so the recorded English ordinal category is OTHER. Pins that the compact shift is applied on the ORDINAL operand path too -- a port that honored the exponent only for cardinals would return one here and pass every other compact case in the family."
+    },
+    {
+      "id": "numeric-boundaries.compact.fr.exponent-five-is-not-many",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForOperands",
+      "input": {
+        "value": {
+          "$lokalized": "plural-operands",
+          "value": "1",
+          "compactExponent": 5
+        },
+        "locale": "fr"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "French `many` is `e = 0 and i != 0 and i % 1000000 = 0 and v = 0 or e != 0..5`. Exponent 5 is the last value inside the range and the shifted i is 100000, so neither disjunct fires and the oracle records OTHER. Pins the inclusive upper bound of a range condition read directly off the compact exponent."
+    },
+    {
+      "id": "numeric-boundaries.compact.fr.exponent-six-is-many",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForOperands",
+      "input": {
+        "value": {
+          "$lokalized": "plural-operands",
+          "value": "1",
+          "compactExponent": 6
+        },
+        "locale": "fr"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Exponent 6 is the first value outside 0..5, so MANY fires purely because of e -- with the same mantissa as the exponent-5 case. Pins that c and e equal the compact exponent and are themselves rule inputs, not just bookkeeping."
+    },
+    {
+      "id": "numeric-boundaries.compact.fr.exponent-zero-with-million-mantissa-is-many",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForOperands",
+      "input": {
+        "value": {
+          "$lokalized": "plural-operands",
+          "value": "1000000"
+        },
+        "locale": "fr"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The other disjunct of the French `many` rule: e = 0, i != 0, i % 1000000 = 0, v = 0. Reaching MANY by a different route than the exponent cases proves the port implements both disjuncts rather than short-circuiting on e."
+    },
+    {
+      "id": "numeric-boundaries.compact.ru.exponent-shift-leaves-visible-decimals",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForOperands",
+      "input": {
+        "value": {
+          "$lokalized": "plural-operands",
+          "value": "1.25",
+          "compactExponent": 1
+        },
+        "locale": "ru"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Shifting 1.25 right by one leaves 12.5 with v = 1. Every Russian cardinal rule demands v = 0, so the leftover visible decimal is directly observable as OTHER. A port that discarded the fraction during the shift would produce i = 12 and report `few`. Pins that the shift subtracts from the scale rather than truncating."
+    },
+    {
+      "id": "numeric-boundaries.compact.ru.exponent-shift-consumes-visible-decimals-exactly",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForOperands",
+      "input": {
+        "value": {
+          "$lokalized": "plural-operands",
+          "value": "1.25",
+          "compactExponent": 2
+        },
+        "locale": "ru"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Shifting 1.25 right by two consumes the fraction exactly: n = 125, v = 0, i % 10 = 5, so the oracle records MANY. The partner of the exponent-1 case; one shift step changes the answer."
+    },
+    {
+      "id": "numeric-boundaries.compact.ru.mantissa-one-at-exponent-twenty-is-many",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForOperands",
+      "input": {
+        "value": {
+          "$lokalized": "plural-operands",
+          "value": "1",
+          "compactExponent": 20
+        },
+        "locale": "ru"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A compact exponent that pushes the value past binary64 integer precision, read by a rule that inspects i % 10 (MANY). Ties the compact-exponent path to the 10^20 magnitude the clause names."
+    },
+    {
+      "id": "numeric-boundaries.compact.ru.exponent-at-the-default-maximum-of-64",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForOperands",
+      "input": {
+        "value": {
+          "$lokalized": "plural-operands",
+          "value": "1",
+          "compactExponent": 64
+        },
+        "locale": "ru"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "64 is TranslationRuntimeLimits.DEFAULT_MAXIMUM_COMPACT_EXPONENT (verified in source), so this is the largest exponent accepted without overriding limits -- no runtime-limit override is used. The oracle records MANY, pinning that the boundary is inclusive and that a 65-digit materialized value classifies normally."
+    },
+    {
+      "id": "numeric-boundaries.compact.exponent-above-the-default-maximum-throws",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForOperands",
+      "input": {
+        "value": {
+          "$lokalized": "plural-operands",
+          "value": "1",
+          "compactExponent": 65
+        },
+        "locale": "ru"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "One past the default maximum. The oracle records IllegalArgumentException(\"Compact exponent 65 exceeds the maximum of 64\"), so a JS port cannot silently accept an unbounded exponent and materialize an arbitrarily large decimal."
+    },
+    {
+      "id": "numeric-boundaries.compact.negative-exponent-throws",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForOperands",
+      "input": {
+        "value": {
+          "$lokalized": "plural-operands",
+          "value": "1",
+          "compactExponent": -1
+        },
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Compact exponents are non-negative. The oracle records IllegalArgumentException(\"Compact exponent must be non-negative, but was -1\"), pinning rejection rather than a silent left shift that would quietly turn a compact display into a fraction."
+    },
+    {
+      "id": "numeric-boundaries.trailing-zeros.en.decimal-one-is-one",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "decimal",
+          "value": "1"
+        },
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The `1` of the clause's 1 / 1.0 / 1.00 trio, carried as an exact decimal with scale 0 (ONE). Distinct from the corpus's existing integer-1 row because NumberUtils.numberOfDecimalPlaces branches on `instanceof BigDecimal`: this exercises the scale-preserving branch, the integer row the stripTrailingZeros branch."
+    },
+    {
+      "id": "numeric-boundaries.trailing-zeros.en.decimal-one-point-zero-zero-is-other",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "decimal",
+          "value": "1.00"
+        },
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The `1.00` of the trio. English demands v = 0, so two trailing zeros defeat `one` exactly as one trailing zero does (OTHER). Pins that v counts written places, not significant ones. The `1.0` row of the trio is already in the corpus as classifier.cardinal.trailing-zero-decimal-one-point-zero-is-other-in-en."
+    },
+    {
+      "id": "numeric-boundaries.trailing-zeros.en.double-one-point-zero-strips-to-v-zero",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "double",
+          "value": "1.0"
+        },
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The sharpest trailing-zero case in the family: the SAME text `1.0` gives v = 1 as a tagged decimal (already in the corpus, `other`) and v = 0 as a double, because non-BigDecimal numbers are stripTrailingZeros'd in NumberUtils. Recorded ONE. A JS port with one numeric type would give both rows the same answer and fail one of them."
+    },
+    {
+      "id": "numeric-boundaries.trailing-zeros.lv.decimal-zero-point-one-is-one",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "decimal",
+          "value": "0.1"
+        },
+        "locale": "lv"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Latvian is the only CLDR 48.2 rule set reading `v = 2` and `v != 2`, so it is the only place where 0.1, 0.11 and 0.110 are separable by category. This is the v = 1 row: `v != 2 and f % 10 = 1` fires, giving ONE."
+    },
+    {
+      "id": "numeric-boundaries.trailing-zeros.lv.decimal-zero-point-one-one-is-zero",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "decimal",
+          "value": "0.11"
+        },
+        "locale": "lv"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The v = 2 row: Latvian `zero` fires on `v = 2 and f % 100 = 11..19`, giving ZERO. Distinguishes exactly two visible decimals from any other count."
+    },
+    {
+      "id": "numeric-boundaries.trailing-zeros.lv.decimal-zero-point-one-one-zero-is-not-zero",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "decimal",
+          "value": "0.110"
+        },
+        "locale": "lv"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The v = 3 row (OTHER), differing from the previous case by a single trailing zero that changes both v and f. Three categories -- one, zero, other -- separated by trailing zeros alone. This is the case that proves 1.0 vs 1.00 style distinctions are observable behavior rather than bookkeeping; without it a port could normalize decimals and still pass everything else in the family."
+    },
+    {
+      "id": "numeric-boundaries.trailing-zeros.lv.double-zero-point-one-one-zero-strips-back-to-v-two",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "double",
+          "value": "0.110"
+        },
+        "locale": "lv"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same digits as the previous case delivered as a double, which Double.toString normalizes to 0.11 and therefore back to v = 2, recording ZERO instead of OTHER. Pins the type-dependent trailing-zero contract at the one locale where v = 2 is observable."
+    },
+    {
+      "id": "numeric-boundaries.trailing-zeros.si.decimal-zero-point-one-is-one-through-f-equals-one",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "decimal",
+          "value": "0.1"
+        },
+        "locale": "si"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Sinhala `one` includes `i = 0 and f = 1`. f is the fraction digits read as an integer INCLUDING trailing zeros, so 0.1 gives f = 1 and the oracle records ONE."
+    },
+    {
+      "id": "numeric-boundaries.trailing-zeros.si.decimal-zero-point-one-zero-is-other-because-f-is-ten",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "decimal",
+          "value": "0.10"
+        },
+        "locale": "si"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "One trailing zero turns f from 1 into 10 and the category from ONE into OTHER. A port that computed f from the stripped value -- which is what w and t use -- would produce `one` here and never be caught by any locale that only reads v."
+    },
+    {
+      "id": "numeric-boundaries.trailing-zeros.en.explicit-visible-decimal-places-override-decimal-scale",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "decimal",
+          "value": "1.0"
+        },
+        "visibleDecimalPlaces": 0,
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "An explicit visible-decimal-places count overrides the BigDecimal's own scale (PluralOperands.Builder.build sets effectiveScale = visibleDecimalPlaces), so 1.0 becomes v = 0 and English records ONE where the same value without the override records `other`. Pins that the caller's display intent wins over the value's scale."
+    },
+    {
+      "id": "numeric-boundaries.trailing-zeros.en.explicit-visible-decimal-places-add-trailing-zeros",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "integer",
+          "value": "1"
+        },
+        "visibleDecimalPlaces": 2,
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The other direction: an exact integer displayed with two decimal places has v = 2 and is no longer English `one` (OTHER). Pins that visible places are added to the materialized value, not merely reported alongside it."
+    },
+    {
+      "id": "numeric-boundaries.trailing-zeros.reducing-visible-decimal-places-throws-instead-of-rounding",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "decimal",
+          "value": "1.5"
+        },
+        "visibleDecimalPlaces": 0,
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Plan section 3.7: reducing visible places throws rather than rounding. The oracle records ArithmeticException(\"Rounding necessary\") from setScale(RoundingMode.UNNECESSARY). A silent round to 2 would change the category and would be invisible in every non-throwing case."
+    },
+    {
+      "id": "numeric-boundaries.trailing-zeros.lv.explicit-visible-decimal-places-manufacture-a-trailing-zero",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForOperands",
+      "input": {
+        "value": {
+          "$lokalized": "plural-operands",
+          "value": "0.1",
+          "visibleDecimalPlaces": 2
+        },
+        "locale": "lv"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "0.1 displayed with two decimal places is 0.10: v = 2 and f = 10, which the oracle records as OTHER where the same number at its natural scale is ONE. Pins the operand builder's explicit-visible-places path against the natural-scale path in the one locale that can see the difference."
+    },
+    {
+      "id": "numeric-boundaries.overflow.double-ten-to-the-400-overflows-to-infinity-and-throws",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "double",
+          "value": "1e400"
+        },
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "1e400 overflows binary64 to Infinity in Java exactly as it does in JavaScript, and NumberUtils.decimalForDouble then throws IllegalArgumentException(\"Number must be finite, but was Infinity\"). Plan section 3.7 requires non-finite numbers to fail when used numerically; a port that parsed the literal exactly instead of overflowing would not throw."
+    },
+    {
+      "id": "numeric-boundaries.overflow.double-infinity-throws",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "double",
+          "value": "Infinity"
+        },
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "An explicitly infinite double, the upper end of the magnitude axis this family covers. Reaches the same throw as the 1e400 row, which is the point: the wire input differs (an infinity token rather than an overflowing literal) but the rejection must be identical."
+    },
+    {
+      "id": "numeric-boundaries.overflow.double-nan-throws",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "double",
+          "value": "NaN"
+        },
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "NaN is the other non-finite binary64 value a JS caller can produce by arithmetic on out-of-range magnitudes. The oracle records IllegalArgumentException(\"Number must be finite, but was NaN\"), so the port rejects it at the same point rather than propagating a NaN through the operand derivation."
+    },
+    {
+      "id": "numeric-boundaries.getresult.en.exact-equality-matches-two-to-the-53-plus-one-as-long",
+      "requirementIds": [],
+      "fixture": "numeric-boundaries-catalog",
+      "operation": "getResult",
+      "input": {
+        "key": "Order {{orderId}}",
+        "locale": "en",
+        "placeholders": {
+          "orderId": {
+            "$lokalized": "long",
+            "value": "9007199254740993"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "An alternative expression comparing against the literal 9007199254740993. Expression literals become exact BigDecimals, so an exact integral placeholder matches and the oracle records \"order-two-to-the-53-plus-one\". Pins the safe-integer boundary through the alternative-selection path, not only through the classifier."
+    },
+    {
+      "id": "numeric-boundaries.getresult.en.exact-equality-misses-two-to-the-53-plus-one-as-double",
+      "requirementIds": [],
+      "fixture": "numeric-boundaries-catalog",
+      "operation": "getResult",
+      "input": {
+        "key": "Order {{orderId}}",
+        "locale": "en",
+        "placeholders": {
+          "orderId": {
+            "$lokalized": "double",
+            "value": "9007199254740993"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same digits as a double collapse to 2^53 and do NOT match the ...993 literal, so the base translation \"order-default\" is returned. This pair is the reason the JS port cannot use `number` for expression operands: a single numeric type makes these two calls indistinguishable, yet they must return different translations."
+    },
+    {
+      "id": "numeric-boundaries.getresult.en.exact-equality-matches-ten-to-the-20-plus-one-as-bigint",
+      "requirementIds": [],
+      "fixture": "numeric-boundaries-catalog",
+      "operation": "getResult",
+      "input": {
+        "key": "Order {{orderId}}",
+        "locale": "en",
+        "placeholders": {
+          "orderId": {
+            "$lokalized": "bigint",
+            "value": "100000000000000000001"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A 21-digit literal compared against an arbitrary-precision placeholder, matching \"order-ten-to-the-20-plus-one\". Pins that numeric literals in alternatives are parsed as exact decimals with no 64-bit or binary64 intermediate, at the 10^20 magnitude the clause names."
+    },
+    {
+      "id": "numeric-boundaries.getresult.en.exact-equality-misses-ten-to-the-20-as-bigint",
+      "requirementIds": [],
+      "fixture": "numeric-boundaries-catalog",
+      "operation": "getResult",
+      "input": {
+        "key": "Order {{orderId}}",
+        "locale": "en",
+        "placeholders": {
+          "orderId": {
+            "$lokalized": "bigint",
+            "value": "100000000000000000000"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The control for the 10^20 + 1 alternative: one unit lower and no alternative matches, returning \"order-default\". Without it the matching case does not prove exactness."
+    },
+    {
+      "id": "numeric-boundaries.getresult.ru.ten-to-the-20-selects-the-many-form",
+      "requirementIds": [],
+      "fixture": "numeric-boundaries-catalog",
+      "operation": "getResult",
+      "input": {
+        "key": "{{itemCount}} counted",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "bigint",
+            "value": "100000000000000000000"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same 10^20 classification as the classifier case, but reached through generated-placeholder resolution inside DefaultStrings (\"ru-many\"). Pins that the translation path builds plural operands from the raw placeholder value rather than from an already-stringified number."
+    },
+    {
+      "id": "numeric-boundaries.getresult.ru.ten-to-the-20-plus-one-selects-the-one-form",
+      "requirementIds": [],
+      "fixture": "numeric-boundaries-catalog",
+      "operation": "getResult",
+      "input": {
+        "key": "{{itemCount}} counted",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "bigint",
+            "value": "100000000000000000001"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The category flips to `one` on a unit that binary64 cannot hold, and the flip is visible in the returned translation (\"ru-one\" against \"ru-many\"). This is the end-to-end statement of the whole family."
+    },
+    {
+      "id": "numeric-boundaries.getresult.ru.ten-to-the-18-plus-one-as-long-selects-the-one-form",
+      "requirementIds": [],
+      "fixture": "numeric-boundaries-catalog",
+      "operation": "getResult",
+      "input": {
+        "key": "{{itemCount}} counted",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "long",
+            "value": "1000000000000000001"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The exact 10^18 + 1 through generated-placeholder resolution, returning \"ru-one\". Partner of the double case; together they are the only rows where losing one unit at the 10^18 magnitude changes a returned Russian translation."
+    },
+    {
+      "id": "numeric-boundaries.getresult.ru.ten-to-the-18-plus-one-as-double-selects-the-many-form",
+      "requirementIds": [],
+      "fixture": "numeric-boundaries-catalog",
+      "operation": "getResult",
+      "input": {
+        "key": "{{itemCount}} counted",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "double",
+            "value": "1000000000000000001"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same digits as a double collapse to 10^18 and select \"ru-many\" instead of \"ru-one\". Added in review to replace a 2^53 + 1 Russian double case that could not work: Russian assigns both 2^53 and 2^53 + 1 to `few`, so that collapse was unobservable and the case proved nothing. At 10^18 the collapse is visible in the returned translation."
+    },
+    {
+      "id": "numeric-boundaries.getresult.hi.ten-to-the-20-selects-the-other-form",
+      "requirementIds": [],
+      "fixture": "numeric-boundaries-indic",
+      "operation": "getResult",
+      "input": {
+        "key": "{{itemCount}} counted",
+        "locale": "hi",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "bigint",
+            "value": "100000000000000000000"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The Indic `i = 0 or n = 1` family at 10^20 through the translation path (\"hi-other\"). On its own a port that silently defaulted to `other` when it could not classify would be indistinguishable here -- which is why the 0.5 and 1.0 companion cases exist in the same fixture."
+    },
+    {
+      "id": "numeric-boundaries.getresult.hi.fraction-below-one-selects-the-one-form",
+      "requirementIds": [],
+      "fixture": "numeric-boundaries-indic",
+      "operation": "getResult",
+      "input": {
+        "key": "{{itemCount}} counted",
+        "locale": "hi",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "decimal",
+            "value": "0.5"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The `i = 0` branch through the translation path: Hindi selects \"hi-one\" for a value below one, where English selects its `other` form. This is what makes the Indic getResult cases meaningful rather than a uniform `other`."
+    },
+    {
+      "id": "numeric-boundaries.getresult.hi.decimal-one-point-zero-selects-the-one-form",
+      "requirementIds": [],
+      "fixture": "numeric-boundaries-indic",
+      "operation": "getResult",
+      "input": {
+        "key": "{{itemCount}} counted",
+        "locale": "hi",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "decimal",
+            "value": "1.0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The `n = 1` branch through the translation path, returning \"hi-one\". Added in review: the identical tagged decimal 1.0 returns \"en-other\" in the catalog fixture, so this is the only place in the family where one wire value produces two different translations in two locales -- the numeric-equality-versus-visible-places contract stated end to end."
+    },
+    {
+      "id": "numeric-boundaries.getresult.bn.ten-to-the-17-selects-the-other-form",
+      "requirementIds": [],
+      "fixture": "numeric-boundaries-indic",
+      "operation": "getResult",
+      "input": {
+        "key": "{{itemCount}} counted",
+        "locale": "bn",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "long",
+            "value": "100000000000000000"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The 10^17 magnitude the clause names, in the third Indic locale, through the translation path (\"bn-other\"). Added in review: without it the fixture's bn catalog is never selected by any case, so the fixture claimed hi/bn/gu coverage it did not have, and 10^17 was absent from the Indic translation path."
+    },
+    {
+      "id": "numeric-boundaries.getresult.gu.ten-to-the-18-selects-the-other-form",
+      "requirementIds": [],
+      "fixture": "numeric-boundaries-indic",
+      "operation": "getResult",
+      "input": {
+        "key": "{{itemCount}} counted",
+        "locale": "gu",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "long",
+            "value": "1000000000000000000"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The 10^18 magnitude in a second Indic locale through the translation path (\"gu-other\"), proving the rule group is shared data rather than reimplemented per locale."
+    },
+    {
+      "id": "numeric-boundaries.getresult.fr.compact-exponent-six-selects-the-many-form",
+      "requirementIds": [],
+      "fixture": "numeric-boundaries-catalog",
+      "operation": "getResult",
+      "input": {
+        "key": "{{itemCount}} counted",
+        "locale": "fr",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "plural-operands",
+            "value": "1",
+            "compactExponent": 6
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A compact-decimal placeholder reaching the generated-placeholder resolver. DefaultStrings.cardinalityForValue passes a PluralOperands straight to Cardinality.forOperands, and French `many` fires solely because e = 6, so the oracle records \"fr-many\". Pins that the caller's operands survive intact instead of being re-derived from a number."
+    },
+    {
+      "id": "numeric-boundaries.getresult.fr.compact-exponent-five-selects-the-other-form",
+      "requirementIds": [],
+      "fixture": "numeric-boundaries-catalog",
+      "operation": "getResult",
+      "input": {
+        "key": "{{itemCount}} counted",
+        "locale": "fr",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "plural-operands",
+            "value": "1",
+            "compactExponent": 5
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The partner of the exponent-6 case, differing only in the compact exponent and returning \"fr-other\". Without the pair, a port that dropped the exponent entirely could still pass the exponent-6 row by coincidence."
+    },
+    {
+      "id": "numeric-boundaries.getresult.en.decimal-one-point-zero-selects-the-other-form",
+      "requirementIds": [],
+      "fixture": "numeric-boundaries-catalog",
+      "operation": "getResult",
+      "input": {
+        "key": "{{itemCount}} counted",
+        "locale": "en",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "decimal",
+            "value": "1.0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Trailing zeros through the translation path: an exact decimal with one visible place is not English `one`, so \"en-other\" is returned. Pins that the tagged-decimal wire shape survives DefaultStrings rather than being coerced on the way in."
+    },
+    {
+      "id": "numeric-boundaries.getresult.en.double-one-point-zero-selects-the-one-form",
+      "requirementIds": [],
+      "fixture": "numeric-boundaries-catalog",
+      "operation": "getResult",
+      "input": {
+        "key": "{{itemCount}} counted",
+        "locale": "en",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "double",
+            "value": "1.0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same text as a double normalizes to v = 0 and selects \"en-one\". The pair makes the trailing-zero type contract observable in the returned translation, which is the only channel a consumer of the library actually sees."
+    },
+    {
+      "id": "numeric-boundaries.getresult.en.ordinal-two-to-the-53-plus-one-as-long-selects-the-few-form",
+      "requirementIds": [],
+      "fixture": "numeric-boundaries-catalog",
+      "operation": "getResult",
+      "input": {
+        "key": "{{position}} place",
+        "locale": "en",
+        "placeholders": {
+          "position": {
+            "$lokalized": "long",
+            "value": "9007199254740993"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "2^53 + 1 delivered exactly to an ordinality-driven generated placeholder, returning \"en-ordinal-few\". Verified that DefaultStrings.ordinalityForValue is reached: the placeholder's translations map carries ORDINALITY_* keys, which is what selects the ordinal axis. Paired with the double case, this is where losing one unit at the safe-integer boundary changes a returned TRANSLATION rather than a classifier return value."
+    },
+    {
+      "id": "numeric-boundaries.getresult.en.ordinal-two-to-the-53-plus-one-as-double-selects-the-two-form",
+      "requirementIds": [],
+      "fixture": "numeric-boundaries-catalog",
+      "operation": "getResult",
+      "input": {
+        "key": "{{position}} place",
+        "locale": "en",
+        "placeholders": {
+          "position": {
+            "$lokalized": "double",
+            "value": "9007199254740993"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same digits as a binary64 collapse to 2^53 and select \"en-ordinal-two\" instead. A JS port that stores placeholder numbers as `number` returns the wrong sentence to a user here; this is the ordinal-path counterpart of the Order-alternative pair, and the only such pair on the generated-placeholder path."
+    },
+    {
+      "id": "numeric-boundaries.getresult.en.ordinal-two-to-the-53-selects-the-two-form",
+      "requirementIds": [],
+      "fixture": "numeric-boundaries-catalog",
+      "operation": "getResult",
+      "input": {
+        "key": "{{position}} place",
+        "locale": "en",
+        "placeholders": {
+          "position": {
+            "$lokalized": "long",
+            "value": "9007199254740992"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The control that identifies which form the collapsed double landed on: 2^53 exactly, also \"en-ordinal-two\". Without it the double case only shows a different answer, not that it is 2^53's answer."
+    },
+    {
+      "id": "numeric-boundaries.getresult.en.ordinal-ten-to-the-20-plus-one-as-bigint-selects-the-one-form",
+      "requirementIds": [],
+      "fixture": "numeric-boundaries-catalog",
+      "operation": "getResult",
+      "input": {
+        "key": "{{position}} place",
+        "locale": "en",
+        "placeholders": {
+          "position": {
+            "$lokalized": "bigint",
+            "value": "100000000000000000001"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The 10^20 magnitude through the ordinal translation path, at a value that fits neither a 64-bit integer nor a binary64, returning \"en-ordinal-one\". Pins that the ordinal resolver accepts arbitrary-precision integers rather than narrowing them."
+    }
+  ]
+}

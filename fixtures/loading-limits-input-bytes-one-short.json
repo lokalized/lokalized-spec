@@ -1,0 +1,14 @@
+{
+  "id": "loading-limits-input-bytes-one-short",
+  "description": "The same verbatim 13-byte catalog loaded with maximumInputBytes at 12. Also the fixture behind the per-resource byte-limit parse case.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumInputBytes": 12
+  },
+  "loadOnly": true,
+  "files": {},
+  "rawFiles": {
+    "en": "{\"Key.A\":\"a\"}"
+  }
+}

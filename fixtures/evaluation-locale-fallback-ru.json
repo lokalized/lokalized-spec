@@ -1,0 +1,147 @@
+{
+  "id": "evaluation-locale-fallback-ru",
+  "description": "Plan v7 section 8.3 'fallback entries evaluated under the supplying locale': a Russian catalog is the fallback donor for en, pl, fr and ar requests. Only `ru` carries Items.Fallback / Rank.Fallback / Actor.Fallback / Basket.Alt, so DefaultStrings.getResult (DefaultStrings.java:712) hands `candidateLocale` = ru down to getInternal, which threads it into cardinalityForValue, ordinalityForValue, alternativeMatches and shouldApplyBidiIsolation. Every non-donor catalog also carries Items.Own so the SAME count can be observed resolving locally versus through the donor. instanceLocale is deliberately fr (a loaded, third locale) so that a port which leaks the ambient locale into evaluation is caught separately from one which uses the requested locale. Tiebreakers are null: five loaded locales, five distinct primary language codes.",
+  "fallbackLocale": "ru",
+  "instanceLocale": "fr",
+  "tiebreakers": null,
+  "files": {
+    "ru": {
+      "Locale.Marker": "ru",
+      "Items.Fallback": {
+        "translation": "{{noun}}",
+        "commentary": "All six cardinality branches carry self-identifying text so the emitted translation names the category that was actually selected; no case in this family has to depend on a throw to discriminate. Russian's own CLDR set is one/few/many/other, but LocalizedStringValidator does not require a catalog's declared branches to match its locale's category set (only a LocalizedStringWarning.Type.INCOMPLETE_CARDINALITY_TRANSLATIONS warning exists, and the oracle loads with LocalizedStringWarningHandler.ignore()).",
+        "placeholders": {
+          "noun": {
+            "value": "itemCount",
+            "translations": {
+              "CARDINALITY_ZERO": "ru:ZERO",
+              "CARDINALITY_ONE": "ru:ONE",
+              "CARDINALITY_TWO": "ru:TWO",
+              "CARDINALITY_FEW": "ru:FEW",
+              "CARDINALITY_MANY": "ru:MANY",
+              "CARDINALITY_OTHER": "ru:OTHER"
+            }
+          }
+        }
+      },
+      "Rank.Fallback": {
+        "translation": "{{suffix}}",
+        "commentary": "GeneratedCldrPluralData gives ru exactly one ORDINAL rule ('other'), so only ORDINALITY_OTHER is declared. Under English ordinal rules 1/2/3 select ONE/TWO/FEW, which have no branch here, so wrong-locale evaluation fails loudly.",
+        "placeholders": {
+          "suffix": {
+            "value": "rank",
+            "translations": {
+              "ORDINALITY_OTHER": "ru:ORD_OTHER"
+            }
+          }
+        }
+      },
+      "Actor.Fallback": {
+        "translation": "{{who}}",
+        "commentary": "Gender selection in DefaultStrings is a direct map lookup on the caller's Gender value; no locale is consulted. This entry pins that a fallback cannot change it.",
+        "placeholders": {
+          "who": {
+            "value": "heOrShe",
+            "translations": {
+              "GENDER_MASCULINE": "ru:GENDER_MASCULINE",
+              "GENDER_FEMININE": "ru:GENDER_FEMININE",
+              "GENDER_COMMON": "ru:GENDER_COMMON",
+              "GENDER_NEUTER": "ru:GENDER_NEUTER"
+            }
+          }
+        }
+      },
+      "Basket.Alt": {
+        "translation": "ru-alt:DEFAULT",
+        "commentary": "Whole-message alternatives comparing a number against a cardinality constant. ExpressionEvaluator.cardinalityFromOperand classifies itemCount under the locale it is handed, which getInternal receives as candidateLocale.",
+        "alternatives": [
+          {
+            "itemCount == CARDINALITY_FEW": "ru-alt:FEW"
+          },
+          {
+            "itemCount == CARDINALITY_MANY": "ru-alt:MANY"
+          },
+          {
+            "itemCount == CARDINALITY_ONE": "ru-alt:ONE"
+          }
+        ]
+      }
+    },
+    "en": {
+      "Locale.Marker": "en",
+      "Items.Own": {
+        "translation": "{{noun}}",
+        "placeholders": {
+          "noun": {
+            "value": "itemCount",
+            "translations": {
+              "CARDINALITY_ZERO": "en:ZERO",
+              "CARDINALITY_ONE": "en:ONE",
+              "CARDINALITY_TWO": "en:TWO",
+              "CARDINALITY_FEW": "en:FEW",
+              "CARDINALITY_MANY": "en:MANY",
+              "CARDINALITY_OTHER": "en:OTHER"
+            }
+          }
+        }
+      }
+    },
+    "pl": {
+      "Locale.Marker": "pl",
+      "Items.Own": {
+        "translation": "{{noun}}",
+        "placeholders": {
+          "noun": {
+            "value": "itemCount",
+            "translations": {
+              "CARDINALITY_ZERO": "pl:ZERO",
+              "CARDINALITY_ONE": "pl:ONE",
+              "CARDINALITY_TWO": "pl:TWO",
+              "CARDINALITY_FEW": "pl:FEW",
+              "CARDINALITY_MANY": "pl:MANY",
+              "CARDINALITY_OTHER": "pl:OTHER"
+            }
+          }
+        }
+      }
+    },
+    "fr": {
+      "Locale.Marker": "fr",
+      "Items.Own": {
+        "translation": "{{noun}}",
+        "placeholders": {
+          "noun": {
+            "value": "itemCount",
+            "translations": {
+              "CARDINALITY_ZERO": "fr:ZERO",
+              "CARDINALITY_ONE": "fr:ONE",
+              "CARDINALITY_TWO": "fr:TWO",
+              "CARDINALITY_FEW": "fr:FEW",
+              "CARDINALITY_MANY": "fr:MANY",
+              "CARDINALITY_OTHER": "fr:OTHER"
+            }
+          }
+        }
+      }
+    },
+    "ar": {
+      "Locale.Marker": "ar",
+      "Items.Own": {
+        "translation": "{{noun}}",
+        "placeholders": {
+          "noun": {
+            "value": "itemCount",
+            "translations": {
+              "CARDINALITY_ZERO": "ar:ZERO",
+              "CARDINALITY_ONE": "ar:ONE",
+              "CARDINALITY_TWO": "ar:TWO",
+              "CARDINALITY_FEW": "ar:FEW",
+              "CARDINALITY_MANY": "ar:MANY",
+              "CARDINALITY_OTHER": "ar:OTHER"
+            }
+          }
+        }
+      }
+    }
+  }
+}

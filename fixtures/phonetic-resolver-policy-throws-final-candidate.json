@@ -1,0 +1,31 @@
+{
+  "id": "phonetic-resolver-policy-throws-final-candidate",
+  "description": "A throwing fallback policy with only ONE candidate. The phonetic failure happens on the final distinct candidate, where the policy is never consulted, so the throwing policy becomes proof by absence: the lookup completes normally with a RESOLUTION_FAILURE result.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "translationFallbackPolicy": {
+    "behavior": "throw-in-policy",
+    "message": "policy refuses"
+  },
+  "phoneticResolver": {
+    "behavior": "constant",
+    "phonetic": "PHONETIC_Z"
+  },
+  "files": {
+    "en": {
+      "Article": {
+        "translation": "[{{a}}]",
+        "placeholders": {
+          "a": {
+            "value": "term",
+            "translations": {
+              "PHONETIC_VOWEL": "an"
+            }
+          }
+        }
+      }
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

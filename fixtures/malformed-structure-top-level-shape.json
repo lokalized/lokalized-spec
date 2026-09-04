@@ -1,0 +1,19 @@
+{
+  "id": "malformed-structure-top-level-shape",
+  "description": "Files that are syntactically valid JSON but not a catalog at the top level (array, string, number, null), and files that are blank or nearly blank (all four characters the loader counts as JSON whitespace, an empty file, and a single U+00A0 which it does NOT count) -- plus an empty JSON object as the control that loads. Written verbatim because a top-level non-object cannot be expressed through the locale-keyed files map.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {},
+  "rawFiles": {
+    "en": "[{\"Key.A\":\"a\"}]",
+    "fr": "\"just a string\"",
+    "de": "42",
+    "pt": "null",
+    "es": "   \r\n\t  \r\n",
+    "ru": " ",
+    "it": "",
+    "nl": "{}"
+  },
+  "rawFilesBase64": {}
+}

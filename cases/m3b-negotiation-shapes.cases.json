@@ -1,0 +1,79 @@
+{
+  "formatVersion": 1,
+  "family": "m3b-negotiation-shapes",
+  "description": "Plan v7 section 8.3 fixture family 'm3b-negotiation-shapes'. Inputs only; the oracle emits expected.",
+  "cases": [
+    {
+      "id": "m3b-negotiation.private-use-wildcard-matches-structurally",
+      "requirementIds": [],
+      "fixture": "m3b-negotiation-private-and-undetermined",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "x-*",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings.languageRangeSpecificityFor:2035 and MemberStatics.<init>:3051, the combination where a member is BOTH private-use and wildcard-bearing. The 2035 guard is 'private-use AND NOT wildcard returns no relationship', so a wildcard rescues a private-use range into ordinary RFC 4647 extended filtering and x-* must select the x-private catalog. Paired with the wildcard-free private-use row in m3b-canonicalization, the two show the guard is a conjunction and not a blanket refusal of private-use ranges."
+    },
+    {
+      "id": "m3b-negotiation.undetermined-range-selects-nothing",
+      "requirementIds": [],
+      "fixture": "m3b-negotiation-private-and-undetermined",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "und-latn",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The undetermined counterpart: und-Latn is LOADED, and an und-Latn request still selects nothing, because an undetermined member that is not private-use is refused a relationship outright. A port that let 'und' behave as an ordinary primary language would return the und-Latn catalog on an exact spelling match, which is the failure this pins. Its partner is the x-* row above, where private-use makes the same undetermined member selectable."
+    },
+    {
+      "id": "m3b-negotiation.more-specific-anchor-wins-over-request-order",
+      "requirementIds": [],
+      "fixture": "m3b-negotiation-en-only",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "en-us",
+            "weight": 0.5
+          },
+          {
+            "range": "en-gb",
+            "weight": 0.5
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The third outcome of the anchor and governor comparisons at matchFor:1676 and :1754 -- the one where the later range is STRICTLY LESS specific and neither arm of the update is taken. en-US relates to the bare en catalog more closely than en-GB does (en's likely subtag is en-Latn-US), so en-us must govern at equal weight."
+    },
+    {
+      "id": "m3b-negotiation.more-specific-anchor-wins-over-request-order-reversed",
+      "requirementIds": [],
+      "fixture": "m3b-negotiation-en-only",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "en-gb",
+            "weight": 0.5
+          },
+          {
+            "range": "en-us",
+            "weight": 0.5
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Its mirror: en-us still governs even when it is second, which is what separates 'more specific wins' from 'first wins'. Read together with the en-gb/en-au equal-weight pair in this family -- where the FIRST range does win, because those two are equally specific -- the four rows pin the whole comparator rather than one outcome."
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "classpath-resources-malformed",
+  "description": "One good catalog plus four files that discovery treats very differently from an explicit mapping: 'messages' (valid JSON, a well-formed but CLDR-unknown language subtag), 'blank' (zero bytes), 'broken.json' (unterminated, and the only name here that makes tag parsing THROW because of its .json extension) and 'dupes' (repeated JSON member). Every filename must be a rawFiles entry, since 'files' names each file by its locale tag and cannot express an arbitrary name. loadOnly because broken.json hard-fails the filesystem load — verified. Serves the content-diagnostic, load-order and validation-precedence clauses.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Common.Greeting": "Hello",
+      "Only.En": "en"
+    }
+  },
+  "rawFiles": {
+    "messages": "{\n  \"Common.Greeting\": \"from messages\",\n  \"Only.Messages\": \"m\"\n}\n",
+    "blank": "",
+    "broken.json": "{\"Common.Greeting\": ",
+    "dupes": "{\"Common.Greeting\":\"first\",\"Common.Greeting\":\"second\"}"
+  }
+}

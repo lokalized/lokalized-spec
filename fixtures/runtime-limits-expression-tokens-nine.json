@@ -1,0 +1,36 @@
+{
+  "id": "runtime-limits-expression-tokens-nine",
+  "description": "Plan v7 section 8.3 runtime-limits clause: maximumExpressionTokens pinned exactly at 9, the infix token count of both expressions in this catalog — GROUP_START, a, >, 0, GROUP_END, &&, b, ==, 1 and its fragment twin. ExpressionEvaluator.validateInfixTokens counts the INFIX list at the head of convertTokensToReversePolishNotation, before shunting-yard conversion, and whitespace produces no token, so an implementation that counted RPN tokens (7, parentheses dropped), counted whitespace, or dropped the parentheses would measure something other than 9 and fail to construct this fixture. Probe-verified: at limit 8 the library reports 'Expression contains 9 tokens'. Same catalog as the characters and nesting fixtures so only the limit under test differs.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "runtimeLimits": {
+    "maximumExpressionTokens": 9
+  },
+  "files": {
+    "en": {
+      "Bag": {
+        "translation": "bag-default",
+        "alternatives": [
+          {
+            "(a > 0) && b == 1": {
+              "translation": "bag-matched"
+            }
+          }
+        ]
+      },
+      "Frag": {
+        "translation": "{{f}}",
+        "placeholders": {
+          "f": {
+            "translation": "frag-default",
+            "alternatives": [
+              {
+                "(a > 1) && a == 2": "frag-matched"
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

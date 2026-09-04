@@ -1,0 +1,58 @@
+{
+  "formatVersion": 1,
+  "status": "draft-unapproved",
+  "profiles": [
+    {
+      "id": "strict-parity-0.x-draft",
+      "status": "incomplete",
+      "sourcePlanSha256": "4ace5e349bedd45b16cd87182aed3306d33fae92b034ed01ddb93bc733c5f62d",
+      "claims": [
+        {
+          "id": "CLAIM-SEMANTIC-PARITY",
+          "sourceAnchor": "\u00a71",
+          "statement": "Shared required vectors produce the same complete semantic result as lokalized-java 3.0.0 under the pinned data and reference-runtime versions."
+        },
+        {
+          "id": "CLAIM-STRICT-DATA",
+          "sourceAnchor": "\u00a71 and \u00a75",
+          "statement": "Rendering-sensitive locale and plural behavior uses pinned generated data and does not depend on host ICU or Intl data."
+        },
+        {
+          "id": "CLAIM-RUNTIME-SURFACES",
+          "sourceAnchor": "\u00a71.1 and \u00a73.1",
+          "statement": "The supported surfaces are ESM on Node 22+, the named exact-floor browsers, bundlers, and direct browser modules through only the declared package entry points."
+        },
+        {
+          "id": "CLAIM-CORE-FEATURES",
+          "sourceAnchor": "\u00a71.2 and \u00a7\u00a72\u20135",
+          "statement": "The strict package includes the declared parsing, interpolation, bidi, expression, language-form, generated-placeholder, exact-numeric, plural, fallback, result, failure, and direct-locale behaviors."
+        },
+        {
+          "id": "CLAIM-DELIVERY",
+          "sourceAnchor": "\u00a71.2 and \u00a76",
+          "statement": "The release includes explicit manifest planning, browser and Node loading, SSR identity, and the declared no-build browser distribution."
+        },
+        {
+          "id": "CLAIM-NEGOTIATION",
+          "sourceAnchor": "\u00a71.2 and \u00a73.4",
+          "statement": "The release includes pinned server and edge RFC 4647 and Accept-Language negotiation, while root exposes only the strict single-locale kernel and explicitly non-parity small chooser."
+        },
+        {
+          "id": "CLAIM-DISTRIBUTION",
+          "sourceAnchor": "\u00a71.2, \u00a77, and \u00a79",
+          "statement": "The release publishes npm and direct-browser artifacts, declarations, language-neutral source artifacts, documentation, and an embedded parity declaration under the declared reproducibility and provenance rules."
+        },
+        {
+          "id": "CLAIM-EXCLUSIONS",
+          "sourceAnchor": "\u00a71.3",
+          "statement": "Formatting, React/ecosystem integrations, TMS/XLIFF, hidden lookup I/O, mutable live reload, runtime-limit customization, and strict parity for host-Intl adapters are excluded or deferred exactly as listed."
+        }
+      ],
+      "incompleteReasons": [
+        "The machine-valid, agent-reconciled inventory has not yet received human approval of this claim list's completeness.",
+        "No human reviewer has approved the claim boundaries.",
+        "No human decision owner has selected this profile."
+      ]
+    }
+  ]
+}

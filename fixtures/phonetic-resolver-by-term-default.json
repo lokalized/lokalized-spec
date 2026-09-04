@@ -1,0 +1,33 @@
+{
+  "id": "phonetic-resolver-by-term-default",
+  "description": "A by-term resolver WITH a 'default', so an unmapped term reaches the default rather than the null-return rejection. Mapping keys differ in case and in script from some of the terms the cases pass, so exact-match lookup is observable in the rendered text. The 'Arger' entry is spelled with the PRECOMPOSED U+00C4, so a case passing the decomposed A + U+0308 form misses it.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "phoneticResolver": {
+    "behavior": "by-term",
+    "mapping": {
+      "apple": "PHONETIC_VOWEL",
+      "Ärger": "PHONETIC_STRESSED_A"
+    },
+    "default": "PHONETIC_OTHER"
+  },
+  "files": {
+    "en": {
+      "Article": {
+        "translation": "[{{a}}]",
+        "placeholders": {
+          "a": {
+            "value": "term",
+            "translations": {
+              "PHONETIC_VOWEL": "vowel",
+              "PHONETIC_STRESSED_A": "stressed-a",
+              "PHONETIC_OTHER": "other"
+            }
+          }
+        }
+      }
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

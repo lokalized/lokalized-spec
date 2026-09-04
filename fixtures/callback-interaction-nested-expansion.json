@@ -1,0 +1,53 @@
+{
+  "id": "callback-interaction-nested-expansion",
+  "description": "Generated placeholders that reference one another, so a resolver answer selects a template whose own resolution or expansion then fails. Nested.InnerFails has an outer placeholder over a TAGGED value selecting a template that names an inner placeholder over a RAW term, so only the inner one reaches the resolver and only it should be named by the contextualization -- and switching the tagged value to CONSONANT selects a template that names nothing, so the inner placeholder is never resolved at all and the same poisoned term never reaches the resolver. Nested.Cycle has the resolver's answer select a template that leads back to the placeholder that selected it, which is undetectable until interpolation and therefore produces the selection-annotated double contextualization at DefaultStrings.java:1356-1359. One locale, so the policy is never consulted.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "phoneticResolver": {
+    "behavior": "first-letter-vowel"
+  },
+  "files": {
+    "en": {
+      "Locale.Marker": "en",
+      "Nested.InnerFails": {
+        "translation": "[{{outer}}]",
+        "placeholders": {
+          "outer": {
+            "value": "taggedTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "<{{inner}}>",
+              "PHONETIC_CONSONANT": "cons"
+            }
+          },
+          "inner": {
+            "value": "nounTerm",
+            "translations": {
+              "PHONETIC_H_SILENT": "h-silent"
+            }
+          }
+        }
+      },
+      "Nested.Cycle": {
+        "translation": "[{{outer}}]",
+        "placeholders": {
+          "outer": {
+            "value": "nounTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "<{{inner}}>",
+              "PHONETIC_CONSONANT": "cons"
+            }
+          },
+          "inner": {
+            "value": "taggedTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "<{{outer}}>",
+              "PHONETIC_CONSONANT": "cons2"
+            }
+          }
+        }
+      }
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

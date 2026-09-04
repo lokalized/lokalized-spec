@@ -1,0 +1,67 @@
+{
+  "formatVersion": 1,
+  "cldrVersion": "48.2",
+  "generatorVersion": "4e09c3ed4555369413d1e8ad4613900f10dbaf8e031a596519eeb2ce4bdb4572",
+  "inputsSha256": "5dea9cce2e2511537160048c39bec488712fdc4978e9184d983bccd3649df781",
+  "inputs": [
+    {
+      "path": "common/properties/scriptMetadata.txt",
+      "sha256": "50a0499acddd7a5ce935e8d77b59ab789f91b16c15b95b00236d90137fe662a4"
+    },
+    {
+      "path": "common/supplemental/likelySubtags.xml",
+      "sha256": "b0049bc6420715b1e3010f43d95745dca227c5aa60357d1d89a1bdcb06287312"
+    },
+    {
+      "path": "common/supplemental/ordinals.xml",
+      "sha256": "129bf4aa6f41d47931bf908ebaa261ec0b73b768f1fe3be90c06ab11fb49880a"
+    },
+    {
+      "path": "common/supplemental/pluralRanges.xml",
+      "sha256": "42c82db9baaa8667921b4dea32b6322fd5e43004e166a43ae33b51cef5dc0f52"
+    },
+    {
+      "path": "common/supplemental/plurals.xml",
+      "sha256": "d701d8b461afd2ba5eb21f9c1d645c8a661de225596afcf0f492ee36c69d727d"
+    },
+    {
+      "path": "common/supplemental/supplementalData.xml",
+      "sha256": "cd2af39aef82fdbfba4d591c87548203350538ad2318486d104b3b38b8d62f1a"
+    },
+    {
+      "path": "common/supplemental/supplementalMetadata.xml",
+      "sha256": "36e807ce72b15304dd993f132216f408351be1c4376edaa2fe9e9547e2efcac1"
+    },
+    {
+      "path": "common/validity/language.xml",
+      "sha256": "3f2be6cb8f4a1b506a5bc8d79d3a91349f3061ade565f836c534c00c2efd2996"
+    },
+    {
+      "path": "common/validity/region.xml",
+      "sha256": "e751e0eedd46b52c38f3cdb72b0fab61ac8b48e052e8b28ba74b6ac26c4c8cb1"
+    },
+    {
+      "path": "common/validity/script.xml",
+      "sha256": "30f7f5f64be0df200bdfe42f7ce103a045ab661490885a7f060f31d4199be948"
+    },
+    {
+      "path": "common/validity/variant.xml",
+      "sha256": "49019a8e903802a75197d47ef9854d24655bdac373b8667cf00a33fd9205676e"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "vendor/lokalized-java/src/build/resources/cldr/cldr-conformance-vectors.json",
+      "sha256": "404e2fb3fbff0ee9564226527c0645c723a16afaf76dff2db7942e5015a54926"
+    },
+    {
+      "path": "vendor/lokalized-java/src/build/resources/cldr/cldr-locale-data.json",
+      "sha256": "6241d8889b507a6edc0d6dae7e7812c372b62208ba8649701a819de877eade93"
+    },
+    {
+      "path": "vendor/lokalized-java/src/build/resources/cldr/cldr-plural-data.json",
+      "sha256": "7ade4692762aac80144f915b62de19f29eb039ec3cf28c3f9f2c34b810cdc0e7"
+    }
+  ],
+  "dataFingerprint": "9b4f24165b6dd1ee6dbb5f0822abc7bcde49c5b94d35903045826b45e1f30e68"
+}

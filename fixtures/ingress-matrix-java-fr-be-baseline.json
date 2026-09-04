@@ -1,0 +1,19 @@
+{
+  "id": "ingress-matrix-java-fr-be-baseline",
+  "description": "Seed row 2 catalog (loaded fr-FR, fr-CA; tiebreaker fr:[fr-FR, fr-CA]; fallback and instance locale fr-FR). No ambient supplier. MEASURED per-call locale fr-BE: LIKELY_SUBTAG/fr-FR, lookupLocale fr-BE, attempted [fr-BE, fr, fr-FR].",
+  "fallbackLocale": "fr-FR",
+  "tiebreakers": {
+    "fr": [
+      "fr-FR",
+      "fr-CA"
+    ]
+  },
+  "files": {
+    "fr-FR": {
+      "Checkout.Title": "Paiement (FR)"
+    },
+    "fr-CA": {
+      "Checkout.Title": "Paiement (CA)"
+    }
+  }
+}

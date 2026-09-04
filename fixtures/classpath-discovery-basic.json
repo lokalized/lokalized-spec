@@ -1,0 +1,15 @@
+{
+  "id": "classpath-discovery-basic",
+  "description": "A well-formed two-locale catalog used as the fixed target for the package-validation cases: the package argument is overridden per case, so the catalog itself never varies and any difference in output is attributable to the package string alone.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Key.A": "a",
+      "Key.B": "b"
+    },
+    "fr": {
+      "Key.A": "a-fr"
+    }
+  }
+}

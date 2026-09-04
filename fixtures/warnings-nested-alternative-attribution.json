@@ -1,0 +1,64 @@
+{
+  "id": "warnings-nested-alternative-attribution",
+  "description": "One Russian key with an own placeholder, a first alternative that itself nests a deeper alternative, and a second sibling alternative. Distinguishes depth-first from breadth-first traversal and pins that every warning names the ROOT key, not the alternative expression.",
+  "fallbackLocale": "ru",
+  "tiebreakers": null,
+  "files": {
+    "ru": {
+      "Root": {
+        "translation": "{{own}}",
+        "placeholders": {
+          "own": {
+            "value": "n",
+            "translations": {
+              "CARDINALITY_ONE": "o"
+            }
+          }
+        },
+        "alternatives": [
+          {
+            "n < 10": {
+              "translation": "{{nega}}",
+              "placeholders": {
+                "nega": {
+                  "value": "n",
+                  "translations": {
+                    "CARDINALITY_FEW": "a"
+                  }
+                }
+              },
+              "alternatives": [
+                {
+                  "n < 5": {
+                    "translation": "{{deep}}",
+                    "placeholders": {
+                      "deep": {
+                        "value": "n",
+                        "translations": {
+                          "CARDINALITY_MANY": "d"
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "n > 100": {
+              "translation": "{{posb}}",
+              "placeholders": {
+                "posb": {
+                  "value": "n",
+                  "translations": {
+                    "ORDINALITY_ONE": "b"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "id": "resolver-locale-divergent-selection",
+  "description": "The diagnostic channel and the resolution channel deliberately disagree, rebuilt around a phonetic placeholder. The matcher SELECTS zh-Hant for a zh-TW request, but zh-Hant carries only a marker, so per-key resolution walks past it to the en fallback WITHOUT visiting the loaded zh. Article lives in zh and en only, and the resolver mapping distinguishes zh-TW, zh-Hant, zh and en, so the rendered branch says whether the callback was handed the requested locale, the diagnostically selected one, the locale resolution must not reach, or the actual supplying one. Tiebreakers are mandatory because zh and zh-Hant share a language code.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "zh": [
+      "zh",
+      "zh-Hant"
+    ]
+  },
+  "phoneticResolver": {
+    "behavior": "by-locale",
+    "mapping": {
+      "en": "PHONETIC_VOWEL",
+      "zh-Hant": "PHONETIC_CONSONANT",
+      "zh": "PHONETIC_S_IMPURE",
+      "zh-TW": "PHONETIC_H_SILENT"
+    },
+    "default": "PHONETIC_OTHER"
+  },
+  "files": {
+    "zh": {
+      "Locale.Marker": "zh",
+      "Article": {
+        "translation": "{{article}}",
+        "placeholders": {
+          "article": {
+            "value": "nounTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "got:en",
+              "PHONETIC_CONSONANT": "got:zh-Hant",
+              "PHONETIC_S_IMPURE": "got:zh",
+              "PHONETIC_H_SILENT": "got:zh-TW",
+              "PHONETIC_OTHER": "got:unmapped"
+            }
+          }
+        }
+      }
+    },
+    "zh-Hant": {
+      "Locale.Marker": "zh-Hant"
+    },
+    "en": {
+      "Locale.Marker": "en",
+      "Article": {
+        "translation": "{{article}}",
+        "placeholders": {
+          "article": {
+            "value": "nounTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "got:en",
+              "PHONETIC_CONSONANT": "got:zh-Hant",
+              "PHONETIC_S_IMPURE": "got:zh",
+              "PHONETIC_H_SILENT": "got:zh-TW",
+              "PHONETIC_OTHER": "got:unmapped"
+            }
+          }
+        }
+      }
+    }
+  }
+}

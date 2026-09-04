@@ -1,0 +1,122 @@
+{
+  "id": "raw-vs-tagged-language-form-placeholders",
+  "description": "Plan v7 section 8.3 raw-vs-tagged clause, generated-placeholder half. Four single-axis LanguageFormTranslation placeholders (gender, cardinality, ordinality, phonetic), each keyed on a caller placeholder; two \"both channels\" keys that render the caller value as text AND dispatch on it in the same translation, so one observation shows both halves of the clause for a single value; and two duplicate-shape keys whose KEY TEXT contains the caller placeholder so the RETURNED_KEY failure path echoes the raw value verbatim, making the raw/tagged divergence visible in the translation string rather than only in status. en branch sets are complete for the locale (ONE/OTHER cardinal, ONE/TWO/FEW/OTHER ordinal) and every axis has at least two distinct branch texts so a tagged form must select ITS branch rather than any branch. Single loaded locale keeps attemptedLocales at [en]; tiebreakers is null because no two loaded locales share a primary language code.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "GenderLine": {
+        "translation": "[{{pronoun}}]",
+        "commentary": "Strict-enum axis. Only a Gender value may select a branch here.",
+        "placeholders": {
+          "pronoun": {
+            "value": "who",
+            "translations": {
+              "GENDER_MASCULINE": "He",
+              "GENDER_FEMININE": "She",
+              "GENDER_COMMON": "They",
+              "GENDER_NEUTER": "It"
+            }
+          }
+        }
+      },
+      "CardinalityLine": {
+        "translation": "[{{books}}]",
+        "commentary": "Number-converting axis. Distinct texts for ONE and OTHER so integer 1 and decimal 1.0 are told apart.",
+        "placeholders": {
+          "books": {
+            "value": "bookCount",
+            "translations": {
+              "CARDINALITY_ONE": "book",
+              "CARDINALITY_OTHER": "books"
+            }
+          }
+        }
+      },
+      "OrdinalityLine": {
+        "translation": "[{{place}}]",
+        "commentary": "The other number-converting axis, reached through ordinalityForValue, which is independent code from cardinalityForValue.",
+        "placeholders": {
+          "place": {
+            "value": "rank",
+            "translations": {
+              "ORDINALITY_ONE": "st",
+              "ORDINALITY_TWO": "nd",
+              "ORDINALITY_FEW": "rd",
+              "ORDINALITY_OTHER": "th"
+            }
+          }
+        }
+      },
+      "PhoneticLine": {
+        "translation": "[{{article}}]",
+        "commentary": "The only axis that accepts a raw CharSequence at all -- and it hands that text to the PhoneticResolver as an opaque term rather than reading it as the constant it spells.",
+        "placeholders": {
+          "article": {
+            "value": "noun",
+            "translations": {
+              "PHONETIC_VOWEL": "an",
+              "PHONETIC_CONSONANT": "a"
+            }
+          }
+        }
+      },
+      "BothChannelsGender": {
+        "translation": "{{who}}|{{pronoun}}",
+        "commentary": "The caller placeholder appears both as a plain slot and as the value of a generated placeholder, so one translation observes text rendering and dispatch for the same value.",
+        "placeholders": {
+          "pronoun": {
+            "value": "who",
+            "translations": {
+              "GENDER_MASCULINE": "He",
+              "GENDER_FEMININE": "She",
+              "GENDER_COMMON": "They",
+              "GENDER_NEUTER": "It"
+            }
+          }
+        }
+      },
+      "BothChannelsCardinality": {
+        "translation": "{{bookCount}}|{{books}}",
+        "commentary": "Numeric counterpart of BothChannelsGender: renders the number's own text next to the branch its plural classification selected.",
+        "placeholders": {
+          "books": {
+            "value": "bookCount",
+            "translations": {
+              "CARDINALITY_ONE": "book",
+              "CARDINALITY_OTHER": "books"
+            }
+          }
+        }
+      },
+      "{{who}} needs a pronoun": {
+        "translation": "[{{pronoun}}]",
+        "commentary": "Key text carries the caller placeholder so that when gender dispatch fails and the key is returned, the raw value is interpolated into it verbatim.",
+        "placeholders": {
+          "pronoun": {
+            "value": "who",
+            "translations": {
+              "GENDER_MASCULINE": "He",
+              "GENDER_FEMININE": "She",
+              "GENDER_COMMON": "They",
+              "GENDER_NEUTER": "It"
+            }
+          }
+        }
+      },
+      "{{bookCount}} books read": {
+        "translation": "[{{books}}]",
+        "commentary": "Numeric counterpart of the failure-key echo key.",
+        "placeholders": {
+          "books": {
+            "value": "bookCount",
+            "translations": {
+              "CARDINALITY_ONE": "book",
+              "CARDINALITY_OTHER": "books"
+            }
+          }
+        }
+      }
+    }
+  }
+}

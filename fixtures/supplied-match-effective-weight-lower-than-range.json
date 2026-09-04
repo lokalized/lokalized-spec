@@ -1,0 +1,36 @@
+{
+  "id": "supplied-match-effective-weight-lower-than-range",
+  "description": "A fabrication whose effectiveWeight (0.25) contradicts the weight carried by its own matched range (1.0). The constructor only checks the (0,1] interval (LocaleMatchResult.java:112-113), so this survives construction and must be echoed rather than recomputed.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "localeMatchSupplier": {
+    "behavior": "fabricated",
+    "locale": "fr",
+    "matchType": "EXACT",
+    "range": "fr",
+    "weight": 0.25,
+    "ranges": [
+      {
+        "range": "fr",
+        "weight": 1
+      }
+    ],
+    "fallbackLocale": "en",
+    "consideredLocales": [
+      "en",
+      "fr"
+    ]
+  },
+  "files": {
+    "fr": {
+      "Locale.Marker": "fr",
+      "Greeting.Hello": "Bonjour",
+      "Only.Fr": "fr-only"
+    },
+    "en": {
+      "Locale.Marker": "en",
+      "Greeting.Hello": "Hello",
+      "Only.En": "en-only"
+    }
+  }
+}

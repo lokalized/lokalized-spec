@@ -1,0 +1,15 @@
+{
+  "id": "bidi-isolation-rtl-request-ltr-donor",
+  "description": "The section 8.3 clause proper: an RTL lookup served by a fallback-locale entry. The ar catalog carries only a marker, so an Arabic request for Greeting.Named is supplied by the en fallback entry. getResult hands getInternal the candidateLocale (DefaultStrings.java:713), so shouldApplyBidiIsolation at :1367 sees en and the default RTL_LOCALES does NOT isolate. The key 'Farewell {{name}}' is deliberately in no catalog so the returned-key path -- which gets the REQUESTED locale instead (:754, :1406) -- can be contrasted on the identical request. Left at the default mode; NONE and ALWAYS are supplied per call. Same catalog shape as the existing evaluation-locale-bidi-donor-en fixture, restated here under its own id because that family cannot set a mode and this one exists to vary the mode on exactly this input.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Locale.Marker": "en",
+      "Greeting.Named": "Hello, {{name}}"
+    },
+    "ar": {
+      "Locale.Marker": "ar"
+    }
+  }
+}

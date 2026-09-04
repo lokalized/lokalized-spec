@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lokalized.org/schemas/pre-m0/selection-record.schema.json",
+  "title": "Lokalized JS release-profile selection record",
+  "description": "Structural schema for the initial pre-M0 selection only; pre-m0/validate-artifacts.mjs enforces exact registry bindings, a null predecessor, batch-attestation semantics, role identity, and approval state.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "formatVersion",
+    "status",
+    "selectedProfileId",
+    "profileRegistrySha256",
+    "bootstrapRequirementsSha256",
+    "predecessorSelectionSha256",
+    "approvals",
+    "blockingReasons"
+  ],
+  "properties": {
+    "formatVersion": { "const": 1 },
+    "status": { "enum": ["draft-unapproved", "approved"] },
+    "selectedProfileId": { "$ref": "#/$defs/name" },
+    "profileRegistrySha256": { "$ref": "#/$defs/nullableHash" },
+    "bootstrapRequirementsSha256": { "$ref": "#/$defs/nullableHash" },
+    "predecessorSelectionSha256": {
+      "description": "The initial pre-M0 selection has no predecessor. Successor selection attestations use the later registry-migration workflow, not this initial-record schema.",
+      "type": "null"
+    },
+    "approvals": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "humanReviewer",
+        "humanDecisionOwner",
+        "approvedAt",
+        "reviewAttestation",
+        "ownerAttestation"
+      ],
+      "properties": {
+        "humanReviewer": { "$ref": "#/$defs/nullableName" },
+        "humanDecisionOwner": { "$ref": "#/$defs/nullableName" },
+        "approvedAt": { "$ref": "#/$defs/nullableName" },
+        "reviewAttestation": {
+          "anyOf": [
+            { "type": "null" },
+            { "const": "exact-bootstrap-human-review-complete" }
+          ]
+        },
+        "ownerAttestation": {
+          "anyOf": [
+            { "type": "null" },
+            { "const": "exact-bootstrap-decision-owner-approval-complete" }
+          ]
+        }
+      }
+    },
+    "blockingReasons": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/name" }
+    }
+  },
+  "$defs": {
+    "name": { "type": "string", "minLength": 1, "pattern": ".*\\S.*" },
+    "nullableName": {
+      "anyOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/name" }
+      ]
+    },
+    "hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "nullableHash": {
+      "anyOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/hash" }
+      ]
+    }
+  }
+}

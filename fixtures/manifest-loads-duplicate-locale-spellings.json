@@ -1,0 +1,15 @@
+{
+  "id": "manifest-loads-duplicate-locale-spellings",
+  "description": "Two filename spellings of the same locale — extensionless 'en' and 'en.json' — in one directory. Both resolve to Locale en and the load fails with a duplicate-file diagnostic. CORRECTED BY REVIEW to loadOnly: true; the authored version said false while its own description said otherwise, which left the oracle building a Strings it must fail to build. It survives only because no lookup case names it, and would abort the whole corpus build the moment one did.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Greeting": "Hello"
+    }
+  },
+  "rawFiles": {
+    "en.json": "{\"Greeting\":\"Hello from en.json\"}"
+  }
+}

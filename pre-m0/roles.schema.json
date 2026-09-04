@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lokalized.org/schemas/pre-m0/roles.schema.json",
+  "title": "Lokalized JS pre-M0 role assignments",
+  "description": "Structural schema only; pre-m0/validate-artifacts.mjs enforces human role kinds, names, and approval consistency.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "formatVersion",
+    "status",
+    "preM0Coordinator",
+    "productionImplementer",
+    "humanReviewer",
+    "humanDecisionOwner",
+    "requiredBeforeM0",
+    "note"
+  ],
+  "properties": {
+    "formatVersion": { "const": 1 },
+    "status": { "enum": ["incomplete-preapproval-roles", "approved-for-m0"] },
+    "preM0Coordinator": { "$ref": "#/$defs/nullableRole" },
+    "productionImplementer": { "$ref": "#/$defs/nullableRole" },
+    "humanReviewer": { "$ref": "#/$defs/nullableRole" },
+    "humanDecisionOwner": { "$ref": "#/$defs/nullableRole" },
+    "requiredBeforeM0": {
+      "const": ["productionImplementer", "humanReviewer", "humanDecisionOwner"]
+    },
+    "note": { "type": "string" }
+  },
+  "$defs": {
+    "role": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "kind"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "kind": { "enum": ["human", "agent"] }
+      }
+    },
+    "nullableRole": {
+      "anyOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/role" }
+      ]
+    }
+  }
+}

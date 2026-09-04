@@ -1,0 +1,14 @@
+{
+  "id": "loading-limits-depth-at-ceiling",
+  "description": "The same catalog with maximumJsonNestingDepth at the documented ceiling of 128.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumJsonNestingDepth": 128
+  },
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "id": "m3b-negotiation-zxx-regional",
+  "description": "Three regional catalogs of zxx ('no linguistic content'), a language with no likely-subtag entry of its own. Used for the extended-range structural filter, where two of the three loaded locales must be REJECTED by the filter rather than carried through.",
+  "fallbackLocale": "fr",
+  "tiebreakers": {
+    "zxx": [
+      "zxx-DE",
+      "zxx-FR",
+      "zxx-IT"
+    ]
+  },
+  "files": {
+    "fr": {
+      "Checkout.Title": "fr"
+    },
+    "zxx-DE": {
+      "Checkout.Title": "zxx-DE"
+    },
+    "zxx-FR": {
+      "Checkout.Title": "zxx-FR"
+    },
+    "zxx-IT": {
+      "Checkout.Title": "zxx-IT"
+    }
+  }
+}

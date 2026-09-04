@@ -1,0 +1,15 @@
+{
+  "id": "classpath-filenames-hidden-extension-only",
+  "description": "A valid en catalog plus a file named '.json' — the extension with no stem at all. Hidden by the leading dot; had it been parsed, the stripped stem would be the empty string, which no other fixture can produce.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "rawFiles": {
+    ".json": "{\"Key.hiddenjson\":\"hiddenjson\"}"
+  }
+}

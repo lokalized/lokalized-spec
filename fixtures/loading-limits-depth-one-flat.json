@@ -1,0 +1,14 @@
+{
+  "id": "loading-limits-depth-one-flat",
+  "description": "A flat one-level catalog loaded with maximumJsonNestingDepth at 1, the lowest value the builder accepts.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumJsonNestingDepth": 1
+  },
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "id": "classpath-filenames-unknown-language-json",
+  "description": "A valid en catalog plus a file named 'zz.json'. The stem 'zz' is syntactically a well-formed tag and Locale.Builder accepts it, but CldrLocaleData.isKnownLanguageTag rejects it; classpath-smoke already pins that the EXTENSIONLESS 'zz' is skipped in silence, so this fixture isolates the extension as the only difference.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "rawFiles": {
+    "zz.json": "{\"Key.zz\":\"zz\"}"
+  }
+}

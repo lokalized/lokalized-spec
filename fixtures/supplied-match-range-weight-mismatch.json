@@ -1,0 +1,36 @@
+{
+  "id": "supplied-match-range-weight-mismatch",
+  "description": "The matched range and the requested range share a range string (fr) but not a weight: the oracle builds the matched range with LanguageRange's default weight of 1.0 while the requested list carries 0.5. Locale.LanguageRange equality includes weight, so the containment check sees two different ranges even though the strings agree.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "localeMatchSupplier": {
+    "behavior": "fabricated",
+    "locale": "fr",
+    "matchType": "EXACT",
+    "range": "fr",
+    "weight": 0.5,
+    "ranges": [
+      {
+        "range": "fr",
+        "weight": 0.5
+      }
+    ],
+    "fallbackLocale": "en",
+    "consideredLocales": [
+      "en",
+      "fr"
+    ]
+  },
+  "files": {
+    "fr": {
+      "Locale.Marker": "fr",
+      "Greeting.Hello": "Bonjour",
+      "Only.Fr": "fr-only"
+    },
+    "en": {
+      "Locale.Marker": "en",
+      "Greeting.Hello": "Hello",
+      "Only.En": "en-only"
+    }
+  }
+}

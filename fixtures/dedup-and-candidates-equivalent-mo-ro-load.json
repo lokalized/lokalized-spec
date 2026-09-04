@@ -1,0 +1,15 @@
+{
+  "id": "dedup-and-candidates-equivalent-mo-ro-load",
+  "description": "The load half of the clause's named mo/ro pair, which the resolution cases cannot reach (see skipped). LocalizedStringLoader keys catalogs by Locale.forLanguageTag(fileName) (LocalizedStringLoader.java:1260-1269) and does NOT canonicalize, so mo and ro - canonically equivalent but distinct Locale values - must survive as two separate catalogs with two separate key sets. loadOnly because DefaultStrings would refuse to build from this pair without tiebreakers keyed by their shared canonical language code 'ro', and that fixture shape is not expressible through the ingest linter today; the load itself succeeds, which is exactly what this fixture observes.",
+  "fallbackLocale": "ro",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "mo": {
+      "MoRo.OnlyInMo": "mo: only here"
+    },
+    "ro": {
+      "MoRo.OnlyInRo": "ro: only here"
+    }
+  }
+}

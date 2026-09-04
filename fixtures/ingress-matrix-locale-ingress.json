@@ -1,0 +1,24 @@
+{
+  "id": "ingress-matrix-locale-ingress",
+  "description": "The three TranslationOptions construction paths the oracle's optionsFrom can reach: none(), forLocale(), and the full builder. instanceLocale is deliberately fr while fallbackLocale is en, and Ingress.Probe/Ingress.Named are translated distinctly in en, fr and de, so each possible locale source produces a different string: none() must yield fr, forLocale(de) must yield de, and a builder object with no locale must yield fr rather than the fallback en. Three distinct primary languages, so tiebreakers are null. Absent.Probe is in no catalog, giving both the builder and the none() paths a failure case whose lookupLocale and attemptedLocales reveal which locale the options object actually carried.",
+  "fallbackLocale": "en",
+  "instanceLocale": "fr",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Locale.Marker": "en",
+      "Ingress.Probe": "en:probe",
+      "Ingress.Named": "en:Hello, {{name}}"
+    },
+    "fr": {
+      "Locale.Marker": "fr",
+      "Ingress.Probe": "fr:probe",
+      "Ingress.Named": "fr:Hello, {{name}}"
+    },
+    "de": {
+      "Locale.Marker": "de",
+      "Ingress.Probe": "de:probe",
+      "Ingress.Named": "de:Hello, {{name}}"
+    }
+  }
+}

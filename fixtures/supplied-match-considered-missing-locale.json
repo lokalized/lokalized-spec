@@ -1,0 +1,35 @@
+{
+  "id": "supplied-match-considered-missing-locale",
+  "description": "A fabrication that considers only en while the instance loaded fr and en. DefaultStrings.validateSuppliedLocaleMatchResult (DefaultStrings.java:2461-2471) compares the considered locales as a SET against getSupportedLocales and rejects any difference.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "localeMatchSupplier": {
+    "behavior": "fabricated",
+    "locale": "en",
+    "matchType": "EXACT",
+    "range": "en",
+    "weight": 1,
+    "ranges": [
+      {
+        "range": "en",
+        "weight": 1
+      }
+    ],
+    "fallbackLocale": "en",
+    "consideredLocales": [
+      "en"
+    ]
+  },
+  "files": {
+    "fr": {
+      "Locale.Marker": "fr",
+      "Greeting.Hello": "Bonjour",
+      "Only.Fr": "fr-only"
+    },
+    "en": {
+      "Locale.Marker": "en",
+      "Greeting.Hello": "Hello",
+      "Only.En": "en-only"
+    }
+  }
+}

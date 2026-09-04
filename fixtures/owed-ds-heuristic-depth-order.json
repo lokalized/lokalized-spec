@@ -1,0 +1,22 @@
+{
+  "id": "owed-ds-heuristic-depth-order",
+  "description": "Two regional English catalogs plus an unrelated fallback. Requests are written so that TWO specific heuristic ranges compete for them: neither range is an anchor for either catalog (no exact, canonical, structural or CLDR-fallback relationship exists between en-US/en-CA/en-Latn-US and en-GB/en-AU), so both go through assignPreferredSpecificHeuristicLocales and its comparator decides which range claims which catalog. The configured tiebreaker order makes the first claim deterministic, so the OUTPUT reveals the comparator's ordering.",
+  "fallbackLocale": "fr",
+  "tiebreakers": {
+    "en": [
+      "en-GB",
+      "en-AU"
+    ]
+  },
+  "files": {
+    "fr": {
+      "Checkout.Title": "fr"
+    },
+    "en-GB": {
+      "Checkout.Title": "en-GB"
+    },
+    "en-AU": {
+      "Checkout.Title": "en-AU"
+    }
+  }
+}

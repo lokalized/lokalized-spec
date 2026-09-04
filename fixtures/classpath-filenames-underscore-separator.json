@@ -1,0 +1,15 @@
+{
+  "id": "classpath-filenames-underscore-separator",
+  "description": "A valid en catalog plus a file named 'de_DE.json' — the Java Locale.toString() spelling rather than the BCP 47 one. Underscore is absent from LANGUAGE_TAG_PATTERN. The single most likely filename a port would wrongly accept.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "rawFiles": {
+    "de_DE.json": "{\"Key.underscore\":\"underscore\"}"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "id": "warnings-limit-zero-clean",
+  "description": "A complete English catalog loaded with maximumWarnings lowered to 0. The clean side of the zero boundary: a limit of zero must not fail a load that produces no warnings.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumWarnings": 0
+  },
+  "files": {
+    "en": {
+      "Books": {
+        "translation": "{{books}}",
+        "placeholders": {
+          "books": {
+            "value": "count",
+            "translations": {
+              "CARDINALITY_ONE": "book",
+              "CARDINALITY_OTHER": "books"
+            }
+          }
+        }
+      }
+    }
+  }
+}

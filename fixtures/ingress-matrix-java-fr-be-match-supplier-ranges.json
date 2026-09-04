@@ -1,0 +1,23 @@
+{
+  "id": "ingress-matrix-java-fr-be-match-supplier-ranges",
+  "description": "Seed row 2 catalog, supplied match from the whole-list solver on header 'fr-BE'.",
+  "fallbackLocale": "fr-FR",
+  "tiebreakers": {
+    "fr": [
+      "fr-FR",
+      "fr-CA"
+    ]
+  },
+  "localeMatchSupplier": {
+    "behavior": "match-ranges",
+    "ranges": "fr-BE"
+  },
+  "files": {
+    "fr-FR": {
+      "Checkout.Title": "Paiement (FR)"
+    },
+    "fr-CA": {
+      "Checkout.Title": "Paiement (CA)"
+    }
+  }
+}

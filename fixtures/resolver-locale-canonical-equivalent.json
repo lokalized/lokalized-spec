@@ -1,0 +1,51 @@
+{
+  "id": "resolver-locale-canonical-equivalent",
+  "description": "A request whose FIRST candidate is resolved onto an equivalent loaded catalog rather than matched by tag, so the supplying locale differs from the request with no fallback step involved at all. mo is not loaded; localizedStringsFor (DefaultStrings.java:2506) maps it onto loaded ro, and localeFallbackCandidates keys the candidate by that RESOLVED attempted locale (:2495-2500). The loader does not apply CLDR aliases, so ro is loaded as ro and no mo catalog exists. ro and en have distinct language codes, so tiebreakers are not required.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "phoneticResolver": {
+    "behavior": "by-locale",
+    "mapping": {
+      "en": "PHONETIC_VOWEL",
+      "ro": "PHONETIC_CONSONANT",
+      "mo": "PHONETIC_H_SILENT"
+    },
+    "default": "PHONETIC_OTHER"
+  },
+  "files": {
+    "ro": {
+      "Locale.Marker": "ro",
+      "Article": {
+        "translation": "{{article}}",
+        "placeholders": {
+          "article": {
+            "value": "nounTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "got:en",
+              "PHONETIC_CONSONANT": "got:ro",
+              "PHONETIC_H_SILENT": "got:mo",
+              "PHONETIC_OTHER": "got:unmapped"
+            }
+          }
+        }
+      }
+    },
+    "en": {
+      "Locale.Marker": "en",
+      "Article": {
+        "translation": "{{article}}",
+        "placeholders": {
+          "article": {
+            "value": "nounTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "got:en",
+              "PHONETIC_CONSONANT": "got:ro",
+              "PHONETIC_H_SILENT": "got:mo",
+              "PHONETIC_OTHER": "got:unmapped"
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "id": "ingress-smoke-locale-supplier",
+  "description": "The other ambient ingress: a localeSupplier returning a plain Locale negotiated from ranges. MEASURED: this does NOT leave the result without a match — the library derives an EXACT match for the supplied locale, so the observable difference from a match supplier is the RANGE it reports (the supplier's own locale, not the negotiated preference list), never the presence of diagnostics.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "localeSupplier": {
+    "behavior": "match-ranges",
+    "ranges": "fr-CA,fr;q=0.9"
+  },
+  "files": {
+    "fr": {
+      "Checkout.Title": "Paiement"
+    },
+    "en": {
+      "Checkout.Title": "Checkout"
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "failure-handler-key-interpolation-limit",
+  "description": "Serves 'failure-key fail-soft behavior' directly. maximumInterpolatedOutputCharacters is lowered to 12; TranslationRuntimeLimits documents its range as 1 through MAXIMUM_INTERPOLATED_OUTPUT_CHARACTERS = 1048576 (1024*1024), so 12 is legal and well under the hard ceiling. Twelve puts the failure-key interpolation of 'Hi {{name}}' exactly on the boundary: the literal prefix 'Hi ' costs 3, so StringInterpolator.appendChecked admits a 9-character replacement (9 > 12-3 is false) and refuses a 10-character one. Bidi isolation is charged against the same budget -- interpolateFailureKey passes the same limit into BidiUtils.isolatedValue at DefaultStrings.java:1405-1408, and BoundedIsolatedValue.render adds FSI and PDI inside it -- so the isolation option alone can flip the outcome. interpolateFailureKey swallows any RuntimeException and returns the raw key (DefaultStrings.java:1414-1416). The catalog holds no resolvable key beyond a marker, so nothing else can consume the tiny budget. One loaded locale, so tiebreakers are null.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "runtimeLimits": {
+    "maximumInterpolatedOutputCharacters": 12
+  },
+  "files": {
+    "en": {
+      "Locale.Marker": "en"
+    }
+  }
+}

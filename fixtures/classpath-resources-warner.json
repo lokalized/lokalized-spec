@@ -1,0 +1,21 @@
+{
+  "id": "classpath-resources-warner",
+  "description": "A single catalog whose only placeholder declares CARDINALITY_ONE and nothing else, so it emits exactly one INCOMPLETE_CARDINALITY_TRANSLATIONS warning whose missing-form set is decided entirely by the locale it is validated against. Mapped under three different keys to prove the caller's key drives validation, not the filename. Verified to load and construct Strings from the filesystem (single ru locale, fallback ru).",
+  "fallbackLocale": "ru",
+  "tiebreakers": null,
+  "files": {
+    "ru": {
+      "Greet": {
+        "translation": "{{c}}",
+        "placeholders": {
+          "c": {
+            "value": "n",
+            "translations": {
+              "CARDINALITY_ONE": "one"
+            }
+          }
+        }
+      }
+    }
+  }
+}

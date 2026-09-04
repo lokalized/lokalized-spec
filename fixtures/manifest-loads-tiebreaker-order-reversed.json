@@ -1,0 +1,22 @@
+{
+  "id": "manifest-loads-tiebreaker-order-reversed",
+  "description": "Two German children load and the supplied tiebreaker list is de:[de-CH, de-AT] — the REVERSE of both the file-write order and alphabetical order. Added by review: it makes the CONTENT of a tiebreaker entry observable, which is what gives the absent-vs-present pair its meaning. The existing seed row 2 (direct-fr-be, fr:[fr-FR, fr-CA]) rules out alphabetical order only; it cannot rule out a port that follows manifest insertion order, because there the two coincide. Here they do not.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "de": [
+      "de-CH",
+      "de-AT"
+    ]
+  },
+  "files": {
+    "en": {
+      "Greeting": "Hello"
+    },
+    "de-AT": {
+      "Greeting": "Servus"
+    },
+    "de-CH": {
+      "Greeting": "Gruezi"
+    }
+  }
+}

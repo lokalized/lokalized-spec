@@ -1,0 +1,15 @@
+{
+  "id": "classpath-filenames-nine-letter-json",
+  "description": "A valid en catalog plus a file whose stem is nine ASCII letters and .json. Nine characters fail LANGUAGE_TAG_PATTERN outright at LocalizedStringLoader.java:1652 — the first rejection route — so this and the eight-letter fixture reach the same throw and the same message by different internal paths.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "rawFiles": {
+    "aaaaaaaaa.json": "{\"Key.ninejson\":\"ninejson\"}"
+  }
+}

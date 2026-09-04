@@ -1,0 +1,19 @@
+{
+  "id": "ingress-matrix-java-en-au-baseline",
+  "description": "Seed row 3 catalog (loaded en-001, en; tiebreaker en:[en, en-001]; fallback and instance locale en). No ambient supplier. MEASURED per-call locale en-AU: CLDR_FALLBACK/en-001, lookupLocale en-AU, attempted [en-AU, en-001].",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "en": [
+      "en",
+      "en-001"
+    ]
+  },
+  "files": {
+    "en-001": {
+      "Checkout.Title": "Checkout (world English)"
+    },
+    "en": {
+      "Checkout.Title": "Checkout"
+    }
+  }
+}

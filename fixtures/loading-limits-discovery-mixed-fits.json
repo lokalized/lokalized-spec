@@ -1,0 +1,18 @@
+{
+  "id": "loading-limits-discovery-mixed-fits",
+  "description": "A directory with three children: one locale file, one dot-prefixed hidden file, one non-language-tag file. Loaded with maximumDiscoveryEntries at exactly 3.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumDiscoveryEntries": 3
+  },
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "rawFiles": {
+    ".DS_Store": "junk",
+    "readme.txt": "not a localized strings file"
+  }
+}

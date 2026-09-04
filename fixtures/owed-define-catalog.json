@@ -1,0 +1,65 @@
+{
+  "id": "owed-define-catalog",
+  "description": "One loaded catalog holding one entry per SHAPE a LocalizedString can take: plain, commented, a value-based LanguageFormTranslation, a range-based one, a generated ExpressionTranslation fragment with an alternative, and a whole-message alternative. Every `define` case hands a hand-built probe to DefaultStrings$LocalizedStringSet.contains against this catalog, so each field of LocalizedString#equals and of the four nested equals methods has both an EQUAL row and a row where exactly that field differs. Nothing here is degenerate: the fixture loads and constructs like any other, because the hand-built side lives in the case input rather than in the fixture -- which is why `define` needs no construction exemption and no permutation gate, unlike `construct`. Single locale, so tiebreakers is null.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Plain": {
+        "translation": "Hello"
+      },
+      "Commented": {
+        "translation": "Hi",
+        "commentary": "note"
+      },
+      "Forms": {
+        "translation": "{{books}}",
+        "placeholders": {
+          "books": {
+            "value": "n",
+            "translations": {
+              "CARDINALITY_ONE": "book",
+              "CARDINALITY_OTHER": "books"
+            }
+          }
+        }
+      },
+      "Ranged": {
+        "translation": "{{hours}}",
+        "placeholders": {
+          "hours": {
+            "range": {
+              "start": "lo",
+              "end": "hi"
+            },
+            "translations": {
+              "CARDINALITY_ONE": "hour",
+              "CARDINALITY_OTHER": "hours"
+            }
+          }
+        }
+      },
+      "Fragment": {
+        "translation": "{{f}}",
+        "placeholders": {
+          "f": {
+            "translation": "few",
+            "alternatives": [
+              {
+                "count > 5": "many"
+              }
+            ]
+          }
+        }
+      },
+      "Alts": {
+        "translation": "base",
+        "alternatives": [
+          {
+            "count > 1": "plural"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "id": "classpath-filenames-invalid-json-only",
+  "description": "A package containing ONE file, 'catalog.json', and no loadable catalog at all. Isolates what each path returns when every candidate name is rejected. MEASURED: the classpath path is an EMPTY SUCCESS with one warning; the filesystem path is a hard failure.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {},
+  "rawFiles": {
+    "catalog.json": "{\"Key.catalog\":\"catalog\"}"
+  }
+}

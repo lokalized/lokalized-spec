@@ -1,0 +1,865 @@
+{
+  "formatVersion": 1,
+  "family": "callback-interaction",
+  "description": "Plan v7 section 8.3 fixture family 'callback-interaction'. Inputs only; the oracle emits expected.",
+  "skipped": [
+    {
+      "what": "The PASS-THROUGH branch of contextualizePlaceholderFailure (DefaultStrings.java:1279-1281), which returns an UNRECOGNIZED RuntimeException unwrapped, with no contextualized message -- the literal reading of the clause's 'ordinary custom-resolver sentinel identity, not replaced by a library type'.",
+      "why": "The oracle's only throwing PhoneticResolver behavior raises java.lang.IllegalStateException (VectorOracle delegateResolverFrom, case \"throw\"), and ISE is one of the three RECOGNIZED types, so every resolver exception expressible today takes a wrapping branch. Reaching the pass-through needs a new named behavior -- for example a \"throw\" spec accepting an exceptionType naming a custom RuntimeException subclass. The corrected set covers all three recognized branches instead (IllegalStateException from a throwing resolver, IllegalArgumentException from a null-returning resolver and from a gender type mismatch, ExpressionEvaluationException from a fragment expression), plus the weaker true statement that the type survives contextualization unchanged and the raw exception is retained verbatim as the wrapper's cause, observable through resolverCalls[].threw, result.failureCause.causeType/causeMessage and thrown.causeType."
+    },
+    {
+      "what": "A resolver that throws a java.lang.Error rather than a RuntimeException, exercising the separate Error rethrow branch of throwExceptionFor (DefaultStrings.java:3206-3207).",
+      "why": "No named callback behavior raises an Error, and the per-candidate catch at DefaultStrings.java:721 catches only RuntimeException, so an Error would escape the fallback loop before it could ever become a retained cause. Expressing this needs a new named behavior plus a decision about whether the oracle should record an Error at all."
+    },
+    {
+      "what": "A fallback policy that returns null, which DefaultStrings.java:734-735 turns into a NullPointerException from requireNonNull(..., \"translationFallbackPolicy returned null\") -- the policy-side counterpart of the resolver's null-return case.",
+      "why": "The primer's named policy behaviors are missing-or-no-match, any-failure, never, continue-for-locales, continue-for-reasons and throw-in-policy; none of them can return null, and customPolicyFrom rejects any other behavior name. A \"return-null\" policy behavior would have to be added to the oracle first."
+    },
+    {
+      "what": "A per-call PhoneticResolver override interacting with a per-call policy or handler.",
+      "why": "TranslationOptions carries only bidiIsolation, translationFailureHandler and translationFallbackPolicy (DefaultStrings.java:684-686); there is no per-call resolver form, as the task statement notes. The instance resolver is therefore the fixed member of every override combination, which is what the both-per-call-overrides case makes explicit."
+    },
+    {
+      "what": "localeSupplier / localeMatchSupplier / localeMatchResolver as callbacks that could fail or be observed alongside the resolver, policy and handler.",
+      "why": "Negotiation ingress is not yet expressible in the fixture contract; the oracle installs a fixed localeSupplier returning the fixture's instanceLocale. Listed as still-unsupported in the task statement."
+    },
+    {
+      "what": "Classpath-based loading of the fixture catalogs.",
+      "why": "Fixtures are materialized to a temporary directory and read through LocalizedStringLoader.loadFromFilesystem; no classpath route exists in the harness. Listed as still-unsupported in the task statement."
+    },
+    {
+      "what": "JS-side delivery concerns (SSR, Fetch planning, digest capability) around a failing callback.",
+      "why": "No Java oracle counterpart exists to emit against. Listed as still-unsupported in the task statement."
+    }
+  ],
+  "cases": [
+    {
+      "id": "callback-interaction.first-cause.resolver-throw-retained-over-later-type-mismatch",
+      "requirementIds": [],
+      "fixture": "callback-interaction-first-cause",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en-US",
+        "placeholders": {
+          "nounTerm": "apple",
+          "personGender": "not-a-gender",
+          "visitCount": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Two candidates fail with different exception TYPES. firstFallbackFailure is assigned only while null (DefaultStrings.java:725-726), so result.failureCause must be the en-US resolver's IllegalStateException, not the en IllegalArgumentException that came later. policyCalls records both consultations with their own causeType, so a port that retained the LAST cause would show IllegalArgumentException in failureCause while policyCalls still showed both, in that order."
+    },
+    {
+      "id": "callback-interaction.first-cause.per-call-missing-or-no-match-stops-at-resolver-failure",
+      "requirementIds": [],
+      "fixture": "callback-interaction-first-cause",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en-US",
+        "placeholders": {
+          "nounTerm": "apple",
+          "personGender": "not-a-gender",
+          "visitCount": 1
+        },
+        "translationFallbackPolicy": "missing-or-no-match"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same lookup with the library-default policy supplied per call. RESOLUTION_FAILURE is not a continuation reason for it, so exactly one candidate is attempted, the resolver is called once, and the single policyCall carries decision false. Discriminates a port that classifies a resolver failure as a missing translation, which would attempt all three locales."
+    },
+    {
+      "id": "callback-interaction.first-cause.custom-policy-sees-candidate-locale-not-request-locale",
+      "requirementIds": [],
+      "fixture": "callback-interaction-first-cause",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en-US",
+        "placeholders": {
+          "nounTerm": "apple",
+          "personGender": "not-a-gender",
+          "visitCount": 1
+        },
+        "translationFallbackPolicy": {
+          "behavior": "continue-for-locales",
+          "locales": [
+            "en-US"
+          ]
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A caller policy that continues only for en-US. It continues past en-US and STOPS at en, proving the policy is handed the CANDIDATE locale being abandoned rather than the requested lookup locale -- if a port passed the request locale, both consultations would see en-US and the run would reach fr. The retained cause is still the first one."
+    },
+    {
+      "id": "callback-interaction.first-cause.custom-policy-sees-resolution-failure-reason",
+      "requirementIds": [],
+      "fixture": "callback-interaction-first-cause",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en-US",
+        "placeholders": {
+          "nounTerm": "apple",
+          "personGender": "not-a-gender",
+          "visitCount": 1
+        },
+        "translationFallbackPolicy": {
+          "behavior": "continue-for-reasons",
+          "reasons": [
+            "RESOLUTION_FAILURE"
+          ]
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A caller policy keyed on the reason. A resolver exception must be reported to the policy as RESOLUTION_FAILURE, so this policy continues through every candidate. Its observation block deliberately equals the any-failure baseline's; the discrimination lives in the PAIR with the NO_MATCHING_ALTERNATIVE variant on the same fixture and input, which stops after one candidate. Neither case alone pins which reason a callback failure produces."
+    },
+    {
+      "id": "callback-interaction.first-cause.resolver-failure-is-not-no-matching-alternative",
+      "requirementIds": [],
+      "fixture": "callback-interaction-first-cause",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en-US",
+        "placeholders": {
+          "nounTerm": "apple",
+          "personGender": "not-a-gender",
+          "visitCount": 1
+        },
+        "translationFallbackPolicy": {
+          "behavior": "continue-for-reasons",
+          "reasons": [
+            "NO_MATCHING_ALTERNATIVE"
+          ]
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The negative half of the reason probe: a policy that continues ONLY for NO_MATCHING_ALTERNATIVE must stop dead on the resolver's exception. A port that mislabels a callback failure would continue and attempt three locales instead of one, while its sibling case would be unchanged."
+    },
+    {
+      "id": "callback-interaction.first-cause.reversed-request-retains-the-type-mismatch-instead",
+      "requirementIds": [],
+      "fixture": "callback-interaction-first-cause",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "nounTerm": "apple",
+          "personGender": "not-a-gender",
+          "visitCount": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The SAME fixture and placeholders requested as 'en', which reorders the candidates to en, en-US, fr so the type-mismatch failure comes first and the resolver failure second. failureCause must now be the IllegalArgumentException naming 'subject'. Without this case 'the first cause is retained' is indistinguishable from 'the resolver's cause is always preferred'. resolverCalls still records the later en-US invocation and the locale it was handed, so the donor rule is pinned at the same time."
+    },
+    {
+      "id": "callback-interaction.first-cause.same-type-causes-distinguished-by-contextualized-message",
+      "requirementIds": [],
+      "fixture": "callback-interaction-first-cause",
+      "operation": "getResult",
+      "input": {
+        "key": "Article.Two",
+        "locale": "en-US",
+        "placeholders": {
+          "nounTerm": "apple",
+          "personGender": "not-a-gender",
+          "visitCount": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Both candidates fail through the same throwing resolver, so both causes are IllegalStateException carrying the same sentinel message; only the CONTEXTUALIZATION differs, because the two catalogs name the generated placeholder 'article' and 'determiner'. The retained cause must name 'article'. Type alone cannot discriminate here, which is the point: the wrapper message is load-bearing, and resolverCalls shows two invocations handed en-US and en respectively."
+    },
+    {
+      "id": "callback-interaction.first-cause.same-type-first-cause-rethrown-verbatim",
+      "requirementIds": [],
+      "fixture": "callback-interaction-first-cause",
+      "operation": "get",
+      "input": {
+        "key": "Article.Two",
+        "locale": "en-US",
+        "placeholders": {
+          "nounTerm": "apple",
+          "personGender": "not-a-gender",
+          "visitCount": 1
+        },
+        "translationFailureHandler": {
+          "behavior": "throw"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same two-resolver-failure lookup ended by a throwing handler. throwExceptionFor (DefaultStrings.java:3196-3213) rethrows a retained RuntimeException VERBATIM rather than constructing MissingTranslationException, so the thrown identity must be the FIRST candidate's contextualized IllegalStateException naming 'article', with the raw resolver exception as its cause."
+    },
+    {
+      "id": "callback-interaction.first-cause.expression-failure-retained-over-later-resolver-failure",
+      "requirementIds": [],
+      "fixture": "callback-interaction-first-cause",
+      "operation": "getResult",
+      "input": {
+        "key": "Fragment.First",
+        "locale": "en-US",
+        "placeholders": {
+          "badCount": "not-a-number",
+          "nounTerm": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "First-cause retention where the FIRST cause is a library exception type. en-US fails inside an expression-fragment placeholder, which contextualization preserves as ExpressionEvaluationException (DefaultStrings.java:1270-1271); en then fails through the throwing resolver. failureCause must be the ExpressionEvaluationException naming 'frag' and its ExpressionTranslation definition class, not the later IllegalStateException -- and policyCalls shows the two consultations carrying those two distinct cause types in order. A port that ranked callback exceptions above library-generated ones, or that flattened every failure to one type, diverges here."
+    },
+    {
+      "id": "callback-interaction.first-cause.retained-expression-failure-rethrown-verbatim",
+      "requirementIds": [],
+      "fixture": "callback-interaction-first-cause",
+      "operation": "get",
+      "input": {
+        "key": "Fragment.First",
+        "locale": "en-US",
+        "placeholders": {
+          "badCount": "not-a-number",
+          "nounTerm": "apple"
+        },
+        "translationFailureHandler": {
+          "behavior": "throw"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same lookup ended by a throwing handler. The exact rethrow must preserve a LIBRARY exception type across the whole chain: thrown.type is com.lokalized.ExpressionEvaluationException, not MissingTranslationException and not the later resolver's IllegalStateException. Pins that throwExceptionFor keys on the presence of a retained cause and never re-types it."
+    },
+    {
+      "id": "callback-interaction.first-cause.no-match-then-resolver-failure-upgrades-reason",
+      "requirementIds": [],
+      "fixture": "callback-interaction-first-cause",
+      "operation": "getResult",
+      "input": {
+        "key": "Mixed.NoMatchFirst",
+        "locale": "en-US",
+        "placeholders": {
+          "nounTerm": "apple",
+          "personGender": "not-a-gender",
+          "visitCount": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The first candidate fails with NO_MATCHING_ALTERNATIVE and NO cause; the second fails through the resolver. The first policy consultation must carry reason NO_MATCHING_ALTERNATIVE with a null cause and the second RESOLUTION_FAILURE with the contextualized cause, and the final reason must be RESOLUTION_FAILURE because a retained cause outranks noMatchingAlternativeEncountered (DefaultStrings.java:742-747). resolverCalls has exactly one entry, handed the donor locale 'en'."
+    },
+    {
+      "id": "callback-interaction.first-cause.resolver-failure-then-no-match-keeps-reason",
+      "requirementIds": [],
+      "fixture": "callback-interaction-first-cause",
+      "operation": "getResult",
+      "input": {
+        "key": "Mixed.ResolverFirst",
+        "locale": "en-US",
+        "placeholders": {
+          "nounTerm": "apple",
+          "personGender": "not-a-gender",
+          "visitCount": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The mirror image: resolver failure first, unmatched alternatives second. The order of the two policy consultations inverts (caused then causeless) and the retained cause is now the en-US one naming 'article', but the final reason is RESOLUTION_FAILURE in both directions. A port that let the LAST attempt set the reason would report NO_MATCHING_ALTERNATIVE here and RESOLUTION_FAILURE in the mirror case, so the pair catches it either way round."
+    },
+    {
+      "id": "callback-interaction.first-cause.handler-exception-displaces-retained-resolver-failure",
+      "requirementIds": [],
+      "fixture": "callback-interaction-first-cause",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en-US",
+        "placeholders": {
+          "nounTerm": "apple",
+          "personGender": "not-a-gender",
+          "visitCount": 1
+        },
+        "translationFailureHandler": {
+          "behavior": "throw-in-handler",
+          "message": "handler-refused-alpha"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Three callbacks in one lookup: the resolver throws, the policy is consulted twice, and then the handler itself throws. DefaultStrings.java:749 calls the handler outside any try/catch, so the handler's own exception escapes with a null cause and REPLACES the retained resolution failure at the top level. The failures channel still shows the handler was handed the retained first cause, so the displacement is observable rather than merely inferred."
+    },
+    {
+      "id": "callback-interaction.recover.resolver-failure-then-tagged-bypass-succeeds",
+      "requirementIds": [],
+      "fixture": "callback-interaction-recover",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en-US",
+        "placeholders": {
+          "nounTerm": "apple",
+          "taggedTerm": {
+            "$lokalized": "language-form",
+            "axis": "phonetic",
+            "name": "PHONETIC_VOWEL"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The resolver throws at en-US, the policy continues, and the en catalog reads a TAGGED phonetic value that bypasses the resolver entirely, so the lookup succeeds. resolverCalls must have exactly ONE entry even though both catalogs declare phonetic placeholders, and result.failureCause must be null: a successful candidate discards firstFallbackFailure rather than reporting it. A port that carried the retained failure into a TRANSLATED result would fail here."
+    },
+    {
+      "id": "callback-interaction.recover.raw-value-at-donor-invokes-resolver-twice",
+      "requirementIds": [],
+      "fixture": "callback-interaction-recover",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en-US",
+        "placeholders": {
+          "nounTerm": "apple",
+          "taggedTerm": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The control for the case above: the same lookup with the donor's value supplied as a RAW string instead of a tagged phonetic. The resolver is now reached twice, at en-US and then at en, and the lookup fails. Two resolverCalls with different locale arguments prove both that the bypass in the paired case was real and that each candidate hands the resolver its own donor locale rather than the requested one."
+    },
+    {
+      "id": "callback-interaction.recover.per-call-never-policy-suppresses-the-recovery",
+      "requirementIds": [],
+      "fixture": "callback-interaction-recover",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en-US",
+        "placeholders": {
+          "nounTerm": "apple",
+          "taggedTerm": {
+            "$lokalized": "language-form",
+            "axis": "phonetic",
+            "name": "PHONETIC_VOWEL"
+          }
+        },
+        "translationFallbackPolicy": "never"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same recoverable lookup with a per-call 'never' policy. The policy is still consulted once -- it is not skipped just because it always says no -- and returns false, so the en candidate is never tried, the resolver is called once, and the retained resolver failure becomes the reported cause. Discriminates a port that short-circuits consultation for a known-negative policy, which would leave policyCalls empty."
+    },
+    {
+      "id": "callback-interaction.recover.throwing-handler-never-runs-when-fallback-recovers",
+      "requirementIds": [],
+      "fixture": "callback-interaction-recover",
+      "operation": "get",
+      "input": {
+        "key": "Article",
+        "locale": "en-US",
+        "placeholders": {
+          "nounTerm": "apple",
+          "taggedTerm": {
+            "$lokalized": "language-form",
+            "axis": "phonetic",
+            "name": "PHONETIC_VOWEL"
+          }
+        },
+        "translationFailureHandler": {
+          "behavior": "throw-in-handler",
+          "message": "handler-never-runs-bravo"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A per-call handler that would throw, on a lookup that recovers at the donor. The ABSENCE of the failures channel is the assertion, and it is falsifiable: had the handler run at all, this case would have thrown 'handler-never-runs-bravo' instead of returning text. A port that invoked the handler for every failed candidate rather than once per failed LOOKUP would throw here."
+    },
+    {
+      "id": "callback-interaction.sentinel.resolver-exception-is-contextualized-and-retained",
+      "requirementIds": [],
+      "fixture": "callback-interaction-sentinel",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "nounTerm": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The baseline of the three-channel identity chain. resolverCalls[0].threw names the exception type the resolver raised; result.failureCause carries the CONTEXTUALIZED wrapper (same type, message naming the placeholder, its definition class, the key and the declaring path) with the raw sentinel message retained as causeMessage. policyCalls is absent because a single candidate is never followed by a consultation -- DefaultStrings.java:731 breaks first."
+    },
+    {
+      "id": "callback-interaction.sentinel.get-rethrows-the-contextualized-exception-verbatim",
+      "requirementIds": [],
+      "fixture": "callback-interaction-sentinel",
+      "operation": "get",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "nounTerm": "apple"
+        },
+        "translationFailureHandler": {
+          "behavior": "throw"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The third channel: with a throwing handler, throwExceptionFor rethrows the retained RuntimeException exactly, so thrown.type, thrown.message and thrown.causeType must equal the failureCause recorded by the paired getResult case. No MissingTranslationException is constructed and no library type replaces the contextualized wrapper -- the identity survives the whole chain."
+    },
+    {
+      "id": "callback-interaction.sentinel.get-result-also-throws-under-a-throwing-handler",
+      "requirementIds": [],
+      "fixture": "callback-interaction-sentinel",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "nounTerm": "apple"
+        },
+        "translationFailureHandler": {
+          "behavior": "throw"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "getResult is not exempt from a throwing handler: the handler's response is applied before any TranslationResult is built (DefaultStrings.java:749-763), so getResult throws exactly what get throws. Its observation block is deliberately identical to the paired get case -- that identity IS the proposition. A port that treated getResult as a non-throwing API would return a RETURNED_KEY result here while the paired case still threw."
+    },
+    {
+      "id": "callback-interaction.sentinel.missing-key-yields-missing-translation-exception-instead",
+      "requirementIds": [],
+      "fixture": "callback-interaction-sentinel",
+      "operation": "get",
+      "input": {
+        "key": "Absent.Key",
+        "locale": "en",
+        "placeholders": {
+          "nounTerm": "apple"
+        },
+        "translationFailureHandler": {
+          "behavior": "throw"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The contrast that gives the verbatim-rethrow case its meaning: with NO retained cause, the same throwing handler produces a freshly constructed MissingTranslationException with a null causeType. The resolverCalls channel is absent because the lookup never reached a phonetic placeholder, so the two propositions are separated cleanly."
+    },
+    {
+      "id": "callback-interaction.sentinel.no-matching-alternative-yields-missing-translation-exception",
+      "requirementIds": [],
+      "fixture": "callback-interaction-sentinel",
+      "operation": "get",
+      "input": {
+        "key": "Guest.Welcome",
+        "locale": "en",
+        "placeholders": {
+          "guestGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_MASCULINE"
+          }
+        },
+        "translationFailureHandler": {
+          "behavior": "throw"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The second causeless reason. NO_MATCHING_ALTERNATIVE also carries no throwable, so the throwing handler again constructs MissingTranslationException rather than rethrowing anything, and the failures channel shows the reason differs from the missing-key case even though the thrown identity does not. Establishes that the verbatim-rethrow branch is selected by the presence of a CAUSE, not by the failure reason -- a port keyed on the reason would pass the missing-key case and fail this one."
+    },
+    {
+      "id": "callback-interaction.sentinel.handler-exception-hides-the-resolver-exception",
+      "requirementIds": [],
+      "fixture": "callback-interaction-sentinel",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "nounTerm": "apple"
+        },
+        "translationFailureHandler": {
+          "behavior": "throw-in-handler",
+          "message": "handler-refused-charlie"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Two callbacks fail in one lookup. What escapes is the HANDLER's exception, with a null cause, not the resolver's; the resolver's contextualized failure survives only in the failures channel, which records what the handler was handed before it threw. A port that let the resolution failure win, or that chained the two together, would differ in both thrown.message and thrown.causeType."
+    },
+    {
+      "id": "callback-interaction.sentinel.returned-string-still-reports-the-resolver-cause",
+      "requirementIds": [],
+      "fixture": "callback-interaction-sentinel",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "nounTerm": "apple"
+        },
+        "translationFailureHandler": {
+          "behavior": "return-string",
+          "text": "substitute-charlie"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A handler that answers with a substitute string. The result is RETURNED_STRING yet still carries the retained resolver failure as failureReason RESOLUTION_FAILURE and as failureCause (DefaultStrings.java:758-761), so the sentinel identity survives a non-throwing response. A port that cleared the cause once a handler supplied text would lose it here."
+    },
+    {
+      "id": "callback-interaction.sentinel.tagged-value-survives-hostile-resolver-and-handler",
+      "requirementIds": [],
+      "fixture": "callback-interaction-sentinel",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "nounTerm": {
+            "$lokalized": "language-form",
+            "axis": "phonetic",
+            "name": "PHONETIC_VOWEL"
+          }
+        },
+        "translationFailureHandler": {
+          "behavior": "throw"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The negative control for every other case on this fixture. Same key, same throwing resolver, same throwing handler, but a tagged phonetic value: both callback channels must be ABSENT and the lookup must return 'an'. Beyond callback-smoke's bypass cases this adds the handler leg -- the bypass must also mean no failure ever reaches the failure handler, so a port whose tagging check ran too late would throw one of two distinguishable sentinels here."
+    },
+    {
+      "id": "callback-interaction.policy-throws.policy-exception-escapes-after-resolver-exception",
+      "requirementIds": [],
+      "fixture": "callback-interaction-policy-throws",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en-US",
+        "placeholders": {
+          "nounTerm": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The resolver throws, its exception is retained, and the policy is then consulted about whether to continue -- and throws. DefaultStrings.java:734-736 wraps the consultation in no try/catch, so the policy's exception escapes getResult and the failure handler is NEVER reached: the absent failures channel is the assertion, falsifiable because a reached handler would have thrown 'handler-refused-delta' instead. resolverCalls proves the resolver ran first. (The oracle's recording wrapper logs a consultation only after the delegate returns, so a throwing policy leaves policyCalls absent by construction; that is instrumentation, not a claim that no consultation occurred.)"
+    },
+    {
+      "id": "callback-interaction.policy-throws.per-call-policy-displaces-the-throwing-instance-policy",
+      "requirementIds": [],
+      "fixture": "callback-interaction-policy-throws",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en-US",
+        "placeholders": {
+          "nounTerm": "apple"
+        },
+        "translationFallbackPolicy": "any-failure"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A per-call policy replaces the instance's throwing one outright (DefaultStrings.java:685-686), so the same lookup now continues to the en catalog and succeeds with plain text, and the equally hostile handler is never reached either. Proves per-call option resolution happens before any callback runs -- it is a replacement, not a fallback consulted after the instance callback fails."
+    },
+    {
+      "id": "callback-interaction.policy-throws.policy-exception-escapes-without-any-cause",
+      "requirementIds": [],
+      "fixture": "callback-interaction-policy-throws",
+      "operation": "getResult",
+      "input": {
+        "key": "Absent.Key",
+        "locale": "en-US",
+        "placeholders": {
+          "nounTerm": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same throwing policy consulted for a plain missing key: reason MISSING_TRANSLATION, cause null, resolver never invoked. It still throws, so the policy's exception is not conditional on a retained cause. The absent resolverCalls channel is what separates this from the paired resolver-first case, which is otherwise identical in the thrown channel."
+    },
+    {
+      "id": "callback-interaction.policy-throws.single-candidate-skips-the-policy-and-reaches-the-handler",
+      "requirementIds": [],
+      "fixture": "callback-interaction-policy-throws",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "fr",
+        "placeholders": {
+          "nounTerm": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Requesting the fallback locale itself leaves exactly one candidate. DefaultStrings.java:731 breaks BEFORE consulting the policy on the final candidate, so the hostile policy is never asked and the hostile handler is reached instead: what escapes is 'handler-refused-delta', not 'policy-refused-delta'. The two distinct sentinels make the ordering directly readable in a single field, which is what makes this absence assertion falsifiable."
+    },
+    {
+      "id": "callback-interaction.policy-throws.both-per-call-overrides-displace-both-throwing-callbacks",
+      "requirementIds": [],
+      "fixture": "callback-interaction-policy-throws",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en-US",
+        "placeholders": {
+          "nounTerm": "apple"
+        },
+        "translationFallbackPolicy": "never",
+        "translationFailureHandler": {
+          "behavior": "return-string",
+          "text": "substitute-delta"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Per-call policy AND per-call handler simultaneously replace two throwing instance callbacks, while the instance's throwing resolver -- which has no per-call form -- still runs. The lookup stops after one candidate, returns the substitute string, and still reports the resolver's contextualized failure as its cause. Discriminates a port that merges rather than replaces per-call options, or that applies only one of the two overrides."
+    },
+    {
+      "id": "callback-interaction.generated-error.resolver-success-is-the-control",
+      "requirementIds": [],
+      "fixture": "callback-interaction-generated-error",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "nounTerm": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The control: the resolver returns a form the catalog translates and the lookup succeeds. resolverCalls records 'returned' rather than 'threw', which is what makes the two failing cases on this fixture attributable to the catalog rather than to the callback."
+    },
+    {
+      "id": "callback-interaction.generated-error.unmapped-resolver-answer-is-contextualized",
+      "requirementIds": [],
+      "fixture": "callback-interaction-generated-error",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "nounTerm": "hour"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The resolver succeeds and returns PHONETIC_H_SILENT, for which the catalog has no branch, so DefaultStrings.java:1181-1183 raises a library-generated IllegalStateException that contextualizePlaceholderFailure then wraps with the placeholder name, definition class, key and declaring path. Both halves are pinned at once: resolverCalls shows threw null alongside the returned form, and failureCause shows the wrapper over the generated message. A port that blamed the resolver, or that omitted the wrapper, differs on exactly one of the two."
+    },
+    {
+      "id": "callback-interaction.generated-error.default-answer-rethrown-verbatim-under-throwing-handler",
+      "requirementIds": [],
+      "fixture": "callback-interaction-generated-error",
+      "operation": "get",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "nounTerm": "zebra"
+        },
+        "translationFailureHandler": {
+          "behavior": "throw"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The resolver's fallback answer PHONETIC_OTHER is also untranslated, and a throwing handler rethrows the contextualized wrapper verbatim. The generated message spells the form with the Java enum's own name(), so the thrown message must carry 'OTHER' rather than the JS constant spelling PHONETIC_OTHER -- a renderName trap a port can get wrong while resolverCalls and every other channel still match."
+    },
+    {
+      "id": "callback-interaction.null-resolver.first-of-two-identical-type-causes-is-retained",
+      "requirementIds": [],
+      "fixture": "callback-interaction-null-resolver",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en-US",
+        "placeholders": {
+          "nounTerm": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A null return is turned into an IllegalArgumentException naming the placeholder VALUE and the key (DefaultStrings.java:1169-1171), which is then contextualized with the generated placeholder NAME. Both candidates fail this way, so the two causes share a type AND an inner message, and are separated only by 'article' versus 'determiner' in the wrapper; failureCause must name 'article'. resolverCalls records two calls that returned null WITHOUT throwing, distinguishing this from the throwing-resolver fixtures."
+    },
+    {
+      "id": "callback-interaction.null-resolver.retained-null-failure-rethrown-verbatim",
+      "requirementIds": [],
+      "fixture": "callback-interaction-null-resolver",
+      "operation": "get",
+      "input": {
+        "key": "Article",
+        "locale": "en-US",
+        "placeholders": {
+          "nounTerm": "apple"
+        },
+        "translationFailureHandler": {
+          "behavior": "throw"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same lookup ended by a throwing handler: the retained IllegalArgumentException is rethrown verbatim, so the thrown message names 'article' and not 'determiner'. Pins first-cause retention on the throwing path as well as the result path, for a failure the library generated on the callback's behalf rather than one the callback raised itself."
+    },
+    {
+      "id": "callback-interaction.nested.contextualization-names-the-placeholder-that-failed",
+      "requirementIds": [],
+      "fixture": "callback-interaction-nested-expansion",
+      "operation": "getResult",
+      "input": {
+        "key": "Nested.InnerFails",
+        "locale": "en",
+        "placeholders": {
+          "nounTerm": "apple",
+          "taggedTerm": {
+            "$lokalized": "language-form",
+            "axis": "phonetic",
+            "name": "PHONETIC_VOWEL"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The outer placeholder resolves from a tagged value without touching the resolver and selects a template naming an inner placeholder, which reads a raw term, reaches the resolver, and gets an answer the inner branch map does not translate. The contextualized wrapper must name 'inner', not the top-level 'outer' and not the key alone, and it carries NO selection annotation because the failure happens at the resolution site (DefaultStrings.java:1196-1197). resolverCalls must contain exactly one entry."
+    },
+    {
+      "id": "callback-interaction.nested.consonant-answer-never-resolves-the-inner-placeholder",
+      "requirementIds": [],
+      "fixture": "callback-interaction-nested-expansion",
+      "operation": "getResult",
+      "input": {
+        "key": "Nested.InnerFails",
+        "locale": "en",
+        "placeholders": {
+          "nounTerm": "apple",
+          "taggedTerm": {
+            "$lokalized": "language-form",
+            "axis": "phonetic",
+            "name": "PHONETIC_CONSONANT"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The falsifier for the case above. The same key and the same poisoned nounTerm, but the outer tagged value selects the CONSONANT template, which names no inner placeholder -- so 'inner' is never resolved, the resolver is never called, and the lookup succeeds with '[cons]'. Generated placeholders are resolved only as dependencies of a selected template; a port that resolved every declared placeholder eagerly would fail here while passing the paired case, and without this case the paired case's 'exactly one resolverCall' claim is unfalsifiable."
+    },
+    {
+      "id": "callback-interaction.nested.inner-failure-rethrown-verbatim",
+      "requirementIds": [],
+      "fixture": "callback-interaction-nested-expansion",
+      "operation": "get",
+      "input": {
+        "key": "Nested.InnerFails",
+        "locale": "en",
+        "placeholders": {
+          "nounTerm": "apple",
+          "taggedTerm": {
+            "$lokalized": "language-form",
+            "axis": "phonetic",
+            "name": "PHONETIC_VOWEL"
+          }
+        },
+        "translationFailureHandler": {
+          "behavior": "throw"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same nested failure under a throwing handler, so the wrapper naming 'inner' is what escapes to the caller. Ties the nested contextualization to the verbatim-rethrow rule in one observation, and confirms the single level of wrapping by contrast with the cycle case on the same fixture."
+    },
+    {
+      "id": "callback-interaction.nested.selection-annotated-double-contextualization",
+      "requirementIds": [],
+      "fixture": "callback-interaction-nested-expansion",
+      "operation": "getResult",
+      "input": {
+        "key": "Nested.Cycle",
+        "locale": "en",
+        "placeholders": {
+          "nounTerm": "apple",
+          "taggedTerm": {
+            "$lokalized": "language-form",
+            "axis": "phonetic",
+            "name": "PHONETIC_VOWEL"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The deepest chain this family reaches. The resolver's VOWEL answer selects a template that cycles back through the inner placeholder, which is undetectable until interpolation, so the failure is contextualized TWICE -- once for 'inner' and once for 'outer' -- and each wrapper carries the selection annotation ('; selected Phonetic.VOWEL') naming the form the callback chose (DefaultStrings.java:1356-1359). failureCause.message therefore embeds the resolver's own answer, failureCause.causeMessage is the inner wrapper, and the innermost text is the cycle report from DefaultStrings.java:1341-1342. Discriminates a port that contextualizes once, that omits the selection annotation, or that spells the selected form differently."
+    },
+    {
+      "id": "callback-interaction.nested.selection-annotated-chain-rethrown-verbatim",
+      "requirementIds": [],
+      "fixture": "callback-interaction-nested-expansion",
+      "operation": "get",
+      "input": {
+        "key": "Nested.Cycle",
+        "locale": "en",
+        "placeholders": {
+          "nounTerm": "apple",
+          "taggedTerm": {
+            "$lokalized": "language-form",
+            "axis": "phonetic",
+            "name": "PHONETIC_VOWEL"
+          }
+        },
+        "translationFailureHandler": {
+          "behavior": "throw"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The doubly contextualized chain escaping through a throwing handler. thrown.message must be the OUTER wrapper, not the innermost cycle report, proving that the whole chain -- not just its deepest link -- is what a caller sees, and that throwExceptionFor does not unwrap on the way out."
+    },
+    {
+      "id": "callback-interaction.expression-fragment.matching-alternative-is-the-control",
+      "requirementIds": [],
+      "fixture": "callback-interaction-expression-fragment",
+      "operation": "getResult",
+      "input": {
+        "key": "Fragment.Direct",
+        "locale": "en",
+        "placeholders": {
+          "visitCount": 9
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The control for the fixture: with a numeric operand the fragment alternative matches and the lookup succeeds, so the two failing cases are attributable to the operand rather than to the placeholder shape. No callback is involved -- both channels are absent -- which is what makes this the baseline for an ExpressionTranslation placeholder."
+    },
+    {
+      "id": "callback-interaction.expression-fragment.evaluation-failure-preserves-library-exception-type",
+      "requirementIds": [],
+      "fixture": "callback-interaction-expression-fragment",
+      "operation": "getResult",
+      "input": {
+        "key": "Fragment.Direct",
+        "locale": "en",
+        "placeholders": {
+          "visitCount": "not-a-number"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The third recognized contextualization branch, unreachable from every other fixture in this family. A non-numeric operand makes the fragment expression raise the library's own ExpressionEvaluationException, and DefaultStrings.java:1270-1271 rewraps it as an ExpressionEvaluationException rather than downgrading it to IllegalStateException. The wrapper also prints 'ExpressionTranslation' as the definition class where every other case in this family prints 'LanguageFormTranslation', so the message's class slot is pinned as well as the type."
+    },
+    {
+      "id": "callback-interaction.expression-fragment.evaluation-failure-rethrown-verbatim",
+      "requirementIds": [],
+      "fixture": "callback-interaction-expression-fragment",
+      "operation": "get",
+      "input": {
+        "key": "Fragment.Direct",
+        "locale": "en",
+        "placeholders": {
+          "visitCount": "not-a-number"
+        },
+        "translationFailureHandler": {
+          "behavior": "throw"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Final exact rethrow for a LIBRARY exception type. throwExceptionFor rethrows the retained ExpressionEvaluationException unchanged, so what reaches the caller is neither MissingTranslationException nor a JDK type. A port that normalized every failure to one exception class, or that only special-cased IllegalArgumentException and IllegalStateException, would diverge here while passing the resolver-sentinel rethrow cases."
+    },
+    {
+      "id": "callback-interaction.expression-fragment.resolver-answer-selects-a-failing-fragment",
+      "requirementIds": [],
+      "fixture": "callback-interaction-expression-fragment",
+      "operation": "getResult",
+      "input": {
+        "key": "Fragment.ViaPhonetic",
+        "locale": "en",
+        "placeholders": {
+          "nounTerm": "apple",
+          "visitCount": "not-a-number"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A cause chain that crosses two placeholder kinds. The resolver SUCCEEDS, returning VOWEL, and its answer selects a template that names the expression fragment, which then fails. The contextualization must name 'frag' and ExpressionTranslation -- the failing dependency -- not the 'outer' LanguageFormTranslation that selected it, and it is wrapped exactly once. resolverCalls shows returned VOWEL with threw null, so the failure is attributable to the fragment while the callback is proven to have driven the selection."
+    },
+    {
+      "id": "callback-interaction.expression-fragment.consonant-answer-never-reaches-the-fragment",
+      "requirementIds": [],
+      "fixture": "callback-interaction-expression-fragment",
+      "operation": "getResult",
+      "input": {
+        "key": "Fragment.ViaPhonetic",
+        "locale": "en",
+        "placeholders": {
+          "nounTerm": "book",
+          "visitCount": "not-a-number"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The falsifier for the case above, and the sharpest statement that a callback's RETURN VALUE decides whether a later failure happens at all. The same poisoned visitCount is present, but the resolver answers CONSONANT, selecting a template that names no fragment, so the fragment is never evaluated and the lookup succeeds. A port that resolved every declared generated placeholder regardless of selection would fail this case while passing its partner."
+    }
+  ]
+}

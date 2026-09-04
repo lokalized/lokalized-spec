@@ -1,0 +1,121 @@
+{
+  "formatVersion": 1,
+  "family": "loader-smoke",
+  "description": "Plan v7 section 8.3 fixture family 'loader-smoke'. Inputs only; the oracle emits expected.",
+  "cases": [
+    {
+      "id": "loader-smoke.load.clean-directory-reports-locales-and-keys",
+      "requirementIds": [],
+      "fixture": "loader-smoke-clean",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "Control for every other load case: a successful load reports its locales and per-locale keys."
+    },
+    {
+      "id": "loader-smoke.load.incomplete-cardinality-emits-warning",
+      "requirementIds": [],
+      "fixture": "loader-smoke-incomplete-cardinality",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "Pins the warning type, the forms it names as missing, and that loading still SUCCEEDS despite it."
+    },
+    {
+      "id": "loader-smoke.load.unparseable-file-fails",
+      "requirementIds": [],
+      "fixture": "loader-smoke-unparseable",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "A load failure recorded as an observation rather than aborting the run. Pins the exception type and message shape."
+    },
+    {
+      "id": "loader-smoke.load.translation-node-limit-exceeded",
+      "requirementIds": [],
+      "fixture": "loader-smoke-node-limit",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "maximumTranslationNodes lowered below the file's node count. Pins which limit fires and how it reports."
+    },
+    {
+      "id": "loader-smoke.parse.duplicate-members-last-or-rejected",
+      "requirementIds": [],
+      "fixture": "loader-smoke-duplicate-members",
+      "operation": "parse",
+      "input": {
+        "file": "en",
+        "locale": "en",
+        "source": "duplicate-members"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Duplicate JSON member names: pins whether the parser rejects them or takes one, and which."
+    },
+    {
+      "id": "loader-smoke.parse.magic-object-keys-are-ordinary",
+      "requirementIds": [],
+      "fixture": "loader-smoke-magic-keys",
+      "operation": "parse",
+      "input": {
+        "file": "en",
+        "locale": "en",
+        "source": "magic-keys"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "__proto__/constructor/prototype must be ordinary keys. A JS port using a plain object would lose or corrupt these."
+    },
+    {
+      "id": "loader-smoke.parse.lone-surrogate-escape",
+      "requirementIds": [],
+      "fixture": "loader-smoke-lone-surrogate",
+      "operation": "parse",
+      "input": {
+        "file": "en",
+        "locale": "en",
+        "source": "lone-surrogate"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Valid JSON syntax, invalid Unicode. Pins whether the parser rejects or preserves it."
+    },
+    {
+      "id": "loader-smoke.parse.malformed-utf8-bytes",
+      "requirementIds": [],
+      "fixture": "loader-smoke-malformed-utf8",
+      "operation": "parse",
+      "input": {
+        "file": "en",
+        "locale": "en",
+        "source": "malformed-utf8"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Invalid UTF-8 reaching the parser as bytes."
+    },
+    {
+      "id": "loader-smoke.parse.truncated-utf8-sequence",
+      "requirementIds": [],
+      "fixture": "loader-smoke-truncated-utf8",
+      "operation": "parse",
+      "input": {
+        "file": "en",
+        "locale": "en",
+        "source": "truncated-utf8"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A cut-off multi-byte sequence, distinct from an invalid lead byte."
+    },
+    {
+      "id": "loader-smoke.parse.clean-file-reports-keys",
+      "requirementIds": [],
+      "fixture": "loader-smoke-clean",
+      "operation": "parse",
+      "input": {
+        "file": "en",
+        "locale": "en",
+        "source": "clean"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Control for the parse observation channel."
+    }
+  ]
+}

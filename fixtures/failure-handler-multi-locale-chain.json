@@ -1,0 +1,16 @@
+{
+  "id": "failure-handler-multi-locale-chain",
+  "description": "Serves the attempted-locale and placeholder-map halves of what TranslationFailure exposes. The instance ambient locale (es) differs from the fallback locale (en) and from the requested locale (es-MX), so lookupLocale, the ambient default, and the fallback are three distinct tags and a port that conflates any two is caught. A request for the unloaded es-MX walks its CLDR parent chain before the fallback (CldrLocaleData.fallbackLocalesFor plus the fallback locale, DefaultStrings.java:2475-2503), giving an attempted-locale list of more than one entry; every candidate is appended at DefaultStrings.java:702 BEFORE it is attempted, so unloaded candidates appear too. The exact length is the oracle's to record -- the cases assert only that it is longer than the never-policy sibling's. Two loaded locales with distinct primary languages, so tiebreakers are null.",
+  "fallbackLocale": "en",
+  "instanceLocale": "es",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Locale.Marker": "en",
+      "Greeting.Present": "Hello there."
+    },
+    "es": {
+      "Locale.Marker": "es"
+    }
+  }
+}

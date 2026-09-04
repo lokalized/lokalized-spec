@@ -1,0 +1,40 @@
+{
+  "id": "phonetic-resolver-input-types",
+  "description": "One phonetic definition driven with every input shape the dispatch at DefaultStrings:1157-1186 can see: a tagged value from another axis, numbers of several Java types, a boolean, PluralOperands, an explicit null, an absent binding, and no placeholder map at all, plus two raw strings that spell constant names. A resolver IS installed, so no diagnostic here can reduce to 'no resolver'. A second key ('Plain') carries no placeholder and a third ('Gendered') carries a GENDER definition, both for must-not-be-called observations. The plain raw-term and plain tagged-value controls are deliberately NOT re-authored here; callback-smoke already owns them.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "phoneticResolver": {
+    "behavior": "first-letter-vowel"
+  },
+  "files": {
+    "en": {
+      "Article": {
+        "translation": "[{{a}}]",
+        "placeholders": {
+          "a": {
+            "value": "term",
+            "translations": {
+              "PHONETIC_VOWEL": "an",
+              "PHONETIC_CONSONANT": "a"
+            }
+          }
+        }
+      },
+      "Gendered": {
+        "translation": "[{{g}}]",
+        "placeholders": {
+          "g": {
+            "value": "term",
+            "translations": {
+              "GENDER_MASCULINE": "m",
+              "GENDER_FEMININE": "f"
+            }
+          }
+        }
+      },
+      "Plain": "plain text with no placeholder"
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

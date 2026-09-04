@@ -1,0 +1,17 @@
+{
+  "id": "bidi-isolation-instance-none",
+  "description": "Instance-level BidiIsolation.NONE over the same en/he catalogs, so NONE can be shown to beat an RTL resolved locale and so per-call ALWAYS and RTL_LOCALES can be shown to override it. Every he case here would isolate under the library default, which is what makes the fixture discriminating rather than vacuous.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "bidiIsolation": "NONE",
+  "files": {
+    "en": {
+      "Locale.Marker": "en",
+      "Greeting.Named": "Hello, {{name}}"
+    },
+    "he": {
+      "Locale.Marker": "he",
+      "Greeting.Named": "שלום, {{name}}"
+    }
+  }
+}

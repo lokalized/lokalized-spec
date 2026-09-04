@@ -1,0 +1,50 @@
+{
+  "id": "callback-interaction-expression-fragment",
+  "description": "The third recognized contextualization branch. A generated placeholder declared with template members (translation plus fragment alternatives) is an ExpressionTranslation rather than a LanguageFormTranslation, and an expression evaluated over a non-numeric operand raises the library's own ExpressionEvaluationException -- the one recognized type at DefaultStrings.java:1270-1271 that no other fixture in this family can reach. Fragment.ViaPhonetic puts that fragment behind a phonetic placeholder, so a SUCCESSFUL resolver answer decides whether the fragment is reached at all. One locale, so the policy is never consulted and the contextualization is isolated.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "phoneticResolver": {
+    "behavior": "first-letter-vowel"
+  },
+  "files": {
+    "en": {
+      "Locale.Marker": "en",
+      "Fragment.Direct": {
+        "translation": "[{{frag}}]",
+        "placeholders": {
+          "frag": {
+            "translation": "few visits",
+            "alternatives": [
+              {
+                "visitCount > 5": "many visits"
+              }
+            ]
+          }
+        }
+      },
+      "Fragment.ViaPhonetic": {
+        "commentary": "The resolver's answer selects either a template that names the expression fragment or one that does not, so the callback's return value decides whether a later failure happens at all.",
+        "translation": "[{{outer}}]",
+        "placeholders": {
+          "outer": {
+            "value": "nounTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "<{{frag}}>",
+              "PHONETIC_CONSONANT": "cons"
+            }
+          },
+          "frag": {
+            "translation": "few visits",
+            "alternatives": [
+              {
+                "visitCount > 5": "many visits"
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

@@ -1,0 +1,402 @@
+{
+  "formatVersion": 1,
+  "family": "warnings",
+  "description": "Plan v7 section 8.3 fixture family 'warnings'. Inputs only; the oracle emits expected.",
+  "skipped": [
+    {
+      "what": "Cross-file warning ORDER during a directory load (the authored case `warnings.order.multi-locale-follows-directory-iteration` and its fixture `warnings-multi-locale-order`, REMOVED)",
+      "why": "Removed because it would make the corpus non-reproducible off this machine, and because its stated finding was wrong. `loadFromDirectory` iterates a raw `Files.newDirectoryStream` (LocalizedStringLoader.java:1243) and sorts only the RESULT map, so warning order across files is whatever the filesystem yields. The authored note claimed the observed pl/ar/en order was CREATION order; I disproved that with a JDK 21 probe that created the same three filenames in three different creation orders across nine fresh temp directories and got `[pl, ar, en]` every time — it is APFS name-hash order, independent of creation order, and an ext4/overlayfs CI image will hash differently. This matters because `tools/vector-oracle/build.mjs --check` regenerates the whole artifact into a FRESH mkdtemp directory and byte-compares it (build.mjs:246-253); the `informationalIds` partition does not exempt a case from that comparison. Keeping it would mean `npm run check:vectors` goes red on the pinned reference image with no library change. The order-independent half of its value is preserved by `warnings-multi-locale-single-warner`, where only one of two files can warn. If cross-file warning order is ever to become a parity requirement, lokalized-java must sort discovery first; that is a library change, not a corpus one."
+    },
+    {
+      "what": "The aggregate warning counter spanning multiple FILES in one directory load",
+      "why": "Observable only with two or more files that each raise at least one warning under a limit that trips on the second file. Which file is parsed first — and therefore which warning is recorded and which path prefixes the failure message — is the same unordered `DirectoryStream` traversal disproved above, so no such fixture can produce a byte-stable expected block. The aggregate property is partially pinned by `warnings.limit.one-delivers-first-then-fails` and `warnings.limit.two-delivers-two-then-fails`, which show the counter spanning two KEYS within one file rather than resetting per key."
+    },
+    {
+      "what": "A single placeholder that is incomplete on BOTH the cardinal and ordinal axes, and a placeholder mixing GENDER forms with CARDINALITY forms",
+      "why": "Both are unreachable: `parseSingleAxisLanguageFormTranslation` collects the distinct `LanguageForm` classes in a placeholder's translations map and throws `LocalizedStringLoadingException` — 'you cannot mix-and-match language forms in placeholder translations' — whenever more than one appears (LocalizedStringLoader.java:2647-2654). The warning code can therefore never see a mixed map, so 'cardinality warning precedes ordinality warning for the same placeholder' and 'non-plural forms are excluded from the missing set' are not propositions the library can exhibit. The rejection itself is now authored as `warnings.axes.mixed-axis-placeholder-is-rejected-at-load`, which also pins that it happens at load rather than at lookup."
+    },
+    {
+      "what": "INVALID_CLASSPATH_LOCALE_FILENAME warnings",
+      "why": "Confirmed unreachable through filesystem loading. It is constructed at exactly one site, LocalizedStringLoader.java:1717 inside `languageTagForClasspathFileName`, called only from `loadFromDirectoryWithOrigins` (line 1282), itself reached only from the two classpath entry paths at lines 426 and 1352. `loadFromFilesystem` goes through `loadFromDirectory`, which calls `languageTagForFileName` directly; a badly named file there is simply skipped or, on a duplicate locale, THROWS rather than warning. Classpath loading is outside the oracle's reach, so of the three enum members only two can ever appear in this corpus."
+    },
+    {
+      "what": "Alternative LocalizedStringWarningHandler behaviors (ignore(), a handler that throws, a handler that mutates state)",
+      "why": "VectorOracle installs its own collecting handler for every `load` and `parse` case (VectorOracle.java:222-223 and 260-261). There is no fixture or input knob for the warning handler, so 'the handler decides what to do' — including the documented pattern of throwing from a handler to fail the load — is not observable through the current oracle surface. It would need a named-behavior knob analogous to `translationFailureHandler`."
+    },
+    {
+      "what": "The insertion order of a single warning's missingLanguageForms set",
+      "why": "Java builds it as a LinkedHashSet fed from a TreeSet of the enum, i.e. CLDR/ordinal order (ZERO, ONE, TWO, FEW, MANY, OTHER), but the oracle re-sorts it through a TreeSet of STRINGS before emitting (VectorOracle.java:379), so only the set is recorded, never the order. No case can discriminate it. The human-readable `message` field does carry the CLDR order — verified, e.g. Arabic emits '[CARDINALITY_ZERO, CARDINALITY_TWO, CARDINALITY_FEW, CARDINALITY_MANY]' — so the message field pins it indirectly and every warning case already asserts that message."
+    },
+    {
+      "what": "Negative maximumWarnings, and rejection of zero for the other loading limits",
+      "why": "`LocalizedStringLoadingOptions.Builder.maximumWarnings` rejects values below zero at build time (LocalizedStringLoadingOptions.java:432) and the vectors schema constrains `loadingOptions.maximumWarnings` to minimum 0, so the rejection happens before any load and is not expressible as a fixture. The neighbouring clause 'rejection of zero for each positive-only loading limit' is likewise unexpressible here: the schema pins `maximumTranslationNodes`, `maximumJsonNestingDepth`, `maximumLocalizedStringsFiles` and `maximumInputBytes` to minimum 1, and maximumWarnings is the one limit for which zero is legal — a contrast this family exercises from the legal side with `warnings-limit-zero-clean`."
+    },
+    {
+      "what": "The default maximumWarnings ceiling of 1000",
+      "why": "Reaching it would require a fixture emitting more than a thousand warnings, bloating the corpus for no discrimination the lowered limits do not already provide. The limits at 0, 1, 2 and 4 fix the comparison operator, the pre-delivery ordering of the check, and the truncation semantics exactly."
+    }
+  ],
+  "cases": [
+    {
+      "id": "warnings.cardinality.en-complete-emits-nothing",
+      "requirementIds": [],
+      "fixture": "warnings-cardinality-matrix",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "Control for the whole family. The one/other catalog is complete for English, so a correct implementation emits ZERO warnings. Without this, an implementation that warns unconditionally passes every positive case in the family. Verified: warnings list is empty and the load succeeds."
+    },
+    {
+      "id": "warnings.cardinality.ar-missing-forms",
+      "requirementIds": [],
+      "fixture": "warnings-cardinality-matrix",
+      "operation": "parse",
+      "input": {
+        "file": "en",
+        "locale": "ar",
+        "source": "cardinality-matrix-ar"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Arabic's CLDR cardinal set is zero/one/two/few/many/other, so the same one/other catalog is missing four forms. Verified against Cardinality.supportedCardinalitiesForLocale(ar) = [ZERO, ONE, TWO, FEW, MANY, OTHER]: emitted missing set is exactly {ZERO, TWO, FEW, MANY}. A port that hardcodes English's two-form set reports nothing here."
+    },
+    {
+      "id": "warnings.cardinality.ru-missing-forms",
+      "requirementIds": [],
+      "fixture": "warnings-cardinality-matrix",
+      "operation": "parse",
+      "input": {
+        "file": "en",
+        "locale": "ru",
+        "source": "cardinality-matrix-ru"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Russian cardinals are one/few/many/other; the emitted missing set is exactly {FEW, MANY}. Its real value is the pairing with warnings.ordinality.ru-only-other-is-complete: the SAME shape of catalog warns for Russian cardinally and is silent for Russian ordinally, which no single shared supported-form table can produce."
+    },
+    {
+      "id": "warnings.cardinality.he-missing-forms",
+      "requirementIds": [],
+      "fixture": "warnings-cardinality-matrix",
+      "operation": "parse",
+      "input": {
+        "file": "en",
+        "locale": "he",
+        "source": "cardinality-matrix-he"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Verified supported set for Hebrew is [ONE, TWO, OTHER], so exactly one form is missing and it is CARDINALITY_TWO. A single-element missing set that is NOT the English one, proving the answer is a real set difference rather than a fixed list."
+    },
+    {
+      "id": "warnings.cardinality.lv-missing-forms",
+      "requirementIds": [],
+      "fixture": "warnings-cardinality-matrix",
+      "operation": "parse",
+      "input": {
+        "file": "en",
+        "locale": "lv",
+        "source": "cardinality-matrix-lv"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Verified supported set for Latvian is [ZERO, ONE, OTHER]: exactly one missing form, CARDINALITY_ZERO. Paired with the Hebrew case, two different one-element answers from the same catalog fix the computation as supported minus provided."
+    },
+    {
+      "id": "warnings.cardinality.ja-only-other-is-complete",
+      "requirementIds": [],
+      "fixture": "warnings-cardinality-matrix",
+      "operation": "parse",
+      "input": {
+        "file": "en",
+        "locale": "ja",
+        "source": "cardinality-matrix-ja"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Japanese supports only CARDINALITY_OTHER, which the catalog supplies, so the catalog is COMPLETE and no warning fires even though CARDINALITY_ONE is supplied and unsupported. Pins that surplus forms are never reported as a problem, at the smallest non-empty supported set."
+    },
+    {
+      "id": "warnings.cardinality.hi-complete-emits-nothing",
+      "requirementIds": [],
+      "fixture": "warnings-cardinality-matrix",
+      "operation": "parse",
+      "input": {
+        "file": "en",
+        "locale": "hi",
+        "source": "cardinality-matrix-hi"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Hindi cardinals are one/other, so this catalog is cardinally COMPLETE and silent. Exists to make the pairing with warnings.ordinality.hi-missing-three-forms observable inside the corpus: one language, one catalog shape, silent on the cardinal axis and three forms short on the ordinal one."
+    },
+    {
+      "id": "warnings.ordinality.en-missing-two-and-few",
+      "requirementIds": [],
+      "fixture": "warnings-ordinality-matrix",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "English ordinals are one/two/few/other while English cardinals are one/other. The same shape of file that is cardinally complete in English is ordinally incomplete, missing exactly {TWO, FEW}. No single shared table can produce both answers."
+    },
+    {
+      "id": "warnings.ordinality.ru-only-other-is-complete",
+      "requirementIds": [],
+      "fixture": "warnings-ordinality-matrix",
+      "operation": "parse",
+      "input": {
+        "file": "en",
+        "locale": "ru",
+        "source": "ordinality-matrix-ru"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Verified Ordinality.supportedOrdinalitiesForLocale(ru) = [OTHER], so the one/other catalog is ordinally COMPLETE even though the identical cardinality catalog warns for Russian. With warnings.cardinality.ru-missing-forms this is the sharpest separation of the two CLDR tables in the family."
+    },
+    {
+      "id": "warnings.ordinality.cy-missing-four-forms",
+      "requirementIds": [],
+      "fixture": "warnings-ordinality-matrix",
+      "operation": "parse",
+      "input": {
+        "file": "en",
+        "locale": "cy",
+        "source": "ordinality-matrix-cy"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Welsh is the only locale here with six ordinal forms (verified [ZERO, ONE, TWO, FEW, MANY, OTHER]); missing zero/two/few/many. A port that assumed ordinal sets are always a subset of {one, two, few, other} — the English shape — fails here."
+    },
+    {
+      "id": "warnings.ordinality.it-missing-many",
+      "requirementIds": [],
+      "fixture": "warnings-ordinality-matrix",
+      "operation": "parse",
+      "input": {
+        "file": "en",
+        "locale": "it",
+        "source": "ordinality-matrix-it"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Verified Italian ordinals are [MANY, OTHER]. Exactly one missing form, MANY, while the supplied ORDINALITY_ONE is unsupported for Italian and must appear nowhere in the warning — not in missingLanguageForms and not in the message's supported-forms list."
+    },
+    {
+      "id": "warnings.ordinality.hi-missing-three-forms",
+      "requirementIds": [],
+      "fixture": "warnings-ordinality-matrix",
+      "operation": "parse",
+      "input": {
+        "file": "en",
+        "locale": "hi",
+        "source": "ordinality-matrix-hi"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Verified Hindi has five ordinal forms [ONE, TWO, FEW, MANY, OTHER] but only two cardinal ones. Missing set is {TWO, FEW, MANY}, strictly larger than the empty cardinal answer the same catalog produces for Hindi in warnings.cardinality.hi-complete-emits-nothing."
+    },
+    {
+      "id": "warnings.ordinality.ga-one-other-is-complete",
+      "requirementIds": [],
+      "fixture": "warnings-ordinality-matrix",
+      "operation": "parse",
+      "input": {
+        "file": "en",
+        "locale": "ga",
+        "source": "ordinality-matrix-ga"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Verified Irish ordinals are exactly [ONE, OTHER] while Irish CARDINALS are [ONE, TWO, FEW, MANY, OTHER]. This control must emit nothing; a port that reused the cardinal set for the ordinal check would emit a three-form warning here. The divergence between the two sets at one language is what makes the control discriminate."
+    },
+    {
+      "id": "warnings.supportedset.en-two-only-warns-both-axes",
+      "requirementIds": [],
+      "fixture": "warnings-unsupported-forms-only",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "A catalog supplying only CARDINALITY_TWO in placeholder 'c' and only ORDINALITY_TWO in placeholder 'o' under English. Both axes warn, in declared placeholder order (c then o), and neither missing set contains the supplied TWO: cardinal missing is {ONE, OTHER} because English has no TWO cardinal, ordinal missing is {ONE, FEW, OTHER} because the supplied TWO is supported. Establishes that this catalog is genuinely incomplete before the zz control claims otherwise."
+    },
+    {
+      "id": "warnings.supportedset.ja-two-only-warns-other",
+      "requirementIds": [],
+      "fixture": "warnings-unsupported-forms-only",
+      "operation": "parse",
+      "input": {
+        "file": "en",
+        "locale": "ja",
+        "source": "unsupported-forms-ja"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same catalog under Japanese, whose cardinal and ordinal sets are both [OTHER]: exactly one missing form on each axis. Confirms the catalog is incomplete for even the smallest NON-EMPTY CLDR set, which is the comparison the zz case needs."
+    },
+    {
+      "id": "warnings.supportedset.zz-no-cldr-forms-suppresses-warnings",
+      "requirementIds": [],
+      "fixture": "warnings-unsupported-forms-only",
+      "operation": "parse",
+      "input": {
+        "file": "en",
+        "locale": "zz",
+        "source": "unsupported-forms-zz"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Locale 'zz' has NO CLDR plural rules, so both supported sets are empty and warnOnIncompleteCardinalityTranslations/warnOnIncompleteOrdinalityTranslations return before computing a set difference (LocalizedStringLoader.java:2022 and 2072). The same catalog that warns twice under English and twice under Japanese warns ZERO times here. A port that computes supported-minus-provided without the empty guard emits a full form list instead."
+    },
+    {
+      "id": "warnings.supportedset.zz-has-no-supported-cardinalities",
+      "requirementIds": [],
+      "fixture": "warnings-cardinality-matrix",
+      "operation": "supportedCardinalitiesForLocale",
+      "input": {
+        "locale": "zz"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Directly pins the premise the zz suppression case rests on: the supported cardinality set for 'zz' is empty rather than defaulting to {OTHER} or to the root locale's set. Without this, a failing zz suppression case cannot be diagnosed as a wrong supported table versus a missing empty guard. The fixture is only present because the oracle requires a constructible Strings for classifier operations; its contents are irrelevant to the observation."
+    },
+    {
+      "id": "warnings.supportedset.zz-has-no-supported-ordinalities",
+      "requirementIds": [],
+      "fixture": "warnings-cardinality-matrix",
+      "operation": "supportedOrdinalitiesForLocale",
+      "input": {
+        "locale": "zz"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The ordinal half of the same premise: supported ordinalities for 'zz' are empty. Both halves are needed because the zz suppression case observes silence on two axes at once."
+    },
+    {
+      "id": "warnings.axes.mixed-axis-placeholder-is-rejected-at-load",
+      "requirementIds": [],
+      "fixture": "warnings-mixed-axis-placeholder",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "One placeholder supplying CARDINALITY_ONE and ORDINALITY_ONE together. Axis purity is enforced at PARSE time (LocalizedStringLoader.java:2647-2654, 'you cannot mix-and-match language forms in placeholder translations'), so the load fails with LocalizedStringLoadingException and NO warning is emitted first. This is why no warning can ever span two axes for one placeholder, and why a port cannot reach the warning code with a mixed map. A port that deferred this to lookup time would load successfully and then emit two warnings, inverting both observations."
+    },
+    {
+      "id": "warnings.order.single-file-traversal-order",
+      "requirementIds": [],
+      "fixture": "warnings-order-single-file",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "Four warnings from one file. Verified order is Zulu/zc, Alpha/zeta, Alpha/beta, Alpha/gamma: keys in file declaration order (Zulu precedes Alpha though it sorts after), placeholders in declaration order (zeta precedes beta though it sorts after), and a key's own placeholders before its alternatives. Cardinality and ordinality warnings therefore interleave by declaration position rather than grouping by type. A port backed by a sorted map, or by a JS object that reorders keys, produces a different sequence."
+    },
+    {
+      "id": "warnings.order.parse-matches-directory-traversal-order",
+      "requirementIds": [],
+      "fixture": "warnings-order-single-file",
+      "operation": "parse",
+      "input": {
+        "file": "ru",
+        "locale": "ru",
+        "source": "order-single-file"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same file through the single-file parse entry point. Two observables: the emitted order is identical to the directory load's, proving traversal order is a property of the parser rather than of directory walking; and every warning's source is the caller-supplied label 'order-single-file' rather than a filesystem path, so source is passed through and never derived from the file."
+    },
+    {
+      "id": "warnings.order.alternative-warning-names-root-key",
+      "requirementIds": [],
+      "fixture": "warnings-nested-alternative-attribution",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "Own placeholder, a nested alternative two levels deep, then a sibling alternative. Verified order is own, nega, deep, posb, which is depth-first; breadth-first would yield own, nega, posb, deep. Every warning names the ROOT key 'Root', never the alternative's expression, because warnOnIncompleteLanguageFormTranslations recurses with the original rootKey (LocalizedStringLoader.java:2005). The last warning is an ORDINALITY warning so the axes interleave by position here too."
+    },
+    {
+      "id": "warnings.control.gender-placeholder-is-silent",
+      "requirementIds": [],
+      "fixture": "warnings-control-gender-placeholder",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "A gender-driven language-form placeholder in Russian, which has four cardinal forms. providedCardinalities and providedOrdinalities are both empty, so both checks return before consulting CLDR and the loader emits nothing. A port that treated every LanguageFormTranslation as plural-driven would emit a four-form warning. Split from the expression control so a port that gets one wrong cannot hide behind the other."
+    },
+    {
+      "id": "warnings.control.expression-placeholder-is-silent",
+      "requirementIds": [],
+      "fixture": "warnings-control-expression-placeholder",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "An expression-driven (generated-fragment) placeholder in Russian. It is an ExpressionTranslation, not a LanguageFormTranslation at all, so the instanceof guard skips it before any form inspection. A port that inspected a placeholder's alternatives map looking for form names would warn here."
+    },
+    {
+      "id": "warnings.control.range-driven-placeholder-is-exempt",
+      "requirementIds": [],
+      "fixture": "warnings-control-range-driven",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "A RANGE-driven cardinality placeholder in Russian supplying only ONE and OTHER of four required forms. The identical value-driven placeholder DOES warn (warnings.limit.one-permits-exactly-one and the order cases prove it), so the fixture isolates the range guard alone: LocalizedStringLoader.java:1995 skips range-driven placeholders by design. A port that inspected the translations map without first testing for a range emits a two-form warning."
+    },
+    {
+      "id": "warnings.attribution.warning-locale-comes-from-the-parsed-file",
+      "requirementIds": [],
+      "fixture": "warnings-multi-locale-single-warner",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "A clean Japanese file and a warning Arabic file in one directory, with fallback and instance locale both Japanese. Exactly one warning, carrying locale 'ar' and Arabic's missing forms: the warning's locale comes from the file being parsed, not from the fallback or instance locale. Deliberately built so only ONE file can warn, which makes the observation independent of directory iteration order — see the skipped entry on cross-file ordering."
+    },
+    {
+      "id": "warnings.limit.zero-permits-a-clean-load",
+      "requirementIds": [],
+      "fixture": "warnings-limit-zero-clean",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "maximumWarnings 0 against a catalog that produces none. The zero boundary's clean side: LoadingSession.handle is the only place the limit is consulted, so a limit of zero is harmless until a warning is actually raised and the load succeeds and reports its locale and keys normally."
+    },
+    {
+      "id": "warnings.limit.zero-fails-on-first-warning-before-delivery",
+      "requirementIds": [],
+      "fixture": "warnings-limit-zero-one-warning",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "maximumWarnings 0 against a catalog that produces one. LoadingSession.handle (LocalizedStringLoader.java:2938) tests 'warnings >= max' BEFORE '++warnings' and BEFORE 'warningHandler.handle(warning)', so the load fails AND the recorded warning list is EMPTY. A port that delivered the warning and then checked the limit records one warning here and diverges on the observable, not just on the exception."
+    },
+    {
+      "id": "warnings.limit.zero-fails-parse-too",
+      "requirementIds": [],
+      "fixture": "warnings-limit-zero-one-warning",
+      "operation": "parse",
+      "input": {
+        "file": "ru",
+        "locale": "ru",
+        "source": "limit-zero-parse"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same limit through the single-file parse entry point, which builds its own LoadingSession (LocalizedStringLoader.java:1167). Pins that maximumWarnings is not a directory-load-only concern and that the failure message is prefixed with the caller's source label 'limit-zero-parse' rather than a path, because the message interpolates warning.getSource()."
+    },
+    {
+      "id": "warnings.limit.one-permits-exactly-one",
+      "requirementIds": [],
+      "fixture": "warnings-limit-one-one-warning",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "maximumWarnings 1 against a catalog that produces exactly one. The one boundary's satisfied side: the load succeeds and the warning is delivered. Paired with the zero case this fixes the comparison as >= on the already-emitted count rather than > on the prospective one."
+    },
+    {
+      "id": "warnings.limit.one-delivers-first-then-fails",
+      "requirementIds": [],
+      "fixture": "warnings-limit-one-four-warnings",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "maximumWarnings 1 against a catalog that produces four across TWO keys. The load fails on the second warning and exactly the FIRST warning is recorded. Partial delivery before an aggregate-limit failure is the observable; it also proves the counter is aggregate across keys within a file rather than reset per key, and independently re-pins which warning comes first."
+    },
+    {
+      "id": "warnings.limit.two-delivers-two-then-fails",
+      "requirementIds": [],
+      "fixture": "warnings-limit-two-four-warnings",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "maximumWarnings 2 against the same four-warning catalog. Exactly two warnings are recorded before the third throws, and the two span both keys, so the truncation point moves with the limit rather than being fixed. The failure message names the configured limit value, so a port that reported the default 1000 here diverges."
+    },
+    {
+      "id": "warnings.limit.four-exactly-at-limit-succeeds",
+      "requirementIds": [],
+      "fixture": "warnings-limit-four-four-warnings",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "maximumWarnings 4 against the same four-warning catalog. All four are delivered and the load SUCCEEDS, so a limit equal to the warning count is not an overflow. A port using > instead of >= fails either this case or the zero-clean case, and one using >= on the prospective count fails this one."
+    }
+  ]
+}

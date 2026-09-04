@@ -1,0 +1,22 @@
+{
+  "id": "warnings-control-gender-placeholder",
+  "description": "Russian catalog whose only placeholder is a GENDER-driven language-form translation. Russian has four cardinal and one ordinal CLDR form, so a loader that inspected every language-form placeholder rather than only the plural-driven ones would warn here. Split out from the expression control so each silence proposition stands alone.",
+  "fallbackLocale": "ru",
+  "tiebreakers": null,
+  "files": {
+    "ru": {
+      "Greet": {
+        "translation": "{{g}}",
+        "placeholders": {
+          "g": {
+            "value": "who",
+            "translations": {
+              "GENDER_MASCULINE": "m",
+              "GENDER_FEMININE": "f"
+            }
+          }
+        }
+      }
+    }
+  }
+}

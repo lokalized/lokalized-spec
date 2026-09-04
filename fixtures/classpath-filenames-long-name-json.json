@@ -1,0 +1,15 @@
+{
+  "id": "classpath-filenames-long-name-json",
+  "description": "A valid en catalog plus a file whose stem is 200 ASCII letters and .json (205 bytes, comfortably inside the 255-byte per-component limit on the oracle's host). The diagnostic interpolates the whole filename twice — once in the warning source and once in the message — so this pins that neither is truncated or elided.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "rawFiles": {
+    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json": "{\"Key.long\":\"long\"}"
+  }
+}

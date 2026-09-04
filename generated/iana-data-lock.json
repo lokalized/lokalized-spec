@@ -1,0 +1,36 @@
+{
+  "formatVersion": 1,
+  "artifacts": [
+    {
+      "path": "generated/iana-language-range-equivalents.json",
+      "sha256": "e9a28777fc72e93d7126f78731aff95771b721ac5ed983f683870835b30560e0"
+    }
+  ],
+  "inputs": [
+    {
+      "path": "tools/iana-oracle/Extract.java",
+      "sha256": "da226893f817aadbad256a4e6f592e1a285bcecf2f42e5564ab9186957921582"
+    },
+    {
+      "path": "tools/iana-oracle/candidates.mjs",
+      "sha256": "26c2fbc50865134f7b3dec9fd9e28abd6a89e912b9a2b79441307efd5ad87c81"
+    },
+    {
+      "path": "tools/iana-oracle/candidates.txt",
+      "sha256": "4536ed4abe7e179cab0ff27d66b4ee113dd965a93c9adac9965c67979aebe03a"
+    }
+  ],
+  "oracle": {
+    "jdkVersion": "21.0.11",
+    "jdkVendor": "OpenJDK",
+    "requiredMajor": 21
+  },
+  "probe": {
+    "probed": 115469,
+    "rejected": 309,
+    "rawClosureKeys": 18371,
+    "reducedEntries": 802
+  },
+  "jdkCompatibilityOverrides": [],
+  "ianaDataFingerprint": "aea466ba049c0b3870b15a34478273ce9ffd1f3803f0a94d26c8069d016e58df"
+}

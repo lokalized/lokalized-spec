@@ -1,0 +1,15 @@
+{
+  "id": "ingress-matrix-java-en-us-locale-supplier-ranges",
+  "description": "Seed row 5 catalog with a localeSupplier that negotiates 'en-US' and collapses to the bare Locale en. The re-derived match is EXACT/en and isFallback goes FALSE, while the match supplier on the same header preserves CLDR_FALLBACK/en and isFallback TRUE — the same selection reported two ways.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "localeSupplier": {
+    "behavior": "match-ranges",
+    "ranges": "en-US"
+  },
+  "files": {
+    "en": {
+      "Checkout.Title": "Checkout"
+    }
+  }
+}

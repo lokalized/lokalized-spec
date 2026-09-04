@@ -1,0 +1,52 @@
+{
+  "id": "failure-handler-resolution-failure-cause",
+  "description": "Serves the TranslationFailure.getCause() half of the clause plus the default-versus-permissive fallback policies. Items.Sparse is under-translated in Russian (only CARDINALITY_ONE and CARDINALITY_OTHER); counts selecting FEW or MANY reach the IllegalStateException 'Missing Cardinality translation for CARDINALITY_FEW/MANY' raised at DefaultStrings.java:974-976, which getResult records as RESOLUTION_FAILURE with a cause (DefaultStrings.java:722-726). English carries a plain resolvable Items.Sparse so the permissive policy has somewhere to land. Items.BothSparse is broken in BOTH locales with different missing branches (Russian misses FEW at count 2, English misses OTHER at count 2), which makes 'the handler sees the FIRST cause' (firstFallbackFailure, DefaultStrings.java:725-726) observable rather than assumed. Verified against LocalizedStringValidator: an incomplete cardinality table is a load-time WARNING, never a load error, so this catalog builds -- the same shape the existing evaluation-locale-donor-missing-branch fixture already proves loadable. Two loaded locales with distinct primary languages, so tiebreakers are null.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "ru": {
+      "Locale.Marker": "ru",
+      "Items.Sparse": {
+        "commentary": "Russian has four cardinal categories; only two are translated, so FEW (count 2) and MANY (count 5) raise at resolution time.",
+        "translation": "{{noun}}",
+        "placeholders": {
+          "noun": {
+            "value": "itemCount",
+            "translations": {
+              "CARDINALITY_ONE": "ru:ONE",
+              "CARDINALITY_OTHER": "ru:OTHER"
+            }
+          }
+        }
+      },
+      "Items.BothSparse": {
+        "commentary": "Only ONE is translated, so any count that is not Russian ONE raises.",
+        "translation": "{{noun}}",
+        "placeholders": {
+          "noun": {
+            "value": "itemCount",
+            "translations": {
+              "CARDINALITY_ONE": "ru:ONE"
+            }
+          }
+        }
+      }
+    },
+    "en": {
+      "Locale.Marker": "en",
+      "Items.Sparse": "Items are available.",
+      "Items.BothSparse": {
+        "commentary": "Only ONE is translated, so English OTHER raises here too -- with a different branch name than the Russian failure.",
+        "translation": "{{noun}}",
+        "placeholders": {
+          "noun": {
+            "value": "itemCount",
+            "translations": {
+              "CARDINALITY_ONE": "en:ONE"
+            }
+          }
+        }
+      }
+    }
+  }
+}

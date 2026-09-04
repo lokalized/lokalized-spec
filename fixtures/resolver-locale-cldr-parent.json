@@ -1,0 +1,56 @@
+{
+  "id": "resolver-locale-cldr-parent",
+  "description": "The CLDR parent chain. en-AU is not loaded; en-001 and en are, and both carry a complete Article. An en-AU request reaches en-001 through the parent chain rather than jumping to the en fallback, so the resolver must be handed en-001 — a locale that is neither the request nor the fallback. Tiebreakers are MANDATORY here because two loaded locales share the language code en, and the list is the exact permutation of the en locales that are loaded.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "en": [
+      "en",
+      "en-001"
+    ]
+  },
+  "phoneticResolver": {
+    "behavior": "by-locale",
+    "mapping": {
+      "en": "PHONETIC_VOWEL",
+      "en-001": "PHONETIC_CONSONANT",
+      "en-AU": "PHONETIC_H_SILENT"
+    },
+    "default": "PHONETIC_OTHER"
+  },
+  "files": {
+    "en-001": {
+      "Locale.Marker": "en-001",
+      "Article": {
+        "translation": "{{article}}",
+        "placeholders": {
+          "article": {
+            "value": "nounTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "got:en",
+              "PHONETIC_CONSONANT": "got:en-001",
+              "PHONETIC_H_SILENT": "got:en-AU",
+              "PHONETIC_OTHER": "got:unmapped"
+            }
+          }
+        }
+      }
+    },
+    "en": {
+      "Locale.Marker": "en",
+      "Article": {
+        "translation": "{{article}}",
+        "placeholders": {
+          "article": {
+            "value": "nounTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "got:en",
+              "PHONETIC_CONSONANT": "got:en-001",
+              "PHONETIC_H_SILENT": "got:en-AU",
+              "PHONETIC_OTHER": "got:unmapped"
+            }
+          }
+        }
+      }
+    }
+  }
+}

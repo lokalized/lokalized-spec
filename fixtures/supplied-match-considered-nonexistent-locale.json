@@ -1,0 +1,37 @@
+{
+  "id": "supplied-match-considered-nonexistent-locale",
+  "description": "The same superset shape, but the extra considered locale is qq -- syntactically well-formed BCP 47 and assigned to no language. Isolates whether the rejection is about a locale EXISTING or purely about set equality with the loaded locales.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "localeMatchSupplier": {
+    "behavior": "fabricated",
+    "locale": "fr",
+    "matchType": "EXACT",
+    "range": "fr",
+    "weight": 1,
+    "ranges": [
+      {
+        "range": "fr",
+        "weight": 1
+      }
+    ],
+    "fallbackLocale": "en",
+    "consideredLocales": [
+      "en",
+      "fr",
+      "qq"
+    ]
+  },
+  "files": {
+    "fr": {
+      "Locale.Marker": "fr",
+      "Greeting.Hello": "Bonjour",
+      "Only.Fr": "fr-only"
+    },
+    "en": {
+      "Locale.Marker": "en",
+      "Greeting.Hello": "Hello",
+      "Only.En": "en-only"
+    }
+  }
+}

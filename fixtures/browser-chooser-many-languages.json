@@ -1,0 +1,34 @@
+{
+  "id": "browser-chooser-many-languages",
+  "description": "Eight unrelated single-language sources (en, fr, de, es, ja, pt, it, nl), no shared primary language and therefore no tiebreakers. A deliberately flat set: nothing here can be decided by tiebreaker order, and CLDR fallback is reachable only from an explicitly regional range, so the Accept-Language cases that use it isolate weight ordering, list ordering, q=0 rejection, header parsing, and the parsed-range limit.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Checkout.Title": "en"
+    },
+    "fr": {
+      "Checkout.Title": "fr"
+    },
+    "de": {
+      "Checkout.Title": "de"
+    },
+    "es": {
+      "Checkout.Title": "es"
+    },
+    "ja": {
+      "Checkout.Title": "ja"
+    },
+    "pt": {
+      "Checkout.Title": "pt"
+    },
+    "it": {
+      "Checkout.Title": "it"
+    },
+    "nl": {
+      "Checkout.Title": "nl"
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

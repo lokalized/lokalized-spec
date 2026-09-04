@@ -1,0 +1,33 @@
+{
+  "id": "owed-supplied-match-selected-locale-not-considered",
+  "description": "A fabrication whose selected locale is absent from consideredLocales while the fallback is present, so the fallback-containment check on line 129 passes and the SELECTED-locale containment check on line 131 is the one that fires. Every existing considered-list fixture either contains the selected locale or fails earlier.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "localeMatchSupplier": {
+    "behavior": "fabricated",
+    "locale": "fr",
+    "matchType": "EXACT",
+    "range": "fr",
+    "weight": 1,
+    "ranges": [
+      {
+        "range": "fr",
+        "weight": 1
+      }
+    ],
+    "fallbackLocale": "en",
+    "consideredLocales": [
+      "en"
+    ]
+  },
+  "files": {
+    "en": {
+      "Locale.Marker": "en",
+      "Greeting.Hello": "Hello"
+    },
+    "fr": {
+      "Locale.Marker": "fr",
+      "Greeting.Hello": "Bonjour"
+    }
+  }
+}

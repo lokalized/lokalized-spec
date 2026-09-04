@@ -1,0 +1,29 @@
+{
+  "id": "ingress-matrix-java-extlang-match-supplier-zh-yue",
+  "description": "Extlang arm catalog with a localeMatchSupplier negotiating zh-yue through the single-locale kernel.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "zh": [
+      "zh",
+      "cmn"
+    ]
+  },
+  "localeMatchSupplier": {
+    "behavior": "match-locale",
+    "locale": "zh-yue"
+  },
+  "files": {
+    "zh": {
+      "Checkout.Title": "zh"
+    },
+    "cmn": {
+      "Checkout.Title": "cmn"
+    },
+    "yue": {
+      "Checkout.Title": "yue"
+    },
+    "en": {
+      "Checkout.Title": "en"
+    }
+  }
+}

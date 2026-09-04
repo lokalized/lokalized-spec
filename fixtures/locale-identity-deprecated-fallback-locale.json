@@ -1,0 +1,27 @@
+{
+  "id": "locale-identity-deprecated-fallback-locale",
+  "description": "fallbackLocale and instanceLocale are both spelled hy-810 - a tag that is on disk under NEITHER of its two loaded equivalents. DefaultStrings must canonicalize the configured fallback locale, find it equivalent to both hy-AM and hy-SU, and break the tie from the tiebreaker list (DefaultStrings.java:446-470), whose first entry here is hy-AM. Identical files and identical cases to locale-identity-deprecated-fallback-locale-reordered; only the tiebreaker ORDER differs.",
+  "fallbackLocale": "hy-810",
+  "tiebreakers": {
+    "hy": [
+      "hy-AM",
+      "hy-SU"
+    ]
+  },
+  "files": {
+    "hy-AM": {
+      "Greeting": "barev AM",
+      "Only.Am": "am only"
+    },
+    "hy-SU": {
+      "Greeting": "barev SU",
+      "Only.Su": "su only"
+    },
+    "en": {
+      "Greeting": "hello",
+      "Only.En": "en only"
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

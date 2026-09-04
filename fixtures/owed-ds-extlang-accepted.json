@@ -1,0 +1,17 @@
+{
+  "id": "owed-ds-extlang-accepted",
+  "description": "The accepting partner of owed-ds-extlang-jdk-spelling: 'ar-ary' collapses losslessly to 'ary', which the JDK materializes identically, so the extlang identity IS established and the Moroccan Arabic catalog is reachable from the extlang spelling. Without this partner the refusal case above would be satisfied by a port that never derives extlang equivalences at all.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Checkout.Title": "en"
+    },
+    "ary": {
+      "Checkout.Title": "ary"
+    },
+    "ar": {
+      "Checkout.Title": "ar"
+    }
+  }
+}

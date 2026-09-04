@@ -1,0 +1,121 @@
+{
+  "id": "m3b-form-diagnostics-sparse",
+  "description": "M3b owed cases for DefaultStrings.getInternal's per-axis missing-value, wrong-type and sparse-form diagnostics. Every language-form map here is DELIBERATELY INCOMPLETE, and each key isolates exactly one axis so the composed failure message identifies which arm fired. The two range keys separate the missing-range-END diagnostic (Range.Books, whose start is supplied and whose end is not) from the sparse-range-result diagnostic (Range.SparseResult, whose map carries only CARDINALITY_ONE while an en 1-1 range computes OTHER). Ordinal.Finish's map covers only ONE and TWO of en's four ordinal forms, so a value of 4 selects the absent OTHER. Loading only warns about incomplete form maps, which is what makes these states reachable at all.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Case.Gift": {
+        "translation": "I gave the book to {{who}}.",
+        "placeholders": {
+          "who": {
+            "value": "recipient",
+            "translations": {
+              "CASE_NOMINATIVE": "Ivan",
+              "CASE_DATIVE": "Ivanu"
+            }
+          }
+        }
+      },
+      "Definite.Open": {
+        "translation": "Open {{article}}.",
+        "placeholders": {
+          "article": {
+            "value": "target",
+            "translations": {
+              "DEFINITENESS_DEFINITE": "the book",
+              "DEFINITENESS_INDEFINITE": "a book"
+            }
+          }
+        }
+      },
+      "Classifier.Bought": {
+        "translation": "I bought {{counter}}.",
+        "placeholders": {
+          "counter": {
+            "value": "kind",
+            "translations": {
+              "CLASSIFIER_GENERAL": "things",
+              "CLASSIFIER_BOUND": "volumes"
+            }
+          }
+        }
+      },
+      "Formality.Greet": {
+        "translation": "{{greeting}}, friend.",
+        "placeholders": {
+          "greeting": {
+            "value": "register",
+            "translations": {
+              "FORMALITY_CASUAL": "Hey",
+              "FORMALITY_FORMAL": "Hello"
+            }
+          }
+        }
+      },
+      "Clusivity.Meet": {
+        "translation": "{{we}} will meet at noon.",
+        "placeholders": {
+          "we": {
+            "value": "party",
+            "translations": {
+              "CLUSIVITY_INCLUSIVE": "We (including you)"
+            }
+          }
+        }
+      },
+      "Animacy.See": {
+        "translation": "I see {{object}}.",
+        "placeholders": {
+          "object": {
+            "value": "subject",
+            "translations": {
+              "ANIMACY_ANIMATE": "him"
+            }
+          }
+        }
+      },
+      "Ordinal.Finish": {
+        "translation": "You finished {{position}}.",
+        "placeholders": {
+          "position": {
+            "value": "rank",
+            "translations": {
+              "ORDINALITY_ONE": "1st",
+              "ORDINALITY_TWO": "2nd"
+            }
+          }
+        }
+      },
+      "Range.Books": {
+        "translation": "I read {{books}}.",
+        "placeholders": {
+          "books": {
+            "range": {
+              "start": "low",
+              "end": "high"
+            },
+            "translations": {
+              "CARDINALITY_ONE": "one book",
+              "CARDINALITY_OTHER": "books"
+            }
+          }
+        }
+      },
+      "Range.SparseResult": {
+        "translation": "I read {{books}}.",
+        "placeholders": {
+          "books": {
+            "range": {
+              "start": "low",
+              "end": "high"
+            },
+            "translations": {
+              "CARDINALITY_ONE": "one book"
+            }
+          }
+        }
+      }
+    }
+  }
+}

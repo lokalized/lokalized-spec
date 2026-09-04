@@ -1,0 +1,27 @@
+{
+  "id": "supplied-match-unmatched-no-requested-ranges",
+  "description": "An unmatched fabrication carrying NO requested ranges at all -- the shape a caller who negotiated nothing would build. It is the accepted counterpart of the rejected matched-with-no-ranges fixture, since the containment check only applies when a matched range is present.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "localeMatchSupplier": {
+    "behavior": "fabricated",
+    "matchType": "NONE",
+    "fallbackLocale": "en",
+    "consideredLocales": [
+      "en",
+      "fr"
+    ]
+  },
+  "files": {
+    "fr": {
+      "Locale.Marker": "fr",
+      "Greeting.Hello": "Bonjour",
+      "Only.Fr": "fr-only"
+    },
+    "en": {
+      "Locale.Marker": "en",
+      "Greeting.Hello": "Hello",
+      "Only.En": "en-only"
+    }
+  }
+}

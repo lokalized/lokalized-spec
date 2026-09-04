@@ -1,0 +1,12 @@
+{
+  "id": "manifest-loads-fallback-only-file",
+  "description": "A directory whose only file is the fallback locale — the minimal loadable manifest. Carries two keys so that a missing-key case can be distinguished from a missing-locale case.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Greeting": "Hello",
+      "Farewell": "Bye"
+    }
+  }
+}

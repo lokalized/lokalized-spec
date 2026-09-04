@@ -1,0 +1,15 @@
+{
+  "id": "classpath-filenames-accented-latin-decomposed",
+  "description": "The DECOMPOSED spelling of the same name — 'cafe', U+0301 COMBINING ACUTE ACCENT, '.json' — kept in its own fixture because a normalization-insensitive filesystem would collide the two spellings inside one directory. Authoring note: verify the rawFiles key is 10 code points long and ends 'e', U+0301, '.json'. MEASURED on the oracle's host (APFS): the two spellings round-trip distinctly and the warning quotes each verbatim. Informational, because that is a filesystem property rather than a library one; where a platform normalizes, the two fixtures simply emit identical observations and nothing breaks.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "rawFiles": {
+    "café.json": "{\"Key.nfd\":\"nfd\"}"
+  }
+}

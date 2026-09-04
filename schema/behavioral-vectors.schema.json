@@ -1,0 +1,614 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lokalized.com/schema/v1/behavioral-vectors.schema.json",
+  "title": "Lokalized behavioral conformance vectors",
+  "description": "The cross-implementation behavioral corpus. Every case's `expected` block is emitted by the lokalized-java oracle, never hand-written, so an implementation is compared against the reference implementation's real behavior. Serialized as RFC 8785 JCS.",
+  "$comment": "Plan v7 sections 8.2 and 8.3. Distinct from cldr-conformance-vectors.schema.json, which covers only generated plural selection. This corpus covers resolution, matching, interpolation, loading, and failure behavior.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["behavioralVectorsVersion", "cases", "fixtures", "formatVersion", "oracle"],
+  "properties": {
+    "formatVersion": { "const": 1 },
+    "behavioralVectorsVersion": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "description": "Semantic version of the corpus contract. A case whose meaning changes gets a new ID; it never reuses an old one."
+    },
+    "oracle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["implementation", "javaVersion", "librarySourcesSha256"],
+      "description": "Provenance of the expected blocks. Recorded because the corpus is only as authoritative as the build that produced it.",
+      "properties": {
+        "implementation": { "const": "lokalized-java" },
+        "javaVersion": { "type": "string", "minLength": 1 },
+        "librarySourcesSha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "$comment": "Hash over every com.lokalized source file. A library change that alters behavior must reissue the corpus rather than silently invalidate it."
+        }
+      }
+    },
+    "fixtures": {
+      "type": "object",
+      "minProperties": 1,
+      "description": "Strings-file fixtures keyed by fixture ID. Files are materialized to disk and read through the real LocalizedStringLoader, so loading is exercised rather than simulated.",
+      "propertyNames": { "$ref": "#/$defs/identifier" },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["bidiIsolation", "description", "fallbackLocale", "files", "instanceLocale", "constructionOverrides", "loadOnly", "refusesConstruction", "loadingOptions", "localeMatchSupplier", "localeSupplier", "phoneticResolver", "rawFiles", "rawFilesBase64", "runtimeLimits", "tiebreakers", "translationFailureHandler", "translationFallbackPolicy"],
+        "properties": {
+          "description": { "type": "string", "minLength": 1 },
+          "fallbackLocale": { "$ref": "#/$defs/languageTag" },
+          "instanceLocale": {
+            "$ref": "#/$defs/languageTag",
+            "$comment": "DefaultStrings requires exactly one ambient locale source even when every case passes an explicit per-call locale."
+          },
+          "tiebreakers": {
+            "description": "Required by DefaultStrings whenever two loaded locales share a language code. Each key's value list must all carry that primary language.",
+            "oneOf": [
+              { "type": "null" },
+              {
+                "type": "object",
+                "minProperties": 1,
+                "additionalProperties": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/languageTag" } }
+              }
+            ]
+          },
+          "translationFailureHandler": { "$ref": "#/$defs/failureHandler" },
+          "translationFallbackPolicy": { "$ref": "#/$defs/fallbackPolicy" },
+          "phoneticResolver": { "$ref": "#/$defs/phoneticResolver" },
+          "localeSupplier": {
+            "description": "Ambient locale ingress. Mutually exclusive with localeMatchSupplier — DefaultStrings requires exactly one (DefaultStrings.java:255). Absent both, the ambient locale is the fixture's constant instanceLocale.",
+            "oneOf": [
+              { "type": "null" },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["behavior"],
+                "properties": {
+                  "behavior": { "enum": ["constant", "match-ranges"] },
+                  "locale": { "$ref": "#/$defs/languageTag" },
+                  "ranges": { "$ref": "#/$defs/languageRanges" }
+                }
+              }
+            ]
+          },
+          "localeMatchSupplier": {
+            "description": "Negotiation ingress. `fabricated` uses LocaleMatchResult's public constructor to supply a match the matcher would never produce, which is how the intentional lookup difference for supplied matches becomes observable.",
+            "oneOf": [
+              { "type": "null" },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["behavior"],
+                "properties": {
+                  "behavior": { "enum": ["match-ranges", "match-locale", "fabricated"] },
+                  "locale": { "$ref": "#/$defs/languageTag" },
+                  "ranges": { "$ref": "#/$defs/languageRanges" },
+                  "range": { "type": "string" },
+                  "weight": { "type": "number" },
+                  "matchType": { "enum": ["NONE", "EXACT", "CANONICAL", "CLDR_FALLBACK", "LIKELY_SUBTAG", "EXTENDED_RANGE", "PRIMARY_LANGUAGE", "WILDCARD"] },
+                  "fallbackLocale": { "$ref": "#/$defs/languageTag" },
+                  "consideredLocales": { "type": "array", "items": { "$ref": "#/$defs/languageTag" } }
+                }
+              }
+            ]
+          },
+          "bidiIsolation": { "oneOf": [{ "type": "null" }, { "enum": ["NONE", "ALWAYS", "RTL_LOCALES"] }] },
+          "runtimeLimits": { "$ref": "#/$defs/runtimeLimits" },
+          "loadingOptions": {
+            "description": "Loader limit overrides. Required by clauses that are unreachable under defaults; null means LocalizedStringLoadingOptions.defaults().",
+            "oneOf": [
+              { "type": "null" },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "$comment": "Values are DELIBERATELY unconstrained. Section 8.3 requires zero and above-ceiling values for each limit so the library's own rejection can be observed; a schema that pre-rejected them would make those clauses unexpressible.",
+                "properties": {
+                  "maximumJsonNestingDepth": { "type": "integer" },
+                  "maximumTranslationNodes": { "type": "integer" },
+                  "maximumWarnings": { "type": "integer" },
+                  "maximumLocalizedStringsFiles": { "type": "integer" },
+                  "maximumInputBytes": { "type": "integer" },
+                  "maximumReaderCharacters": { "type": "integer" },
+                  "maximumDiscoveryEntries": { "type": "integer" },
+                  "maximumTotalInputBytes": { "type": "integer" },
+                  "exhaustiveClasspathSearch": { "type": "boolean" }
+                }
+              }
+            ]
+          },
+          "loadOnly": {
+            "type": "boolean",
+            "description": "When true no Strings instance is constructed. Set for fixtures that are DELIBERATELY unloadable, whose load failure is the observation."
+          },
+          "constructionOverrides": {
+            "type": ["object", "null"],
+            "additionalProperties": false,
+            "description": "Deliberately degenerate builder configurations that no well-formed fixture can express, each naming one DefaultStrings construction validation. Closed set; the oracle refuses an unknown value rather than silently building a valid instance.",
+            "properties": {
+              "catalogSource": { "enum": ["omit", "returnsNull", "nullLocaleKey", "duplicateNormalizedTag", "nullCatalogValue", "nullEntry"] },
+              "localeSource": { "enum": ["omit"] }
+            }
+          },
+          "refusesConstruction": {
+            "type": "boolean",
+            "description": "When true the fixture's files load fine but DefaultStrings' constructor is expected to REFUSE the resulting configuration, and that refusal is the observation. Exempt from the tiebreaker permutation rule, because violating it is often the subject. Must be referenced by a 'construct' case and by no other operation."
+          },
+          "files": {
+            "type": "object",
+            "description": "Strings-file contents keyed by locale tag, serialized as JSON. Written to disk under the tag as an extensionless filename.",
+            "propertyNames": { "$ref": "#/$defs/languageTag" },
+            "additionalProperties": { "type": "object" }
+          },
+          "rawFiles": {
+            "type": "object",
+            "description": "Verbatim file text keyed by FILENAME, for content JSON serialization cannot produce: duplicate members, unterminated structures, lone surrogate escapes.",
+            "additionalProperties": { "type": "string" }
+          },
+          "rawFilesBase64": {
+            "type": "object",
+            "description": "Exact file bytes keyed by FILENAME, base64-encoded. The only way to express malformed UTF-8, which cannot survive a JS string.",
+            "additionalProperties": { "type": "string", "contentEncoding": "base64" }
+          }
+        }
+      }
+    },
+    "cases": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["expected", "fixture", "id", "input", "operation", "partition", "requirementIds"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:[.-][a-z0-9]+)*$",
+            "description": "A stable semantic ID naming one proposition, not one test method. IDs are never reassigned to unrelated behavior."
+          },
+          "requirementIds": {
+            "type": "array",
+            "items": { "type": "string", "pattern": "^(LJ-[A-Z]+-[0-9]{3}|BOOT-M[0-9]-[0-9]{4})$" },
+            "$comment": "Empty is currently permitted because production LJ-<AREA>-NNN identifiers are not minted yet. The corpus linter tightens this to minItems 1 once minting lands."
+          },
+          "fixture": { "$ref": "#/$defs/identifier" },
+          "operation": {
+            "enum": [
+              "getResult", "get", "matchFor", "languageForms", "load", "parse", "loadClasspath", "loadClasspathResources",
+              "construct", "acceptLanguage", "define",
+              "cardinalityForNumber", "cardinalityForOperands", "cardinalityForRange",
+              "ordinalityForNumber", "ordinalityForOperands",
+              "supportedCardinalitiesForLocale", "supportedOrdinalitiesForLocale"
+            ]
+          },
+          "input": { "type": "object" },
+          "partition": {
+            "enum": ["requiredPortableIds", "requiredImplementationIds", "informationalIds"],
+            "description": "Portable cases gate cross-language parity. Implementation cases gate one family's release without inflating parity. Informational cases may be unsupported and never enter either numerator."
+          },
+          "implementationFamily": {
+            "type": "string",
+            "description": "Required when partition is requiredImplementationIds; names the family the case applies to, for example js-browser or js-node.",
+            "minLength": 1
+          },
+          "notes": {
+            "type": "string",
+            "description": "Why this case exists and what would break in a port that got the behavior wrong. Authoring metadata, not part of the assertion."
+          },
+          "seedRow": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Links the case to a row of the seed table published in plan section 8.3. Rows so linked are checked against that table at build time."
+          },
+          "xfail": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["expiry", "owner", "reason", "severity"],
+            "description": "Permitted only during development. A strict parity-backed release requires an empty xfail set for the portable partition.",
+            "properties": {
+              "severity": { "enum": ["low", "medium", "high"] },
+              "owner": { "type": "string", "minLength": 1 },
+              "reason": { "type": "string", "minLength": 1 },
+              "expiry": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" }
+            }
+          },
+          "expected": {
+            "type": "object",
+            "minProperties": 1,
+            "description": "EMITTED BY THE ORACLE. Hand-editing this block defeats the corpus: it would encode a belief about Java rather than an observation of it.",
+            "additionalProperties": false,
+            "properties": {
+              "result": { "$ref": "#/$defs/translationResult" },
+              "match": { "$ref": "#/$defs/localeMatchResult" },
+              "resolverCalls": {
+                "type": "array",
+                "minItems": 1,
+                "description": "Every PhoneticResolver invocation, in order. Its ABSENCE is itself an assertion: a tagged PHONETIC_* value must not reach the resolver.",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["locale", "returned", "term", "threw"],
+                  "properties": {
+                    "term": { "type": ["string", "null"] },
+                    "locale": {
+                      "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/languageTag" }],
+                      "$comment": "The locale the resolver was HANDED — the supplying locale for a fallback-served entry, not the requested one."
+                    },
+                    "returned": { "type": ["string", "null"] },
+                    "threw": { "type": ["string", "null"] }
+                  }
+                }
+              },
+              "supplierCalls": {
+                "type": "array",
+                "minItems": 1,
+                "description": "What the ambient locale or match supplier returned. Present only when a fixture configures one.",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["kind", "returnedLocale", "returnedMatchType"],
+                  "properties": {
+                    "kind": { "enum": ["localeSupplier", "localeMatchSupplier"] },
+                    "returnedLocale": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/languageTag" }] },
+                    "returnedMatchType": { "oneOf": [{ "type": "null" }, { "enum": ["NONE", "EXACT", "CANONICAL", "CLDR_FALLBACK", "LIKELY_SUBTAG", "EXTENDED_RANGE", "PRIMARY_LANGUAGE", "WILDCARD"] }] }
+                  }
+                }
+              },
+              "policyCalls": {
+                "type": "array",
+                "minItems": 1,
+                "description": "Every fallback-policy consultation, in order. Recorded around the library default too, so clauses about calls that must NOT happen — 'no policy call after the final distinct candidate' — are answerable.",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["causeType", "decision", "locale", "reason"],
+                  "properties": {
+                    "reason": { "oneOf": [{ "type": "null" }, { "enum": ["MISSING_TRANSLATION", "NO_MATCHING_ALTERNATIVE", "RESOLUTION_FAILURE"] }] },
+                    "locale": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/languageTag" }] },
+                    "causeType": { "type": ["string", "null"] },
+                    "decision": { "type": ["boolean", "null"] }
+                  }
+                }
+              },
+              "construct": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["constructed", "failureMessage", "failureType", "probe"],
+                "description": "Strings CONSTRUCTION as an observation. The refusal identity -- failureType plus failureMessage -- is the discriminator; a port that accepts an input Java refuses, or refuses it differently, differs here and nowhere else.",
+                "properties": {
+                  "constructed": { "type": "boolean" },
+                  "failureType": { "type": ["string", "null"] },
+                  "failureMessage": { "type": ["string", "null"] },
+                  "probe": {
+                    "type": ["object", "null"],
+                    "additionalProperties": false,
+                    "required": ["threwType", "value"],
+                    "description": "Present when the case supplies input.probeKey, so a success row is backed by an answer rather than by the absence of a throw.",
+                    "properties": {
+                      "value": { "type": ["string", "null"] },
+                      "threwType": { "type": ["string", "null"] }
+                    }
+                  }
+                }
+              },
+              "acceptLanguage": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["bestMatch"],
+                "description": "The RAW Accept-Language field value negotiated end to end by LocaleMatcher#bestMatchForAcceptLanguage, whose contract is FAIL-SOFT: absent, blank, malformed, over-4,096-code-unit and over-32-expanded input return the configured fallback rather than throwing. One language tag is the entire channel because the method returns a bare Locale; the fixture supplies the discrimination by giving the fallback and the ambient instance locale different tags, so 'returned the fallback' and 'matched a catalog' are distinct answers. A port that throws where Java is fail-soft produces a `thrown` block instead of this one, which is by itself a defect.",
+                "properties": {
+                  "bestMatch": { "$ref": "#/$defs/languageTag" }
+                }
+              },
+              "define": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["built", "catalogKeyPresent", "contains", "failureMessage", "failureType"],
+                "description": "A HAND-BUILT LocalizedString compared against a loaded catalog through DefaultStrings$LocalizedStringSet.contains, which is the only transport in this harness that reaches LocalizedString#equals and the equals methods of its four nested value types -- every other LocalizedString the corpus sees comes from a single loader run and is never compared to a second instance. `built: false` records a construction REFUSAL, which is the same operation specifying LocalizedString#<init> and ExpressionTranslation#<init>; contains and catalogKeyPresent are null there because contains is never reached.",
+                "properties": {
+                  "built": { "type": "boolean" },
+                  "failureType": { "type": ["string", "null"] },
+                  "failureMessage": { "type": ["string", "null"] },
+                  "contains": {
+                    "type": ["boolean", "null"],
+                    "description": "Deep structural equality against the catalog entry with the same key."
+                  },
+                  "catalogKeyPresent": {
+                    "type": ["boolean", "null"],
+                    "description": "Whether the catalog holds the probe's key at all. An INVARIANT the oracle re-checks at execution time, not a distinction any corpus row exercises: ingest.mjs refuses a constructible probe whose key the named locale does not define -- a missing key returns at LocalizedString:140 without comparing a single field, so such a row would look like discrimination and close nothing -- which makes this field true on every built row and null on a construction refusal, never false. It exists so that a weakened ingest gate would show up in the corpus rather than pass unnoticed."
+                  }
+                }
+              },
+              "load": { "$ref": "#/$defs/loadObservation" },
+              "parse": { "$ref": "#/$defs/parseObservation" },
+              "translation": { "type": "string", "description": "Emitted by the `get` operation, which applies the failure handler's response instead of returning a result object." },
+              "failures": {
+                "type": "array",
+                "minItems": 1,
+                "description": "What the translation failure handler was handed. A recording wrapper is installed around every handler including the library default, so this channel exists without a fixture opting in.",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["attemptedLocales", "causeMessage", "causeType", "key", "localeMatchResult", "lookupLocale", "matchObjectIdenticalToResult", "message", "placeholderNames", "reason"],
+                  "properties": {
+                    "key": { "type": "string" },
+                    "reason": { "enum": ["MISSING_TRANSLATION", "NO_MATCHING_ALTERNATIVE", "RESOLUTION_FAILURE"] },
+                    "lookupLocale": { "$ref": "#/$defs/languageTag" },
+                    "attemptedLocales": { "type": "array", "items": { "$ref": "#/$defs/languageTag" } },
+                    "message": { "type": ["string", "null"] },
+                    "placeholderNames": { "type": "array", "items": { "type": "string" } },
+                    "causeType": { "type": ["string", "null"] },
+                    "causeMessage": { "type": ["string", "null"] },
+                    "localeMatchResult": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/localeMatchResult" }] },
+                    "matchObjectIdenticalToResult": {
+                      "type": ["boolean", "null"],
+                      "description": "Reference identity between the match object the handler saw and the one on the result. Section 8.3 requires these to be the same object; only Java can observe it. NULL means not comparable — the get() and thrown paths produce no result object, and reporting false there would invent a divergence."
+                    }
+                  }
+                }
+              },
+              "classification": { "$ref": "#/$defs/languageForm" },
+              "classifications": { "type": "array", "items": { "$ref": "#/$defs/languageForm" } },
+              "tuples": {
+                "type": "array",
+                "minItems": 61,
+                "description": "The complete (axis, name, renderName) table, emitted from Java's own enum constants after a verified bijection against the symbol allowlist. renderName is never derived by stripping a presumed prefix.",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["axis", "name", "renderName", "rendered"],
+                  "properties": {
+                    "axis": { "$ref": "#/$defs/languageFormAxis" },
+                    "name": { "type": "string", "pattern": "^[A-Z]+(?:_[A-Z0-9]+)*$" },
+                    "renderName": { "type": "string", "pattern": "^[A-Z]+(?:_[A-Z0-9]+)*$" },
+                    "rendered": { "type": "string", "minLength": 1 }
+                  }
+                }
+              },
+              "thrown": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["causeType", "message", "type"],
+                "properties": {
+                  "type": { "type": "string" },
+                  "message": { "type": ["string", "null"] },
+                  "causeType": { "type": ["string", "null"] }
+                }
+              }
+            }
+          }
+        },
+        "allOf": [
+          {
+            "$comment": "An implementation-partition case must say which family it belongs to, or it cannot be scoped at release time.",
+            "if": { "properties": { "partition": { "const": "requiredImplementationIds" } }, "required": ["partition"] },
+            "then": {
+              "required": ["implementationFamily"],
+              "properties": { "implementationFamily": { "type": "string", "minLength": 1 } }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "$defs": {
+    "identifier": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "warning": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "locale", "message", "missingLanguageForms", "placeholder", "source", "type"],
+      "properties": {
+        "type": { "enum": ["INCOMPLETE_CARDINALITY_TRANSLATIONS", "INCOMPLETE_ORDINALITY_TRANSLATIONS", "INVALID_CLASSPATH_LOCALE_FILENAME"] },
+        "message": { "type": ["string", "null"] },
+        "source": { "type": ["string", "null"] },
+        "locale": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/languageTag" }] },
+        "key": { "type": ["string", "null"] },
+        "placeholder": { "type": ["string", "null"] },
+        "missingLanguageForms": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "loadObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["failed", "failureMessage", "failureType", "keysByLocale", "locales", "warnings"],
+      "description": "A whole-directory load recorded as an observation. A load that FAILS is the subject of several section 8.3 clauses, so failure is data here rather than an aborted run.",
+      "properties": {
+        "locales": { "type": "array", "items": { "$ref": "#/$defs/languageTag" } },
+        "keysByLocale": { "type": "object", "additionalProperties": { "type": "array", "items": { "type": "string" } } },
+        "failed": { "type": "boolean" },
+        "failureType": { "type": ["string", "null"] },
+        "failureMessage": {
+          "type": ["string", "null"],
+          "$comment": "Temporary fixture paths are replaced with <fixtures>/ so the corpus stays reproducible across runs."
+        },
+        "warnings": { "type": "array", "items": { "$ref": "#/$defs/warning" } }
+      }
+    },
+    "parseObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["failed", "failureMessage", "failureType", "keys", "warnings"],
+      "description": "A single-file parse. Reaches the parser with raw bytes, which is the only way to observe malformed UTF-8, lone surrogates, and duplicate JSON members.",
+      "properties": {
+        "keys": { "type": "array", "items": { "type": "string" } },
+        "failed": { "type": "boolean" },
+        "failureType": { "type": ["string", "null"] },
+        "failureMessage": { "type": ["string", "null"] },
+        "warnings": { "type": "array", "items": { "$ref": "#/$defs/warning" } }
+      }
+    },
+    "failureHandler": {
+      "description": "A named handler behavior. Section 8.2 forbids embedding executable code, so behaviors are referenced by name.",
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["behavior"],
+          "properties": {
+            "behavior": { "enum": ["return-key", "throw", "return-string", "throw-in-handler"] },
+            "text": { "type": "string" },
+            "message": { "type": "string" }
+          }
+        }
+      ]
+    },
+    "fallbackPolicy": {
+      "description": "A built-in policy by name, or a caller-supplied one by named behavior. Section 8.2 forbids embedding executable code, so custom policies are referenced rather than written.",
+      "oneOf": [
+        { "type": "null" },
+        {
+          "enum": ["missing-or-no-match", "any-failure", "never"],
+          "$comment": "missing-or-no-match is the library default (DefaultStrings.java:473)."
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["behavior"],
+          "properties": {
+            "behavior": { "enum": ["continue-for-locales", "continue-for-reasons", "throw-in-policy"] },
+            "locales": { "type": "array", "items": { "$ref": "#/$defs/languageTag" } },
+            "reasons": { "type": "array", "items": { "enum": ["MISSING_TRANSLATION", "NO_MATCHING_ALTERNATIVE", "RESOLUTION_FAILURE"] } },
+            "message": { "type": "string" }
+          }
+        }
+      ]
+    },
+    "phoneticResolver": {
+      "description": "A named PhoneticResolver behavior. Reached only when a phonetic placeholder receives a RAW term; an explicitly tagged PHONETIC_* value bypasses it (DefaultStrings.java:1159).",
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["behavior"],
+          "properties": {
+            "behavior": { "enum": ["constant", "by-term", "by-locale", "first-letter-vowel", "return-null", "throw"] },
+            "phonetic": { "type": "string", "pattern": "^PHONETIC_[A-Z_]+$" },
+            "mapping": { "type": "object", "additionalProperties": { "type": "string", "pattern": "^PHONETIC_[A-Z_]+$" } },
+            "default": { "type": "string", "pattern": "^PHONETIC_[A-Z_]+$" },
+            "message": { "type": "string" }
+          }
+        }
+      ]
+    },
+    "runtimeLimits": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "minProperties": 1,
+          "properties": {
+            "maximumNumberPrecision": { "type": "integer" },
+            "maximumAbsoluteNumberScale": { "type": "integer" },
+            "maximumVisibleDecimalPlaces": { "type": "integer" },
+            "maximumCompactExponent": { "type": "integer" },
+            "maximumExpressionCharacters": { "type": "integer" },
+            "maximumExpressionTokens": { "type": "integer" },
+            "maximumExpressionNestingDepth": { "type": "integer" },
+            "maximumGeneratedPlaceholderDepth": { "type": "integer" },
+            "maximumInterpolatedOutputCharacters": { "type": "integer" },
+            "maximumGeneratedExpansionCharacters": { "type": "integer" }
+          }
+        }
+      ]
+    },
+    "languageRanges": {
+      "description": "An Accept-Language style header string, or explicit range/weight pairs. The string form goes through Locale.LanguageRange.parse.",
+      "oneOf": [
+        { "type": "string" },
+        {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              { "type": "string" },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["range"],
+                "properties": { "range": { "type": "string" }, "weight": { "type": "number" } }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "languageFormAxis": {
+      "enum": ["cardinality", "ordinality", "gender", "grammatical-case", "definiteness", "classifier", "formality", "clusivity", "animacy", "phonetic"]
+    },
+    "languageForm": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["axis", "name", "renderName"],
+      "properties": {
+        "axis": { "$ref": "#/$defs/languageFormAxis" },
+        "name": { "type": "string", "pattern": "^[A-Z]+(?:_[A-Z0-9]+)*$" },
+        "renderName": { "type": "string", "pattern": "^[A-Z]+(?:_[A-Z0-9]+)*$" }
+      }
+    },
+    "languageTag": { "type": "string", "minLength": 1, "pattern": "^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$" },
+    "translationResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["attemptedLocales", "failureCause", "failureReason", "isFallback", "key", "localeMatchResult", "lookupLocale", "resolvedLocale", "status", "translation"],
+      "properties": {
+        "key": { "type": "string" },
+        "translation": { "type": "string" },
+        "status": { "enum": ["TRANSLATED", "RETURNED_KEY", "RETURNED_STRING"] },
+        "lookupLocale": { "$ref": "#/$defs/languageTag" },
+        "resolvedLocale": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/languageTag" }] },
+        "attemptedLocales": { "type": "array", "items": { "$ref": "#/$defs/languageTag" } },
+        "isFallback": { "type": "boolean" },
+        "failureReason": { "oneOf": [{ "type": "null" }, { "enum": ["MISSING_TRANSLATION", "NO_MATCHING_ALTERNATIVE", "RESOLUTION_FAILURE"] }] },
+        "failureCause": {
+          "description": "Identity of the throwable that caused resolution to fail, so a failure case asserts HOW it failed rather than merely that it did.",
+          "oneOf": [
+            { "type": "null" },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["causeMessage", "causeType", "message", "type"],
+              "properties": {
+                "type": { "type": "string" },
+                "message": { "type": ["string", "null"] },
+                "causeType": { "type": ["string", "null"] },
+                "causeMessage": { "type": ["string", "null"] }
+              }
+            }
+          ]
+        },
+        "localeMatchResult": {
+          "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/localeMatchResult" }],
+          "$comment": "The same match object must be observable here and through the failure, fallback-observer, and thrown-failure paths."
+        }
+      }
+    },
+    "localeMatchResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["consideredLocales", "effectiveWeight", "fallbackLocale", "isMatch", "languageRange", "locale", "matchType", "requestedLanguageRanges"],
+      "properties": {
+        "matchType": { "enum": ["NONE", "EXACT", "CANONICAL", "CLDR_FALLBACK", "LIKELY_SUBTAG", "EXTENDED_RANGE", "PRIMARY_LANGUAGE", "WILDCARD"] },
+        "locale": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/languageTag" }] },
+        "isMatch": { "type": "boolean" },
+        "fallbackLocale": { "$ref": "#/$defs/languageTag" },
+        "consideredLocales": { "type": "array", "items": { "$ref": "#/$defs/languageTag" } },
+        "effectiveWeight": { "type": ["number", "null"] },
+        "languageRange": { "type": ["string", "null"] },
+        "requestedLanguageRanges": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["range", "weight"],
+            "properties": { "range": { "type": "string" }, "weight": { "type": "number" } }
+          }
+        }
+      }
+    }
+  }
+}

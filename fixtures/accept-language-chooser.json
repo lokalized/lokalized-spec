@@ -1,0 +1,33 @@
+{
+  "id": "accept-language-chooser",
+  "description": "The eight flat single-language sources of browser-chooser-many-languages (en, fr, de, es, ja, pt, it, nl -- no shared primary language, therefore no tiebreakers), but with the fallback locale and the ambient instance locale deliberately SPLIT: fallback ja, instance en. browser-chooser-many-languages cannot serve the Accept-Language entry point, because its fallback is en and its instance locale defaults to en, so 'returned the configured fallback', 'matched the en catalog' and 'returned the ambient instance locale' collapse into one indistinguishable answer -- which is precisely the confusion every fail-soft arm of bestMatchForAcceptLanguage turns on. Split, they are three distinct tags, and one language tag per row is the operation's entire observation channel.",
+  "fallbackLocale": "ja",
+  "instanceLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Checkout.Title": "en"
+    },
+    "fr": {
+      "Checkout.Title": "fr"
+    },
+    "de": {
+      "Checkout.Title": "de"
+    },
+    "es": {
+      "Checkout.Title": "es"
+    },
+    "ja": {
+      "Checkout.Title": "ja"
+    },
+    "pt": {
+      "Checkout.Title": "pt"
+    },
+    "it": {
+      "Checkout.Title": "it"
+    },
+    "nl": {
+      "Checkout.Title": "nl"
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "id": "malformed-structure-load-halts-directory",
+  "description": "A directory with one perfectly good locale and one structurally invalid locale. Serves the load-time-versus-lookup-time distinction: proves a structural violation is a startup error for the WHOLE load, not a per-file skip.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a",
+      "Key.B": "b"
+    },
+    "fr": {
+      "Key.A": 42
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

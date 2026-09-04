@@ -1,0 +1,839 @@
+{
+  "formatVersion": 1,
+  "family": "classpath-resources",
+  "description": "Plan v7 section 8.3 fixture family 'classpath-resources'. Inputs only; the oracle emits expected.",
+  "skipped": [
+    {
+      "what": "Exact-locale SHARD MERGES through loadFromClasspathResources — two or more resources merged into one locale.",
+      "why": "FINDING, unchanged from the authored draft and re-verified in source: Java has no such thing on this entry point. loadFromClasspathResources takes a single-valued Map<Locale, String> and does localizedStringsByLocale.put(locale, parse(...)) once per entry (LocalizedStringLoader.java:695); there is no merge step, no multimap overload, and no accumulation into an existing locale — contrast loadFromClasspath, which merges across classpath ROOTS via mergeLocalizedStrings (:410). Sharding is a JS-delivery concept with no Java counterpart here. What Java does instead of merging is reject (the conflict family) or collapse (the key family), and both are now authored."
+    },
+    {
+      "what": "Two DIFFERENT resources under the same literal JSON locale key in a case's input.resources object.",
+      "why": "Structurally impossible in the case format: input.resources is a JSON object, so a repeated member name cannot survive ingest or JCS serialization, and the API itself is a single-valued Map<Locale, String> with no multimap overload. The behaviorally equivalent situation — two distinct keys that render to one language tag — IS reachable and is now the conflict family."
+    },
+    {
+      "what": "A resource path with real subdirectories, and a real resource physically under META-INF/versions/<n>/.",
+      "why": "The oracle's fixture materializer writes each files/rawFiles/rawFilesBase64 entry with writeFileSync(join(fixtureDir, name), ...) and never mkdirs the parent (tools/vector-oracle/build.mjs:100-109), so a fixture name containing '/' aborts the whole build with ENOENT. No fixture can create a nested file. Covered as far as the harness allows by path.resolved-from-classpath-root (a two-segment path into a DIFFERENT fixture's package, proving root-relative resolution) plus path.deep-path-passes-validation and the path.meta-inf-versions pair, which prove validation ADMITS those paths here, REJECTS the same string under discovery, and that the resulting explicit-path failure is only 'Unable to find localized strings resource ...'."
+    },
+    {
+      "what": "validateExplicitLocale (LocalizedStringLoader.java:1724) rejecting an ill-formed locale key with 'Locale key ... is not a well-formed IETF BCP 47 locale'.",
+      "why": "FINDING: unreachable through this ingress, re-verified. LocaleUtils.requireWellFormed re-validates via new Locale.Builder().setLocale(locale).build(), but Locale.forLanguageTag — the oracle's only way to turn a JSON key into a Locale (VectorOracle.java:350) — returns exclusively well-formed Locales, discarding ill-formed subtags rather than preserving them. Measured across every candidate in this family plus 'not a tag', '', '--', 'a' and 'abcdefghi': all yield Locale.ROOT or a well-formed Locale, and Locale.Builder().setLocale(...) built successfully for every one, including the language-'und' Locale that forLanguageTag(\"UND\") produces. Only a hand-built Locale such as new Locale(\"toolongalanguage\") could trip it. The reachable behavior — a malformed key loading silently as und — is pinned by key.malformed-becomes-und."
+    },
+    {
+      "what": "validateClasspathResourcePath's own trailing-slash message, \"Classpath resource '...' must identify a file, not a package\" (LocalizedStringLoader.java:1002-1004).",
+      "why": "FINDING: dead code, confirmed by execution. validateClasspathResourcePath calls validateClasspathPackage first, whose split(\"/\", -1) segment loop already rejects a trailing slash as an empty segment, and a leading slash is rejected earlier still by the same method's first branch. No input can reach the endsWith(\"/\") check. path.trailing-slash-rejected-as-empty-segment pins the message that actually fires, so a port emitting the file-not-package wording is caught."
+    },
+    {
+      "what": "JAR-packaged resources, including a genuine multi-release JAR entry under META-INF/versions/<n>/, and the exhaustiveClasspathSearch JAR branch (LocalizedStringLoader.java:428-452).",
+      "why": "The oracle roots a URLClassLoader at a materialized DIRECTORY (VectorOracle.java:460-471), so no JarFile, no ZipException path and no physical multi-release namespace can be created. The validation half of the multi-release contrast — that this entry point admits the path where discovery rejects it — is covered without a JAR by the path.meta-inf-versions pair."
+    },
+    {
+      "what": "JS-side delivery: SSR match serialization, Fetch/Node loader planning, browser digest capability, and shard merges as a JS concept.",
+      "why": "Out of scope for a Java oracle; these are requiredImplementationIds for the JS delivery milestone (plan v7 section 8.3, M8) with no Java behavior to record."
+    },
+    {
+      "what": "A non-ASCII resource path expressed with a decomposable Latin character (for example 'café').",
+      "why": "Executable — it was measured loading successfully on this macOS/APFS host — but deliberately NOT authored. The name would be written NFC by build.mjs and could come back NFD or unmatched on a differently-normalizing filesystem, which would make even the JAVA side of the corpus non-reproducible between the machine that emits the artifact and the machine that runs `--check`. identifier.non-ascii-resource-path-loads uses a CJK name instead, which has no canonical decomposition, so the Java observation is stable while the case still carries the non-ASCII proposition as informational."
+    }
+  ],
+  "cases": [
+    {
+      "id": "classpath-resources.multi.three-locales-one-call",
+      "requirementIds": [],
+      "fixture": "classpath-resources-catalog",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "en": "classpath-resources-catalog/en",
+          "de": "classpath-resources-catalog/de",
+          "fr": "classpath-resources-catalog/fr"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "Baseline: several locales mapped in one call. Each file carries a unique marker key (Only.En/Only.De/Only.Fr) so the observation proves WHICH file landed under WHICH locale, not merely that three locales appeared. VERIFIED: de/en/fr each hold their own marker. A port that mapped resources positionally, or reused one parse across entries, diverges here."
+    },
+    {
+      "id": "classpath-resources.multi.same-resource-under-two-keys",
+      "requirementIds": [],
+      "fixture": "classpath-resources-catalog",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "en": "classpath-resources-catalog/en",
+          "de": "classpath-resources-catalog/en"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: the SAME resource under two locale keys yields two independent locale entries with identical key sets (both carry Only.En). No dedup by resource path, and no duplicate-mapping error — the conflict check keys on the rendered LOCALE TAG, not on the path. Its companion limit.byte-budget-charges-repeated-resource-twice proves the read really is repeated."
+    },
+    {
+      "id": "classpath-resources.multi.caller-key-overrides-filename",
+      "requirementIds": [],
+      "fixture": "classpath-resources-catalog",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "de": "classpath-resources-catalog/en",
+          "en": "classpath-resources-catalog/de"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "Deliberately crossed mapping: the file named 'en' is mapped under key de and vice versa. MEASURED: de gets Only.En and en gets Only.De — the caller's key wins completely. classpath-smoke proved this for one entry; here both directions are crossed in a single call, so a port that consults the filename anywhere in this entry point (even as a tiebreak) produces a swapped observation rather than a merely incomplete one."
+    },
+    {
+      "id": "classpath-resources.multi.empty-map-loads-nothing",
+      "requirementIds": [],
+      "fixture": "classpath-resources-catalog",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {}
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: an empty mapping SUCCEEDS with zero locales — it does not throw the way discovery throws for a package that resolves to nothing. Discovery's 'Unable to find package ... on the classpath' comes from an empty processedLocations set (LocalizedStringLoader.java:457), which this entry point has no analogue of. A port that reused discovery's emptiness guard fails here."
+    },
+    {
+      "id": "classpath-resources.path.resolved-from-classpath-root",
+      "requirementIds": [],
+      "fixture": "classpath-resources-catalog",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "en": "classpath-resources-alt/en"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "The resource path is resolved from the CLASSPATH ROOT, not relative to the fixture under test: the case names fixture classpath-resources-catalog but loads classpath-resources-alt/en, observable because that file carries the unique marker key Only.Alt. VERIFIED against a URLClassLoader rooted at the fixtures parent exactly as VectorOracle builds it. This is the multi-segment-path proposition in the only form the oracle can materialize (see the skipped entry on nested fixture files); it depends on classpath-resources-alt being materialized alongside it, which build.mjs guarantees by materializing every fixture before running any case."
+    },
+    {
+      "id": "classpath-resources.path.absent-resource-fails",
+      "requirementIds": [],
+      "fixture": "classpath-resources-catalog",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "en": "classpath-resources-catalog/nope.json"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: a path inside an existing package that names no resource is a hard LocalizedStringLoadingException, 'Unable to find localized strings resource ... on the classpath'. Explicit mapping never degrades to a warning or a skipped locale the way discovery does for an unrecognized filename — pinning WHICH rejection, not merely that one occurred."
+    },
+    {
+      "id": "classpath-resources.path.meta-inf-versions-passes-validation",
+      "requirementIds": [],
+      "fixture": "classpath-resources-catalog",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "en": "META-INF/versions/9/classpath-resources-catalog/en"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "THE family's sharpest contrast with discovery. validateClasspathResourcePath (LocalizedStringLoader.java:999) calls validateClasspathPackage but NOT validateClasspathDiscoveryPackage, so the reserved multi-release namespace is admitted here. MEASURED: no IllegalArgumentException; the call reaches I/O and fails only with 'Unable to find localized strings resource ...'. Paired on the SAME fixture with path.meta-inf-versions-rejected-by-discovery."
+    },
+    {
+      "id": "classpath-resources.path.meta-inf-versions-rejected-by-discovery",
+      "requirementIds": [],
+      "fixture": "classpath-resources-catalog",
+      "operation": "loadClasspath",
+      "input": {
+        "package": "META-INF/versions/9"
+      },
+      "partition": "informationalIds",
+      "notes": "The discovery half of the multi-release divergence, on the SAME fixture as the case above so the pair is an assertion rather than a cross-family comparison. MEASURED: IllegalArgumentException naming the reserved namespace and pointing the caller at loadFromClasspathResources. classpath-smoke pins this proposition in isolation on its own fixture; it is repeated here only to close the pairing, since a divergence claim whose other half lives in a different fixture proves nothing about this one."
+    },
+    {
+      "id": "classpath-resources.path.deep-path-passes-validation",
+      "requirementIds": [],
+      "fixture": "classpath-resources-catalog",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "en": "a/b/c/d/en.json"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: arbitrary nesting depth is admitted by validation — the failure is the not-found LocalizedStringLoadingException, not an IllegalArgumentException about path shape. Fixes the boundary between 'rejected by shape' and 'rejected by absence' at four segments deep."
+    },
+    {
+      "id": "classpath-resources.path.trailing-slash-rejected-as-empty-segment",
+      "requirementIds": [],
+      "fixture": "classpath-resources-catalog",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "en": "classpath-resources-catalog/"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "SURPRISE, MEASURED: a trailing slash is rejected with the EMPTY-SEGMENT message (\"may not contain empty, '.' or '..' path segments\"), not with validateClasspathResourcePath's own \"must identify a file, not a package\" message. validateClasspathPackage runs first and its split(\"/\", -1) already sees a trailing empty segment, so the resource-specific check at :1002-1004 is unreachable dead code. Paired on the SAME fixture with path.trailing-slash-normalized-by-discovery."
+    },
+    {
+      "id": "classpath-resources.path.trailing-slash-normalized-by-discovery",
+      "requirementIds": [],
+      "fixture": "classpath-resources-catalog",
+      "operation": "loadClasspath",
+      "input": {
+        "package": "classpath-resources-catalog/"
+      },
+      "partition": "informationalIds",
+      "notes": "The discovery half of the trailing-slash divergence, on the SAME fixture. MEASURED: normalizeClasspathPackage (:957) strips the trailing slash before validation runs, so all three locales load successfully — the exact input that is an IllegalArgumentException through the explicit-resource entry point. Overlaps classpath-smoke's normalization proposition by design; it is here so the divergence is anchored on one file set."
+    },
+    {
+      "id": "classpath-resources.path.leading-slash-rejected",
+      "requirementIds": [],
+      "fixture": "classpath-resources-catalog",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "en": "/classpath-resources-catalog/en"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: an absolute-looking resource path is an IllegalArgumentException, 'must be a nonempty slash-relative resource path' — note the message says 'Classpath package', because the shared validator is reused verbatim rather than reworded for this entry point. Pins that the path is not silently stripped to a relative one even though the target exists."
+    },
+    {
+      "id": "classpath-resources.path.empty-rejected",
+      "requirementIds": [],
+      "fixture": "classpath-resources-catalog",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "en": ""
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: the empty resource path takes the same 'must be a nonempty slash-relative resource path' branch as a leading slash, with the empty string interpolated into the message. Distinguishes it from the empty MAP case, which succeeds — a port that conflated 'no resources' with 'empty resource path' fails one of the pair."
+    },
+    {
+      "id": "classpath-resources.path.backslash-rejected",
+      "requirementIds": [],
+      "fixture": "classpath-resources-catalog",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "en": "classpath-resources-catalog\\en"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: a Windows-style separator hits the first branch of validateClasspathPackage (indexOf('\\\\') >= 0) and is rejected outright rather than translated to '/'. Pins that resource paths are classpath resource names, never host filesystem paths — the trap for a port that hands the string to a path API."
+    },
+    {
+      "id": "classpath-resources.path.parent-segment-rejected",
+      "requirementIds": [],
+      "fixture": "classpath-resources-catalog",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "en": "classpath-resources-catalog/../classpath-resources-catalog/en"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: a '..' segment is rejected by the segment loop EVEN THOUGH the path normalizes to a real, loadable resource, and it is that loop rather than the later Paths.get(...).normalize() 'must remain beneath its classpath root' branch that fires. Escape-hatch traversal is refused on shape, not on where it lands; a port that normalized before validating would load this successfully."
+    },
+    {
+      "id": "classpath-resources.path.dot-segment-rejected",
+      "requirementIds": [],
+      "fixture": "classpath-resources-catalog",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "en": "classpath-resources-catalog/./en"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: a '.' segment shares the '..' rejection message. Same proposition as the parent-segment case for a path that is not even an escape attempt: shape is checked, not destination."
+    },
+    {
+      "id": "classpath-resources.path.windows-drive-prefix-rejected",
+      "requirementIds": [],
+      "fixture": "classpath-resources-catalog",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "en": "C:/classpath-resources-catalog/en"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "NEW, MEASURED: the FOURTH and last branch of validateClasspathPackage, which no existing case reaches. A drive-letter prefix passes the slash, backslash and segment checks and is caught by the hasWindowsDrivePrefix test (:983) with a distinct message, 'must remain beneath its classpath root'. The check is pure string logic, so the outcome does not depend on the host being Windows. Without this the family pins only three of the validator's four rejection messages and a port could collapse the fourth into any of the others."
+    },
+    {
+      "id": "classpath-resources.path.windows-drive-prefix-rejected-by-discovery",
+      "requirementIds": [],
+      "fixture": "classpath-resources-catalog",
+      "operation": "loadClasspath",
+      "input": {
+        "package": "C:/classpath-resources-catalog"
+      },
+      "partition": "informationalIds",
+      "notes": "NEW, MEASURED: the same drive-prefix input through discovery gives the IDENTICAL message. Read against the META-INF pair this fixes exactly how much of the validator the two entry points share: every branch of validateClasspathPackage behaves identically on both, and only validateClasspathDiscoveryPackage's reserved-namespace check is discovery-only."
+    },
+    {
+      "id": "classpath-resources.path.directory-target",
+      "requirementIds": [],
+      "fixture": "classpath-resources-catalog",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "en": "classpath-resources-catalog"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED on the pinned JDK: a resource path naming a DIRECTORY passes validation (no trailing slash, so the dead file-not-package check is bypassed anyway) and getResourceAsStream returns the directory listing, which fails JSON parsing with 'classpath:classpath-resources-catalog:1:1: unable to parse localized strings file'. Filed informational rather than portable because listing-as-stream is the JVM file: URL handler's behavior, not lokalized semantics; a JS loader will legitimately produce EISDIR or a 404 instead. Recorded so the divergence is deliberate rather than discovered."
+    },
+    {
+      "id": "classpath-resources.path.validation-precedes-any-load",
+      "requirementIds": [],
+      "fixture": "classpath-resources-malformed",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "aa": "classpath-resources-malformed/broken.json",
+          "zz": "/bad/path"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "REWORKED so it actually discriminates. The earlier form paired a good resource with a bad path, where a lazily-validating port would have produced the identical observation. Here the shape-invalid entry is LAST in mapping order and LAST in tag order, while the first entry in tag order ('aa') points at an unterminated JSON file. MEASURED: the whole call is an IllegalArgumentException naming '/bad/path' and the parse error NEVER surfaces — every entry is validated in a pre-pass (LocalizedStringLoader.java:667-683) before the sorted load loop opens anything. A port that validated inside its load loop reports 'classpath:classpath-resources-malformed/broken.json:1:21: unable to parse localized strings file' instead, a different exception type."
+    },
+    {
+      "id": "classpath-resources.conflict.duplicate-tag-names-both-sources",
+      "requirementIds": [],
+      "fixture": "classpath-resources-catalog",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "und": "classpath-resources-catalog/en",
+          "UND": "classpath-resources-catalog/de"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "THE 8.3 CLAUSE ITSELF, and the correction to the authored set, which filed this diagnostic as unreachable. It is reachable. MEASURED: Locale.forLanguageTag(\"und\") has language \"\" while Locale.forLanguageTag(\"UND\") has language \"und\" — the JDK's getInstance(LanguageTag) compares the RAW-CASE subtag against \"und\" before lowercasing, so the two Locales are NOT equal yet both render toLanguageTag() == \"und\". They therefore survive as two LinkedHashMap entries, reach putIfAbsent on the rendered tag, and produce 'Duplicate localized strings resource mapping for locale \\'und\\' found at \\'classpath-resources-catalog/en\\' and \\'classpath-resources-catalog/de\\'' — a LocalizedStringLoadingException naming BOTH resource paths (:678-681). A port keying by raw string loads two locales; one keying by canonical tag with last-wins loads one."
+    },
+    {
+      "id": "classpath-resources.conflict.named-source-order-follows-mapping-order",
+      "requirementIds": [],
+      "fixture": "classpath-resources-catalog",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "UND": "classpath-resources-catalog/de",
+          "und": "classpath-resources-catalog/en"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: the same two entries with the mapping order exchanged names the two sources in the OPPOSITE order — 'found at ...de and ...en'. The first-named source is the incumbent from putIfAbsent, i.e. mapping order, NOT rendered-tag order and not path order. Half of a two-case assertion with the case above; without it a port could pass by sorting the two paths."
+    },
+    {
+      "id": "classpath-resources.conflict.fires-when-both-keys-name-one-resource",
+      "requirementIds": [],
+      "fixture": "classpath-resources-catalog",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "und": "classpath-resources-catalog/en",
+          "UND": "classpath-resources-catalog/en"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: both keys pointing at the SAME path still throws, naming that one path twice. The check is on the rendered locale tag alone; identical values are not forgiven. Read against multi.same-resource-under-two-keys — where one resource under two DIFFERENT tags loads twice without complaint — this fixes the conflict predicate precisely as tag collision, never path collision."
+    },
+    {
+      "id": "classpath-resources.conflict.uppercase-und-alone-loads-as-und",
+      "requirementIds": [],
+      "fixture": "classpath-resources-catalog",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "UND": "classpath-resources-catalog/en"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "The control that makes the conflict cases interpretable. MEASURED: 'UND' on its own passes validateExplicitLocale and loads cleanly under tag 'und' with Only.En. So the exception above is a genuine collision between two accepted keys, not a rejection of the uppercase spelling — a distinction a port will otherwise get wrong by rejecting 'UND' outright and passing the conflict cases for the wrong reason."
+    },
+    {
+      "id": "classpath-resources.conflict.und-latn-case-variant-also-collides",
+      "requirementIds": [],
+      "fixture": "classpath-resources-catalog",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "und-Latn": "classpath-resources-catalog/en",
+          "UND-Latn": "classpath-resources-catalog/de"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: the same collision with a script subtag attached — 'Duplicate ... for locale \\'und-Latn\\' found at ... and ...'. Pins that the quirk lives in the case of the und LANGUAGE subtag, not in the whole tag being literally \"und\", so a port cannot paper over the conflict clause by special-casing one string. Note the contrast with und-Latn/und-latn, which ARE equal Locales and collapse silently."
+    },
+    {
+      "id": "classpath-resources.conflict.detected-before-a-later-invalid-path",
+      "requirementIds": [],
+      "fixture": "classpath-resources-catalog",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "und": "classpath-resources-catalog/en",
+          "UND": "classpath-resources-catalog/de",
+          "fr": "/bad/path"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: with a collision at entries 1-2 and a shape-invalid path at entry 3, the DUPLICATE exception wins, not the IllegalArgumentException. Validation and conflict detection are interleaved per entry in a single mapping-order pass, so a port that ran all path validation first and then looked for duplicates throws the wrong exception type. Its mirror is path.validation-precedes-any-load, where the invalid path is reached first."
+    },
+    {
+      "id": "classpath-resources.conflict.file-count-check-precedes-conflict",
+      "requirementIds": [],
+      "fixture": "classpath-resources-file-limit",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "und": "classpath-resources-file-limit/en",
+          "UND": "classpath-resources-file-limit/de",
+          "fr": "classpath-resources-file-limit/fr"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: an over-limit map that also collides reports the FILE-COUNT failure, because the count is taken from resourcePathByLocale.size() before the entry loop begins — and note the size counts the two colliding keys separately, so the reported count is 3. Completes the precedence chain: map-size count, then per-entry locale validation, path validation and conflict detection in mapping order, then the tag-sorted load loop."
+    },
+    {
+      "id": "classpath-resources.key.jdk-legacy-codes-rewritten",
+      "requirementIds": [],
+      "fixture": "classpath-resources-catalog",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "iw": "classpath-resources-catalog/en",
+          "in": "classpath-resources-catalog/de",
+          "ji": "classpath-resources-catalog/fr"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: the three JDK legacy codes are rewritten on the way in — iw loads as he, in as id, ji as yi — and the marker keys prove which file went to which rewritten tag. This is Locale.forLanguageTag's own normalization applied to the caller's key before the loader sees it. Its deliberate contrast is key.cldr-aliases-not-applied."
+    },
+    {
+      "id": "classpath-resources.key.cldr-aliases-not-applied",
+      "requirementIds": [],
+      "fixture": "classpath-resources-catalog",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "mo": "classpath-resources-catalog/en",
+          "sh": "classpath-resources-catalog/de",
+          "tl": "classpath-resources-catalog/fr"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: CLDR language aliases are NOT applied to the locale key — mo stays mo (not ro), sh stays sh (not sr), tl stays tl (not fil). Read against key.jdk-legacy-codes-rewritten this fixes the exact boundary: JDK legacy rewriting yes, CLDR aliasing no. A port that ran keys through the CLDR alias table would collapse mo into ro here and change the locale set. (The spec repo's own ingest linter documents this same over-resolution hazard.)"
+    },
+    {
+      "id": "classpath-resources.key.legacy-and-canonical-collapse",
+      "requirementIds": [],
+      "fixture": "classpath-resources-catalog",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "iw": "classpath-resources-catalog/en",
+          "he": "classpath-resources-catalog/de"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: mapping 'iw' and 'he' to different resources yields ONE locale, he, holding the LATER member's file (Only.De). Because forLanguageTag('iw') EQUALS forLanguageTag('he'), the two collapse in the Map before the loader runs, so the duplicate-mapping diagnostic never fires and nothing is reported. This is the exact complement of the conflict family: same rendered tag AND equal Locales collapses silently; same rendered tag with UNEQUAL Locales throws. A port must reproduce both halves."
+    },
+    {
+      "id": "classpath-resources.key.case-and-region-normalization-collapse",
+      "requirementIds": [],
+      "fixture": "classpath-resources-catalog",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "EN": "classpath-resources-catalog/en",
+          "en-us": "classpath-resources-catalog/de",
+          "en-US": "classpath-resources-catalog/fr"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: three distinct spellings become two locales. 'EN' canonicalizes to en (Only.En survives), while 'en-us' and 'en-US' both canonicalize to en-US and collapse silently to the LATER member (Only.Fr). Pins case folding of the key and last-member-wins on collapse, with no warning and no duplicate-mapping error — and, alongside conflict.uppercase-und-alone-loads-as-und, shows that key case folding is uniform for every language EXCEPT the und quirk."
+    },
+    {
+      "id": "classpath-resources.key.und-root-und-latn-stay-distinct",
+      "requirementIds": [],
+      "fixture": "classpath-resources-catalog",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "und": "classpath-resources-catalog/en",
+          "root": "classpath-resources-catalog/de",
+          "und-Latn": "classpath-resources-catalog/fr"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: und, root and und-Latn are THREE separate loaded locales — 'root' is not folded into 'und' (forLanguageTag('root') keeps language 'root'), and und-Latn is not folded into und. All three pass validateExplicitLocale. A port that treated root and und as synonyms, or dropped an undetermined key as unusable, produces a smaller locale set."
+    },
+    {
+      "id": "classpath-resources.key.malformed-becomes-und",
+      "requirementIds": [],
+      "fixture": "classpath-resources-catalog",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "not a tag": "classpath-resources-catalog/en"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "SURPRISE, MEASURED: a malformed locale key does NOT reach validateExplicitLocale's rejection — Locale.forLanguageTag discards the ill-formed subtag and yields Locale.ROOT, which IS well-formed, so the resource loads silently under 'und'. LocaleUtils.requireWellFormed is unreachable through this ingress (see skipped). A port that threw on an unparseable key, or preserved the raw string as the locale, diverges."
+    },
+    {
+      "id": "classpath-resources.key.malformed-collapses-into-und",
+      "requirementIds": [],
+      "fixture": "classpath-resources-catalog",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "not a tag": "classpath-resources-catalog/en",
+          "und": "classpath-resources-catalog/de"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED consequence of the previous case: a malformed key and an explicit lowercase 'und' key are the SAME Locale (both language \"\"), so they collapse to one entry carrying the LATER file (Only.De) with no diagnostic. Contrast conflict.duplicate-tag-names-both-sources, where 'und' and 'UND' are NOT the same Locale and do throw — one letter of case decides between silent data loss and a hard failure."
+    },
+    {
+      "id": "classpath-resources.key.script-and-variant-preserved",
+      "requirementIds": [],
+      "fixture": "classpath-resources-catalog",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "sr-Latn-RS": "classpath-resources-catalog/en",
+          "de-DE-1901": "classpath-resources-catalog/de"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: a key with script plus region and a key with a registered variant both survive validation and load under their full canonical tags, with canonical subtag casing (sr-Latn-RS, de-DE-1901). Pins that this entry point does not truncate an explicit key to language or language-region."
+    },
+    {
+      "id": "classpath-resources.key.extension-and-private-use-preserved",
+      "requirementIds": [],
+      "fixture": "classpath-resources-catalog",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "de-DE-u-co-phonebk": "classpath-resources-catalog/de",
+          "x-foo": "classpath-resources-catalog/en"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: a Unicode extension key round-trips intact as de-DE-u-co-phonebk, and a pure private-use key loads as 'x-foo' — a locale with NO language subtag at all, distinct from und. Both pass validateExplicitLocale. A port that stripped extensions before keying, or rejected a language-less locale, diverges."
+    },
+    {
+      "id": "classpath-resources.key.grandfathered-tags-rewritten",
+      "requirementIds": [],
+      "fixture": "classpath-resources-catalog",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "i-klingon": "classpath-resources-catalog/en",
+          "no-bok": "classpath-resources-catalog/de",
+          "zh-cmn": "classpath-resources-catalog/fr"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: grandfathered and extlang keys are rewritten at the key, not at the file — i-klingon loads as tlh, no-bok as nb, zh-cmn as cmn, with marker keys proving the pairing. Same ingress rewriting as the JDK legacy codes and, again, distinct from CLDR aliasing."
+    },
+    {
+      "id": "classpath-resources.content.non-tag-filename-loads-explicitly",
+      "requirementIds": [],
+      "fixture": "classpath-resources-malformed",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "en": "classpath-resources-malformed/messages"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "The core claim of this entry point: a resource discovery would never pick up loads fine when named explicitly, carrying its marker key Only.Messages. NOTE THE REAL MECHANISM, corrected from the authored draft: 'messages' is a perfectly well-formed BCP 47 primary language subtag by SHAPE (eight ALPHA), so it passes LANGUAGE_TAG_PATTERN and Locale.Builder; isLanguageTag (LocalizedStringLoader.java:1649) rejects it only at its final CldrLocaleData.isKnownLanguageTag test. A port that implemented the filename rule as a syntax check would wrongly discover this file. Its control is content.discovery-skips-what-mapping-loads on the same fixture."
+    },
+    {
+      "id": "classpath-resources.content.discovery-skips-what-mapping-loads",
+      "requirementIds": [],
+      "fixture": "classpath-resources-malformed",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "The discovery control for the case above, on the identical directory. MEASURED: discovery loads ONLY en; it skips 'messages', 'blank' and 'dupes' SILENTLY — never opening them, so their content failures (zero bytes, duplicate member) are invisible — and warns INVALID_CLASSPATH_LOCALE_FILENAME for 'broken.json'. That silent-skip-of-broken-content half is new; the warning half overlaps classpath-smoke by design, so the explicit-versus-discovery contrast is anchored on one file set."
+    },
+    {
+      "id": "classpath-resources.content.malformed-json-names-classpath-source",
+      "requirementIds": [],
+      "fixture": "classpath-resources-malformed",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "en": "classpath-resources-malformed/broken.json"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: an unterminated JSON object reached through explicit mapping fails as 'classpath:classpath-resources-malformed/broken.json:1:21: unable to parse localized strings file'. Pins the source label for content diagnostics on this path — 'classpath:<resource path>' with line:column appended, not a filesystem path and not the locale. A port reporting the temp path or the locale tag diverges on the message."
+    },
+    {
+      "id": "classpath-resources.content.blank-resource-rejected",
+      "requirementIds": [],
+      "fixture": "classpath-resources-malformed",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "en": "classpath-resources-malformed/blank"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: a zero-byte resource is a distinct rejection from a parse error — 'a localized strings file may not be blank; use an empty JSON object ({}) for an empty file', with no line:column. Pins WHICH failure a port must produce for emptiness rather than letting it fall through to the JSON parser."
+    },
+    {
+      "id": "classpath-resources.content.duplicate-member-names-classpath-source",
+      "requirementIds": [],
+      "fixture": "classpath-resources-malformed",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "en": "classpath-resources-malformed/dupes"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: a repeated JSON member is rejected with \"duplicate localized string key 'Common.Greeting' encountered\" carrying the classpath: source label and no line:column. Confirms duplicate-member detection survives this entry point with the same source naming — a JS port using JSON.parse would silently keep the last member and load successfully."
+    },
+    {
+      "id": "classpath-resources.order.lowest-tag-fails-first",
+      "requirementIds": [],
+      "fixture": "classpath-resources-malformed",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "zz": "classpath-resources-malformed/nope",
+          "aa": "classpath-resources-malformed/broken.json"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: two entries that both fail, and the reported failure is 'aa' (the malformed parse) even though 'zz' appears FIRST in the mapping. loadFromClasspathResources sorts entries by rendered language tag before loading (:684), so mapping order never decides. Half of a two-case assertion."
+    },
+    {
+      "id": "classpath-resources.order.lowest-tag-fails-first-swapped",
+      "requirementIds": [],
+      "fixture": "classpath-resources-malformed",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "zz": "classpath-resources-malformed/broken.json",
+          "aa": "classpath-resources-malformed/nope"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: the same two entries with the resources exchanged — now 'aa' is the absent one and the reported failure flips to 'Unable to find localized strings resource'. Together with the previous case this proves the tag sort rather than mapping order; a port loading in insertion order reports the opposite failure in both."
+    },
+    {
+      "id": "classpath-resources.warn.forms-follow-key-not-file-ru",
+      "requirementIds": [],
+      "fixture": "classpath-resources-warner",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "ru": "classpath-resources-warner/ru"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "Control for the key-drives-validation triple. MEASURED: the one catalog declares only CARDINALITY_ONE; under key ru the single warning reports missing CARDINALITY_FEW/MANY/OTHER, attributes locale ru, and names source 'classpath:classpath-resources-warner/ru'."
+    },
+    {
+      "id": "classpath-resources.warn.forms-follow-key-not-file-en",
+      "requirementIds": [],
+      "fixture": "classpath-resources-warner",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "en": "classpath-resources-warner/ru"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: the byte-identical file mapped under key en warns about CARDINALITY_OTHER only and attributes the warning to locale en, while the source string stays 'classpath:classpath-resources-warner/ru'. The caller's key drives VALIDATION, not just the map slot. A port that validated against the filename, or against a locale inferred from content, reports Russian's form set here."
+    },
+    {
+      "id": "classpath-resources.warn.forms-follow-key-not-file-ar",
+      "requirementIds": [],
+      "fixture": "classpath-resources-warner",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "ar": "classpath-resources-warner/ru"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: third reading of the same file, under key ar — five missing forms (ZERO, TWO, FEW, MANY, OTHER) and locale ar. Three different form sets from one byte-identical resource make the key-drives-validation proposition unmistakable and pin the source string as constant across all three."
+    },
+    {
+      "id": "classpath-resources.identifier.ascii-resource-path-loads",
+      "requirementIds": [],
+      "fixture": "classpath-resources-nonascii",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "en": "classpath-resources-nonascii/messages"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "NEW, and the portable half of the clause's identifier requirement. MEASURED: the ASCII-named resource in this fixture loads under key en carrying Only.Ascii. Exists solely as the byte-for-byte twin of identifier.non-ascii-resource-path-loads in the same package, so the only difference between the pair is the encoding of the resource name."
+    },
+    {
+      "id": "classpath-resources.identifier.non-ascii-resource-path-loads",
+      "requirementIds": [],
+      "fixture": "classpath-resources-nonascii",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "en": "classpath-resources-nonascii/文字"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "NEW, informational per the clause's 'non-ASCII identifiers classified as informational Java-only cases'. MEASURED on the pinned JDK and macOS/APFS: the non-ASCII resource path resolves through URLClassLoader and loads, carrying Only.NonAscii. Deliberately CJK rather than a Latin accent so the name has no canonical decomposition, removing the macOS NFC/NFD hazard that would otherwise make even the Java-side observation vary between the build machine and CI. It stays informational because filesystem name encoding and URL escaping of classpath resource names are host properties, not lokalized semantics: a JS Fetch or Node loader may legitimately fail or percent-encode differently."
+    },
+    {
+      "id": "classpath-resources.limit.mapping-size-over-file-limit",
+      "requirementIds": [],
+      "fixture": "classpath-resources-file-limit",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "en": "classpath-resources-file-limit/en",
+          "de": "classpath-resources-file-limit/de",
+          "fr": "classpath-resources-file-limit/fr"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: maximumLocalizedStringsFiles is checked against the MAP SIZE up front, before validation and before any I/O, with wording unique to this entry point — 'Classpath resource mapping contains 3 localized strings files, exceeding the aggregate localized strings file limit of 2'. Paired on the SAME fixture with limit.file-count-message-differs-on-discovery."
+    },
+    {
+      "id": "classpath-resources.limit.mapping-size-at-file-limit",
+      "requirementIds": [],
+      "fixture": "classpath-resources-file-limit",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "en": "classpath-resources-file-limit/en",
+          "de": "classpath-resources-file-limit/de"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: exactly at the limit succeeds and both locales load. Fixes the comparison as strictly-greater-than rather than greater-or-equal — an off-by-one port fails this while passing the case above."
+    },
+    {
+      "id": "classpath-resources.limit.file-count-precedes-path-validation",
+      "requirementIds": [],
+      "fixture": "classpath-resources-file-limit",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "en": "classpath-resources-file-limit/en",
+          "de": "classpath-resources-file-limit/de",
+          "fr": "/bad/path"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: with an over-limit map that ALSO contains a shape-invalid path, the LIMIT failure wins — a LocalizedStringLoadingException, not the IllegalArgumentException that path.validation-precedes-any-load produces on an under-limit map. A port validating paths first throws the wrong exception type."
+    },
+    {
+      "id": "classpath-resources.limit.file-count-message-differs-on-discovery",
+      "requirementIds": [],
+      "fixture": "classpath-resources-file-limit",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "NEW: the discovery counterpart on the SAME fixture and the same limit, which the authored draft asserted in prose without authoring. MEASURED: discovery fails with a structurally different message — '<path>/en: localized strings load exceeds the aggregate localized strings file limit of 2' — counted per file as the load proceeds and labelled with the file that tripped it, versus the explicit path's up-front map-size count. One option, two entry points, two messages; a port sharing one message string fails one of the pair."
+    },
+    {
+      "id": "classpath-resources.limit.byte-budget-single-resource",
+      "requirementIds": [],
+      "fixture": "classpath-resources-byte-budget",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "de": "classpath-resources-byte-budget/de"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "Control for the byte-budget trio: one 52-byte resource fits inside the 60-byte aggregate and loads cleanly. Without it the failures below could be explained by a per-file limit."
+    },
+    {
+      "id": "classpath-resources.limit.byte-budget-accumulates-across-resources",
+      "requirementIds": [],
+      "fixture": "classpath-resources-byte-budget",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "de": "classpath-resources-byte-budget/de",
+          "en": "classpath-resources-byte-budget/en"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: adding a second resource that fits on its own still fails — 'classpath:classpath-resources-byte-budget/en: localized strings load exceeds the aggregate maximum of 60 input bytes'. ONE LoadingSession spans the whole mapping, and the message names the resource that crossed the line, which is the second in TAG order (de then en). A port creating a session per resource loads both."
+    },
+    {
+      "id": "classpath-resources.limit.byte-budget-charges-repeated-resource-twice",
+      "requirementIds": [],
+      "fixture": "classpath-resources-byte-budget",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "de": "classpath-resources-byte-budget/de",
+          "en": "classpath-resources-byte-budget/de"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: the SAME resource under two keys is charged twice against the aggregate budget and fails, naming that one path. Proves the read is genuinely repeated rather than cached — the companion to multi.same-resource-under-two-keys, and the case that catches a port memoizing parses by resource path."
+    },
+    {
+      "id": "classpath-resources.limit.warning-budget-single-resource-at-limit",
+      "requirementIds": [],
+      "fixture": "classpath-resources-warning-budget",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "ru": "classpath-resources-warning-budget/ru"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "NEW control, without which the case below proves nothing about sharing. MEASURED: one resource emitting exactly one warning under maximumWarnings of 1 SUCCEEDS and delivers that warning. Fixes the warning comparison as strictly-greater-than on this entry point too."
+    },
+    {
+      "id": "classpath-resources.limit.warning-budget-shared-across-mapping",
+      "requirementIds": [],
+      "fixture": "classpath-resources-warning-budget",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "ru": "classpath-resources-warning-budget/ru",
+          "de": "classpath-resources-warning-budget/de"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "REWORKED: the authored draft used a single resource at maximumWarnings 0, which could never show anything 'shared across the mapping'. Now two resources each emit one warning under a budget of 1. MEASURED: the de warning is delivered, then ru's trips the budget — 'classpath:classpath-resources-warning-budget/ru: localized strings load exceeds the aggregate maximum of 1 warnings' — proving one LoadingSession's warning counter spans every mapped resource, in tag order, exactly like the byte counter. A port with a per-resource counter loads both."
+    },
+    {
+      "id": "classpath-resources.limit.discovery-entries-not-charged",
+      "requirementIds": [],
+      "fixture": "classpath-resources-discovery-budget",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "en": "classpath-resources-discovery-budget/en",
+          "de": "classpath-resources-discovery-budget/de"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: with maximumDiscoveryEntries set to 1, mapping TWO resources explicitly still succeeds — this entry point never calls discoverEntry, so the discovery budget is structurally inapplicable. A port that funnelled both entry points through one accounting path rejects this load."
+    },
+    {
+      "id": "classpath-resources.limit.discovery-entries-charged-by-discovery",
+      "requirementIds": [],
+      "fixture": "classpath-resources-discovery-budget",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "The control that makes the previous case an assertion: the SAME fixture and the SAME maximumDiscoveryEntries of 1 fails under discovery with \"classpath directory '<path>': localized strings load exceeds the aggregate maximum of 1 discovery entries\". One option, two entry points, opposite outcomes — the pair is the proposition."
+    }
+  ]
+}

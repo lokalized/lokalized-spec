@@ -1,0 +1,10 @@
+{
+  "id": "direct-fr-be",
+  "description": "Plan v7 section 8.3 seed row 2: fr-BE is not loaded; the tiebreaker list prefers fr-FR to fr-CA and the diagnostic channel reports a likely-subtag selection.",
+  "fallbackLocale": "fr-FR",
+  "tiebreakers": { "fr": ["fr-FR", "fr-CA"] },
+  "files": {
+    "fr-FR": { "Checkout.Title": "Paiement (FR)" },
+    "fr-CA": { "Checkout.Title": "Paiement (CA)" }
+  }
+}

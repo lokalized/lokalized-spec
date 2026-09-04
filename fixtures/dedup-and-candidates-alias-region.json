@@ -1,0 +1,14 @@
+{
+  "id": "dedup-and-candidates-alias-region",
+  "description": "First-wins dedup through a region alias rather than a language alias. Loads hy-AM and en with fallback en. CldrLocaleData.fallbackLocalesFor(hy-SU) is [hy-SU, hy, hy-AM] and canonicalLanguageTag('hy-SU') is 'hy-AM' (both verified against the library), so localizedStringsFor maps the requested hy-SU onto loaded hy-AM and the later raw hy-AM candidate is dropped as a duplicate. The resulting attempted chain leads with the alias TARGET and never contains the requested tag, while the bare 'hy' candidate - which CLDR orders before hy-AM - ends up second. Alias.Missing exists nowhere.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "hy-AM": {
+      "Alias.OnlyInAm": "hy-AM: only here"
+    },
+    "en": {
+      "Alias.OnlyInEn": "en: only here"
+    }
+  }
+}

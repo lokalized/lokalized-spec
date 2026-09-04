@@ -1,0 +1,17 @@
+{
+  "id": "owed-ds-private-use-wildcard-first",
+  "description": "The partner of owed-ds-private-use-wildcard-fallback with the fallback locale moved OUT of the candidate set, so the same request must fall through to the first candidate instead. Together the pair pins 'tiebreakers, then fallback, then first' rather than the plain 'first' a port can pass the whole corpus with.",
+  "fallbackLocale": "mo",
+  "tiebreakers": null,
+  "files": {
+    "x-foo-bar": {
+      "Checkout.Title": "x-foo-bar"
+    },
+    "x-foo-baz": {
+      "Checkout.Title": "x-foo-baz"
+    },
+    "mo": {
+      "Checkout.Title": "mo"
+    }
+  }
+}

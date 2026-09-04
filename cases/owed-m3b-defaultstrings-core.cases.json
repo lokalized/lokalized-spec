@@ -1,0 +1,431 @@
+{
+  "formatVersion": 1,
+  "family": "owed-m3b-defaultstrings-core",
+  "description": "Plan v7 section 8.3 fixture family 'owed-m3b-defaultstrings-core'. Inputs only; the oracle emits expected.",
+  "cases": [
+    {
+      "id": "owed-ds.undetermined-catalog-not-claimed-by-likely-subtag",
+      "requirementIds": [],
+      "fixture": "owed-ds-undetermined-catalog",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "en-US",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings.languageRangeSpecificityFor:2071, the arm where the AVAILABLE locale has no likely subtag. CLDR maximizes und to en-Latn, which is exactly the requested likely subtag, so the ONLY thing stopping the und catalog from being claimed for an American English request is SupportedLocaleStatics nulling the likely script for undetermined locales. Expected: no match. A port that read the raw likely subtag answers with und."
+    },
+    {
+      "id": "owed-ds.undetermined-catalog-bare-en-also-not-claimed",
+      "requirementIds": [],
+      "fixture": "owed-ds-undetermined-catalog",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "en",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same suppression at the broadest request shape, where a bare 'en' has no structural constraint to fall back on either. Paired with the row above so the result cannot be explained by en-US's specificity."
+    },
+    {
+      "id": "owed-ds.undetermined-catalog-ordinary-locale-still-matches",
+      "requirementIds": [],
+      "fixture": "owed-ds-undetermined-catalog",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "fr",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The control: this fixture is not one where everything answers NONE. fr matches its own catalog exactly, so the two rows above are refusals, not a broken fixture."
+    },
+    {
+      "id": "owed-ds.extlang-refused-when-jdk-spells-it-differently",
+      "requirementIds": [],
+      "fixture": "owed-ds-extlang-jdk-spelling",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "no-nyn",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings.extlangEquivalentLanguageRangeFor:2124, second conjunct. 'no-nyn' has the extlang shape and collapses to 'nyn', which IS a known CLDR language tag -- so the first conjunct passes. The JDK materializes no-nyn as the grandfathered 'nn' instead, so the equivalence must be refused and the nyn catalog must NOT be reachable. Expected: no match. A port that only checked is-known-tag reports a canonical match on nyn."
+    },
+    {
+      "id": "owed-ds.extlang-refused-exact-nyn-still-reachable",
+      "requirementIds": [],
+      "fixture": "owed-ds-extlang-jdk-spelling",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "nyn",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The control for the row above: the nyn catalog is loaded and exactly reachable, so the refusal there is about the derived extlang identity and not about the catalog being absent."
+    },
+    {
+      "id": "owed-ds.extlang-accepted-when-jdk-spelling-agrees",
+      "requirementIds": [],
+      "fixture": "owed-ds-extlang-accepted",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "ar-ary",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The accepting arm of the same test: ar-ary collapses to ary and the JDK materializes ar-ary as exactly 'ary', so the identity holds and the Moroccan Arabic catalog wins over the generic ar catalog. Without this row, a port that derived NO extlang identities would satisfy the refusal case above."
+    },
+    {
+      "id": "owed-ds.heuristic-depth-outranks-weight",
+      "requirementIds": [],
+      "fixture": "owed-ds-heuristic-depth-order",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "en-Latn-US",
+            "weight": 0.5
+          },
+          {
+            "range": "en-CA",
+            "weight": 0.9
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "assignPreferredSpecificHeuristicLocales:2279. Two specific heuristic ranges with recognized depths 3 and 2 and weights in the OPPOSITE order. Depth is consulted before weight, so en-Latn-US claims the tiebreaker-preferred catalog (en-GB) first and en-CA is left en-AU; the governor sweep then selects en-AU because 0.9 is the higher quality. A port whose comparator started with weight gives en-CA the first claim and answers en-GB instead."
+    },
+    {
+      "id": "owed-ds.heuristic-depth-agrees-with-weight",
+      "requirementIds": [],
+      "fixture": "owed-ds-heuristic-depth-order",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "en-Latn-US",
+            "weight": 0.9
+          },
+          {
+            "range": "en-CA",
+            "weight": 0.5
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The control for the row above: same two ranges with depth and weight now agreeing. Its answer must differ from the opposed case, which is what makes that case a discriminator rather than a restatement of 'en-AU wins'."
+    },
+    {
+      "id": "owed-ds.heuristic-equal-depth-weight-decides",
+      "requirementIds": [],
+      "fixture": "owed-ds-heuristic-depth-order",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "en-US",
+            "weight": 0.9
+          },
+          {
+            "range": "en-CA",
+            "weight": 0.5
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "assignPreferredSpecificHeuristicLocales:2283, the rung reached only when depth ties. en-US and en-CA are both recognized-depth 2, so the depth comparison is zero and weight decides the claim order."
+    },
+    {
+      "id": "owed-ds.heuristic-equal-depth-equal-weight-request-order",
+      "requirementIds": [],
+      "fixture": "owed-ds-heuristic-depth-order",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "en-US",
+            "weight": 0.5
+          },
+          {
+            "range": "en-CA",
+            "weight": 0.5
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The last rung of the same comparator: equal depth AND equal weight fall back to stable request order, so the earlier range claims the tiebreaker-preferred catalog and is served first."
+    },
+    {
+      "id": "owed-ds.heuristic-equal-depth-equal-weight-request-order-reversed",
+      "requirementIds": [],
+      "fixture": "owed-ds-heuristic-depth-order",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "en-CA",
+            "weight": 0.5
+          },
+          {
+            "range": "en-US",
+            "weight": 0.5
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The mirror of the row above. The reported languageRange must follow the request order rather than being fixed at en-us, so an implementation that ordered the comparator's last rung any other way fails exactly one of the pair."
+    },
+    {
+      "id": "owed-ds.private-use-extended-range-prefers-fallback",
+      "requirementIds": [],
+      "fixture": "owed-ds-private-use-wildcard-fallback",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "x-foo-*",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "lookupMatchByTiebreakers:2640 (no list for the derived language code), preferredLocaleForRange:2576 (no tiebreaker hit) and :2579 (prefer the configured fallback). Both private-use catalogs match the extended range structurally, the derived lookup key is 'x' and no such language code exists in the tiebreaker map, so the fallback locale x-foo-baz must win over the lexicographically first candidate x-foo-bar."
+    },
+    {
+      "id": "owed-ds.private-use-extended-range-falls-through-to-first",
+      "requirementIds": [],
+      "fixture": "owed-ds-private-use-wildcard-first",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "x-foo-*",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The partner with the fallback moved outside the candidate set: the same lookup misses, the fallback is not a candidate, and the first candidate x-foo-bar must be returned. A port that always returned the first candidate passes this and fails its partner; one that always returned the fallback fails this."
+    },
+    {
+      "id": "owed-ds.likely-subtag-tiebreakerless-prefers-fallback",
+      "requirementIds": [],
+      "fixture": "owed-ds-likely-subtag-tiebreakerless-fallback",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "zh-min-nan",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "lookupMatchByLikelySubtag:2623 and :2626. nan-CN and nan-MY share the likely subtag nan-Hans, so both are likely-subtag candidates, but the tiebreaker key is taken from the RANGE's first subtag -- 'zh' -- and the catalogs are keyed under 'nan'. The lookup misses and the configured fallback nan-MY must be preferred over the first candidate nan-CN."
+    },
+    {
+      "id": "owed-ds.likely-subtag-tiebreakerless-falls-through-to-first",
+      "requirementIds": [],
+      "fixture": "owed-ds-likely-subtag-tiebreakerless-first",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "zh-min-nan",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Its partner with the fallback outside the candidate set, so nan-CN must be returned. The pair separates 'fallback, then first' from plain 'first' inside the likely-subtag disambiguator specifically -- a different code path from the preferredLocaleForRange pair above."
+    },
+    {
+      "id": "owed-ds.fallback-tiebreaker-walk-skips-nonequivalent",
+      "requirementIds": [],
+      "fixture": "owed-ds-fallback-tiebreaker-walk",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "de",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings.<init>:457 and :459. The request matches nothing, so the reported fallbackLocale IS the construction-time fallback resolution under test: 'sr-Latn' is loaded under neither of its equivalent spellings, and the tiebreaker walk must skip the leading sr-Cyrl (not equivalent to the fallback) and land on sh. A port that took the first tiebreaker reports sr-Cyrl here and serves every fallback translation from the wrong catalog."
+    },
+    {
+      "id": "owed-ds.fallback-tiebreaker-walk-serves-resolved-catalog",
+      "requirementIds": [],
+      "fixture": "owed-ds-fallback-tiebreaker-walk",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "locale": "de"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same resolution observed through the translation itself rather than the match record: the served string must be the sh catalog's. Each catalog carries its own tag as its value, so the answer names the catalog that won."
+    },
+    {
+      "id": "owed-ds.fallback-tiebreaker-walk-alt-order-changes-catalog",
+      "requirementIds": [],
+      "fixture": "owed-ds-fallback-tiebreaker-walk-alt",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "locale": "de"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same catalogs and the same unloaded fallback tag with only the tiebreaker order changed; the served catalog must move to hbs. This is what makes the pair prove ORDER is consulted rather than that sh happens to win."
+    },
+    {
+      "id": "owed-ds.fallback-tiebreaker-walk-alt-match-record",
+      "requirementIds": [],
+      "fixture": "owed-ds-fallback-tiebreaker-walk-alt",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "de",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The alternate order's fallbackLocale as reported by the matcher, so the second channel and the translation channel are both pinned."
+    },
+    {
+      "id": "owed-ds.redundant-tiebreakers-accepted",
+      "requirementIds": [],
+      "fixture": "owed-ds-redundant-tiebreakers",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "fr",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings.<init>:422, the arm where a language with exactly one loaded catalog DID receive a tiebreaker list. The observable is that construction succeeds and resolution is unchanged; a port that rejected redundant tiebreakers cannot build this fixture at all."
+    },
+    {
+      "id": "owed-ds.redundant-tiebreakers-translation-unchanged",
+      "requirementIds": [],
+      "fixture": "owed-ds-redundant-tiebreakers",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "locale": "fr"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same instance serving a translation, so 'accepted' is pinned as 'accepted and behaviourally identical to the synthesized identity list' rather than merely 'did not throw'."
+    },
+    {
+      "id": "owed-ds.alias-ladder-en-gan",
+      "requirementIds": [],
+      "fixture": "owed-ds-alias-ladder",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "en-gan",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "semanticLanguageRangeForDerivedMatching:2208. 'en-gan' is not a known tag, so the identity ladder runs: its extlang collapse 'gan' is the JDK's own materialization AND a known tag, while the original spelling is neither. Both a gan catalog and an en catalog are loaded, so which identity becomes the semantic range decides which catalog is served."
+    },
+    {
+      "id": "owed-ds.alias-ladder-zh-cdo",
+      "requirementIds": [],
+      "fixture": "owed-ds-alias-ladder",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "zh-cdo",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same ladder over a Chinese extlang whose JDK-materialized identity 'cdo' is loaded. Included alongside en-gan because the two differ in whether the ORIGINAL range's primary language also has a catalog."
+    },
+    {
+      "id": "owed-ds.alias-ladder-sgn-nsl",
+      "requirementIds": [],
+      "fixture": "owed-ds-alias-ladder",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "sgn-nsl",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The sign-language extlang the class comment singles out as the case where the JDK and CLDR alias tables disagree (JDK maps nsl to sgn-NO, CLDR maps sgn-NO to nsi). The nsl catalog is loaded, so a ladder that preferred a different identity serves a different catalog or nothing."
+    },
+    {
+      "id": "owed-ds.alias-ladder-de-gan",
+      "requirementIds": [],
+      "fixture": "owed-ds-alias-ladder",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "de-gan",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same extlang subtag under a primary language that is ALSO loaded, so the ladder's choice between the unrecognized original spelling and the recognized collapse is observable as de versus gan."
+    },
+    {
+      "id": "owed-ds.alias-ladder-nonalphabetic-extlang",
+      "requirementIds": [],
+      "fixture": "owed-ds-alias-ladder",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "zh-123",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "extlangEquivalentLanguageRangeFor's shape test with a numeric second subtag: a well-formed language range whose second subtag has the right LENGTH but is not alphabetic, so no extlang equivalence may be derived."
+    }
+  ]
+}

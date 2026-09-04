@@ -1,0 +1,59 @@
+{
+  "id": "resolver-locale-likely-subtag",
+  "description": "A likely-subtag walk carried into the callback channel. fr-BE is not loaded; the tiebreaker list prefers fr-FR over fr-CA, so a fr-BE request is supplied by fr-FR after passing through a bare fr candidate that is never loaded. The resolver mapping covers fr-FR, fr-CA, fr-BE and fr so all four possible answers are distinguishable in the rendered text. Tiebreakers are mandatory because both loaded locales share the language code fr, and the list is the exact permutation of them.",
+  "fallbackLocale": "fr-FR",
+  "tiebreakers": {
+    "fr": [
+      "fr-FR",
+      "fr-CA"
+    ]
+  },
+  "phoneticResolver": {
+    "behavior": "by-locale",
+    "mapping": {
+      "fr-FR": "PHONETIC_VOWEL",
+      "fr-CA": "PHONETIC_CONSONANT",
+      "fr-BE": "PHONETIC_H_SILENT",
+      "fr": "PHONETIC_S_IMPURE"
+    },
+    "default": "PHONETIC_OTHER"
+  },
+  "files": {
+    "fr-FR": {
+      "Locale.Marker": "fr-FR",
+      "Article": {
+        "translation": "{{article}}",
+        "placeholders": {
+          "article": {
+            "value": "nounTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "got:fr-FR",
+              "PHONETIC_CONSONANT": "got:fr-CA",
+              "PHONETIC_H_SILENT": "got:fr-BE",
+              "PHONETIC_S_IMPURE": "got:fr",
+              "PHONETIC_OTHER": "got:unmapped"
+            }
+          }
+        }
+      }
+    },
+    "fr-CA": {
+      "Locale.Marker": "fr-CA",
+      "Article": {
+        "translation": "{{article}}",
+        "placeholders": {
+          "article": {
+            "value": "nounTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "got:fr-FR",
+              "PHONETIC_CONSONANT": "got:fr-CA",
+              "PHONETIC_H_SILENT": "got:fr-BE",
+              "PHONETIC_S_IMPURE": "got:fr",
+              "PHONETIC_OTHER": "got:unmapped"
+            }
+          }
+        }
+      }
+    }
+  }
+}

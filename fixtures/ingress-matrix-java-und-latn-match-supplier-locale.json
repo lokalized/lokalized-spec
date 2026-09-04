@@ -1,0 +1,18 @@
+{
+  "id": "ingress-matrix-java-und-latn-match-supplier-locale",
+  "description": "Seed row 1 catalog with a localeMatchSupplier returning matchFor(Locale und-Latn). localeLookupFor takes the lookup locale from the MATCH — its locale, or the match's own fallbackLocale when the match is NONE (DefaultStrings.java:2449-2453) — so resolution starts at fr rather than at und-Latn. This is the 'intentional lookup difference for supplied matches' half of the clause.",
+  "fallbackLocale": "fr",
+  "tiebreakers": null,
+  "localeMatchSupplier": {
+    "behavior": "match-locale",
+    "locale": "und-Latn"
+  },
+  "files": {
+    "en": {
+      "Checkout.Title": "Checkout"
+    },
+    "fr": {
+      "Checkout.Title": "Paiement"
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "id": "ingress-matrix-java-alias-mo-on-disk-match-supplier",
+  "description": "A file named mo reached through the supplied-match ingress, negotiated from the deprecated spelling mo.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "localeMatchSupplier": {
+    "behavior": "match-locale",
+    "locale": "mo"
+  },
+  "files": {
+    "mo": {
+      "Checkout.Title": "mo-on-disk"
+    },
+    "en": {
+      "Checkout.Title": "en"
+    }
+  }
+}

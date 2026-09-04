@@ -1,0 +1,98 @@
+{
+  "id": "malformed-structure-alternatives",
+  "description": "Violations of the whole-message alternatives array: wrong container type, empty array, null and non-object elements, empty and multi-member alternative objects, an unparseable expression key, and alternatives whose values have the wrong node type.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": {
+        "translation": "t",
+        "alternatives": {
+          "count == 0": {
+            "translation": "none"
+          }
+        }
+      }
+    },
+    "fr": {
+      "Key.A": {
+        "translation": "t",
+        "alternatives": []
+      }
+    },
+    "de": {
+      "Key.A": {
+        "translation": "t",
+        "alternatives": [
+          null
+        ]
+      }
+    },
+    "es": {
+      "Key.A": {
+        "translation": "t",
+        "alternatives": [
+          "count == 0"
+        ]
+      }
+    },
+    "it": {
+      "Key.A": {
+        "translation": "t",
+        "alternatives": [
+          {}
+        ]
+      }
+    },
+    "nl": {
+      "Key.A": {
+        "translation": "t",
+        "alternatives": [
+          {
+            "count == 0": {
+              "translation": "none"
+            },
+            "count == 1": {
+              "translation": "one"
+            }
+          }
+        ]
+      }
+    },
+    "pt": {
+      "Key.A": {
+        "translation": "t",
+        "alternatives": [
+          {
+            "count ==": {
+              "translation": "none"
+            }
+          }
+        ]
+      }
+    },
+    "ru": {
+      "Key.A": {
+        "translation": "t",
+        "alternatives": [
+          {
+            "count == 0": 5
+          }
+        ]
+      }
+    },
+    "pl": {
+      "Key.A": {
+        "translation": "t",
+        "alternatives": [
+          {
+            "count == 0": null
+          }
+        ]
+      }
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

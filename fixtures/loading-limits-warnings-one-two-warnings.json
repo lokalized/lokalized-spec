@@ -1,0 +1,36 @@
+{
+  "id": "loading-limits-warnings-one-two-warnings",
+  "description": "A Russian catalog with two incomplete-cardinality entries, loaded with maximumWarnings at 1. Verified: the first warning IS delivered to the handler and the second trips the budget, so the observation carries failed:true alongside a one-element warnings array.",
+  "fallbackLocale": "ru",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumWarnings": 1
+  },
+  "loadOnly": true,
+  "files": {
+    "ru": {
+      "Items": {
+        "translation": "{{noun}}",
+        "placeholders": {
+          "noun": {
+            "value": "count",
+            "translations": {
+              "CARDINALITY_ONE": "книга"
+            }
+          }
+        }
+      },
+      "Books": {
+        "translation": "{{noun}}",
+        "placeholders": {
+          "noun": {
+            "value": "count",
+            "translations": {
+              "CARDINALITY_ONE": "книга"
+            }
+          }
+        }
+      }
+    }
+  }
+}

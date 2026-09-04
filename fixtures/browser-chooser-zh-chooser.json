@@ -1,0 +1,27 @@
+{
+  "id": "browser-chooser-zh-chooser",
+  "description": "Plan v7 section 8.3's browser chooser, supported {zh, zh-Hant} plus en and fr, tiebreaker zh:[zh, zh-Hant], fallback en. Content-identical to ingress-smoke-browser-chooser by design: it is the baseline half of a reversal pair whose other half, browser-chooser-zh-chooser-reversed, differs ONLY in tiebreaker order, so any case whose answer depends on that order shows a different result across the two and any case that does not must show the same one.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "zh": [
+      "zh",
+      "zh-Hant"
+    ]
+  },
+  "files": {
+    "zh": {
+      "Checkout.Title": "结账"
+    },
+    "zh-Hant": {
+      "Checkout.Title": "結賬"
+    },
+    "en": {
+      "Checkout.Title": "Checkout"
+    },
+    "fr": {
+      "Checkout.Title": "Paiement"
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

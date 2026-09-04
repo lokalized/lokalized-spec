@@ -1,0 +1,14 @@
+{
+  "id": "ingress-matrix-java-alias-mo-on-disk",
+  "description": "The other half of the mo question: a FILE named mo. LocalizedStringLoader keys catalogs by Locale.forLanguageTag, which leaves mo as mo, so the catalog really is loaded under mo and no ro catalog exists. Mirror of ingress-matrix-java-alias-baseline, where ro is on disk and mo is only ever a request. One catalog per canonical language code, so no tiebreakers.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "mo": {
+      "Checkout.Title": "mo-on-disk"
+    },
+    "en": {
+      "Checkout.Title": "en"
+    }
+  }
+}

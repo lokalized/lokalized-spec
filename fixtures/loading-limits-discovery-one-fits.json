@@ -1,0 +1,14 @@
+{
+  "id": "loading-limits-discovery-one-fits",
+  "description": "A directory with exactly one child, loaded with maximumDiscoveryEntries at 1.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumDiscoveryEntries": 1
+  },
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  }
+}

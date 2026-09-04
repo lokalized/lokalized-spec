@@ -1,0 +1,72 @@
+{
+  "id": "gender-multi-axis-alternatives-only",
+  "description": "Plan v7 section 8.3 'alternatives-only children that hit and miss'. Each definition contains an alternative that supplies ONLY a nested alternatives list and no translation of its own, selected on gender (LocalizedStringLoader permits translation==null when at least one alternative is present). Delivery.Status deliberately places a LATER sibling alternative (packageCount == 0) that matches the very same context the nested children miss on, and gives the root its own translation, so a miss inside the selected child can be told apart from fall-through to a later sibling AND from falling back to the root translation -- the two ways a port can get DefaultStrings.java:806-810 wrong. The root translation deliberately references no placeholder, so the root path cannot fail for an unrelated reason. Guest.Welcome repeats the shape with a root that has no translation at all. Tiebreakers are null: only 'en' is loaded.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Delivery.Status": {
+        "translation": "Delivery status unavailable.",
+        "placeholders": {
+          "recipient": {
+            "value": "recipientGender",
+            "translations": {
+              "GENDER_MASCULINE": "him",
+              "GENDER_FEMININE": "her",
+              "GENDER_COMMON": "them"
+            }
+          }
+        },
+        "alternatives": [
+          {
+            "recipientGender == GENDER_FEMININE": {
+              "alternatives": [
+                {
+                  "packageCount == 1": {
+                    "translation": "One package is on its way to {{recipient}}."
+                  }
+                },
+                {
+                  "packageCount > 1": {
+                    "translation": "{{packageCount}} packages are on their way to {{recipient}}."
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "recipientGender == GENDER_MASCULINE": {
+              "translation": "A delivery is on its way to {{recipient}}."
+            }
+          },
+          {
+            "packageCount == 0": {
+              "translation": "Nothing to deliver."
+            }
+          }
+        ]
+      },
+      "Guest.Welcome": {
+        "commentary": "No translation of its own: the root is alternatives-only and so is its first child.",
+        "alternatives": [
+          {
+            "guestGender == GENDER_FEMININE": {
+              "alternatives": [
+                {
+                  "visitCount > 0": {
+                    "translation": "Welcome back, madam."
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "guestGender == GENDER_MASCULINE": {
+              "translation": "Welcome, sir."
+            }
+          }
+        ]
+      }
+    }
+  }
+}

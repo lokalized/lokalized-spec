@@ -1,0 +1,24 @@
+{
+  "id": "supplied-match-considered-empty",
+  "description": "A fabrication considering NOTHING, with a null locale so the matched-state checks pass cleanly. Its considered list also differs from the supported locales, so BOTH the constructor's fallback-containment check (LocaleMatchResult.java:130-131) and the instance's set comparison are violated -- which is what makes it able to pin constructor-before-instance ordering.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "localeMatchSupplier": {
+    "behavior": "fabricated",
+    "matchType": "NONE",
+    "fallbackLocale": "en",
+    "consideredLocales": []
+  },
+  "files": {
+    "fr": {
+      "Locale.Marker": "fr",
+      "Greeting.Hello": "Bonjour",
+      "Only.Fr": "fr-only"
+    },
+    "en": {
+      "Locale.Marker": "en",
+      "Greeting.Hello": "Hello",
+      "Only.En": "en-only"
+    }
+  }
+}

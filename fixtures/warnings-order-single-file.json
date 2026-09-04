@@ -1,0 +1,53 @@
+{
+  "id": "warnings-order-single-file",
+  "description": "A single Russian file engineered to emit four warnings whose order is fully determined: keys are declared Zulu-then-Alpha (not alphabetical), Alpha's placeholders are declared zeta-then-beta (not alphabetical), and Alpha carries an alternative with its own incomplete placeholder. Pins traversal order and root-key attribution entirely inside one file, so nothing depends on directory iteration.",
+  "fallbackLocale": "ru",
+  "tiebreakers": null,
+  "files": {
+    "ru": {
+      "Zulu": {
+        "translation": "{{zc}}",
+        "placeholders": {
+          "zc": {
+            "value": "n",
+            "translations": {
+              "CARDINALITY_ONE": "z"
+            }
+          }
+        }
+      },
+      "Alpha": {
+        "translation": "{{zeta}} {{beta}}",
+        "placeholders": {
+          "zeta": {
+            "value": "n",
+            "translations": {
+              "ORDINALITY_ONE": "1"
+            }
+          },
+          "beta": {
+            "value": "n",
+            "translations": {
+              "CARDINALITY_FEW": "f"
+            }
+          }
+        },
+        "alternatives": [
+          {
+            "n > 100": {
+              "translation": "{{gamma}}",
+              "placeholders": {
+                "gamma": {
+                  "value": "n",
+                  "translations": {
+                    "CARDINALITY_MANY": "m"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

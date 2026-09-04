@@ -1,0 +1,14 @@
+{
+  "id": "owed-ds-undetermined-catalog",
+  "description": "A bare 'und' catalog beside an ordinary one. und's own likely subtag IS populated (CLDR maximizes und to en-Latn), but SupportedLocaleStatics nulls it out for undetermined locales before the likely-subtag comparison at DefaultStrings:2071. The two catalogs are deliberately in unrelated languages so that nothing else can claim an English request: if a port compares the raw likely subtag instead of the undetermined-suppressed one, und wins an en request outright.",
+  "fallbackLocale": "fr",
+  "tiebreakers": null,
+  "files": {
+    "fr": {
+      "Checkout.Title": "fr"
+    },
+    "und": {
+      "Checkout.Title": "und"
+    }
+  }
+}

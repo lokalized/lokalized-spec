@@ -1,0 +1,26 @@
+{
+  "id": "evaluation-locale-donor-missing-branch",
+  "description": "An under-translated Russian donor: Items.Sparse declares only CARDINALITY_ONE and CARDINALITY_OTHER even though Russian has four categories. Selecting FEW or MANY under the donor's own rules therefore reaches the 'Missing Cardinality translation for ...' IllegalStateException in DefaultStrings, which getResult records as a RESOLUTION_FAILURE; the default TranslationFallbackPolicy (DefaultTranslationFallbackPolicy.MISSING_OR_NO_MATCH returns reason != RESOLUTION_FAILURE) stops there rather than trying another locale, and the default TranslationFailureHandler then produces the returned key. Verified against the oracle: status RETURNED_KEY, failureReason RESOLUTION_FAILURE, translation 'Items.Sparse'. The point is that the failure only happens if evaluation used Russian rules: under English rules every one of these counts would land on OTHER and quietly succeed.",
+  "fallbackLocale": "ru",
+  "tiebreakers": null,
+  "files": {
+    "ru": {
+      "Locale.Marker": "ru",
+      "Items.Sparse": {
+        "translation": "{{noun}}",
+        "placeholders": {
+          "noun": {
+            "value": "itemCount",
+            "translations": {
+              "CARDINALITY_ONE": "ru:ONE",
+              "CARDINALITY_OTHER": "ru:OTHER"
+            }
+          }
+        }
+      }
+    },
+    "en": {
+      "Locale.Marker": "en"
+    }
+  }
+}

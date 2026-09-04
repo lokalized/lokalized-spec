@@ -1,0 +1,17 @@
+{
+  "id": "classpath-smoke-bad-filename",
+  "description": "A valid catalog plus files whose names are not loadable locale tags. The filesystem loader SKIPS these silently, while classpath discovery emits INVALID_CLASSPATH_LOCALE_FILENAME and ignores them — the only reachable source of that warning type, and a genuine divergence between the two paths.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "rawFiles": {
+    "notes.txt": "{\"Key.A\":\"from notes\"}",
+    "zz": "{\"Key.A\":\"from zz\"}",
+    "not a tag": "{\"Key.A\":\"spaces\"}"
+  }
+}

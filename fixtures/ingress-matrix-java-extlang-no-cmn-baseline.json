@@ -1,0 +1,14 @@
+{
+  "id": "ingress-matrix-java-extlang-no-cmn-baseline",
+  "description": "The extlang question with the promoted target REMOVED: only zh and en are loaded, so a zh-cmn request cannot succeed by promotion. The per-call-locale route promotes to the unloaded cmn; the header route still carries the literal range zh-cmn. No tiebreakers (one catalog per canonical language).",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "zh": {
+      "Checkout.Title": "zh"
+    },
+    "en": {
+      "Checkout.Title": "en"
+    }
+  }
+}

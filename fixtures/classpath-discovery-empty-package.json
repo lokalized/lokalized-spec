@@ -1,0 +1,11 @@
+{
+  "id": "classpath-discovery-empty-package",
+  "description": "A package that EXISTS on the classpath but contains no loadable catalog — its only member is a plainly non-tag filename, expressed through rawFiles because only rawFiles can name a file. Distinguishes 'package present, nothing to load' (an empty result on both paths) from 'package absent' (a load failure). loadOnly because no locale is loaded at all.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {},
+  "rawFiles": {
+    "readme.txt": "not a catalog\n"
+  }
+}

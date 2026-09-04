@@ -1,0 +1,30 @@
+{
+  "id": "ingress-matrix-java-alias-locale-supplier-ranges-iw",
+  "description": "Alias arm catalog with a localeSupplier that negotiates the header 'iw' and collapses the answer to a bare Locale, erasing the iw/he expansion from the reported ranges.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "localeSupplier": {
+    "behavior": "match-ranges",
+    "ranges": "iw"
+  },
+  "files": {
+    "he": {
+      "Checkout.Title": "he"
+    },
+    "id": {
+      "Checkout.Title": "id"
+    },
+    "ro": {
+      "Checkout.Title": "ro"
+    },
+    "sr": {
+      "Checkout.Title": "sr"
+    },
+    "fil": {
+      "Checkout.Title": "fil"
+    },
+    "en": {
+      "Checkout.Title": "en"
+    }
+  }
+}

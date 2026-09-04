@@ -1,0 +1,12 @@
+{
+  "id": "manifest-loads-single-nonfallback-file",
+  "description": "A directory with a single file, for a locale that is NOT the configured fallback. The load itself succeeds and is indifferent to the fallback locale; it is Strings construction that would refuse, so the fixture is loadOnly and carries only a load case. Ingest warns that the fallback is not among the loaded files — that warning is the point of the fixture.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "fr": {
+      "Greeting": "Bonjour"
+    }
+  }
+}

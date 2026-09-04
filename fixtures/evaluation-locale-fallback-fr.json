@@ -1,0 +1,39 @@
+{
+  "id": "evaluation-locale-fallback-fr",
+  "description": "French is the fallback donor for en, pl, ru and ar requests. French discriminates in the opposite direction from the Slavic donors: its one-rule is `i = 0,1`, so 0 selects ONE (where pl and ru say MANY, ar says ZERO and en says OTHER) and the decimal 1.5 also selects ONE because the rule tests i and ignores v. Its many-rule fires only at integer multiples of a million (or a compact exponent outside 0..5), which no other non-Portuguese locale here shares.",
+  "fallbackLocale": "fr",
+  "tiebreakers": null,
+  "files": {
+    "fr": {
+      "Locale.Marker": "fr",
+      "Items.Fallback": {
+        "translation": "{{noun}}",
+        "placeholders": {
+          "noun": {
+            "value": "itemCount",
+            "translations": {
+              "CARDINALITY_ZERO": "fr:ZERO",
+              "CARDINALITY_ONE": "fr:ONE",
+              "CARDINALITY_TWO": "fr:TWO",
+              "CARDINALITY_FEW": "fr:FEW",
+              "CARDINALITY_MANY": "fr:MANY",
+              "CARDINALITY_OTHER": "fr:OTHER"
+            }
+          }
+        }
+      }
+    },
+    "en": {
+      "Locale.Marker": "en"
+    },
+    "pl": {
+      "Locale.Marker": "pl"
+    },
+    "ru": {
+      "Locale.Marker": "ru"
+    },
+    "ar": {
+      "Locale.Marker": "ar"
+    }
+  }
+}

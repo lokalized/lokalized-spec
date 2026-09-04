@@ -1,0 +1,17 @@
+{
+  "id": "owed-construct-null-entry",
+  "description": "Construction refusal subject. DefaultStrings:293 -- a null entry inside an otherwise valid catalog; the failure mode of skipping it is a silently smaller catalog. Its files load cleanly; the refusal is at Strings construction, which is what makes it invisible without the 'construct' operation.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "refusesConstruction": true,
+  "constructionOverrides": {
+    "catalogSource": "nullEntry"
+  },
+  "files": {
+    "en": {
+      "Greeting": {
+        "translation": "Hello"
+      }
+    }
+  }
+}

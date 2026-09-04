@@ -1,0 +1,16 @@
+{
+  "id": "ingress-matrix-bidi-default",
+  "description": "Bidi ingress matrix, instance leg UNSET so the library default applies (DefaultStrings.java:80 sets DEFAULT_BIDI_ISOLATION = RTL_LOCALES; :477 substitutes it when the builder was given null). One catalog carries Greeting.Named in both an LTR locale (en) and an RTL one (ar) so any of the three values can be separated from the other two by choosing the probe locale. 'Farewell.Named {{name}}' exists in no catalog, which routes the same option through interpolateFailureKey (:754/:1406) against the LOOKUP locale instead of interpolateTemplate (:1367) against the donor.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Locale.Marker": "en",
+      "Greeting.Named": "en:Hello, {{name}}"
+    },
+    "ar": {
+      "Locale.Marker": "ar",
+      "Greeting.Named": "ar:Hello, {{name}}"
+    }
+  }
+}

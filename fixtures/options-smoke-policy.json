@@ -1,0 +1,35 @@
+{
+  "id": "options-smoke-policy",
+  "description": "An en catalog whose entry declares ONLY CARDINALITY_ONE, so any other category raises a RESOLUTION_FAILURE, and a fr fallback that declares both. The two policies therefore diverge visibly: the default halts on the failure, any-failure walks on to fr.",
+  "fallbackLocale": "fr",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Items": {
+        "translation": "{{noun}}",
+        "placeholders": {
+          "noun": {
+            "value": "count",
+            "translations": {
+              "CARDINALITY_ONE": "en-one"
+            }
+          }
+        }
+      }
+    },
+    "fr": {
+      "Items": {
+        "translation": "{{noun}}",
+        "placeholders": {
+          "noun": {
+            "value": "count",
+            "translations": {
+              "CARDINALITY_ONE": "fr-one",
+              "CARDINALITY_OTHER": "fr-other"
+            }
+          }
+        }
+      }
+    }
+  }
+}

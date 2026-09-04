@@ -1,0 +1,87 @@
+{
+  "formatVersion": 1,
+  "family": "owed-construct",
+  "description": "Plan v7 section 8.3 fixture family 'owed-construct'. Inputs only; the oracle emits expected.",
+  "cases": [
+    {
+      "id": "owed-construct.control.ordinary-fixture-constructs",
+      "requirementIds": [],
+      "fixture": "owed-construct-base",
+      "operation": "construct",
+      "input": {
+        "probeKey": "Greeting"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "THE CONTROL. Without it every row here says 'something was refused' and none shows the operation can tell acceptance from refusal. probeKey makes the success row an observation -- the instance answers Greeting -- rather than the absence of a throw."
+    },
+    {
+      "id": "owed-construct.refusal.catalog-omitted",
+      "requirementIds": [],
+      "fixture": "owed-construct-catalog-omitted",
+      "operation": "construct",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings:250 -- no catalog source at all. Read against owed-construct.control.ordinary-fixture-constructs, which differs only in this one degeneracy and constructs. The discriminator is the refusal IDENTITY: a port that accepts this input, or refuses it with a different exception or message, differs here and nowhere else."
+    },
+    {
+      "id": "owed-construct.refusal.catalog-null",
+      "requirementIds": [],
+      "fixture": "owed-construct-catalog-null",
+      "operation": "construct",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings:262 -- a catalog supplier that answers null, which is NOT the same as supplying none. Read against owed-construct.control.ordinary-fixture-constructs, which differs only in this one degeneracy and constructs. The discriminator is the refusal IDENTITY: a port that accepts this input, or refuses it with a different exception or message, differs here and nowhere else."
+    },
+    {
+      "id": "owed-construct.refusal.null-locale-key",
+      "requirementIds": [],
+      "fixture": "owed-construct-null-locale-key",
+      "operation": "construct",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings:273 -- a null locale key, which a JS Map catalog can carry but a plain object cannot. Read against owed-construct.control.ordinary-fixture-constructs, which differs only in this one degeneracy and constructs. The discriminator is the refusal IDENTITY: a port that accepts this input, or refuses it with a different exception or message, differs here and nowhere else."
+    },
+    {
+      "id": "owed-construct.refusal.duplicate-tag",
+      "requirementIds": [],
+      "fixture": "owed-construct-duplicate-tag",
+      "operation": "construct",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings:280 -- two distinct Locale keys whose tags lowercase to the same BCP 47 tag. Read against owed-construct.control.ordinary-fixture-constructs, which differs only in this one degeneracy and constructs. The discriminator is the refusal IDENTITY: a port that accepts this input, or refuses it with a different exception or message, differs here and nowhere else."
+    },
+    {
+      "id": "owed-construct.refusal.null-catalog-value",
+      "requirementIds": [],
+      "fixture": "owed-construct-null-catalog-value",
+      "operation": "construct",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings:286 -- a null catalog for one locale, which a port might read as an empty catalog. Read against owed-construct.control.ordinary-fixture-constructs, which differs only in this one degeneracy and constructs. The discriminator is the refusal IDENTITY: a port that accepts this input, or refuses it with a different exception or message, differs here and nowhere else."
+    },
+    {
+      "id": "owed-construct.refusal.null-entry",
+      "requirementIds": [],
+      "fixture": "owed-construct-null-entry",
+      "operation": "construct",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings:293 -- a null entry inside an otherwise valid catalog; the failure mode of skipping it is a silently smaller catalog. Read against owed-construct.control.ordinary-fixture-constructs, which differs only in this one degeneracy and constructs. The discriminator is the refusal IDENTITY: a port that accepts this input, or refuses it with a different exception or message, differs here and nowhere else."
+    },
+    {
+      "id": "owed-construct.refusal.locale-source-absent",
+      "requirementIds": [],
+      "fixture": "owed-construct-locale-source-absent",
+      "operation": "construct",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings:254, both-ABSENT arm. Read against owed-construct.control.ordinary-fixture-constructs, which differs only in this one degeneracy and constructs. The discriminator is the refusal IDENTITY: a port that accepts this input, or refuses it with a different exception or message, differs here and nowhere else."
+    }
+  ],
+  "skipped": [
+    {
+      "what": "owed-construct.refusal.locale-source-both and the owed-construct-locale-source-both fixture.",
+      "why": "REMOVED AFTER MEASUREMENT. Authored for DefaultStrings:254's both-PRESENT arm; the oracle recorded constructed=true. Cause: Strings.Builder.localeSupplier nulls localeMatchSupplier and localeMatchSupplier nulls localeSupplier (Strings.java:288-289, 310-311), so the both-present state is UNCONSTRUCTIBLE through the builder and the second setter simply wins. The case therefore closed nothing and its note asserted an arm it never reached -- it would have been a row saying only 'this constructs'. :254's reachable arm is closed by owed-construct.refusal.locale-source-absent instead. OPEN QUESTION FOR THE PORT, not answered by this corpus: a JS `createStrings` object literal CAN carry both suppliers, and Java cannot be put in that state, so the corpus cannot say what the port should do with it. That needs a plan decision, not an oracle run."
+    }
+  ]
+}

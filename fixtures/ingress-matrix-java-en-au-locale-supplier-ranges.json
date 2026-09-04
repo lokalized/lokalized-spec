@@ -1,0 +1,23 @@
+{
+  "id": "ingress-matrix-java-en-au-locale-supplier-ranges",
+  "description": "Seed row 3 catalog with a localeSupplier that negotiates 'en-AU' and collapses to the bare Locale en-001, whose re-derived match is EXACT rather than the CLDR_FALLBACK the negotiation produced.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "en": [
+      "en",
+      "en-001"
+    ]
+  },
+  "localeSupplier": {
+    "behavior": "match-ranges",
+    "ranges": "en-AU"
+  },
+  "files": {
+    "en-001": {
+      "Checkout.Title": "Checkout (world English)"
+    },
+    "en": {
+      "Checkout.Title": "Checkout"
+    }
+  }
+}

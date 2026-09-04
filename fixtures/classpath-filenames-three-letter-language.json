@@ -1,0 +1,15 @@
+{
+  "id": "classpath-filenames-three-letter-language",
+  "description": "A valid en catalog plus a file named 'deu.json' — the ISO 639-2 alpha-3 code for German. MEASURED: the loaded key stays 'deu' and is NOT folded to the alpha-2 'de', which several JS canonicalisation routines would do.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "rawFiles": {
+    "deu.json": "{\"Key.deu\":\"deu\"}"
+  }
+}

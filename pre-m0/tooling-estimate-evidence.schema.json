@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lokalized.org/schemas/pre-m0/tooling-estimate-evidence.schema.json",
+  "title": "Lokalized JS human tooling-effort estimate evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "formatVersion",
+    "classification",
+    "responsibleRole",
+    "estimatedHumanMinutes",
+    "basis",
+    "includedHumanWork",
+    "excludedWork",
+    "preparedBy",
+    "humanReviewer",
+    "humanDecisionOwner",
+    "approvedAt"
+  ],
+  "properties": {
+    "formatVersion": { "const": 1 },
+    "classification": { "const": "human-attention-estimate" },
+    "responsibleRole": {
+      "enum": ["productionImplementer", "humanReviewer", "humanDecisionOwner"]
+    },
+    "estimatedHumanMinutes": { "type": "number", "minimum": 0 },
+    "basis": { "$ref": "#/$defs/name" },
+    "includedHumanWork": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/name" }
+    },
+    "excludedWork": {
+      "type": "array",
+      "uniqueItems": true,
+      "allOf": [
+        { "contains": { "const": "agent-runtime" } },
+        { "contains": { "const": "unattended-machine-runtime" } }
+      ],
+      "items": { "$ref": "#/$defs/name" }
+    },
+    "preparedBy": { "$ref": "#/$defs/name" },
+    "humanReviewer": { "$ref": "#/$defs/name" },
+    "humanDecisionOwner": { "$ref": "#/$defs/name" },
+    "approvedAt": { "$ref": "#/$defs/name" }
+  },
+  "$defs": {
+    "name": { "type": "string", "minLength": 1, "pattern": ".*\\S.*" }
+  }
+}

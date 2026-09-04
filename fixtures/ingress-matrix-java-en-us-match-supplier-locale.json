@@ -1,0 +1,15 @@
+{
+  "id": "ingress-matrix-java-en-us-match-supplier-locale",
+  "description": "Seed row 5 catalog with a localeMatchSupplier returning matchFor(Locale en-US); lookup starts at the selection en, so the en-US step disappears from the chain.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "localeMatchSupplier": {
+    "behavior": "match-locale",
+    "locale": "en-US"
+  },
+  "files": {
+    "en": {
+      "Checkout.Title": "Checkout"
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "id": "loader-smoke-unparseable",
+  "description": "A directory containing a syntactically invalid strings file. Deliberately unloadable, so it is marked loadOnly: constructing a Strings from it is not the point, observing the load failure is.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {},
+  "rawFiles": {
+    "en": "{\"Key.A\": \"unterminated"
+  }
+}

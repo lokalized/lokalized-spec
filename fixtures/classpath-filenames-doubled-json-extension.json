@@ -1,0 +1,15 @@
+{
+  "id": "classpath-filenames-doubled-json-extension",
+  "description": "A valid en catalog plus a file named 'de.json.json'. Exactly one .json is stripped, leaving 'de.json' — proving the strip is single-shot rather than repeated until no extension remains.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "rawFiles": {
+    "de.json.json": "{\"Key.doubled\":\"doubled\"}"
+  }
+}

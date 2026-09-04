@@ -1,0 +1,15 @@
+{
+  "id": "loading-limits-discovery-zero",
+  "description": "A single-file directory whose loading options request maximumDiscoveryEntries 0.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumDiscoveryEntries": 0
+  },
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  }
+}

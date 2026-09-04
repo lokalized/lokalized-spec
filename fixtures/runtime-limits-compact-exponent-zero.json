@@ -1,0 +1,25 @@
+{
+  "id": "runtime-limits-compact-exponent-zero",
+  "description": "Plan v7 section 8.3 zero-boundary clause: maximumCompactExponent is non-negative and zero builds. PluralOperands.Builder.build treats an unset compact exponent as an effective 0, so at this limit both an absent and an explicit zero exponent resolve while exponent 1 is rejected by DefaultStrings.validatePluralOperands — not by the operands builder, whose own limit is still the default 64.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "runtimeLimits": {
+    "maximumCompactExponent": 0
+  },
+  "files": {
+    "en": {
+      "Counted": {
+        "translation": "{{label}}",
+        "placeholders": {
+          "label": {
+            "value": "n",
+            "translations": {
+              "CARDINALITY_ONE": "one",
+              "CARDINALITY_OTHER": "other"
+            }
+          }
+        }
+      }
+    }
+  }
+}

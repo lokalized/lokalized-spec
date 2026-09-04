@@ -1,0 +1,18 @@
+{
+  "id": "classpath-filenames-warning-limit-zero",
+  "description": "A valid en catalog plus one offending name, loaded with maximumWarnings set to 0. The classpath path downgrades a filename throw to a warning, but that warning still goes through the loading session's warning budget. MEASURED: with a zero budget the classpath load HARD-FAILS, with a limit message rather than the filename message — the classpath path's leniency is conditional, not absolute. One offending file, so the outcome is order-independent.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumWarnings": 0
+  },
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "rawFiles": {
+    "zz.json": "{\"Key.zz\":\"zz\"}"
+  }
+}

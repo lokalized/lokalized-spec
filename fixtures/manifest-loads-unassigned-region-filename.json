@@ -1,0 +1,14 @@
+{
+  "id": "manifest-loads-unassigned-region-filename",
+  "description": "A file named de-XX, an unassigned region. Verified against the library: discovery ACCEPTS it and the manifest gains a real de-XX locale, because LocalizedStringLoader.isLanguageTag validates the tag's LANGUAGE against CldrLocaleData, not its region. Written through rawFiles because the literal filename is the subject of the case; German has one loaded locale either way, so no explicit tiebreaker is required.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Greeting": "Hello"
+    }
+  },
+  "rawFiles": {
+    "de-XX": "{\"Greeting\":\"Hallo\"}"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "id": "malformed-structure-object-members",
+  "description": "Wrong node types and unknown members inside the object form of a localized string: a numeric translation, an explicitly null translation, a numeric commentary, an unknown field, an empty object, and an object carrying neither translation nor alternatives.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": {
+        "translation": 42
+      }
+    },
+    "fr": {
+      "Key.A": {
+        "translation": null
+      }
+    },
+    "de": {
+      "Key.A": {
+        "translation": "t",
+        "commentary": 3
+      }
+    },
+    "es": {
+      "Key.A": {
+        "translation": "t",
+        "note": "x"
+      }
+    },
+    "it": {
+      "Key.A": {}
+    },
+    "nl": {
+      "Key.A": {
+        "commentary": "explanatory text only"
+      }
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

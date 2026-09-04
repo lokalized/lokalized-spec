@@ -1,0 +1,15 @@
+{
+  "id": "classpath-filenames-eight-letter-json",
+  "description": "A valid en catalog plus a file whose stem is eight ASCII letters and .json. VERIFIED against the source: eight characters satisfy LANGUAGE_TAG_PATTERN, Locale.Builder builds a locale whose language is nonempty, so the stem is rejected only by CldrLocaleData.isKnownLanguageTag at LocalizedStringLoader.java:1672 — the second of the two rejection routes inside isLanguageTag.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "rawFiles": {
+    "aaaaaaaa.json": "{\"Key.eight\":\"eight\"}"
+  }
+}

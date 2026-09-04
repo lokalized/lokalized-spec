@@ -1,0 +1,960 @@
+{
+  "formatVersion": 1,
+  "family": "gender-multi-axis",
+  "description": "Plan v7 section 8.3 fixture family 'gender-multi-axis'. Inputs only; the oracle emits expected.",
+  "skipped": [
+    {
+      "what": "A placeholder whose `translations` map mixes two axes (for example CARDINALITY_ONE plus GENDER_MASCULINE in one map), which DefaultStrings.getInternal guards with 'You cannot mix-and-match language forms in one placeholder definition' (DefaultStrings.java:925).",
+      "why": "Confirmed unreachable through the loader. LocalizedStringValidator.validateLanguageFormTranslation collects languageFormClassFor(...) into a Set and throws 'Generated placeholder ... may not mix language-form types' when the set size is not 1; validate() runs at Strings construction, so buildStrings throws and VectorOracle exits 3 for the WHOLE RUN rather than recording a per-case throw. One such fixture would take the entire corpus down. Java's own src/test/resources/strings-invalid-mixed/en covers it as a loading test. It needs a loader/validation-failure case shape the corpus does not have yet."
+    },
+    {
+      "what": "Pinning the exception type, message, and cause chain behind each cross-axis rejection, absent-form, and missing-value case.",
+      "why": "getResult catches the resolution exception (DefaultStrings.java:723-731) and the default TranslationFailureHandler.returnKey() converts it into RETURNED_KEY / RESOLUTION_FAILURE. TranslationResult.getCause() carries the real throwable but VectorOracle.describeResult() does not project it, and per-call translation failure handlers (throwException) are on the oracle's unsupported list. PARTIALLY MITIGATED without touching the oracle: the five gender-failure cases now run under a key that embeds the selector, and DefaultStrings.interpolateFailureKey renders the caller context into the returned key, so those cases observe four distinct translations ('Bio for NEUTER', 'Bio for ONE', 'Bio for GENDER_FEMININE', 'Bio for {{actorGender}}') instead of one repeated token. Still recommended: add a `cause` projection to describeResult; every case here benefits with no re-authoring."
+    },
+    {
+      "what": "The CharSequence-to-Phonetic input path, where a raw term is handed to PhoneticResolver.resolve(term, locale).",
+      "why": "Phonetic resolver callbacks are explicitly outside the oracle's current scope, and section 8.3 gives 'missing phonetic resolver' its own clause owned by another family. NOTE: the draft skipped the phonetic axis entirely on this ground, which was wrong -- DefaultStrings.java:1159 takes the `value instanceof Phonetic` branch before ever touching the resolver, so tagged-Phonetic dispatch is fully in scope and is now covered by two cases. Only the CharSequence branch remains skipped."
+    },
+    {
+      "what": "A gender-selected alternative that REPLACES an inherited placeholder definition (whole-definition or cross-kind replacement) rather than merely inheriting it, and range-driven cardinality placeholders (`\"range\": {\"start\": ..., \"end\": ...}`).",
+      "why": "Generated-placeholder branch inheritance, whole-definition replacement, cross-kind replacement, and cardinality ranges are separate section 8.3 bullets owned by other families. The cases here exercise plain inheritance into a selected alternative because that is what the multi-axis clause needs; deliberate redeclaration and range placeholders are left to those families so the ids do not overlap."
+    },
+    {
+      "what": "Gender dispatch served by a fallback-locale entry, or a gender placeholder whose forms differ across the fallback chain.",
+      "why": "Fallback policies and 'fallback entries evaluated under the supplying locale' are separate section 8.3 bullets with their own owner. Verified in the oracle output that the Polish cases resolve with attemptedLocales == [\"pl\"] and isFallback == false, so this family's multi-axis observations carry no fallback traversal at all."
+    }
+  ],
+  "cases": [
+    {
+      "id": "gender-multi-axis.gender.two-placeholders-share-one-feminine-value",
+      "requirementIds": [],
+      "fixture": "gender-multi-axis-gender",
+      "operation": "getResult",
+      "input": {
+        "key": "Actor.Bio",
+        "locale": "en",
+        "placeholders": {
+          "actorGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_FEMININE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Baseline gender dispatch: two separate placeholders read the SAME caller value and must produce two different fragments (She + actress). Without it a JS port could resolve the first gender placeholder and reuse its fragment for the second, or cache the selection per value instead of per placeholder definition."
+    },
+    {
+      "id": "gender-multi-axis.gender.two-placeholders-share-one-masculine-value",
+      "requirementIds": [],
+      "fixture": "gender-multi-axis-gender",
+      "operation": "getResult",
+      "input": {
+        "key": "Actor.Bio",
+        "locale": "en",
+        "placeholders": {
+          "actorGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_MASCULINE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The masculine half of the pair. Together with the feminine case it pins that BOTH maps are consulted with the same key rather than one of them being resolved by position or by falling through to a first entry. A port that returned the first map entry passes one of these two and fails the other."
+    },
+    {
+      "id": "gender-multi-axis.gender.embedded-selector-key-resolves-when-value-is-valid",
+      "requirementIds": [],
+      "fixture": "gender-multi-axis-gender",
+      "operation": "getResult",
+      "input": {
+        "key": "Bio for {{actorGender}}",
+        "locale": "en",
+        "placeholders": {
+          "actorGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_FEMININE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "CONTROL for the five failure cases that share this key. It resolves normally to a TRANSLATED result, which is what makes those failures attributable to the caller value rather than to the key being unresolvable at all. Also pins that a key containing a placeholder reference is looked up literally, not after interpolation."
+    },
+    {
+      "id": "gender-multi-axis.gender.form-absent-from-map-fails-resolution",
+      "requirementIds": [],
+      "fixture": "gender-multi-axis-gender",
+      "operation": "getResult",
+      "input": {
+        "key": "Bio for {{actorGender}}",
+        "locale": "en",
+        "placeholders": {
+          "actorGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_NEUTER"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "GENDER_NEUTER is a valid Gender the map does not list. Gender has NO fallback form (unlike cardinality, where CLDR guarantees OTHER), so DefaultStrings raises IllegalStateException 'Missing Gender translation for NEUTER'; getResult converts it to RETURNED_KEY / RESOLUTION_FAILURE and returns the key INTERPOLATED with the context, so the recorded translation carries the offending value. Without this case a port could invent an OTHER-style fallback to the first or last map entry and silently render the wrong gendered noun."
+    },
+    {
+      "id": "gender-multi-axis.gender.missing-selector-value-fails-resolution",
+      "requirementIds": [],
+      "fixture": "gender-multi-axis-gender",
+      "operation": "getResult",
+      "input": {
+        "key": "Bio for {{actorGender}}",
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "No placeholders map at all, so the named selector is absent from the context. Pins that an absent selector is a resolution failure and not an empty-string interpolation or a skipped placeholder. Java normalizes a null placeholders map to an empty one, so this case and the explicit-null case observe identically -- that identity is itself the thing being pinned."
+    },
+    {
+      "id": "gender-multi-axis.gender.null-selector-value-fails-resolution",
+      "requirementIds": [],
+      "fixture": "gender-multi-axis-gender",
+      "operation": "getResult",
+      "input": {
+        "key": "Bio for {{actorGender}}",
+        "locale": "en",
+        "placeholders": {
+          "actorGender": null
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A PRESENT key whose value is null, as opposed to an absent key. DefaultStrings unwraps Optionals and then null-checks, so both routes fail identically -- but a port that distinguished 'key present' from 'value usable' (an `in` check rather than a null check) would render a fragment here while passing the missing-key case. This pair is what forces the null check to live after the lookup."
+    },
+    {
+      "id": "gender-multi-axis.cross-axis.cardinality-value-rejected-by-gender-selector",
+      "requirementIds": [],
+      "fixture": "gender-multi-axis-gender",
+      "operation": "getResult",
+      "input": {
+        "key": "Bio for {{actorGender}}",
+        "locale": "en",
+        "placeholders": {
+          "actorGender": {
+            "$lokalized": "language-form",
+            "axis": "cardinality",
+            "name": "CARDINALITY_ONE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A well-formed language form on the WRONG axis. Section 3.7 requires the expected tagged axis, and DefaultStrings enforces it with `value instanceof Gender` rather than by name matching. A port that models all ten axes as one flat string enum would look up the constant in the gender map, miss, and fail for the wrong reason or fall back. The failure translation records the Cardinality that was offered, which distinguishes this from the absent-form case."
+    },
+    {
+      "id": "gender-multi-axis.cross-axis.raw-string-form-name-rejected-by-gender-selector",
+      "requirementIds": [],
+      "fixture": "gender-multi-axis-gender",
+      "operation": "getResult",
+      "input": {
+        "key": "Bio for {{actorGender}}",
+        "locale": "en",
+        "placeholders": {
+          "actorGender": "GENDER_FEMININE"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The raw JS string \"GENDER_FEMININE\" is text, never a Gender (section 3.7). Java's Gender branch requires `value instanceof Gender`, so this fails resolution instead of rendering 'This is a good actress.' -- which is exactly what a port doing a string-keyed map lookup would produce. The single case most likely to be silently wrong in a naive port, because the wrong behavior looks correct."
+    },
+    {
+      "id": "gender-multi-axis.cross-axis.gender-and-cardinality-one-definition-singular",
+      "requirementIds": [],
+      "fixture": "gender-multi-axis-gender",
+      "operation": "getResult",
+      "input": {
+        "key": "Books.Read",
+        "locale": "en",
+        "placeholders": {
+          "readerGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_FEMININE"
+          },
+          "bookCount": {
+            "$lokalized": "integer",
+            "value": "1"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Two placeholders in ONE definition select on two different axes from two different caller values: gender from an explicit tagged form, cardinality from a number that must be classified. Pins that the generated-placeholder loop dispatches per definition rather than deciding one axis for the whole message."
+    },
+    {
+      "id": "gender-multi-axis.cross-axis.gender-and-cardinality-one-definition-plural",
+      "requirementIds": [],
+      "fixture": "gender-multi-axis-gender",
+      "operation": "getResult",
+      "input": {
+        "key": "Books.Read",
+        "locale": "en",
+        "placeholders": {
+          "readerGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_MASCULINE"
+          },
+          "bookCount": {
+            "$lokalized": "integer",
+            "value": "5"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Both axes move at once relative to the singular case (feminine->masculine, ONE->OTHER). If a port coupled the two selections -- for instance by resolving placeholders in declaration order and reusing the last classified value -- this case and its singular twin disagree in a way no single-axis case can reveal."
+    },
+    {
+      "id": "gender-multi-axis.cross-axis.gender-constant-while-polish-cardinality-is-few",
+      "requirementIds": [],
+      "fixture": "gender-multi-axis-gender",
+      "operation": "getResult",
+      "input": {
+        "key": "Books.Read",
+        "locale": "pl",
+        "placeholders": {
+          "readerGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_FEMININE"
+          },
+          "bookCount": {
+            "$lokalized": "integer",
+            "value": "22"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same multi-axis definition under a four-form plural language, requested through an explicit per-call locale that is not the instance locale. Holds gender fixed while cardinality resolves to Polish FEW at 22. Pins that ONLY the cardinality selector consults CLDR plural data for the resolved locale -- a port that routed every axis through a locale-sensitive classifier would still pass the English cases. Verified: attemptedLocales is [pl] alone, so no fallback traversal is entangled with the observation."
+    },
+    {
+      "id": "gender-multi-axis.cross-axis.gender-constant-while-polish-cardinality-is-many",
+      "requirementIds": [],
+      "fixture": "gender-multi-axis-gender",
+      "operation": "getResult",
+      "input": {
+        "key": "Books.Read",
+        "locale": "pl",
+        "placeholders": {
+          "readerGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_FEMININE"
+          },
+          "bookCount": {
+            "$lokalized": "integer",
+            "value": "25"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Identical to the FEW case except the count moves 22 -> 25 (FEW -> MANY) while gender is byte-identical. The pair proves the two axes are genuinely independent inside one resolution: any coupling, caching, or shared selection state changes exactly one of the two outputs."
+    },
+    {
+      "id": "gender-multi-axis.cross-axis.ordinality-and-cardinality-one-definition-second-of-many",
+      "requirementIds": [],
+      "fixture": "gender-multi-axis-gender",
+      "operation": "getResult",
+      "input": {
+        "key": "Race.Result",
+        "locale": "en",
+        "placeholders": {
+          "position": {
+            "$lokalized": "integer",
+            "value": "2"
+          },
+          "runnerCount": {
+            "$lokalized": "integer",
+            "value": "11"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The two NUMERIC axes dispatching independently in one definition, from two different numbers. Ordinality and cardinality are the only axes that accept a bare number, so they are the pair a port is most likely to route through one shared classification step; en classifies 2 as ordinal TWO but 11 as cardinal OTHER, so a port that used the cardinal rules for both, or the ordinal rules for both, produces a different string here."
+    },
+    {
+      "id": "gender-multi-axis.cross-axis.ordinality-and-cardinality-one-definition-eleventh-of-one",
+      "requirementIds": [],
+      "fixture": "gender-multi-axis-gender",
+      "operation": "getResult",
+      "input": {
+        "key": "Race.Result",
+        "locale": "en",
+        "placeholders": {
+          "position": {
+            "$lokalized": "integer",
+            "value": "11"
+          },
+          "runnerCount": {
+            "$lokalized": "integer",
+            "value": "1"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The numbers swap roles relative to the previous case: 11 is ordinal OTHER (not ONE -- English's n%100=11 exception) while 1 is cardinal ONE. A port that shared one classifier between the two axes, or that classified 11 as ordinal ONE by looking only at the last digit, fails exactly one of this pair."
+    },
+    {
+      "id": "gender-multi-axis.cross-axis.ordinality-value-rejected-by-cardinality-selector",
+      "requirementIds": [],
+      "fixture": "gender-multi-axis-gender",
+      "operation": "getResult",
+      "input": {
+        "key": "Race.Result",
+        "locale": "en",
+        "placeholders": {
+          "position": {
+            "$lokalized": "integer",
+            "value": "2"
+          },
+          "runnerCount": {
+            "$lokalized": "language-form",
+            "axis": "ordinality",
+            "name": "ORDINALITY_ONE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Wrong-axis rejection BETWEEN the two numeric axes, which the nominal-axis rejections cannot cover. DefaultStrings.cardinalityForValue accepts a Cardinality, a PluralOperands, or a Number and rejects everything else -- an Ordinality is a LanguageForm like Cardinality, has identically spelled category names (ONE, TWO, FEW, MANY, OTHER), and is exactly what a port with one shared plural-category enum would silently accept."
+    },
+    {
+      "id": "gender-multi-axis.cross-axis.tagged-cardinality-bypasses-numeric-classification",
+      "requirementIds": [],
+      "fixture": "gender-multi-axis-gender",
+      "operation": "getResult",
+      "input": {
+        "key": "Race.Result",
+        "locale": "en",
+        "placeholders": {
+          "position": {
+            "$lokalized": "integer",
+            "value": "2"
+          },
+          "runnerCount": {
+            "$lokalized": "language-form",
+            "axis": "cardinality",
+            "name": "CARDINALITY_ONE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The asymmetry that makes the nominal-axis rejections meaningful: cardinality and ordinality accept a TAGGED form as well as a number, short-circuiting classification entirely (DefaultStrings.cardinalityForValue's first branch), while the eight nominal axes accept only the tagged form. The same placeholder is also interpolated raw elsewhere in the template, so the case records what a LanguageForm renders as when used as ordinary text."
+    },
+    {
+      "id": "gender-multi-axis.alternative-axis.gender-alternative-taken-with-inherited-cardinality-placeholder",
+      "requirementIds": [],
+      "fixture": "gender-multi-axis-gender",
+      "operation": "getResult",
+      "input": {
+        "key": "Award.Announcement",
+        "locale": "en",
+        "placeholders": {
+          "winnerGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_NEUTER"
+          },
+          "prizeCount": {
+            "$lokalized": "integer",
+            "value": "1"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'Alternatives select on one axis, placeholders on another' in its sharpest form: a whole-message alternative whose expression compares on GENDER is selected, and that alternative declares NO placeholders of its own -- the {{prizes}} it references is inherited from the parent and selects on CARDINALITY. It also pins that only placeholders REFERENCED by the selected translation are resolved: the inherited {{winner}} map has no GENDER_NEUTER entry, and the resolution still succeeds because this branch does not reference it."
+    },
+    {
+      "id": "gender-multi-axis.alternative-axis.gender-alternative-missed-base-translation-dispatches-both-axes",
+      "requirementIds": [],
+      "fixture": "gender-multi-axis-gender",
+      "operation": "getResult",
+      "input": {
+        "key": "Award.Announcement",
+        "locale": "en",
+        "placeholders": {
+          "winnerGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_FEMININE"
+          },
+          "prizeCount": {
+            "$lokalized": "integer",
+            "value": "3"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same definition with the gender-keyed alternative NOT matching, so the base translation runs and both the gender and the cardinality placeholder dispatch there. Pins that a non-matching alternative leaves the root translation fully intact -- the miss must not consume the placeholders or short-circuit the root. Control for the previous case."
+    },
+    {
+      "id": "gender-multi-axis.alternatives-only.child-hits-first-nested-alternative",
+      "requirementIds": [],
+      "fixture": "gender-multi-axis-alternatives-only",
+      "operation": "getResult",
+      "input": {
+        "key": "Delivery.Status",
+        "locale": "en",
+        "placeholders": {
+          "recipientGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_FEMININE"
+          },
+          "packageCount": {
+            "$lokalized": "integer",
+            "value": "1"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The HIT half of 'alternatives-only children that hit and miss'. The selected child supplies only an alternatives list -- no translation of its own -- and its first nested alternative matches, producing a translation that also interpolates a gender placeholder inherited from two levels up. Absent this case, a port could require every alternative to carry a translation and reject the fixture at load, or stop recursing at a translation-less node."
+    },
+    {
+      "id": "gender-multi-axis.alternatives-only.child-hits-second-nested-alternative",
+      "requirementIds": [],
+      "fixture": "gender-multi-axis-alternatives-only",
+      "operation": "getResult",
+      "input": {
+        "key": "Delivery.Status",
+        "locale": "en",
+        "placeholders": {
+          "recipientGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_FEMININE"
+          },
+          "packageCount": {
+            "$lokalized": "integer",
+            "value": "3"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The SECOND nested alternative under the alternatives-only child matches, so order WITHIN a nested list is exercised, not just its first entry. Pins that nested lists are scanned in array order to first match rather than the child collapsing to its single first branch."
+    },
+    {
+      "id": "gender-multi-axis.alternatives-only.child-misses-and-does-not-fall-through-to-later-sibling",
+      "requirementIds": [],
+      "fixture": "gender-multi-axis-alternatives-only",
+      "operation": "getResult",
+      "input": {
+        "key": "Delivery.Status",
+        "locale": "en",
+        "placeholders": {
+          "recipientGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_FEMININE"
+          },
+          "packageCount": {
+            "$lokalized": "integer",
+            "value": "0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "THE MISS CASE, and the highest-value case in this family. The gender-keyed alternatives-only child is selected, both of its nested alternatives miss at packageCount 0, and getInternal returns empty: RETURNED_KEY with failureReason NO_MATCHING_ALTERNATIVE. It must NOT be the later sibling 'packageCount == 0' (which matches this exact context -- see the NEUTER contrast case, which does reach it) and must NOT be the root's own 'Delivery status unavailable.'. Once a condition matches, only that branch may resolve. A port that treats an empty subtree as 'keep scanning siblings' or as 'fall back to the parent translation' passes every other case in the corpus and fails only this one."
+    },
+    {
+      "id": "gender-multi-axis.alternatives-only.later-sibling-reached-when-gender-branch-not-selected",
+      "requirementIds": [],
+      "fixture": "gender-multi-axis-alternatives-only",
+      "operation": "getResult",
+      "input": {
+        "key": "Delivery.Status",
+        "locale": "en",
+        "placeholders": {
+          "recipientGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_NEUTER"
+          },
+          "packageCount": {
+            "$lokalized": "integer",
+            "value": "0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The contrast that gives the miss case its teeth: identical packageCount 0, only the gender changed so the first two sibling expressions are false. Now the third sibling IS reached and yields 'Nothing to deliver.'. This proves the sibling is genuinely reachable, so the miss case's refusal to reach it is first-match semantics rather than a dead branch. Without this pair the miss case is unfalsifiable."
+    },
+    {
+      "id": "gender-multi-axis.alternatives-only.middle-sibling-with-own-translation-selected",
+      "requirementIds": [],
+      "fixture": "gender-multi-axis-alternatives-only",
+      "operation": "getResult",
+      "input": {
+        "key": "Delivery.Status",
+        "locale": "en",
+        "placeholders": {
+          "recipientGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_MASCULINE"
+          },
+          "packageCount": {
+            "$lokalized": "integer",
+            "value": "4"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A sibling that DOES carry its own translation, selected on gender, with the gender placeholder inherited from the root. Pins that ordinary translation-bearing alternatives and alternatives-only alternatives coexist in one list and that the scan does not stop at the translation-less one. Also confirms the later 'packageCount == 0' sibling is not consulted when an earlier sibling matches."
+    },
+    {
+      "id": "gender-multi-axis.alternatives-only.no-alternative-matches-root-translation-used",
+      "requirementIds": [],
+      "fixture": "gender-multi-axis-alternatives-only",
+      "operation": "getResult",
+      "input": {
+        "key": "Delivery.Status",
+        "locale": "en",
+        "placeholders": {
+          "recipientGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_COMMON"
+          },
+          "packageCount": {
+            "$lokalized": "integer",
+            "value": "7"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "All three sibling expressions are false, so the root's own translation is used and the result is TRANSLATED. This is the boundary that makes the miss case meaningful: 'no alternative matched at this level' falls back to this node's translation, while 'an alternative matched but its subtree resolved to nothing' does not. A port that conflates the two produces 'Delivery status unavailable.' for the miss case and passes this one."
+    },
+    {
+      "id": "gender-multi-axis.alternatives-only.translationless-root-child-hits",
+      "requirementIds": [],
+      "fixture": "gender-multi-axis-alternatives-only",
+      "operation": "getResult",
+      "input": {
+        "key": "Guest.Welcome",
+        "locale": "en",
+        "placeholders": {
+          "guestGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_FEMININE"
+          },
+          "visitCount": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Two alternatives-only levels stacked: the ROOT definition has no translation either, only alternatives, and the gender-selected child is itself alternatives-only. Pins that a definition is legal with no translation as long as it has one alternative (LocalizedStringLoader enforces exactly that), and that recursion carries through two translation-less levels to reach a leaf."
+    },
+    {
+      "id": "gender-multi-axis.alternatives-only.translationless-root-child-misses",
+      "requirementIds": [],
+      "fixture": "gender-multi-axis-alternatives-only",
+      "operation": "getResult",
+      "input": {
+        "key": "Guest.Welcome",
+        "locale": "en",
+        "placeholders": {
+          "guestGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_FEMININE"
+          },
+          "visitCount": {
+            "$lokalized": "integer",
+            "value": "0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The miss with NOTHING to fall back to: the selected child's only nested alternative is false and the root has no translation of its own, so the whole key yields RETURNED_KEY / NO_MATCHING_ALTERNATIVE. Distinguishes a genuine no-matching-alternative failure from MISSING_TRANSLATION (the key IS present in the catalog), which a port is likely to conflate because both end in the key being returned."
+    },
+    {
+      "id": "gender-multi-axis.alternatives-only.translationless-root-sibling-hits",
+      "requirementIds": [],
+      "fixture": "gender-multi-axis-alternatives-only",
+      "operation": "getResult",
+      "input": {
+        "key": "Guest.Welcome",
+        "locale": "en",
+        "placeholders": {
+          "guestGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_MASCULINE"
+          },
+          "visitCount": {
+            "$lokalized": "integer",
+            "value": "0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Same visitCount 0 as the miss, but a gender that selects the translation-bearing sibling instead. Proves the sibling is reachable and that the translation-less root resolves normally through it -- so the previous case's failure is attributable to the selected subtree, not to the root lacking a translation."
+    },
+    {
+      "id": "gender-multi-axis.nominal-axes.grammatical-case-dative-dispatches",
+      "requirementIds": [],
+      "fixture": "gender-multi-axis-nominal-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Gift.Recipient",
+        "locale": "en",
+        "placeholders": {
+          "grammaticalCase": {
+            "$lokalized": "language-form",
+            "axis": "grammatical-case",
+            "name": "CASE_DATIVE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Baseline grammatical-case dispatch, selecting the middle of three declared forms. The axis has nine constants and no numeric or CLDR fallback, so the map lookup must be exact. Without a case per nominal axis, a port could implement gender and cardinality and leave the other arms unreachable while the corpus still looked green."
+    },
+    {
+      "id": "gender-multi-axis.nominal-axes.definiteness-indefinite-dispatches",
+      "requirementIds": [],
+      "fixture": "gender-multi-axis-nominal-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Document.Open",
+        "locale": "en",
+        "placeholders": {
+          "definiteness": {
+            "$lokalized": "language-form",
+            "axis": "definiteness",
+            "name": "DEFINITENESS_INDEFINITE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Baseline definiteness dispatch, selecting the middle of three constants so neither a first-entry nor a last-entry bug would pass. Pins the definiteness arm of the ten-way axis dispatch in DefaultStrings.getInternal."
+    },
+    {
+      "id": "gender-multi-axis.nominal-axes.classifier-bound-dispatches",
+      "requirementIds": [],
+      "fixture": "gender-multi-axis-nominal-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Bought",
+        "locale": "en",
+        "placeholders": {
+          "classifier": {
+            "$lokalized": "language-form",
+            "axis": "classifier",
+            "name": "CLASSIFIER_BOUND"
+          },
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "3"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Baseline classifier dispatch alongside a plain numeric placeholder interpolated as text. Pins that a bare number in the context is interpolated literally and is NOT treated as a selector just because a language-form placeholder sits next to it in the same translation."
+    },
+    {
+      "id": "gender-multi-axis.nominal-axes.classifier-form-absent-from-map-fails-resolution",
+      "requirementIds": [],
+      "fixture": "gender-multi-axis-nominal-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Bought",
+        "locale": "en",
+        "placeholders": {
+          "classifier": {
+            "$lokalized": "language-form",
+            "axis": "classifier",
+            "name": "CLASSIFIER_PERSON"
+          },
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "3"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "CLASSIFIER_PERSON is a valid constant the map deliberately omits. Repeats the no-fallback proposition on a second nominal axis so it is pinned as a property of nominal axes generally, not a quirk of Gender. Verified against Java: the observation is RETURNED_KEY / RESOLUTION_FAILURE with the key returned unchanged, NOT the neighbouring 'things' or 'machines' fragment a port with a first-entry or nearest-entry fallback would substitute."
+    },
+    {
+      "id": "gender-multi-axis.nominal-axes.formality-honorific-dispatches",
+      "requirementIds": [],
+      "fixture": "gender-multi-axis-nominal-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Formality",
+        "locale": "en",
+        "placeholders": {
+          "formality": {
+            "$lokalized": "language-form",
+            "axis": "formality",
+            "name": "FORMALITY_HONORIFIC"
+          },
+          "name": "Alice"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Baseline formality dispatch, selecting the LAST of five constants, next to an ordinary string placeholder. Pins that a language-form selector and a plain text placeholder coexist in one template and that the string 'Alice' is interpolated as text with no classification attempted."
+    },
+    {
+      "id": "gender-multi-axis.nominal-axes.clusivity-exclusive-dispatches",
+      "requirementIds": [],
+      "fixture": "gender-multi-axis-nominal-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Meeting.Attendees",
+        "locale": "en",
+        "placeholders": {
+          "clusivity": {
+            "$lokalized": "language-form",
+            "axis": "clusivity",
+            "name": "CLUSIVITY_EXCLUSIVE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Baseline clusivity dispatch. Only two constants, so an implementation that reduced a two-valued axis to a boolean would still have to map the right one; the two fragments differ only in one parenthesised word, which makes a swapped mapping visible."
+    },
+    {
+      "id": "gender-multi-axis.nominal-axes.animacy-inanimate-dispatches",
+      "requirementIds": [],
+      "fixture": "gender-multi-axis-nominal-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Object.Seen",
+        "locale": "en",
+        "placeholders": {
+          "animacy": {
+            "$lokalized": "language-form",
+            "axis": "animacy",
+            "name": "ANIMACY_INANIMATE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Baseline animacy dispatch. Together with the grammatical-case, definiteness, classifier, formality, clusivity and phonetic cases it covers every axis that has no numeric input path, so no arm of the ten-way branch in DefaultStrings.getInternal is left unexercised."
+    },
+    {
+      "id": "gender-multi-axis.nominal-axes.animacy-missing-selector-value-fails-resolution",
+      "requirementIds": [],
+      "fixture": "gender-multi-axis-nominal-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Object.Seen",
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The missing-selector failure repeated on a non-gender nominal axis with no placeholders map supplied at all. Pins that the null-value guard precedes the type check on every axis, not only on Gender -- a port that implemented the guard once in a shared helper and once inline per axis could easily miss an arm."
+    },
+    {
+      "id": "gender-multi-axis.phonetic-form.tagged-vowel-dispatches",
+      "requirementIds": [],
+      "fixture": "gender-multi-axis-nominal-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Article.Choice",
+        "locale": "en",
+        "placeholders": {
+          "initialSound": {
+            "$lokalized": "language-form",
+            "axis": "phonetic",
+            "name": "PHONETIC_VOWEL"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The tenth axis, reached through the ONLY phonetic input path that needs no PhoneticResolver: a tagged Phonetic short-circuits the CharSequence branch of DefaultStrings.java:1159 entirely. Without it the phonetic arm of the language-form dispatch has no case at all in the corpus, because the family that owns 'missing phonetic resolver' only exercises the resolver path."
+    },
+    {
+      "id": "gender-multi-axis.phonetic-form.tagged-consonant-dispatches",
+      "requirementIds": [],
+      "fixture": "gender-multi-axis-nominal-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Article.Choice",
+        "locale": "en",
+        "placeholders": {
+          "initialSound": {
+            "$lokalized": "language-form",
+            "axis": "phonetic",
+            "name": "PHONETIC_CONSONANT"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The second phonetic form. Two of the three declared forms share the same fragment text ('le '), so a port that matched by fragment identity rather than by form still resolves; what this pair pins is that the two DISTINCT forms both select and that neither falls through to the other's slot by ordinal position."
+    },
+    {
+      "id": "gender-multi-axis.cross-axis.gender-value-rejected-by-grammatical-case-selector",
+      "requirementIds": [],
+      "fixture": "gender-multi-axis-nominal-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Gift.Recipient",
+        "locale": "en",
+        "placeholders": {
+          "grammaticalCase": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_FEMININE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The clause's explicit wrong-axis case on a non-gender axis: a Gender value fed to a grammatical-case selector. Java's check is `value instanceof GrammaticalCase`, so a port that carried axis constants as plain strings, or that keyed one shared registry by constant name, would find no match and could fall back or fail for the wrong reason. Pins that the axis is part of the value's identity."
+    },
+    {
+      "id": "gender-multi-axis.cross-axis.raw-string-form-name-rejected-by-formality-selector",
+      "requirementIds": [],
+      "fixture": "gender-multi-axis-nominal-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Formality",
+        "locale": "en",
+        "placeholders": {
+          "formality": "FORMALITY_FORMAL",
+          "name": "Alice"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Section 3.7's 'a raw string is always text' applied to a nominal axis: the string \"FORMALITY_FORMAL\" is text and must not dispatch, so resolution fails instead of rendering 'Hello, Alice.'. This is the case that stops a port from implementing nominal selectors as a string-keyed object lookup, which is the natural JS shape and would pass every hit case in this family."
+    },
+    {
+      "id": "gender-multi-axis.cross-axis.number-rejected-by-definiteness-selector",
+      "requirementIds": [],
+      "fixture": "gender-multi-axis-nominal-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Document.Open",
+        "locale": "en",
+        "placeholders": {
+          "definiteness": {
+            "$lokalized": "integer",
+            "value": "1"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A NUMBER fed to a nominal selector. Cardinality and ordinality accept numbers and classify them; definiteness has no numeric fallback and must reject. Pins the asymmetry between the numeric axes and the nominal ones -- a port with one shared 'coerce the value' step would classify 1 as ONE, find no match, and diverge here while passing every cardinality case. Read against tagged-cardinality-bypasses-numeric-classification, which shows the other half of the asymmetry."
+    },
+    {
+      "id": "gender-multi-axis.cross-axis.three-axes-dispatch-in-one-definition-formal-singular",
+      "requirementIds": [],
+      "fixture": "gender-multi-axis-nominal-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Invitation.Message",
+        "locale": "en",
+        "placeholders": {
+          "formality": {
+            "$lokalized": "language-form",
+            "axis": "formality",
+            "name": "FORMALITY_FORMAL"
+          },
+          "guestGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_FEMININE"
+          },
+          "inviteCount": {
+            "$lokalized": "integer",
+            "value": "1"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Three axes -- formality, gender, cardinality -- dispatching from three different caller values inside one definition, two of them nominal and one classified from a number. Pins that per-placeholder axis detection is driven by the placeholder's own translations map and not by any per-message or per-context inference. Two axes alone cannot show that a third does not perturb the others."
+    },
+    {
+      "id": "gender-multi-axis.cross-axis.three-axes-dispatch-in-one-definition-casual-plural",
+      "requirementIds": [],
+      "fixture": "gender-multi-axis-nominal-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Invitation.Message",
+        "locale": "en",
+        "placeholders": {
+          "formality": {
+            "$lokalized": "language-form",
+            "axis": "formality",
+            "name": "FORMALITY_CASUAL"
+          },
+          "guestGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_MASCULINE"
+          },
+          "inviteCount": {
+            "$lokalized": "integer",
+            "value": "4"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "All three selectors move simultaneously relative to the previous case, so every one of the three fragments changes. Any shared state between the three resolutions -- a cached selection, a single 'current axis' variable, resolution-order dependence -- makes exactly one of this pair wrong."
+    },
+    {
+      "id": "gender-multi-axis.alternative-axis.formality-alternative-taken-with-inherited-definiteness-and-animacy",
+      "requirementIds": [],
+      "fixture": "gender-multi-axis-nominal-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Arrival.Announcement",
+        "locale": "en",
+        "placeholders": {
+          "formality": {
+            "$lokalized": "language-form",
+            "axis": "formality",
+            "name": "FORMALITY_HONORIFIC"
+          },
+          "definiteness": {
+            "$lokalized": "language-form",
+            "axis": "definiteness",
+            "name": "DEFINITENESS_DEFINITE"
+          },
+          "nounAnimacy": {
+            "$lokalized": "language-form",
+            "axis": "animacy",
+            "name": "ANIMACY_ANIMATE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'Alternatives on one axis, placeholders on another' generalised past gender: the whole-message alternative expression compares a FORMALITY constant, and the selected branch resolves two inherited placeholders on two further nominal axes. Pins that the expression evaluator handles nominal axes other than gender as operand types and that placeholder inheritance into a chosen alternative is axis-agnostic."
+    },
+    {
+      "id": "gender-multi-axis.alternative-axis.formality-alternative-missed-base-dispatches-two-nominal-axes",
+      "requirementIds": [],
+      "fixture": "gender-multi-axis-nominal-axes",
+      "operation": "getResult",
+      "input": {
+        "key": "Arrival.Announcement",
+        "locale": "en",
+        "placeholders": {
+          "formality": {
+            "$lokalized": "language-form",
+            "axis": "formality",
+            "name": "FORMALITY_CASUAL"
+          },
+          "definiteness": {
+            "$lokalized": "language-form",
+            "axis": "definiteness",
+            "name": "DEFINITENESS_INDEFINITE"
+          },
+          "nounAnimacy": {
+            "$lokalized": "language-form",
+            "axis": "animacy",
+            "name": "ANIMACY_INANIMATE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The control for the previous case: the formality-keyed alternative does not match, so the root translation runs and the same two nominal placeholders dispatch there instead. Confirms the formality value is consumed ONLY by the alternative expression and never leaks into either nominal placeholder's selection."
+    }
+  ]
+}

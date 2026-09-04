@@ -1,0 +1,26 @@
+{
+  "id": "callback-smoke-throws",
+  "description": "A resolver that raises. Section 8.3 'callback exceptions' for the resolver rather than the failure handler.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "phoneticResolver": {
+    "behavior": "throw",
+    "message": "resolver exploded"
+  },
+  "files": {
+    "en": {
+      "Article": {
+        "translation": "{{article}}",
+        "placeholders": {
+          "article": {
+            "value": "nounTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "an",
+              "PHONETIC_CONSONANT": "a"
+            }
+          }
+        }
+      }
+    }
+  }
+}

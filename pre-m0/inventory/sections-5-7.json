@@ -1,0 +1,2173 @@
+{
+  "formatVersion": 1,
+  "status": "pre-m0-inventory-draft",
+  "sourcePlanSha256": "4ace5e349bedd45b16cd87182aed3306d33fae92b034ed01ddb93bc733c5f62d",
+  "scope": [
+    "5",
+    "6",
+    "7"
+  ],
+  "blocks": [
+    {
+      "id": "INV-5-7-001",
+      "lineStart": 1618,
+      "lineEnd": 1618,
+      "sourceAnchor": "5.1 strict package language-neutral input",
+      "synopsis": "Strict JavaScript modules are encoded from language-neutral generated JSON.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M1"
+      ],
+      "owner": "M1",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 1,
+      "reason": "The JavaScript encoding input and boundary are implementation-specific M1 obligations."
+    },
+    {
+      "id": "INV-5-7-002",
+      "lineStart": 1621,
+      "lineEnd": 1628,
+      "sourceAnchor": "5.1 canonical locale artifact full-union list",
+      "synopsis": "The canonical locale artifact includes likely subtags, validity sets, aliases, parents, RTL scripts, and all fallback metadata.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M1"
+      ],
+      "owner": "M1",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 7,
+      "reason": "Each enumerated table family is part of the M1 full-union source artifact."
+    },
+    {
+      "id": "INV-5-7-003",
+      "lineStart": 1630,
+      "lineEnd": 1634,
+      "sourceAnchor": "5.1 full-triple likely-subtag preservation",
+      "synopsis": "Likely-subtag rows preserve row presence and the full language/script/region target, including present Latn rows and region-alias discriminators.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M1"
+      ],
+      "owner": "M1",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 7,
+      "reason": "Full triples and presence semantics are permanent-if-wrong M1 data requirements."
+    },
+    {
+      "id": "INV-5-7-004",
+      "lineStart": 1636,
+      "lineEnd": 1640,
+      "sourceAnchor": "5.1 JavaScript root derivative and host-registry independence",
+      "synopsis": "The JavaScript root/browser derivative carries the pinned validity and IANA identity data required for automatic direct-locale diagnostics, and no JavaScript path consults host locale registries.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M1"
+      ],
+      "owner": "M1",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 3,
+      "reason": "This is the JavaScript-specific M1 derivative and host-independence obligation; the portable full-union source is inventoried separately."
+    },
+    {
+      "id": "INV-5-7-005",
+      "lineStart": 1638,
+      "lineEnd": 1639,
+      "sourceAnchor": "5.1 negotiate full multi-range solver",
+      "synopsis": "The negotiate subpath adds the full multi-range and header solver.",
+      "disposition": "nonnormative",
+      "registrationBefore": [],
+      "owner": "none",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 0,
+      "reason": "Navigation summary only; the negotiate entry and its solver ownership are already registered by INV-1-4-087 and INV-1-4-095."
+    },
+    {
+      "id": "INV-5-7-006",
+      "lineStart": 1643,
+      "lineEnd": 1644,
+      "sourceAnchor": "5.1 plural artifact contents",
+      "synopsis": "Plural artifacts contain cardinal and ordinal rules, cardinal ranges, operand metadata, and expanded conformance samples.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M1"
+      ],
+      "owner": "M1",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 5,
+      "reason": "M1 generates these canonical language-neutral plural inputs before M4 evaluates them."
+    },
+    {
+      "id": "INV-5-7-007",
+      "lineStart": 1646,
+      "lineEnd": 1651,
+      "sourceAnchor": "5.1 pinned IANA equivalence artifact",
+      "synopsis": "A separately locked pinned-IANA artifact records exact range equivalence closure and provenance, remains distinct from CLDR aliases, and supplies core direct matching.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M1"
+      ],
+      "owner": "M1",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 10,
+      "reason": "The closure and its identity are M1 inputs to the M2 direct-locale path."
+    },
+    {
+      "id": "INV-5-7-008",
+      "lineStart": 1650,
+      "lineEnd": 1651,
+      "sourceAnchor": "5.1 IANA artifact consumption by full negotiator",
+      "synopsis": "The M9 whole-list negotiator consumes the pinned IANA closure instead of a host registry.",
+      "disposition": "nonnormative",
+      "registrationBefore": [],
+      "owner": "none",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 0,
+      "reason": "Navigation summary only; pinned-IANA whole-list negotiation and host-registry independence are already registered by INV-1-4-020 and INV-1-4-147."
+    },
+    {
+      "id": "INV-5-7-009",
+      "lineStart": 1653,
+      "lineEnd": 1661,
+      "sourceAnchor": "5.1 Java-3.0 IANA compatibility artifact and override provenance",
+      "synopsis": "The first release treats IANA closure as Java-3.0 compatibility data, locks the required direct-locale equivalence partition, and source-labels, locks, and hashes any JDK-compatibility overrides.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M1"
+      ],
+      "owner": "M1",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 5,
+      "reason": "M1 owns the compatibility artifact, locked partition, and explicit override provenance; oracle execution and the direct-difference gate are inventoried separately."
+    },
+    {
+      "id": "INV-5-7-010",
+      "lineStart": 1655,
+      "lineEnd": 1661,
+      "sourceAnchor": "5.1 full-list IANA oracle and versioning",
+      "synopsis": "M9 exhaustively checks range expansion and ordering, blocks on list/header differences, and requires a new contract for newer-IANA behavior.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M9"
+      ],
+      "owner": "M9",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 6,
+      "reason": "The list/header half of the compatibility contract belongs to M9."
+    },
+    {
+      "id": "INV-5-7-011",
+      "lineStart": 1663,
+      "lineEnd": 1678,
+      "sourceAnchor": "5.1 CLDR provenance, JCS, and external-lock recipe",
+      "synopsis": "Canonical artifacts avoid self-hashes, use exact RFC-8785 bytes, and are externally locked with complete, ordered, portable input recipes and versioned projections.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M1"
+      ],
+      "owner": "M1",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 24,
+      "reason": "These byte-level provenance rules define M1 reproducibility and cross-language identity."
+    },
+    {
+      "id": "INV-5-7-012",
+      "lineStart": 1680,
+      "lineEnd": 1685,
+      "sourceAnchor": "5.1 ianaDataFingerprint projection",
+      "synopsis": "The IANA fingerprint hashes a fixed JCS lock projection with canonical null handling, ordered path/hash records, and explicit self-reference exclusions.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M1"
+      ],
+      "owner": "M1",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 8,
+      "reason": "The fingerprint algorithm is a cross-language M1 identity contract."
+    },
+    {
+      "id": "INV-5-7-013",
+      "lineStart": 1687,
+      "lineEnd": 1689,
+      "sourceAnchor": "5.1 shared dataFingerprint projection",
+      "synopsis": "The shared data fingerprint hashes a fixed CLDR-lock projection, excludes the fingerprint itself, and is exposed identically by native Java, JavaScript, Python, and Go encodings.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M1"
+      ],
+      "owner": "M1",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 5,
+      "reason": "M1 establishes the language-neutral semantic identity; emitted-native-artifact hashing is an implementation-process obligation inventoried separately."
+    },
+    {
+      "id": "INV-5-7-014",
+      "lineStart": 1692,
+      "lineEnd": 1698,
+      "sourceAnchor": "5.1 M0 lossless encoding candidate families",
+      "synopsis": "M0 measures row/object, generic lossless, and predicate-membership encodings, including required language and validity/RTL families without preselecting an emitted representation.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 11,
+      "reason": "Candidate breadth and non-preselection are explicit prerequisites to the M0 economic decision."
+    },
+    {
+      "id": "INV-5-7-015",
+      "lineStart": 1698,
+      "lineEnd": 1706,
+      "sourceAnchor": "5.1 M1 production encoding losslessness",
+      "synopsis": "M1 integrates every rendering-observable strict table and proves exact decoded JCS equality, enumerated omissions, and full likely-subtag key/presence/triple behavior.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M1"
+      ],
+      "owner": "M1",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 15,
+      "reason": "This is the central M1 lossless-handoff gate."
+    },
+    {
+      "id": "INV-5-7-016",
+      "lineStart": 1706,
+      "lineEnd": 1711,
+      "sourceAnchor": "5.1 encoding measurement matrix and conjunctive selection",
+      "synopsis": "Every encoding candidate records size, compression, import/decode, lookup, and memory metrics under locks, and must satisfy every independent constraint conjunctively.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 14,
+      "reason": "M0 must freeze and execute the measurement matrix and conjunctive selection gate before its budget decision."
+    },
+    {
+      "id": "INV-5-7-017",
+      "lineStart": 1713,
+      "lineEnd": 1716,
+      "sourceAnchor": "5.1 evidence admissibility for encoding measurements",
+      "synopsis": "Informal prior measurements are excluded; M0 reruns candidates under a frozen protocol and accepts only immutable reviewed attestations.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 4,
+      "reason": "This defines which evidence can support the M0 budget decision."
+    },
+    {
+      "id": "INV-5-7-018",
+      "lineStart": 1718,
+      "lineEnd": 1722,
+      "sourceAnchor": "5.1 likely-subtag-only projection exception",
+      "synopsis": "Only likely subtags may use the described projection exception, and no projected encoding may ship before M7 and a checked proof over the final consumer graph.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M7"
+      ],
+      "owner": "M7",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 7,
+      "reason": "Projection remains a non-shipping experiment until the M7 consumer graph exists."
+    },
+    {
+      "id": "INV-5-7-019",
+      "lineStart": 1724,
+      "lineEnd": 1730,
+      "sourceAnchor": "5.1 projection proof consumer inventory",
+      "synopsis": "A projection proof must encapsulate raw tables, inventory all direct and transitive consumers with field-use/source hashes, and fail closed on unclassified or changed access.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M7"
+      ],
+      "owner": "M7",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 12,
+      "reason": "This evidence cannot be finalized until M7 supplies the complete consumer graph."
+    },
+    {
+      "id": "INV-5-7-020",
+      "lineStart": 1731,
+      "lineEnd": 1737,
+      "sourceAnchor": "5.1 projection proof independent probe universe",
+      "synopsis": "The finite probe universe is generated independently from full pinned seeds and both implementations' candidate sequences, with a documented reduction and locked version/count/hash.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M7"
+      ],
+      "owner": "M7",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 12,
+      "reason": "The proof generator and its locked universe are M7 projection evidence."
+    },
+    {
+      "id": "INV-5-7-021",
+      "lineStart": 1738,
+      "lineEnd": 1740,
+      "sourceAnchor": "5.1 projection exhaustive behavioral comparison",
+      "synopsis": "Full and projected tables are exhaustively compared at every candidate position across presence, canonicalization, fallback, matching, bidi/script, and region aliases.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M7"
+      ],
+      "owner": "M7",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 8,
+      "reason": "These are acceptance dimensions for any M7 projection."
+    },
+    {
+      "id": "INV-5-7-022",
+      "lineStart": 1741,
+      "lineEnd": 1745,
+      "sourceAnchor": "5.1 generated region-discriminating witnesses",
+      "synopsis": "The proof generates and locks region-alias witnesses from independent seed classes, compares relevant mutants, and executes every witness in Java and JavaScript.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M7"
+      ],
+      "owner": "M7",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 9,
+      "reason": "Generated cross-implementation witnesses are part of the M7 projection proof."
+    },
+    {
+      "id": "INV-5-7-023",
+      "lineStart": 1746,
+      "lineEnd": 1749,
+      "sourceAnchor": "5.1 required likely-subtag projection mutations",
+      "synopsis": "Mutation tests must detect dropped target fields and absent/Latn conflation; named cases are regressions but cannot replace generated witnesses.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M7"
+      ],
+      "owner": "M7",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 7,
+      "reason": "Mutation adequacy is evaluated only if M7 considers the projection."
+    },
+    {
+      "id": "INV-5-7-024",
+      "lineStart": 1750,
+      "lineEnd": 1752,
+      "sourceAnchor": "5.1 projection proof invalidation and regeneration",
+      "synopsis": "Relevant manifest, source, tool, generator, data, or encoding changes force reviewed proof reruns, byte-identical regeneration, and schema version changes for contract changes.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M7"
+      ],
+      "owner": "M7",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 9,
+      "reason": "These controls govern the optional M7 proof artifact lifecycle."
+    },
+    {
+      "id": "INV-5-7-025",
+      "lineStart": 1754,
+      "lineEnd": 1756,
+      "sourceAnchor": "5.1 projection invalidation example and pre-M7 status",
+      "synopsis": "New consumers such as public maximize invalidate the projection; M1 always supplies a lossless derivative and pre-M7 projections cannot ship.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M1"
+      ],
+      "owner": "M1",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 5,
+      "reason": "The mandatory M1 output is lossless regardless of whether the later optional proof is attempted."
+    },
+    {
+      "id": "INV-5-7-026",
+      "lineStart": 1758,
+      "lineEnd": 1764,
+      "sourceAnchor": "5.1 locale data-module compatibility",
+      "synopsis": "createStrings rejects an incompatible generated locale module using format, CLDR version, data fingerprint, and canonical-lock membership, including generator-version changes.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M1"
+      ],
+      "owner": "M7",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 7,
+      "reason": "M1 supplies the identities before M7 enforces locale-module compatibility in construction."
+    },
+    {
+      "id": "INV-5-7-027",
+      "lineStart": 1771,
+      "lineEnd": 1773,
+      "sourceAnchor": "5.2 exact numeric interpreter operations",
+      "synopsis": "Exact cardinal and ordinal selection uses a digit-string/BigInt interpreter supporting a fixed operation set without a decimal dependency.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M4"
+      ],
+      "owner": "M4",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 7,
+      "reason": "The complete exact plural evaluator is owned by M4."
+    },
+    {
+      "id": "INV-5-7-028",
+      "lineStart": 1775,
+      "lineEnd": 1783,
+      "sourceAnchor": "5.2 exact selector conformance vector list",
+      "synopsis": "Exact-selector tests cover all generated cardinal, ordinal, range-interior, compact, visible-decimal, large, negative, exponent, and range-row cases.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M4"
+      ],
+      "owner": "M4",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 9,
+      "reason": "These public classifier cases activate with the M4 plural engine."
+    },
+    {
+      "id": "INV-5-7-029",
+      "lineStart": 1785,
+      "lineEnd": 1785,
+      "sourceAnchor": "5.2 generated case-ID gate",
+      "synopsis": "Plural acceptance uses the generated case-ID set and count rather than a historical constant.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M4"
+      ],
+      "owner": "M4",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 2,
+      "reason": "This controls M4 evidence closure."
+    },
+    {
+      "id": "INV-5-7-030",
+      "lineStart": 1789,
+      "lineEnd": 1790,
+      "sourceAnchor": "5.3 optional host-Intl subpath selection",
+      "synopsis": "Any smaller host-Intl implementation ships only through explicit subpaths and is never automatically selected or lazily imported during lookup.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-E"
+      ],
+      "owner": "M-E",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 4,
+      "reason": "Host-Intl adapters are explicitly post-MVP ecosystem work."
+    },
+    {
+      "id": "INV-5-7-031",
+      "lineStart": 1792,
+      "lineEnd": 1800,
+      "sourceAnchor": "5.3 host-Intl adapter contract list",
+      "synopsis": "Host adapters expose mode diagnostics, disclose uncontrolled data/divergences, preserve tagged numerics, fail safely on unrepresentable operands, and disclaim parity.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-E"
+      ],
+      "owner": "M-E",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 8,
+      "reason": "All listed adapter requirements belong to the deferred host-Intl proposal."
+    },
+    {
+      "id": "INV-5-7-032",
+      "lineStart": 1802,
+      "lineEnd": 1803,
+      "sourceAnchor": "5.3 optional-data asynchronous boundary",
+      "synopsis": "Applications explicitly import and register optional data before createStrings and own the asynchronous boundary.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-E"
+      ],
+      "owner": "M-E",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 3,
+      "reason": "This is public behavior for future optional subpaths."
+    },
+    {
+      "id": "INV-5-7-033",
+      "lineStart": 1811,
+      "lineEnd": 1843,
+      "sourceAnchor": "6.1 manifest, fetch-entry, and catalog-identity type contracts",
+      "synopsis": "The manifest, fetch plan entry, and catalog identity input expose explicit version, fingerprint, URL, digest, fallback, locale, and tiebreaker fields.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 24,
+      "reason": "These public delivery types activate with the M8 manifest/loading surface."
+    },
+    {
+      "id": "INV-5-7-034",
+      "lineStart": 1845,
+      "lineEnd": 1884,
+      "sourceAnchor": "6.1 manifest validation and planning API contracts",
+      "synopsis": "Manifest options and synchronous chain, fetchSet, parse, validate, locale-configuration, and identity APIs have the declared inputs and outputs.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 18,
+      "reason": "The manifest planning API is an M8 public surface."
+    },
+    {
+      "id": "INV-5-7-035",
+      "lineStart": 1886,
+      "lineEnd": 1895,
+      "sourceAnchor": "6.1 lookup planning and manifest validation semantics",
+      "synopsis": "Planning preserves arbitrary normalized lookup input, follows exact fallback/candidate rules, distinguishes attempted from fetched files, stays pure, and validates manifest/data identity before I/O.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 15,
+      "reason": "These semantics govern the M8 direct-lookup loader."
+    },
+    {
+      "id": "INV-5-7-036",
+      "lineStart": 1896,
+      "lineEnd": 1901,
+      "sourceAnchor": "6.1 shared manifest limit context",
+      "synopsis": "All manifest functions normalize one limit context; relaxed callers propagate it, loaders snapshot it, and createStrings reuses it for independent plan verification.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 8,
+      "reason": "Limit propagation is loader correctness evidence at M8."
+    },
+    {
+      "id": "INV-5-7-037",
+      "lineStart": 1902,
+      "lineEnd": 1904,
+      "sourceAnchor": "6.1 separation of catalog and IANA identity",
+      "synopsis": "Manifests omit IANA identity, while createStrings adds core IANA identity to load verification and SSR compares it separately.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 5,
+      "reason": "The separation is observable in M8 loading and SSR records."
+    },
+    {
+      "id": "INV-5-7-038",
+      "lineStart": 1905,
+      "lineEnd": 1907,
+      "sourceAnchor": "6.1 duplicate-aware manifest parsing versus object validation",
+      "synopsis": "Manifest text uses the bounded duplicate-aware parser and file cap; object validation defensively copies but cannot reconstruct source duplicates or locations.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M5a"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 6,
+      "reason": "The parser capability is produced at M5a before the M8 manifest consumer."
+    },
+    {
+      "id": "INV-5-7-039",
+      "lineStart": 1909,
+      "lineEnd": 1914,
+      "sourceAnchor": "6.1 URL resolution, decoded length, and digest representation",
+      "synopsis": "Manifest URLs use restricted absolute schemes and URL resolution; decoded length and digests cover precisely specified Fetch or Node bytes rather than encoded Content-Length.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 11,
+      "reason": "These transport byte semantics are M8 loader contracts."
+    },
+    {
+      "id": "INV-5-7-040",
+      "lineStart": 1916,
+      "lineEnd": 1919,
+      "sourceAnchor": "6.1 scheme preservation and loader-specific rejection",
+      "synopsis": "Common validation preserves all schemes, but Fetch accepts only HTTP(S), Node accepts only file URLs, and pure planning makes no dereference promise.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 7,
+      "reason": "Scheme boundaries are implemented and tested by M8 loaders."
+    },
+    {
+      "id": "INV-5-7-041",
+      "lineStart": 1921,
+      "lineEnd": 1932,
+      "sourceAnchor": "6.1 catalog identity algorithm and synchronous browser hashing",
+      "synopsis": "Catalog identity hashes an exact JCS projection with a synchronous audited browser SHA-256 implementation, explicit exclusions, pre-I/O verification, and limited validation for programmatic identities.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 18,
+      "reason": "Identity computation and its security boundary are M8 delivery behavior."
+    },
+    {
+      "id": "INV-5-7-042",
+      "lineStart": 1934,
+      "lineEnd": 1937,
+      "sourceAnchor": "6.1 immutable production URLs and service-worker caching",
+      "synopsis": "Manifests self-version and digest-bind bodies; production URLs are immutable, development file manifests may be direct, and service workers do not precache the whole catalog.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 6,
+      "reason": "These are M8 publication and caching constraints."
+    },
+    {
+      "id": "INV-5-7-043",
+      "lineStart": 1939,
+      "lineEnd": 1941,
+      "sourceAnchor": "6.1 manifest-hash authenticity limitation",
+      "synopsis": "Digest binding is not authentication; production guidance requires trusted HTTPS or an application trust/signature mechanism.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-D"
+      ],
+      "owner": "M-D",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 3,
+      "reason": "This is required production documentation rather than portable Java behavior."
+    },
+    {
+      "id": "INV-5-7-044",
+      "lineStart": 1945,
+      "lineEnd": 2049,
+      "sourceAnchor": "6.2 Fetch and Node loading API type contracts",
+      "synopsis": "The delivery API defines partial policy, request options, staged failures, complete LoadedStrings verification state, Fetch/file/directory loaders, and directory-manifest options.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 48,
+      "reason": "This complete public API block is owned by M8."
+    },
+    {
+      "id": "INV-5-7-045",
+      "lineStart": 2051,
+      "lineEnd": 2066,
+      "sourceAnchor": "6.2 direct versus negotiated subset-loading contracts",
+      "synopsis": "Direct subset loading preserves the original tag, while whole-list loading plans and renders from the selected locale or fallback and preserves the supplied match.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 6,
+      "reason": "The examples encode distinct M8 lookup-coverage behavior rather than merely illustrative syntax."
+    },
+    {
+      "id": "INV-5-7-046",
+      "lineStart": 2070,
+      "lineEnd": 2071,
+      "sourceAnchor": "6.2 loader limit snapshot requirement",
+      "synopsis": "Each loader validates overrides once and returns one complete frozen normalized limit record shared by Fetch and Node paths.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 4,
+      "reason": "This is an explicit required-behavior list item for M8."
+    },
+    {
+      "id": "INV-5-7-047",
+      "lineStart": 2072,
+      "lineEnd": 2076,
+      "sourceAnchor": "6.2 pre-plan and post-plan error taxonomy",
+      "synopsis": "Manifest mismatch and source syntax errors use distinct pre-plan error types; all post-plan file failure classes reject all-or-nothing by default through StringsLoadingError.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 11,
+      "reason": "Error identity and phase boundaries are M8 public contracts."
+    },
+    {
+      "id": "INV-5-7-048",
+      "lineStart": 2077,
+      "lineEnd": 2077,
+      "sourceAnchor": "6.2 failure ordering",
+      "synopsis": "StringsLoadingError failures follow fetch-plan order rather than completion order.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 1,
+      "reason": "Deterministic ordering is observable M8 behavior."
+    },
+    {
+      "id": "INV-5-7-049",
+      "lineStart": 2078,
+      "lineEnd": 2079,
+      "sourceAnchor": "6.2 Fetch/Node acquisition failure stages",
+      "synopsis": "Fetch acquisition maps to fetch, Node acquisition maps to read, and later failures retain their named stages.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 5,
+      "reason": "Per-file stage classification is part of M8 error reporting."
+    },
+    {
+      "id": "INV-5-7-050",
+      "lineStart": 2080,
+      "lineEnd": 2081,
+      "sourceAnchor": "6.2 deterministic warning ordering",
+      "synopsis": "Warnings are ordered by fetch plan then depth-first declaration order, independent of completion timing.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 3,
+      "reason": "This is observable deterministic loader behavior."
+    },
+    {
+      "id": "INV-5-7-051",
+      "lineStart": 2082,
+      "lineEnd": 2085,
+      "sourceAnchor": "6.2 allow-partial fallback and parity rules",
+      "synopsis": "Partial success requires a valid fallback file, always rejects fallback failure, sets complete false, and disclaims server/client parity.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 6,
+      "reason": "Partial policy is an M8 availability contract."
+    },
+    {
+      "id": "INV-5-7-052",
+      "lineStart": 2086,
+      "lineEnd": 2086,
+      "sourceAnchor": "6.2 abort behavior",
+      "synopsis": "Abort cancels outstanding work and rejects rather than becoming partial success.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 2,
+      "reason": "Abort semantics are part of M8 loading."
+    },
+    {
+      "id": "INV-5-7-053",
+      "lineStart": 2087,
+      "lineEnd": 2087,
+      "sourceAnchor": "6.2 catalog-read concurrency cap",
+      "synopsis": "No more than eight catalog reads run concurrently and queued work preserves plan order.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 2,
+      "reason": "The concurrency bound is an M8 resource and ordering requirement."
+    },
+    {
+      "id": "INV-5-7-054",
+      "lineStart": 2088,
+      "lineEnd": 2089,
+      "sourceAnchor": "6.2 Fetch request defaults and uniform override",
+      "synopsis": "Fetch defaults to cors/same-origin credentials and applies the bounded override identically to all planned requests.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 4,
+      "reason": "Request configuration is observable M8 delivery behavior."
+    },
+    {
+      "id": "INV-5-7-055",
+      "lineStart": 2090,
+      "lineEnd": 2091,
+      "sourceAnchor": "6.2 HTTP, streaming-limit, and digest order",
+      "synopsis": "Non-2xx fails, exact decoded sizes and limits are streamed, and SHA-256 precedes UTF-8 parsing.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 4,
+      "reason": "These are core M8 transport-integrity requirements."
+    },
+    {
+      "id": "INV-5-7-056",
+      "lineStart": 2092,
+      "lineEnd": 2100,
+      "sourceAnchor": "6.2 browser WebCrypto and Node streaming digest behavior",
+      "synopsis": "Browser loading preflights WebCrypto and buffers within limits for digest; Node uses subpath-only incremental crypto and streaming readers, with explicit injected-reader allocation handling.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 18,
+      "reason": "Capability, memory, and streaming behavior are major M8 acceptance risks."
+    },
+    {
+      "id": "INV-5-7-057",
+      "lineStart": 2101,
+      "lineEnd": 2101,
+      "sourceAnchor": "6.2 no hidden global catalog cache",
+      "synopsis": "Loading creates no hidden process-global or browser-global catalog cache.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 1,
+      "reason": "Global state absence is an M8 lifecycle guarantee."
+    },
+    {
+      "id": "INV-5-7-058",
+      "lineStart": 2102,
+      "lineEnd": 2105,
+      "sourceAnchor": "6.2 partial-load tiebreaker filtering",
+      "synopsis": "Tiebreakers validate against the full manifest, filter to successful tags in order, omit empty language lists, and are strictly revalidated by createStrings.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 6,
+      "reason": "This defines M8 partial-coverage configuration behavior."
+    },
+    {
+      "id": "INV-5-7-059",
+      "lineStart": 2106,
+      "lineEnd": 2110,
+      "sourceAnchor": "6.2 full manifest configuration versus loaded runtime coverage",
+      "synopsis": "Full manifest configuration drives diagnostics and match validation, while catalogs/tiebreakers and candidate resolution use only successfully loaded coverage.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 8,
+      "reason": "This distinction is a high-risk M8 direct-matching and partial-load contract."
+    },
+    {
+      "id": "INV-5-7-060",
+      "lineStart": 2111,
+      "lineEnd": 2116,
+      "sourceAnchor": "6.2 whole-manifest planning, completeness, identity, and SSR eligibility",
+      "synopsis": "Whole loading uses normalized order; completeness is coverage-relative, identity always names the full manifest, and SSR rejects incomplete or context-inadequate instances.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 9,
+      "reason": "These fields and gates are produced and consumed in M8."
+    },
+    {
+      "id": "INV-5-7-061",
+      "lineStart": 2118,
+      "lineEnd": 2130,
+      "sourceAnchor": "6.2 Node directory discovery, generation, and file loading",
+      "synopsis": "Node directory APIs implement nonrecursive normalized discovery, strict filename validation, limits, raw hashing, canonical manifest identity, file-only loading, and bounded manifest reading.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 24,
+      "reason": "The Node directory feature is an M8 delivery surface with many independent edge cases."
+    },
+    {
+      "id": "INV-5-7-062",
+      "lineStart": 2134,
+      "lineEnd": 2135,
+      "sourceAnchor": "6.3 no-build definition",
+      "synopsis": "No-build support means exact version-pinned HTTP imports, not browser resolution of npm names.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 2,
+      "reason": "This defines the M8 direct-browser claim."
+    },
+    {
+      "id": "INV-5-7-063",
+      "lineStart": 2137,
+      "lineEnd": 2142,
+      "sourceAnchor": "6.3 release artifact list",
+      "synopsis": "Each release provides npm exports, one single-file browser root, and explicit browser files for optional loading, SSR, negotiation, ordinal, and range surfaces.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 8,
+      "reason": "The enumerated artifact surface is verified in M8 and finalized at M-R."
+    },
+    {
+      "id": "INV-5-7-064",
+      "lineStart": 2144,
+      "lineEnd": 2147,
+      "sourceAnchor": "6.3 browser root and optional graph constraints",
+      "synopsis": "The browser root is self-contained; optional graphs are colocated relative ESM with no external dependencies, Node built-ins, bare specifiers, top-level await, or lookup-path dynamic imports.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 11,
+      "reason": "These graph invariants are part of M8 direct-browser and worker acceptance."
+    },
+    {
+      "id": "INV-5-7-065",
+      "lineStart": 2149,
+      "lineEnd": 2153,
+      "sourceAnchor": "6.3 production ESM build and output graph",
+      "synopsis": "npm ships checked ESM and browser output uses pinned Rollup/Terser, prescribed chunking, exact floors, preserved notices, source maps, graph manifest, and production-output tests.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 13,
+      "reason": "The production graph is needed for M8 network and browser evidence."
+    },
+    {
+      "id": "INV-5-7-066",
+      "lineStart": 2155,
+      "lineEnd": 2168,
+      "sourceAnchor": "6.3 import-map/direct-URL documentation example",
+      "synopsis": "Documentation demonstrates exact-CDN import mapping or direct URL module import.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-D"
+      ],
+      "owner": "M-D",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 3,
+      "reason": "The code is an executed documentation artifact rather than portable runtime behavior."
+    },
+    {
+      "id": "INV-5-7-067",
+      "lineStart": 2170,
+      "lineEnd": 2175,
+      "sourceAnchor": "6.3 packed-browser no-build and graph-verification CI",
+      "synopsis": "CI serves the packed artifact over HTTP, runs it without a bundler in every supported browser, verifies secure WebCrypto digest execution, and walks every packed URL-addressable optional graph.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 7,
+      "reason": "These executed checks substantiate the M8 packed-browser delivery claim; versioning and import-map guidance are inventoried separately."
+    },
+    {
+      "id": "INV-5-7-068",
+      "lineStart": 2177,
+      "lineEnd": 2182,
+      "sourceAnchor": "6.3 SSR preload markup example",
+      "synopsis": "SSR documentation supplies a JSON Fetch preload using anonymous CORS.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-D"
+      ],
+      "owner": "M-D",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 2,
+      "reason": "The snippet is a required deployment example, while reuse behavior is inventoried separately."
+    },
+    {
+      "id": "INV-5-7-069",
+      "lineStart": 2184,
+      "lineEnd": 2188,
+      "sourceAnchor": "6.3 preload request equivalence and proof",
+      "synopsis": "Preload reuse requires identical URL/destination/CORS/credentials, maps include-credentials correctly, keeps manifest digest separate from SRI, and proves exactly one request.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 8,
+      "reason": "Network reuse is an explicit M8 acceptance scenario."
+    },
+    {
+      "id": "INV-5-7-070",
+      "lineStart": 2192,
+      "lineEnd": 2237,
+      "sourceAnchor": "6.4 SSR stamp, match, context, create, and validate API contracts",
+      "synopsis": "SSR types and APIs define exact producer/data/catalog/mode/lookup/match fields, two context origins, and create/validate signatures.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 29,
+      "reason": "The entire SSR public type/API surface activates at M8."
+    },
+    {
+      "id": "INV-5-7-071",
+      "lineStart": 2239,
+      "lineEnd": 2245,
+      "sourceAnchor": "6.4 SSR identity meanings and lookup derivation",
+      "synopsis": "Each fingerprint detects its own change class; SSR records lookup rather than resolved-key locale and delegates direct or supplied-match lookup derivation to the core.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 10,
+      "reason": "These are rendering-observable M8 stamp semantics."
+    },
+    {
+      "id": "INV-5-7-072",
+      "lineStart": 2246,
+      "lineEnd": 2249,
+      "sourceAnchor": "6.4 verified-loaded construction eligibility",
+      "synopsis": "Stamp creation requires verified complete LoadedStrings, catalog identity, and covered rendering context; direct construction is ineligible while equivalent complete server/client coverage may validate.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 7,
+      "reason": "Eligibility and coverage are core M8 hydration-safety gates."
+    },
+    {
+      "id": "INV-5-7-073",
+      "lineStart": 2250,
+      "lineEnd": 2261,
+      "sourceAnchor": "6.4 local load-verification and coverage checks",
+      "synopsis": "SSR creation/validation interrogates renderer-owned verification, identity, configuration, supported/planned coverage, fallback, and producer fields without recomputing plans or substituting module constants.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 19,
+      "reason": "These detailed checks close spoofing and split-kernel risks at M8."
+    },
+    {
+      "id": "INV-5-7-074",
+      "lineStart": 2263,
+      "lineEnd": 2275,
+      "sourceAnchor": "6.4 strict-v1 serialized comparison and hydration modes",
+      "synopsis": "The narrow match projection omits sensitive negotiation inputs; strict v1 requires exact JS producer/version and enumerated field equality, accepts only pinned/exact modes, throws on mismatch, and forbids silent hydration.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 21,
+      "reason": "Strict comparison and no-silent-mismatch behavior define M8 hydration correctness."
+    },
+    {
+      "id": "INV-5-7-075",
+      "lineStart": 2277,
+      "lineEnd": 2284,
+      "sourceAnchor": "6.4 SSR locale-match invariants",
+      "synopsis": "Stamp match nullability, configuration membership, direct-result equality, selected/fallback lookup relations, and full-match validation follow the specified invariants.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 11,
+      "reason": "These invariants prevent invalid M8 serialized contexts."
+    },
+    {
+      "id": "INV-5-7-076",
+      "lineStart": 2286,
+      "lineEnd": 2292,
+      "sourceAnchor": "6.4 TranslationResult context origins and lookup coverage",
+      "synopsis": "TranslationResult contexts must derive from a valid automatic-direct or supplied-match origin, and lookup-subset hydration covers the original direct tag rather than only its diagnostic selection.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 9,
+      "reason": "Origin and coverage validation are M8 SSR behaviors."
+    },
+    {
+      "id": "INV-5-7-077",
+      "lineStart": 2294,
+      "lineEnd": 2300,
+      "sourceAnchor": "6.4 application hydration-equality precondition",
+      "synopsis": "The stamp excludes per-call inputs and callbacks, so applications must reproduce all relevant behavior inputs, including the complete supplied match, or force a client render.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-D"
+      ],
+      "owner": "M-D",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 7,
+      "reason": "This is an application integration precondition that documentation must make explicit."
+    },
+    {
+      "id": "INV-5-7-078",
+      "lineStart": 2302,
+      "lineEnd": 2305,
+      "sourceAnchor": "6.4 cache strategy option: locale-keyed direct redirect",
+      "synopsis": "An Accept-Language-selected cache may redirect to a locale-keyed URL that re-renders directly and discards whole-list diagnostics.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "informational-nonportable",
+      "anticipatedAtomicRecords": 3,
+      "reason": "This is one allowed deployment strategy supporting the M8 SSR contract."
+    },
+    {
+      "id": "INV-5-7-079",
+      "lineStart": 2306,
+      "lineEnd": 2307,
+      "sourceAnchor": "6.4 cache strategy option: full selecting-input fingerprint",
+      "synopsis": "A cache may key on normalized selecting input or an opaque fingerprint of the complete match and all match-dependent rendering inputs.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "informational-nonportable",
+      "anticipatedAtomicRecords": 2,
+      "reason": "This is one allowed safe cache strategy."
+    },
+    {
+      "id": "INV-5-7-080",
+      "lineStart": 2308,
+      "lineEnd": 2309,
+      "sourceAnchor": "6.4 cache strategy option: reviewed narrow-context invariant",
+      "synopsis": "The narrow SSR context may be a cache key only under a reviewed invariant proving omitted inputs cannot change HTML.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "informational-nonportable",
+      "anticipatedAtomicRecords": 2,
+      "reason": "This conditional strategy requires explicit evidence."
+    },
+    {
+      "id": "INV-5-7-081",
+      "lineStart": 2310,
+      "lineEnd": 2310,
+      "sourceAnchor": "6.4 cache strategy option: Vary Accept-Language",
+      "synopsis": "Vary: Accept-Language is an allowed cache strategy.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "informational-nonportable",
+      "anticipatedAtomicRecords": 1,
+      "reason": "The strategy is an explicit member of the cache-safety contract."
+    },
+    {
+      "id": "INV-5-7-082",
+      "lineStart": 2311,
+      "lineEnd": 2311,
+      "sourceAnchor": "6.4 cache strategy option: private/non-cacheable HTML",
+      "synopsis": "Private or non-cacheable HTML is an allowed cache strategy.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "informational-nonportable",
+      "anticipatedAtomicRecords": 1,
+      "reason": "The strategy is an explicit member of the cache-safety contract."
+    },
+    {
+      "id": "INV-5-7-083",
+      "lineStart": 2313,
+      "lineEnd": 2321,
+      "sourceAnchor": "6.4 cache-key safety rules by rendering origin",
+      "synopsis": "Direct caches key the original lookup, match-preserving caches cannot use selection alone, and even selection plus match type may omit observable ranges/order/callback inputs.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 13,
+      "reason": "These rules explain the safety boundary that M8 docs and examples must preserve."
+    },
+    {
+      "id": "INV-5-7-084",
+      "lineStart": 2325,
+      "lineEnd": 2327,
+      "sourceAnchor": "6.5 deployment table: SSR",
+      "synopsis": "SSR negotiates once, stamps the result, preloads immutable digest-bound files, and uses a section-6.4 cache strategy.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-D"
+      ],
+      "owner": "M-D",
+      "parityClass": "informational-nonportable",
+      "anticipatedAtomicRecords": 4,
+      "reason": "This table row is an executed deployment pattern documented after M8."
+    },
+    {
+      "id": "INV-5-7-085",
+      "lineStart": 2328,
+      "lineEnd": 2328,
+      "sourceAnchor": "6.5 deployment table: static/SPA",
+      "synopsis": "Static applications supply a resolved locale or small chooser and explicitly choose blocking or declared fallback without a silent hydration swap.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-D"
+      ],
+      "owner": "M-D",
+      "parityClass": "informational-nonportable",
+      "anticipatedAtomicRecords": 4,
+      "reason": "This is an application deployment pattern."
+    },
+    {
+      "id": "INV-5-7-086",
+      "lineStart": 2329,
+      "lineEnd": 2329,
+      "sourceAnchor": "6.5 deployment table: edge",
+      "synopsis": "Edge negotiation either redirects into direct mode or preserves the supplied match and uses a full selecting-input key, Vary, or private HTML.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M9"
+      ],
+      "owner": "M9",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 6,
+      "reason": "The full edge negotiation path activates at M9."
+    },
+    {
+      "id": "INV-5-7-087",
+      "lineStart": 2330,
+      "lineEnd": 2330,
+      "sourceAnchor": "6.5 deployment table: locale per domain",
+      "synopsis": "Locale-per-domain deployments treat the domain as authority and load only that locale and its required fallback chain.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-D"
+      ],
+      "owner": "M-D",
+      "parityClass": "informational-nonportable",
+      "anticipatedAtomicRecords": 3,
+      "reason": "This is an application deployment pattern."
+    },
+    {
+      "id": "INV-5-7-088",
+      "lineStart": 2332,
+      "lineEnd": 2333,
+      "sourceAnchor": "6.5 first-paint strategy tradeoff",
+      "synopsis": "The library does not mandate fallback-language flash and examples expose blocking, fallback-content, and progressive-upgrade tradeoffs.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-D"
+      ],
+      "owner": "M-D",
+      "parityClass": "informational-nonportable",
+      "anticipatedAtomicRecords": 3,
+      "reason": "This is required product guidance rather than runtime parity behavior."
+    },
+    {
+      "id": "INV-5-7-089",
+      "lineStart": 2335,
+      "lineEnd": 2344,
+      "sourceAnchor": "6.5 full edge negotiation example and combined smoke test",
+      "synopsis": "The full edge example uses negotiate/load, preserves correct direct-or-match cache semantics, requires the named Web capabilities, includes validity and IANA data, excludes Node code, and has a combined smoke test.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M9"
+      ],
+      "owner": "M9",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 7,
+      "reason": "M9 owns full negotiation semantics and the combined edge smoke test; the earlier load-only worker graph is inventoried separately."
+    },
+    {
+      "id": "INV-5-7-090",
+      "lineStart": 2346,
+      "lineEnd": 2348,
+      "sourceAnchor": "6.5 small browser chooser lifecycle",
+      "synopsis": "The chooser reads navigator.languages only on invocation, installs no listener, mutates no instance, and leaves explicit reload/rebuild policy to applications.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M7"
+      ],
+      "owner": "M7",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 5,
+      "reason": "The explicitly non-parity small chooser is delivered and tested at M7."
+    },
+    {
+      "id": "INV-5-7-091",
+      "lineStart": 2352,
+      "lineEnd": 2354,
+      "sourceAnchor": "6.6 immutable instance and atomic reload lifecycle",
+      "synopsis": "Servers retain immutable versioned instances, atomically replace references on reload, select locale per call, and expose no mutable process-global locale.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 5,
+      "reason": "Instance lifecycle and replacement are explicit M8 gates; eager expression compilation is already registered in \u00a72.7."
+    },
+    {
+      "id": "INV-5-7-092",
+      "lineStart": 2356,
+      "lineEnd": 2358,
+      "sourceAnchor": "6.6 RSC serialization boundary",
+      "synopsis": "RSC integrations transfer catalogs or manifests and reconstruct clients rather than serializing compiled closures; refetching remains optional.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-D"
+      ],
+      "owner": "M-D",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 4,
+      "reason": "This is a documented integration constraint built on the M8 lifecycle."
+    },
+    {
+      "id": "INV-5-7-093",
+      "lineStart": 2364,
+      "lineEnd": 2372,
+      "sourceAnchor": "7 peer-repository topology",
+      "synopsis": "Java, JavaScript, future shared-generator, and site implementations remain peer repositories under a conventional sibling layout.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 5,
+      "reason": "M0 scaffolding and cross-repository locks assume this checked topology."
+    },
+    {
+      "id": "INV-5-7-094",
+      "lineStart": 2374,
+      "lineEnd": 2375,
+      "sourceAnchor": "7 separate-repository rationale",
+      "synopsis": "Separate repositories are a release-workflow choice, not a technical impossibility claim about monorepos.",
+      "disposition": "nonnormative",
+      "registrationBefore": [],
+      "owner": "none",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 0,
+      "reason": "This explains a chosen topology without adding an independently testable requirement."
+    },
+    {
+      "id": "INV-5-7-095",
+      "lineStart": 2381,
+      "lineEnd": 2383,
+      "sourceAnchor": "7.1 Java interim canonical artifact emission",
+      "synopsis": "lokalized-java emits the three pinned CLDR artifacts and pinned IANA equivalence artifact.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M1"
+      ],
+      "owner": "M1",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 5,
+      "reason": "These are the M1 interim data-producer outputs."
+    },
+    {
+      "id": "INV-5-7-096",
+      "lineStart": 2384,
+      "lineEnd": 2385,
+      "sourceAnchor": "7.1 unmodified Java runtime oracle and original API exercise",
+      "synopsis": "The Java-3.0 runtime oracle remains unmodified and the additive runner continues to exercise its original public APIs.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M3a",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 3,
+      "reason": "Oracle integrity and original-API exercise are required before M3a can provide parity evidence; generator additions are inventoried separately."
+    },
+    {
+      "id": "INV-5-7-097",
+      "lineStart": 2386,
+      "lineEnd": 2387,
+      "sourceAnchor": "7.1 JS checked native artifacts and Java lock",
+      "synopsis": "lokalized-js checks in generated JavaScript artifacts with a lock naming the exact Java commit and aggregate input hash.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M1"
+      ],
+      "owner": "M1",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 4,
+      "reason": "This is the M1 JS provenance link to the interim producer."
+    },
+    {
+      "id": "INV-5-7-098",
+      "lineStart": 2388,
+      "lineEnd": 2388,
+      "sourceAnchor": "7.1 sibling-layout regeneration CI",
+      "synopsis": "JS CI reconstructs the sibling repository layout and runs regeneration in check mode.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M1"
+      ],
+      "owner": "M1",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 2,
+      "reason": "This is M1's standing no-drift evidence producer."
+    },
+    {
+      "id": "INV-5-7-099",
+      "lineStart": 2389,
+      "lineEnd": 2390,
+      "sourceAnchor": "7.1 behavioral-vector location and version",
+      "synopsis": "Hand-authored behavioral vectors live with the Java reference and have an independent version.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M3a",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 3,
+      "reason": "M3a creates the minimal versioned cross-implementation corpus."
+    },
+    {
+      "id": "INV-5-7-100",
+      "lineStart": 2391,
+      "lineEnd": 2393,
+      "sourceAnchor": "7.1 requirements/evidence schema ownership and extension",
+      "synopsis": "Language-neutral requirements and evidence schemas live beside vectors, while implementations may add implementation-required evidence without reclassifying portable requirements.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 4,
+      "reason": "Registry/schema placement and extension rules are part of the M0 bootstrap."
+    },
+    {
+      "id": "INV-5-7-101",
+      "lineStart": 2394,
+      "lineEnd": 2398,
+      "sourceAnchor": "7.1 immutable porting-contract archive",
+      "synopsis": "Each pinned Java tag publishes a checksummed contract archive with canonical artifacts, locks, schemas, registry, and vectors; JS records its archive digest and source commit.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-R"
+      ],
+      "owner": "M-R",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 12,
+      "reason": "The public immutable archive is finalized at the parity-backed release gate."
+    },
+    {
+      "id": "INV-5-7-102",
+      "lineStart": 2399,
+      "lineEnd": 2400,
+      "sourceAnchor": "7.1 current strings-schema location and JS snapshot",
+      "synopsis": "The strings schema remains at its current Java/site path during the JS critical path and JS vendors an exact checked snapshot.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M5a"
+      ],
+      "owner": "M5a",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 4,
+      "reason": "Parser/catalog work first consumes the vendored schema at M5a; relocation remains outside the critical path."
+    },
+    {
+      "id": "INV-5-7-103",
+      "lineStart": 2402,
+      "lineEnd": 2403,
+      "sourceAnchor": "7.1 interim Java reference ownership",
+      "synopsis": "Interim ownership remains explicitly Java-referenced.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M1"
+      ],
+      "owner": "M1",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 1,
+      "reason": "This is a temporary repository-ownership decision rather than portable runtime behavior."
+    },
+    {
+      "id": "INV-5-7-104",
+      "lineStart": 2407,
+      "lineEnd": 2409,
+      "sourceAnchor": "7.2 extraction trigger: third implementation",
+      "synopsis": "Generator extraction begins when a third implementation has both a named owner and committed start.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-X"
+      ],
+      "owner": "M-X",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 3,
+      "reason": "This is one trigger for the dormant M-X milestone."
+    },
+    {
+      "id": "INV-5-7-105",
+      "lineStart": 2410,
+      "lineEnd": 2410,
+      "sourceAnchor": "7.2 extraction trigger: CLDR upgrade",
+      "synopsis": "Generator extraction also begins when the next CLDR upgrade begins.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-X"
+      ],
+      "owner": "M-X",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 1,
+      "reason": "This is the second trigger for the dormant M-X milestone."
+    },
+    {
+      "id": "INV-5-7-106",
+      "lineStart": 2412,
+      "lineEnd": 2412,
+      "sourceAnchor": "7.2 extraction outside JS release critical path",
+      "synopsis": "Generator extraction is not a dependency of the JavaScript release critical path.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-X"
+      ],
+      "owner": "M-X",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 1,
+      "reason": "This constrains scheduling of the trigger-gated extraction work."
+    },
+    {
+      "id": "INV-5-7-107",
+      "lineStart": 2414,
+      "lineEnd": 2414,
+      "sourceAnchor": "7.2 extraction moves pinned CLDR pipeline",
+      "synopsis": "Extraction moves all 11 pinned CLDR inputs and the XML-to-model pipeline.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-X"
+      ],
+      "owner": "M-X",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 2,
+      "reason": "This is an M-X deliverable."
+    },
+    {
+      "id": "INV-5-7-108",
+      "lineStart": 2415,
+      "lineEnd": 2415,
+      "sourceAnchor": "7.2 extraction emits versioned full-union JSON",
+      "synopsis": "The extracted generator emits full-union versioned JSON artifacts.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-X"
+      ],
+      "owner": "M-X",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 2,
+      "reason": "This is the central portable M-X output."
+    },
+    {
+      "id": "INV-5-7-109",
+      "lineStart": 2416,
+      "lineEnd": 2416,
+      "sourceAnchor": "7.2 per-implementation native encoding ownership",
+      "synopsis": "Each implementation remains responsible for converting shared JSON to native source.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-X"
+      ],
+      "owner": "M-X",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 1,
+      "reason": "This defines responsibility after extraction."
+    },
+    {
+      "id": "INV-5-7-110",
+      "lineStart": 2417,
+      "lineEnd": 2417,
+      "sourceAnchor": "7.2 Java dependency-free JSON reader/encoder",
+      "synopsis": "Java receives a dependency-free JDK-9-compatible JSON reader/encoder path.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-X"
+      ],
+      "owner": "M-X",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 3,
+      "reason": "This is a Java-specific M-X migration requirement."
+    },
+    {
+      "id": "INV-5-7-111",
+      "lineStart": 2418,
+      "lineEnd": 2418,
+      "sourceAnchor": "7.2 Java pinned-resource checksum migration",
+      "synopsis": "Extraction relocates or rewrites Java's pinned-resource checksum test.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-X"
+      ],
+      "owner": "M-X",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 2,
+      "reason": "This preserves Java no-drift coverage during M-X."
+    },
+    {
+      "id": "INV-5-7-112",
+      "lineStart": 2419,
+      "lineEnd": 2419,
+      "sourceAnchor": "7.2 schema and site-reference coordination",
+      "synopsis": "Extraction coordinates schema path/id changes and every site snapshot reference.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-X"
+      ],
+      "owner": "M-X",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 3,
+      "reason": "Cross-repository schema coordination occurs only when M-X triggers."
+    },
+    {
+      "id": "INV-5-7-113",
+      "lineStart": 2420,
+      "lineEnd": 2420,
+      "sourceAnchor": "7.2 extraction reproducibility preservation",
+      "synopsis": "Extraction preserves byte-identical regeneration and standing no-drift checks.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-X"
+      ],
+      "owner": "M-X",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 2,
+      "reason": "This is an acceptance gate for changing generator ownership."
+    },
+    {
+      "id": "INV-5-7-114",
+      "lineStart": 2421,
+      "lineEnd": 2421,
+      "sourceAnchor": "7.2 Unicode attribution at data move",
+      "synopsis": "The extraction change adds Unicode License v3 attribution and third-party notices with the data.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-X"
+      ],
+      "owner": "M-X",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 2,
+      "reason": "Licensing must travel atomically with the extracted data."
+    },
+    {
+      "id": "INV-5-7-115",
+      "lineStart": 2422,
+      "lineEnd": 2422,
+      "sourceAnchor": "7.2 independent shared-repository workflows",
+      "synopsis": "The shared repository establishes independent security and release workflows.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-X"
+      ],
+      "owner": "M-X",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 2,
+      "reason": "This is an operational M-X deliverable."
+    },
+    {
+      "id": "INV-5-7-116",
+      "lineStart": 2424,
+      "lineEnd": 2425,
+      "sourceAnchor": "7.2 behavioral vectors excluded from generated dist",
+      "synopsis": "Hand-authored behavioral vectors remain outside generated CLDR build output and generated dist directories.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M3a",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 2,
+      "reason": "The M3a corpus must preserve authorship/provenance separation from generated data."
+    },
+    {
+      "id": "INV-5-7-117",
+      "lineStart": 2429,
+      "lineEnd": 2430,
+      "sourceAnchor": "7.3 independent implementation versions",
+      "synopsis": "Implementations version independently and express compatibility through metadata rather than matching package versions.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 2,
+      "reason": "This is a foundational release and metadata policy frozen with the contract."
+    },
+    {
+      "id": "INV-5-7-118",
+      "lineStart": 2434,
+      "lineEnd": 2434,
+      "sourceAnchor": "7.3 metadata table: cldrVersion",
+      "synopsis": "cldrVersion identifies the Unicode CLDR data version affecting rendering.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M1"
+      ],
+      "owner": "M1",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 1,
+      "reason": "The field is populated by M1 canonical data."
+    },
+    {
+      "id": "INV-5-7-119",
+      "lineStart": 2435,
+      "lineEnd": 2435,
+      "sourceAnchor": "7.3 metadata table: lokalizedCldrVersion",
+      "synopsis": "lokalizedCldrVersion identifies the shared pipeline release and remains null before extraction.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-R"
+      ],
+      "owner": "M-R",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 1,
+      "reason": "The first parity declaration must encode the pre-extraction null meaning before M-R."
+    },
+    {
+      "id": "INV-5-7-120",
+      "lineStart": 2436,
+      "lineEnd": 2436,
+      "sourceAnchor": "7.3 metadata table: behavioralVectorsVersion",
+      "synopsis": "behavioralVectorsVersion identifies the hand-authored Lokalized semantic contract.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M3a",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 1,
+      "reason": "M3a creates and identifies the first behavioral corpus."
+    },
+    {
+      "id": "INV-5-7-121",
+      "lineStart": 2437,
+      "lineEnd": 2437,
+      "sourceAnchor": "7.3 metadata table: dataFingerprint",
+      "synopsis": "dataFingerprint identifies the exact canonical source-data lock used by a build.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M1"
+      ],
+      "owner": "M1",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 1,
+      "reason": "M1 computes this cross-implementation identity."
+    },
+    {
+      "id": "INV-5-7-122",
+      "lineStart": 2438,
+      "lineEnd": 2438,
+      "sourceAnchor": "7.3 metadata table: ianaRegistryDate",
+      "synopsis": "ianaRegistryDate records the File-Date of the pinned IANA registry snapshot.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M1"
+      ],
+      "owner": "M1",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 1,
+      "reason": "M1 pins and exposes the registry source date."
+    },
+    {
+      "id": "INV-5-7-123",
+      "lineStart": 2439,
+      "lineEnd": 2439,
+      "sourceAnchor": "7.3 metadata table: ianaDataFingerprint",
+      "synopsis": "ianaDataFingerprint identifies the exact canonical IANA source/closure lock.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M1"
+      ],
+      "owner": "M1",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 1,
+      "reason": "M1 computes and exports this direct-match identity."
+    },
+    {
+      "id": "INV-5-7-124",
+      "lineStart": 2441,
+      "lineEnd": 2444,
+      "sourceAnchor": "7.3 parity declaration metadata",
+      "synopsis": "Every implementation's parity declaration includes all six applicable compatibility fields.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-R"
+      ],
+      "owner": "M-R",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 6,
+      "reason": "Constructing the public parity declaration with every applicable field is an M-R release-process obligation."
+    },
+    {
+      "id": "INV-5-7-125",
+      "lineStart": 2441,
+      "lineEnd": 2443,
+      "sourceAnchor": "7.3 root runtime compatibility metadata",
+      "synopsis": "Root runtime metadata includes the shared data fingerprint and both IANA identity fields because direct diagnostics affect rendering.",
+      "disposition": "nonnormative",
+      "registrationBefore": [],
+      "owner": "none",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 0,
+      "reason": "This repeats the canonical \u00a73 root symbol and runtime-metadata contracts in INV-1-4-091 and INV-1-4-105; production markup should reference those IDs rather than mint duplicates."
+    },
+    {
+      "id": "INV-5-7-126",
+      "lineStart": 2441,
+      "lineEnd": 2443,
+      "sourceAnchor": "7.3 SSR compatibility metadata",
+      "synopsis": "SSR verification includes the shared data fingerprint and both IANA identity fields.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 4,
+      "reason": "SSR consumes these identities at M8."
+    },
+    {
+      "id": "INV-5-7-127",
+      "lineStart": 2443,
+      "lineEnd": 2444,
+      "sourceAnchor": "7.3 JS-only bug-fix versioning",
+      "synopsis": "A JavaScript-only bug fix increments only the JavaScript package version.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-R"
+      ],
+      "owner": "M-R",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 1,
+      "reason": "This is an independent-release policy applied at publication."
+    },
+    {
+      "id": "INV-5-7-128",
+      "lineStart": 1619,
+      "lineEnd": 1619,
+      "sourceAnchor": "5.1 strict rendering host independence",
+      "synopsis": "Default strict rendering does not read host ICU or CLDR tables.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M1"
+      ],
+      "owner": "M1",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 1,
+      "reason": "Pinned-data independence is a portable strict-parity property used by the M2 browser skeleton."
+    },
+    {
+      "id": "INV-5-7-129",
+      "lineStart": 1638,
+      "lineEnd": 1640,
+      "sourceAnchor": "5.1 Node filename-validity consumer",
+      "synopsis": "The Node entry reuses pinned validity data for directory filenames and does not consult a host locale registry.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 2,
+      "reason": "The Node directory loader is implemented and evidenced at M8, not by the M1 data producer."
+    },
+    {
+      "id": "INV-5-7-130",
+      "lineStart": 1643,
+      "lineEnd": 1644,
+      "sourceAnchor": "5.1 plural runtime display-example omission",
+      "synopsis": "Generated JavaScript runtime modules omit display examples that no public JavaScript API exposes.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M1"
+      ],
+      "owner": "M1",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 1,
+      "reason": "This is a JavaScript encoding omission that requires consumer evidence at M1."
+    },
+    {
+      "id": "INV-5-7-131",
+      "lineStart": 1708,
+      "lineEnd": 1709,
+      "sourceAnchor": "5.1 M1 data-encoding ownership",
+      "synopsis": "M1 owns the integrated production data encodings.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M1",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 1,
+      "reason": "The owning milestone is a contract decision frozen before M0 while its exit evidence remains M1-owned."
+    },
+    {
+      "id": "INV-5-7-132",
+      "lineStart": 1708,
+      "lineEnd": 1709,
+      "sourceAnchor": "5.1 M4 plural-evaluator ownership",
+      "synopsis": "M4 owns the complete plural evaluator and public classifier behavior.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M4",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 2,
+      "reason": "The owning milestone is a contract decision frozen before M0."
+    },
+    {
+      "id": "INV-5-7-133",
+      "lineStart": 1758,
+      "lineEnd": 1764,
+      "sourceAnchor": "5.1 ordinal and range data-module compatibility",
+      "synopsis": "createStrings rejects incompatible generated ordinal or range modules under the module-format, CLDR, fingerprint, and lock-membership rules.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M4"
+      ],
+      "owner": "M4",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 3,
+      "reason": "Optional ordinal and range modules activate with the complete M4 plural surface."
+    },
+    {
+      "id": "INV-5-7-134",
+      "lineStart": 1764,
+      "lineEnd": 1766,
+      "sourceAnchor": "5.1 root pinned-data metadata exports",
+      "synopsis": "The root exports the declared CLDR, data, behavioral-vector, mode, and IANA identity fields.",
+      "disposition": "nonnormative",
+      "registrationBefore": [],
+      "owner": "none",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 0,
+      "reason": "Exact duplicate of the canonical \u00a73 root symbol and runtime-metadata contracts in INV-1-4-091 and INV-1-4-105."
+    },
+    {
+      "id": "INV-5-7-135",
+      "lineStart": 1766,
+      "lineEnd": 1767,
+      "sourceAnchor": "5.1 negotiate IANA metadata identity",
+      "synopsis": "The negotiate entry re-exports the root IANA metadata and does not define a second identity.",
+      "disposition": "nonnormative",
+      "registrationBefore": [],
+      "owner": "none",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 0,
+      "reason": "Exact duplicate of the canonical \u00a73 negotiate symbol and metadata contracts in INV-1-4-095 and INV-1-4-145."
+    },
+    {
+      "id": "INV-5-7-136",
+      "lineStart": 2302,
+      "lineEnd": 2311,
+      "sourceAnchor": "6.4 required cache-strategy choice",
+      "synopsis": "Every cacheable Accept-Language-selected document uses at least one of the five declared safe cache strategies.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 1,
+      "reason": "The individual alternatives are conditional, but choosing one is a mandatory M8 cache-safety requirement."
+    },
+    {
+      "id": "INV-5-7-137",
+      "lineStart": 2402,
+      "lineEnd": 2403,
+      "sourceAnchor": "7.1 language-neutral shared artifact formats",
+      "synopsis": "Shared artifact formats remain language-neutral so ownership can move without changing consumers.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M1"
+      ],
+      "owner": "M1",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 2,
+      "reason": "The M1 artifact contract is intentionally consumable by later Python and Go ports."
+    },
+    {
+      "id": "INV-5-7-138",
+      "lineStart": 2435,
+      "lineEnd": 2435,
+      "sourceAnchor": "7.3 metadata table: non-null lokalizedCldrVersion",
+      "synopsis": "After generator extraction, lokalizedCldrVersion identifies the shared pipeline release.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-X"
+      ],
+      "owner": "M-X",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 1,
+      "reason": "The non-null shared-pipeline version activates only when extraction occurs."
+    },
+    {
+      "id": "INV-5-7-139",
+      "lineStart": 1640,
+      "lineEnd": 1641,
+      "sourceAnchor": "5.1 portable language-neutral full-union source",
+      "synopsis": "The language-neutral source retains the complete data union needed by Java, server negotiation, Python, Go, and tooling.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M1"
+      ],
+      "owner": "M1",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 2,
+      "reason": "The full-union source is a portable M1 contract independent of any JavaScript runtime derivative."
+    },
+    {
+      "id": "INV-5-7-140",
+      "lineStart": 1653,
+      "lineEnd": 1659,
+      "sourceAnchor": "5.1 pinned-JDK direct-locale oracle and zero-difference gate",
+      "synopsis": "An unmodified lokalized-java 3.0.0 oracle runs on pinned JDK 21, exercises the generated direct-locale partition, and blocks M2 on any unexplained direct-locale difference.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M3a",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 4,
+      "reason": "M3a owns oracle execution and the direct-locale parity evidence consumed by the M2 gate."
+    },
+    {
+      "id": "INV-5-7-141",
+      "lineStart": 1690,
+      "lineEnd": 1690,
+      "sourceAnchor": "5.1 emitted-native-artifact reproducibility hashes",
+      "synopsis": "CI independently hashes every emitted native artifact for reproducibility.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M1"
+      ],
+      "owner": "M1",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 1,
+      "reason": "This is an implementation-process check distinct from the portable shared data fingerprint."
+    },
+    {
+      "id": "INV-5-7-142",
+      "lineStart": 2170,
+      "lineEnd": 2172,
+      "sourceAnchor": "6.3 versioned CDN and existing-import-map documentation",
+      "synopsis": "Production documentation avoids latest, and pages with an existing import map merge its imports member or use a direct URL rather than injecting a second map.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-D"
+      ],
+      "owner": "M-D",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 4,
+      "reason": "These are documentation obligations rather than browser runtime implementation evidence."
+    },
+    {
+      "id": "INV-5-7-143",
+      "lineStart": 2335,
+      "lineEnd": 2344,
+      "sourceAnchor": "6.5 M8 load-only worker graph",
+      "synopsis": "M8 proves a packed load-only worker graph in a named worker runtime with the required Web capabilities, validity and IANA bundle data, and no Node-only code.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 11,
+      "reason": "This isolates the M8 load and worker-delivery evidence from the M9 full-negotiation example."
+    },
+    {
+      "id": "INV-5-7-144",
+      "lineStart": 2352,
+      "lineEnd": 2352,
+      "sourceAnchor": "6.6 createStrings eager-compilation reminder",
+      "synopsis": "createStrings compiles expressions eagerly.",
+      "disposition": "nonnormative",
+      "registrationBefore": [],
+      "owner": "none",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 0,
+      "reason": "Exact duplicate of the eager-compilation contract already registered by INV-1-4-075."
+    },
+    {
+      "id": "INV-5-7-145",
+      "lineStart": 2384,
+      "lineEnd": 2384,
+      "sourceAnchor": "7.1 additive generator around pinned Java inputs",
+      "synopsis": "Interim artifact generation is added around the pinned Java source without changing the runtime oracle.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M1"
+      ],
+      "owner": "M1",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 1,
+      "reason": "M1 owns the additive interim generator, while oracle integrity remains separately registered at M3a."
+    }
+  ]
+}

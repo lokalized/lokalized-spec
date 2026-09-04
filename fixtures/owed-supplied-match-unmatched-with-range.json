@@ -1,0 +1,32 @@
+{
+  "id": "owed-supplied-match-unmatched-with-range",
+  "description": "A fabrication with NO selected locale that nevertheless names a matched language range. LocaleMatchResult's unmatched-state clause is a three-way disjunction; the corpus already violates it with a weight and with a non-NONE type, but never with a RANGE, which is the first disjunct and therefore short-circuits the other two.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "localeMatchSupplier": {
+    "behavior": "fabricated",
+    "matchType": "NONE",
+    "range": "de",
+    "ranges": [
+      {
+        "range": "de",
+        "weight": 1
+      }
+    ],
+    "fallbackLocale": "en",
+    "consideredLocales": [
+      "en",
+      "fr"
+    ]
+  },
+  "files": {
+    "en": {
+      "Locale.Marker": "en",
+      "Greeting.Hello": "Hello"
+    },
+    "fr": {
+      "Locale.Marker": "fr",
+      "Greeting.Hello": "Bonjour"
+    }
+  }
+}

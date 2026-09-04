@@ -1,0 +1,23 @@
+{
+  "id": "malformed-structure-undefined-references",
+  "description": "A catalog that is entirely well formed but whose translation references a placeholder no definition supplies, and whose alternative expression reads a variable no caller need supply. The classic loads-fine, fails-later shape: nothing here is a load-time error, so the fixture is loadable and carries both a load case and lookup cases.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Greeting": "Hello, {{name}}",
+      "Books": {
+        "translation": "some books",
+        "alternatives": [
+          {
+            "bookCount == 0": {
+              "translation": "no books"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

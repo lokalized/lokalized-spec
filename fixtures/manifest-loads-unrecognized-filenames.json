@@ -1,0 +1,17 @@
+{
+  "id": "manifest-loads-unrecognized-filenames",
+  "description": "Files whose names are not loadable locale tags, alongside a valid en. 'notes.txt' fails the tag grammar outright; 'zz' is well-formed but not a CLDR-known language; 'strings' is grammatically a language subtag but unknown — and is the exact stem that manifest-loads-json-extension-invalid-tag turns into a hard failure by appending .json; '.en-GB' is a valid tag hidden behind a leading dot. Verified: all four are skipped silently, with no warning and no failure.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Greeting": "Hello"
+    }
+  },
+  "rawFiles": {
+    "notes.txt": "{\"Greeting\":\"from notes\"}",
+    "zz": "{\"Greeting\":\"from zz\"}",
+    "strings": "{\"Greeting\":\"from strings\"}",
+    ".en-GB": "{\"Greeting\":\"Hiya\"}"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "loading-limits-nodes-one-single-key",
+  "description": "One root entry loaded with maximumTranslationNodes lowered to 1: the exact budget the file spends. The admitting side of the one boundary.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumTranslationNodes": 1
+  },
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  }
+}

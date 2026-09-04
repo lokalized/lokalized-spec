@@ -1,0 +1,17 @@
+{
+  "id": "owed-construct-null-catalog-value",
+  "description": "Construction refusal subject. DefaultStrings:286 -- a null catalog for one locale, which a port might read as an empty catalog. Its files load cleanly; the refusal is at Strings construction, which is what makes it invisible without the 'construct' operation.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "refusesConstruction": true,
+  "constructionOverrides": {
+    "catalogSource": "nullCatalogValue"
+  },
+  "files": {
+    "en": {
+      "Greeting": {
+        "translation": "Hello"
+      }
+    }
+  }
+}

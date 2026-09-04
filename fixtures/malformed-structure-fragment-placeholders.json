@@ -1,0 +1,154 @@
+{
+  "id": "malformed-structure-fragment-placeholders",
+  "description": "Violations inside a template-mode (generated fragment) placeholder definition: a missing default translation, a null default translation, a non-string default translation, non-array and null fragment alternatives, empty alternatives, null and non-object alternative elements, a non-string alternative result, an unparseable fragment expression, and a multi-expression fragment alternative object.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": {
+        "translation": "I read {{f}}",
+        "placeholders": {
+          "f": {
+            "translation": 42
+          }
+        }
+      }
+    },
+    "ru": {
+      "Key.A": {
+        "translation": "I read {{f}}",
+        "placeholders": {
+          "f": {
+            "alternatives": [
+              {
+                "count == 1": "book"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "pl": {
+      "Key.A": {
+        "translation": "I read {{f}}",
+        "placeholders": {
+          "f": {
+            "translation": null
+          }
+        }
+      }
+    },
+    "fr": {
+      "Key.A": {
+        "translation": "I read {{f}}",
+        "placeholders": {
+          "f": {
+            "translation": "books",
+            "alternatives": {
+              "count == 1": "book"
+            }
+          }
+        }
+      }
+    },
+    "de": {
+      "Key.A": {
+        "translation": "I read {{f}}",
+        "placeholders": {
+          "f": {
+            "translation": "books",
+            "alternatives": null
+          }
+        }
+      }
+    },
+    "es": {
+      "Key.A": {
+        "translation": "I read {{f}}",
+        "placeholders": {
+          "f": {
+            "translation": "books",
+            "alternatives": []
+          }
+        }
+      }
+    },
+    "sv": {
+      "Key.A": {
+        "translation": "I read {{f}}",
+        "placeholders": {
+          "f": {
+            "translation": "books",
+            "alternatives": [
+              null
+            ]
+          }
+        }
+      }
+    },
+    "da": {
+      "Key.A": {
+        "translation": "I read {{f}}",
+        "placeholders": {
+          "f": {
+            "translation": "books",
+            "alternatives": [
+              "count == 1"
+            ]
+          }
+        }
+      }
+    },
+    "it": {
+      "Key.A": {
+        "translation": "I read {{f}}",
+        "placeholders": {
+          "f": {
+            "translation": "books",
+            "alternatives": [
+              {
+                "count == 1": {
+                  "translation": "book"
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "nl": {
+      "Key.A": {
+        "translation": "I read {{f}}",
+        "placeholders": {
+          "f": {
+            "translation": "books",
+            "alternatives": [
+              {
+                "count ==": "book"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "pt": {
+      "Key.A": {
+        "translation": "I read {{f}}",
+        "placeholders": {
+          "f": {
+            "translation": "books",
+            "alternatives": [
+              {
+                "count == 1": "book",
+                "count == 2": "pair"
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

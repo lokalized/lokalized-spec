@@ -1,0 +1,11 @@
+{
+  "id": "loader-smoke-lone-surrogate",
+  "description": "A lone high surrogate escape. Syntactically valid JSON, not valid Unicode.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {},
+  "rawFiles": {
+    "en": "{\"Key.A\":\"\\ud800\"}"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "id": "ingress-matrix-java-en-us-locale-supplier-constant",
+  "description": "Seed row 5 catalog with a constant localeSupplier returning en-US: derived match, lookup locale en-US.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "localeSupplier": {
+    "behavior": "constant",
+    "locale": "en-US"
+  },
+  "files": {
+    "en": {
+      "Checkout.Title": "Checkout"
+    }
+  }
+}

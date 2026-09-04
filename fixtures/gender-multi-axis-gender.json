@@ -1,0 +1,142 @@
+{
+  "id": "gender-multi-axis-gender",
+  "description": "Plan v7 section 8.3 'multi-axis language-form dispatch': two axes selected independently inside ONE definition, from two different caller values. Actor.Bio is single-axis gender with two placeholders reading one value; 'Bio for {{actorGender}}' repeats the gender selector under a key that EMBEDS the selector name, so the RETURNED_KEY translation a resolution failure produces is interpolated from the caller context and therefore differs per failure mode (DefaultStrings.interpolateFailureKey, DefaultStrings.java:1391) instead of collapsing to one indistinguishable token. Books.Read pairs gender with cardinality and is loaded in Polish as well, so the cardinality half runs under a four-form plural rule set while the gender half stays constant. Race.Result pairs the two NUMERIC axes (ordinality and cardinality) in one definition, which is where a port that shares one classification step between axes diverges. Award.Announcement's alternatives select on gender while its inherited placeholders select on cardinality. Tiebreakers are null: 'en' and 'pl' share no primary language code, so no tiebreaker list is required or permitted.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Actor.Bio": {
+        "translation": "{{heOrShe}} is a good {{actor}}.",
+        "commentary": "Two independent gender placeholders read the same caller value.",
+        "placeholders": {
+          "heOrShe": {
+            "value": "actorGender",
+            "translations": {
+              "GENDER_MASCULINE": "He",
+              "GENDER_FEMININE": "She",
+              "GENDER_COMMON": "This person"
+            }
+          },
+          "actor": {
+            "value": "actorGender",
+            "translations": {
+              "GENDER_MASCULINE": "actor",
+              "GENDER_FEMININE": "actress",
+              "GENDER_COMMON": "performer"
+            }
+          }
+        }
+      },
+      "Bio for {{actorGender}}": {
+        "translation": "This is a good {{actor}}.",
+        "commentary": "The key deliberately references the selector value. On a resolution failure DefaultStrings returns the key INTERPOLATED with the caller context, so each failure mode renders a different translation: a tagged Gender renders its enum name, a raw string renders itself, and an absent or null value leaves '{{actorGender}}' literal. Without that, every failure in this family would observe the same RETURNED_KEY / RESOLUTION_FAILURE token.",
+        "placeholders": {
+          "actor": {
+            "value": "actorGender",
+            "translations": {
+              "GENDER_MASCULINE": "actor",
+              "GENDER_FEMININE": "actress",
+              "GENDER_COMMON": "performer"
+            }
+          }
+        }
+      },
+      "Books.Read": {
+        "translation": "{{subject}} read {{bookCount}} {{books}}.",
+        "placeholders": {
+          "subject": {
+            "value": "readerGender",
+            "translations": {
+              "GENDER_MASCULINE": "He",
+              "GENDER_FEMININE": "She",
+              "GENDER_COMMON": "They",
+              "GENDER_NEUTER": "It"
+            }
+          },
+          "books": {
+            "value": "bookCount",
+            "translations": {
+              "CARDINALITY_ONE": "book",
+              "CARDINALITY_OTHER": "books"
+            }
+          }
+        }
+      },
+      "Race.Result": {
+        "translation": "You finished {{place}} out of {{runnerCount}} {{runners}}.",
+        "commentary": "The two numeric axes in one definition. Ordinality and cardinality are the only axes that accept a bare number, so they are the pair a port is most likely to route through one shared classification step.",
+        "placeholders": {
+          "place": {
+            "value": "position",
+            "translations": {
+              "ORDINALITY_ONE": "1st",
+              "ORDINALITY_TWO": "2nd",
+              "ORDINALITY_FEW": "3rd",
+              "ORDINALITY_OTHER": "th"
+            }
+          },
+          "runners": {
+            "value": "runnerCount",
+            "translations": {
+              "CARDINALITY_ONE": "runner",
+              "CARDINALITY_OTHER": "runners"
+            }
+          }
+        }
+      },
+      "Award.Announcement": {
+        "translation": "{{winner}} won {{prizeCount}} {{prizes}}.",
+        "commentary": "Alternatives select on gender; placeholders select on cardinality. The 'winner' map deliberately omits GENDER_NEUTER, which is unreachable because the NEUTER branch's translation does not reference {{winner}} -- only placeholders REFERENCED by the selected translation are resolved.",
+        "placeholders": {
+          "winner": {
+            "value": "winnerGender",
+            "translations": {
+              "GENDER_MASCULINE": "He",
+              "GENDER_FEMININE": "She",
+              "GENDER_COMMON": "They"
+            }
+          },
+          "prizes": {
+            "value": "prizeCount",
+            "translations": {
+              "CARDINALITY_ONE": "prize",
+              "CARDINALITY_OTHER": "prizes"
+            }
+          }
+        },
+        "alternatives": [
+          {
+            "winnerGender == GENDER_NEUTER": {
+              "translation": "The team won {{prizeCount}} {{prizes}}."
+            }
+          }
+        ]
+      }
+    },
+    "pl": {
+      "Books.Read": {
+        "translation": "{{subject}} przeczytal {{bookCount}} {{books}}.",
+        "placeholders": {
+          "subject": {
+            "value": "readerGender",
+            "translations": {
+              "GENDER_MASCULINE": "On",
+              "GENDER_FEMININE": "Ona",
+              "GENDER_COMMON": "Oni",
+              "GENDER_NEUTER": "Ono"
+            }
+          },
+          "books": {
+            "value": "bookCount",
+            "translations": {
+              "CARDINALITY_ONE": "ksiazke",
+              "CARDINALITY_FEW": "ksiazki",
+              "CARDINALITY_MANY": "ksiazek",
+              "CARDINALITY_OTHER": "ksiazki"
+            }
+          }
+        }
+      }
+    }
+  }
+}

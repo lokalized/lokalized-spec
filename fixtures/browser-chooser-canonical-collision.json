@@ -1,0 +1,34 @@
+{
+  "id": "browser-chooser-canonical-collision",
+  "description": "Two pairs of loaded sources that collide under CLDR canonicalization without sharing a written primary language code: mo/ro and cmn/zh. DefaultStrings requires tiebreakers keyed by the CANONICAL language code here (ro:[mo, ro], zh:[cmn, zh]). VERIFIED by building it without them, which fails with: You must specify tiebreaker locales via 'tiebreakerLocalesByLanguageCode' to resolve ambiguity for language code 'ro' because localized strings exist for the following locale[s]: [mo, ro]. This is the configuration in which the whole-list solver and the single-locale kernel actually select different locales for the same request.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "ro": [
+      "mo",
+      "ro"
+    ],
+    "zh": [
+      "cmn",
+      "zh"
+    ]
+  },
+  "files": {
+    "mo": {
+      "Checkout.Title": "mo"
+    },
+    "ro": {
+      "Checkout.Title": "ro"
+    },
+    "cmn": {
+      "Checkout.Title": "cmn"
+    },
+    "zh": {
+      "Checkout.Title": "zh"
+    },
+    "en": {
+      "Checkout.Title": "en"
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

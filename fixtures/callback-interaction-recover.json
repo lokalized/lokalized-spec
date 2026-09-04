@@ -1,0 +1,50 @@
+{
+  "id": "callback-interaction-recover",
+  "description": "A resolver that always throws, plus two catalogs whose generated placeholders read DIFFERENT caller values: en-US reads a raw term (so the resolver is reached and throws) and en reads a value the caller may supply either tagged or raw. That makes a single lookup in which the resolver fails at the first candidate and is bypassed entirely at the second, so the fallback recovers and the retained failure is discarded. Both loaded locales carry 'en', so tiebreakers is mandatory.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "en": [
+      "en-US",
+      "en"
+    ]
+  },
+  "translationFallbackPolicy": "any-failure",
+  "phoneticResolver": {
+    "behavior": "throw",
+    "message": "sentinel-resolver-bravo"
+  },
+  "files": {
+    "en-US": {
+      "Locale.Marker": "en-US",
+      "Article": {
+        "translation": "{{article}}",
+        "placeholders": {
+          "article": {
+            "value": "nounTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "an (en-US)",
+              "PHONETIC_CONSONANT": "a (en-US)"
+            }
+          }
+        }
+      }
+    },
+    "en": {
+      "Locale.Marker": "en",
+      "Article": {
+        "translation": "{{article}}",
+        "placeholders": {
+          "article": {
+            "value": "taggedTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "an (en donor)",
+              "PHONETIC_CONSONANT": "a (en donor)"
+            }
+          }
+        }
+      }
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

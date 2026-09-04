@@ -1,0 +1,25 @@
+{
+  "id": "runtime-limits-visible-decimal-places-zero",
+  "description": "Plan v7 section 8.3 zero-boundary clause: maximumVisibleDecimalPlaces is non-negative and zero builds. DefaultStrings.validatePluralOperands checks operands.explicitVisibleDecimalPlaces() only when it isPresent(), so at zero a plain decimal whose scale already implies one visible place is unaffected while an explicitly requested single place is rejected. Every other limit stays at its default so nothing else can decide these cases.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "runtimeLimits": {
+    "maximumVisibleDecimalPlaces": 0
+  },
+  "files": {
+    "en": {
+      "Counted": {
+        "translation": "{{label}}",
+        "placeholders": {
+          "label": {
+            "value": "n",
+            "translations": {
+              "CARDINALITY_ONE": "one",
+              "CARDINALITY_OTHER": "other"
+            }
+          }
+        }
+      }
+    }
+  }
+}

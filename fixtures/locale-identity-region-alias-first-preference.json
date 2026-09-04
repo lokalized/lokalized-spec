@@ -1,0 +1,57 @@
+{
+  "id": "locale-identity-region-alias-first-preference",
+  "description": "Every multi-valued region alias that survives Java's Locale boundary, requested against English. English's likely region (US) appears in none of the twenty-three alias value lists, verified against vendor cldr-locale-data.json, so each request must land on the FIRST value of its list. One en-<first value> catalog per distinct target, plus en-US for the single-valued 840 control. Tiebreakers are MANDATORY here and are an exact permutation of all eleven loaded en locales.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "en": [
+      "en",
+      "en-034",
+      "en-AQ",
+      "en-CW",
+      "en-CZ",
+      "en-FM",
+      "en-JE",
+      "en-RS",
+      "en-RU",
+      "en-SA",
+      "en-US"
+    ]
+  },
+  "files": {
+    "en": {
+      "Greeting": "hello"
+    },
+    "en-034": {
+      "Greeting": "hello 034"
+    },
+    "en-AQ": {
+      "Greeting": "hello AQ"
+    },
+    "en-CW": {
+      "Greeting": "hello CW"
+    },
+    "en-CZ": {
+      "Greeting": "hello CZ"
+    },
+    "en-FM": {
+      "Greeting": "hello FM"
+    },
+    "en-JE": {
+      "Greeting": "hello JE"
+    },
+    "en-RS": {
+      "Greeting": "hello RS"
+    },
+    "en-RU": {
+      "Greeting": "hello RU"
+    },
+    "en-SA": {
+      "Greeting": "hello SA"
+    },
+    "en-US": {
+      "Greeting": "hello US"
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

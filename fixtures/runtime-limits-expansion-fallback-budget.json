@@ -1,0 +1,31 @@
+{
+  "id": "runtime-limits-expansion-fallback-budget",
+  "description": "Plan v7 sections 4.6 and 8.3: 'Generated depth and cumulative expansion budgets reset for each locale attempt', and DefaultStrings.java:1203 constructs a new GeneratedExpansionBudget inside every per-candidate getInternal call. With the budget at 6, fr spends 7 and fails while en spends exactly 6; an implementation that shared one budget across the fallback walk would have nothing left for en. en and fr are different primary languages, so tiebreakers are absent.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "runtimeLimits": {
+    "maximumGeneratedExpansionCharacters": 6
+  },
+  "files": {
+    "en": {
+      "Budget": {
+        "translation": "{{p}}",
+        "placeholders": {
+          "p": {
+            "translation": "abcdef"
+          }
+        }
+      }
+    },
+    "fr": {
+      "Budget": {
+        "translation": "{{p}}",
+        "placeholders": {
+          "p": {
+            "translation": "abcdefg"
+          }
+        }
+      }
+    }
+  }
+}

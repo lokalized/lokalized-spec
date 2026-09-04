@@ -1,0 +1,32 @@
+{
+  "id": "ingress-smoke-fabricated-match",
+  "description": "THE SHARP CASE. A localeMatchSupplier returning a match built with LocaleMatchResult's public constructor: it claims an EXACT match on fr while naming de as the requested range — something the matcher would never produce, since de is not even loaded. Section 8.3 requires the intentional lookup difference for supplied matches to be preserved rather than re-derived.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "localeMatchSupplier": {
+    "behavior": "fabricated",
+    "locale": "fr",
+    "matchType": "EXACT",
+    "range": "de",
+    "weight": 1,
+    "ranges": [
+      {
+        "range": "de",
+        "weight": 1
+      }
+    ],
+    "fallbackLocale": "en",
+    "consideredLocales": [
+      "fr",
+      "en"
+    ]
+  },
+  "files": {
+    "fr": {
+      "Checkout.Title": "Paiement"
+    },
+    "en": {
+      "Checkout.Title": "Checkout"
+    }
+  }
+}

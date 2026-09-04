@@ -1,0 +1,18 @@
+{
+  "id": "classpath-smoke-exhaustive",
+  "description": "The same catalog loaded with exhaustiveClasspathSearch toggled, so the option's effect on discovery is observable rather than assumed.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "exhaustiveClasspathSearch": true
+  },
+  "files": {
+    "en": {
+      "Key.A": "a",
+      "Key.B": "b"
+    },
+    "fr": {
+      "Key.A": "a-fr"
+    }
+  }
+}

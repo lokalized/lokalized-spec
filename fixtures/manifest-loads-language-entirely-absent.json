@@ -1,0 +1,18 @@
+{
+  "id": "manifest-loads-language-entirely-absent",
+  "description": "The sharp clause of section 8.3. en (fallback) and fr load normally; German is represented on disk by de.txt and de-AT.txt, whose names are not language tags and which carry no .json extension, so discovery skips both silently. German therefore contributes NOTHING and receives no tiebreaker entry at all rather than an empty one. Paired with manifest-loads-language-one-child-loaded, which shows the observable difference an entry makes.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Greeting": "Hello"
+    },
+    "fr": {
+      "Greeting": "Bonjour"
+    }
+  },
+  "rawFiles": {
+    "de.txt": "{\"Greeting\":\"Hallo\"}",
+    "de-AT.txt": "{\"Greeting\":\"Servus\"}"
+  }
+}

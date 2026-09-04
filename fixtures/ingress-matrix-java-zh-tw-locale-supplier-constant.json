@@ -1,0 +1,26 @@
+{
+  "id": "ingress-matrix-java-zh-tw-locale-supplier-constant",
+  "description": "Seed row 4 catalog with a constant localeSupplier returning zh-TW: derived match, lookup locale zh-TW.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "zh": [
+      "zh",
+      "zh-Hant"
+    ]
+  },
+  "localeSupplier": {
+    "behavior": "constant",
+    "locale": "zh-TW"
+  },
+  "files": {
+    "zh": {
+      "Checkout.Title": "结账"
+    },
+    "zh-Hant": {
+      "Unrelated.Key": "無關"
+    },
+    "en": {
+      "Checkout.Title": "Checkout"
+    }
+  }
+}

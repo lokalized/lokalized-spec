@@ -1,0 +1,55 @@
+{
+  "formatVersion": 1,
+  "family": "owed-m3b-defaultstrings-ladder",
+  "description": "Plan v7 section 8.3 fixture family 'owed-m3b-defaultstrings-ladder'. Inputs only; the oracle emits expected.",
+  "cases": [
+    {
+      "id": "owed-ds.semantic-ladder-known-identity-survives-later-unknown-alias",
+      "requirementIds": [],
+      "fixture": "owed-ds-semantic-ladder-known-then-unknown",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "sgn-be-fr-x-a",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "semanticLanguageRangeForDerivedMatching:2208, the rung where an already-adopted KNOWN identity must not be displaced by a later UNKNOWN one. The semantic range settles on sfb-x-a, whose CLDR fallback chain reaches the sfb catalog; had the ladder kept the original spelling or taken the trailing sgn-be-fx-x-a alias, neither sfb nor sgn would be reachable."
+    },
+    {
+      "id": "owed-ds.semantic-ladder-control-exact-sfb",
+      "requirementIds": [],
+      "fixture": "owed-ds-semantic-ladder-known-then-unknown",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "sfb",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The control: the sfb catalog is loaded and exactly reachable, so whatever the row above answers is about the derived semantic range and not about the catalog being absent."
+    },
+    {
+      "id": "owed-ds.semantic-ladder-control-lossy-jdk-rendering",
+      "requirementIds": [],
+      "fixture": "owed-ds-semantic-ladder-known-then-unknown",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "sgn-BE",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The JDK's lossy rendering of sgn-be-fr requested directly. Pinning it separately keeps the row above from being satisfied by a port that simply hands the range to Locale.forLanguageTag and matches on the result."
+    }
+  ]
+}

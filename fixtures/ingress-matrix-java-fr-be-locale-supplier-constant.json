@@ -1,0 +1,23 @@
+{
+  "id": "ingress-matrix-java-fr-be-locale-supplier-constant",
+  "description": "Seed row 2 catalog with a constant localeSupplier returning fr-BE. The derived-match route: the lookup locale stays fr-BE (DefaultStrings.java:2456-2458).",
+  "fallbackLocale": "fr-FR",
+  "tiebreakers": {
+    "fr": [
+      "fr-FR",
+      "fr-CA"
+    ]
+  },
+  "localeSupplier": {
+    "behavior": "constant",
+    "locale": "fr-BE"
+  },
+  "files": {
+    "fr-FR": {
+      "Checkout.Title": "Paiement (FR)"
+    },
+    "fr-CA": {
+      "Checkout.Title": "Paiement (CA)"
+    }
+  }
+}

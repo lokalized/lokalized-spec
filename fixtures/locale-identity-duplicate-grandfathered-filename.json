@@ -1,0 +1,16 @@
+{
+  "id": "locale-identity-duplicate-grandfathered-filename",
+  "description": "A grandfathered filename and its modern equivalent in one directory: zh-min-nan.json and nan both key Locale 'nan', which the loader treats as a duplicate localized strings file. zh-min-nan.json must go through rawFiles because `files` keys are written extensionless and cannot express a .json suffix. Deliberately unloadable, so loadOnly.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "nan": {
+      "Greeting": "g"
+    }
+  },
+  "rawFiles": {
+    "zh-min-nan.json": "{\"Greeting\":\"g\"}"
+  },
+  "rawFilesBase64": {}
+}

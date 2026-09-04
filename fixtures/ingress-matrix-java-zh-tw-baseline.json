@@ -1,0 +1,22 @@
+{
+  "id": "ingress-matrix-java-zh-tw-baseline",
+  "description": "Seed row 4 catalog (loaded zh, zh-Hant, en; tiebreaker zh:[zh, zh-Hant]; fallback and instance locale en). zh carries Checkout.Title, zh-Hant carries ONLY Unrelated.Key, so the two keys expose the resolution chain at different depths. No ambient supplier. MEASURED per-call locale zh-TW on Checkout.Title: LIKELY_SUBTAG/zh-Hant, lookupLocale zh-TW, attempted [zh-TW, zh-Hant, en], resolved en.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "zh": [
+      "zh",
+      "zh-Hant"
+    ]
+  },
+  "files": {
+    "zh": {
+      "Checkout.Title": "结账"
+    },
+    "zh-Hant": {
+      "Unrelated.Key": "無關"
+    },
+    "en": {
+      "Checkout.Title": "Checkout"
+    }
+  }
+}

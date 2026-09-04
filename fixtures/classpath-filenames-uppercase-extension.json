@@ -1,0 +1,15 @@
+{
+  "id": "classpath-filenames-uppercase-extension",
+  "description": "A valid en catalog plus a file named 'DE.JSON'. hasJsonExtension lowercases the whole name before the endsWith check (LocalizedStringLoader.java:1677), so an all-uppercase extension is still recognised and stripped. MEASURED: loads as 'de'.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "rawFiles": {
+    "DE.JSON": "{\"Key.DEJSON\":\"DEJSON\"}"
+  }
+}

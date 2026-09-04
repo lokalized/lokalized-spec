@@ -1,0 +1,20 @@
+{
+  "id": "classpath-resources-byte-budget",
+  "description": "Two catalogs of exactly 52 bytes each as build.mjs materializes them (JSON.stringify with two-space indent plus a trailing newline — measured, not assumed) under a 60-byte maximumTotalInputBytes: one resource fits, two do not, and the same resource mapped twice also does not. Sized so the budget can only be explained by accumulation across the whole mapping, never by a per-file cap. loadOnly because the filesystem load reads both files.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumTotalInputBytes": 60
+  },
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Common.Greeting": "Hello",
+      "Only.En": "en"
+    },
+    "de": {
+      "Common.Greeting": "Hallo",
+      "Only.De": "de"
+    }
+  }
+}

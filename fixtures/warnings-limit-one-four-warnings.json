@@ -1,0 +1,57 @@
+{
+  "id": "warnings-limit-one-four-warnings",
+  "description": "The four-warning ordering catalog with maximumWarnings 1. Deliberately unloadable: the second warning trips the limit after the first has already been handed to the handler.",
+  "fallbackLocale": "ru",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumWarnings": 1
+  },
+  "loadOnly": true,
+  "files": {
+    "ru": {
+      "Zulu": {
+        "translation": "{{zc}}",
+        "placeholders": {
+          "zc": {
+            "value": "n",
+            "translations": {
+              "CARDINALITY_ONE": "z"
+            }
+          }
+        }
+      },
+      "Alpha": {
+        "translation": "{{zeta}} {{beta}}",
+        "placeholders": {
+          "zeta": {
+            "value": "n",
+            "translations": {
+              "ORDINALITY_ONE": "1"
+            }
+          },
+          "beta": {
+            "value": "n",
+            "translations": {
+              "CARDINALITY_FEW": "f"
+            }
+          }
+        },
+        "alternatives": [
+          {
+            "n > 100": {
+              "translation": "{{gamma}}",
+              "placeholders": {
+                "gamma": {
+                  "value": "n",
+                  "translations": {
+                    "CARDINALITY_MANY": "m"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

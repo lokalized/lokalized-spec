@@ -1,0 +1,18 @@
+{
+  "formatVersion": 1,
+  "classification": "human-attention-estimate",
+  "responsibleRole": "productionImplementer",
+  "estimatedHumanMinutes": 0,
+  "basis": "REPLACE-WITH-ITEMIZED-HUMAN-EFFORT-BASIS",
+  "includedHumanWork": [
+    "REPLACE-WITH-HUMAN-SCHEMA-LINTER-OR-TOOLING-WORK"
+  ],
+  "excludedWork": [
+    "agent-runtime",
+    "unattended-machine-runtime"
+  ],
+  "preparedBy": "REPLACE-WITH-NAMED-RESPONSIBLE-HUMAN",
+  "humanReviewer": "REPLACE-WITH-NAMED-HUMAN-REVIEWER",
+  "humanDecisionOwner": "REPLACE-WITH-NAMED-HUMAN-DECISION-OWNER",
+  "approvedAt": "REPLACE-WITH-STRICT-ISO-8601-TIMESTAMP"
+}

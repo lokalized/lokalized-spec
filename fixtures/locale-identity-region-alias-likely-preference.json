@@ -1,0 +1,114 @@
+{
+  "id": "locale-identity-region-alias-likely-preference",
+  "description": "The other branch of CldrLocaleData.preferredRegionAlias: languages whose likely region appears LATER in the alias value list. Each language loads two catalogs - the alias list's first value and the likely-subtag value - so a wrong preference rule selects a real but different catalog instead of failing to match. The list covers picks at index 1 (sk, vic, ckb, hy), 2 (cal), 3 (hr and pau, the last value of their four-value rows), 4 (et), 5 (bs, the last value of the six-value 890 row) and 14 (uz, the deepest pick reachable anywhere in the alias table). Every language here needs tiebreakers, each an exact permutation of its two loaded locales.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "et": [
+      "et-EE",
+      "et-RU"
+    ],
+    "sk": [
+      "sk-CZ",
+      "sk-SK"
+    ],
+    "vic": [
+      "vic-CW",
+      "vic-SX"
+    ],
+    "ckb": [
+      "ckb-IQ",
+      "ckb-SA"
+    ],
+    "cal": [
+      "cal-FM",
+      "cal-MP"
+    ],
+    "hr": [
+      "hr-HR",
+      "hr-RS"
+    ],
+    "hy": [
+      "hy-AM",
+      "hy-RU"
+    ],
+    "uz": [
+      "uz-RU",
+      "uz-UZ"
+    ],
+    "bs": [
+      "bs-RS",
+      "bs-BA"
+    ],
+    "pau": [
+      "pau-FM",
+      "pau-PW"
+    ]
+  },
+  "files": {
+    "en": {
+      "Greeting": "hello"
+    },
+    "et-EE": {
+      "Greeting": "g et-EE"
+    },
+    "et-RU": {
+      "Greeting": "g et-RU"
+    },
+    "sk-CZ": {
+      "Greeting": "g sk-CZ"
+    },
+    "sk-SK": {
+      "Greeting": "g sk-SK"
+    },
+    "vic-CW": {
+      "Greeting": "g vic-CW"
+    },
+    "vic-SX": {
+      "Greeting": "g vic-SX"
+    },
+    "ckb-IQ": {
+      "Greeting": "g ckb-IQ"
+    },
+    "ckb-SA": {
+      "Greeting": "g ckb-SA"
+    },
+    "cal-FM": {
+      "Greeting": "g cal-FM"
+    },
+    "cal-MP": {
+      "Greeting": "g cal-MP"
+    },
+    "hr-HR": {
+      "Greeting": "g hr-HR"
+    },
+    "hr-RS": {
+      "Greeting": "g hr-RS"
+    },
+    "hy-AM": {
+      "Greeting": "g hy-AM"
+    },
+    "hy-RU": {
+      "Greeting": "g hy-RU"
+    },
+    "uz-RU": {
+      "Greeting": "g uz-RU"
+    },
+    "uz-UZ": {
+      "Greeting": "g uz-UZ"
+    },
+    "bs-RS": {
+      "Greeting": "g bs-RS"
+    },
+    "bs-BA": {
+      "Greeting": "g bs-BA"
+    },
+    "pau-FM": {
+      "Greeting": "g pau-FM"
+    },
+    "pau-PW": {
+      "Greeting": "g pau-PW"
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

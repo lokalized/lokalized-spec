@@ -1,0 +1,15 @@
+{
+  "id": "owed-loader-duplicate-language-tag",
+  "description": "Two DIFFERENT java.util.Locale keys that render as the SAME BCP 47 language tag. Locale.forLanguageTag(\"no-NO-x-lvariant-NY\") produces the legacy no_NO_NY locale, whose toLanguageTag() is \"nn-NO\" -- exactly what the second filename parses to -- while the two Locale objects are not equal (language `no` with variant `NY` versus language `nn`). The per-file duplicate check inside loadFromDirectory keys on Locale and therefore lets both through; only unmodifiableLocaleMapInLanguageTagOrder's rendered-tag set catches it. AUDIT NOTE: the disposition suggested ja-JP-x-lvariant-JP / ja-JP-u-ca-japanese, which does NOT collide on JDK 21 -- the lvariant form renders as ja-JP-u-ca-japanese-x-lvariant-JP, keeping the private-use suffix. Verified by probe before authoring. loadOnly because the directory cannot load at all.",
+  "fallbackLocale": "nn-NO",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "no-NO-x-lvariant-NY": {
+      "Greeting": "legacy-variant"
+    },
+    "nn-NO": {
+      "Greeting": "modern-tag"
+    }
+  }
+}

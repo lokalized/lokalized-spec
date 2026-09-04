@@ -1,0 +1,11 @@
+{
+  "id": "loader-smoke-magic-keys",
+  "description": "Keys named __proto__, constructor and prototype. Harmless in Java, but a JS port storing catalogs in a plain object would corrupt its prototype chain, so the Java behavior must be pinned as the target.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {},
+  "rawFiles": {
+    "en": "{\"__proto__\":\"p\",\"constructor\":\"c\",\"prototype\":\"y\",\"Key.Normal\":\"n\"}"
+  }
+}

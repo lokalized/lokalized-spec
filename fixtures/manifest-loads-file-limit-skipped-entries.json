@@ -1,0 +1,20 @@
+{
+  "id": "manifest-loads-file-limit-skipped-entries",
+  "description": "Added by review: maximumLocalizedStringsFiles lowered to 1 in a directory holding one loadable file plus four entries discovery skips (an unrecognized name, an unknown language, a hidden tag, a non-tag). Verified: the load SUCCEEDS. LoadingSession.beginLocalizedStringsFile is only reached for files that are actually parsed, so skipped entries cost nothing against the file cap — they are counted separately by maximumDiscoveryEntries, which this corpus's schema cannot express.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumLocalizedStringsFiles": 1
+  },
+  "files": {
+    "en": {
+      "Greeting": "Hello"
+    }
+  },
+  "rawFiles": {
+    "de.txt": "{\"Greeting\":\"Hallo\"}",
+    "zz": "{\"Greeting\":\"zz\"}",
+    ".en-GB": "{\"Greeting\":\"Hiya\"}",
+    "notes.txt": "{\"Greeting\":\"n\"}"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "id": "classpath-filenames-private-use-stem",
+  "description": "A valid en catalog plus a file named 'x-custom.json'. isLanguageTag has an explicit early return for stems beginning 'x-' (LocalizedStringLoader.java:1663) that runs AFTER Locale.Builder but BEFORE both the empty-language check and the CLDR known-tag lookup. MEASURED: loads as 'x-custom'.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "rawFiles": {
+    "x-custom.json": "{\"Key.xcustom\":\"xcustom\"}"
+  }
+}

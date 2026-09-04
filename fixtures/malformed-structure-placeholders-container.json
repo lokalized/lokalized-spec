@@ -1,0 +1,113 @@
+{
+  "id": "malformed-structure-placeholders-container",
+  "description": "Violations of the placeholders container and placeholder-name rules: placeholders as an array, placeholders as explicit null, a placeholder definition that is a bare string, an empty definition, an unknown definition member, an invalid identifier, a reserved language-form name, and a definition mixing language-form with template members -- plus a well-formed but unreferenced definition as the control (sv, whose cardinality set is one/other, so the control emits no warning).",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": {
+        "translation": "I read {{books}}",
+        "placeholders": [
+          "books"
+        ]
+      }
+    },
+    "ru": {
+      "Key.A": {
+        "translation": "I read {{books}}",
+        "placeholders": null
+      }
+    },
+    "fr": {
+      "Key.A": {
+        "translation": "I read {{books}}",
+        "placeholders": {
+          "books": "book"
+        }
+      }
+    },
+    "de": {
+      "Key.A": {
+        "translation": "I read {{books}}",
+        "placeholders": {
+          "books": {}
+        }
+      }
+    },
+    "es": {
+      "Key.A": {
+        "translation": "I read {{books}}",
+        "placeholders": {
+          "books": {
+            "value": "count",
+            "translations": {
+              "CARDINALITY_ONE": "book",
+              "CARDINALITY_OTHER": "books"
+            },
+            "extra": true
+          }
+        }
+      }
+    },
+    "it": {
+      "Key.A": {
+        "translation": "I read books",
+        "placeholders": {
+          "1books": {
+            "value": "count",
+            "translations": {
+              "CARDINALITY_ONE": "book",
+              "CARDINALITY_OTHER": "books"
+            }
+          }
+        }
+      }
+    },
+    "nl": {
+      "Key.A": {
+        "translation": "I read books",
+        "placeholders": {
+          "CARDINALITY_ONE": {
+            "value": "count",
+            "translations": {
+              "CARDINALITY_ONE": "book",
+              "CARDINALITY_OTHER": "books"
+            }
+          }
+        }
+      }
+    },
+    "pt": {
+      "Key.A": {
+        "translation": "I read {{books}}",
+        "placeholders": {
+          "books": {
+            "value": "count",
+            "translations": {
+              "CARDINALITY_ONE": "book",
+              "CARDINALITY_OTHER": "books"
+            },
+            "translation": "a book"
+          }
+        }
+      }
+    },
+    "sv": {
+      "Key.A": {
+        "translation": "I read books",
+        "placeholders": {
+          "books": {
+            "value": "count",
+            "translations": {
+              "CARDINALITY_ONE": "book",
+              "CARDINALITY_OTHER": "books"
+            }
+          }
+        }
+      }
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

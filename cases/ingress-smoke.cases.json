@@ -1,0 +1,116 @@
+{
+  "formatVersion": 1,
+  "family": "ingress-smoke",
+  "description": "Plan v7 section 8.3 fixture family 'ingress-smoke'. Inputs only; the oracle emits expected.",
+  "cases": [
+    {
+      "id": "ingress-smoke.chooser.zh-tw-preference-selects-zh-hant",
+      "requirementIds": [],
+      "fixture": "ingress-smoke-browser-chooser",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "zh-TW"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Plan section 8.3 states this selects zh-Hant. Checking a published expectation, not assuming it."
+    },
+    {
+      "id": "ingress-smoke.chooser.single-locale-kernel-agrees-with-range-list",
+      "requirementIds": [],
+      "fixture": "ingress-smoke-browser-chooser",
+      "operation": "matchFor",
+      "input": {
+        "locale": "zh-TW"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same request through the single-locale kernel. Section 8.3 requires the two solvers to agree where both apply; this is the paired half."
+    },
+    {
+      "id": "ingress-smoke.chooser.unmatched-first-preference-advances",
+      "requirementIds": [],
+      "fixture": "ingress-smoke-browser-chooser",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "xx-YY,fr;q=0.9,en;q=0.5"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "An unmatched first preference must advance to a later MATCHING preference before falling back — not skip straight to the fallback."
+    },
+    {
+      "id": "ingress-smoke.chooser.no-preference-matches-falls-back",
+      "requirementIds": [],
+      "fixture": "ingress-smoke-browser-chooser",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "xx-YY,zz;q=0.9"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The contrast: when nothing matches, the fallback is reached and no locale is selected."
+    },
+    {
+      "id": "ingress-smoke.chooser.weight-order-not-list-order",
+      "requirementIds": [],
+      "fixture": "ingress-smoke-browser-chooser",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "en",
+            "weight": 0.1
+          },
+          {
+            "range": "fr",
+            "weight": 0.9
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The higher-weighted later entry must win over the lower-weighted earlier one, so a port cannot simply take list order."
+    },
+    {
+      "id": "ingress-smoke.supplied.match-supplier-drives-lookup",
+      "requirementIds": [],
+      "fixture": "ingress-smoke-supplied-match",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "No per-call locale: the ambient match supplier decides. Its negotiated locale should serve the key and appear as the result's match."
+    },
+    {
+      "id": "ingress-smoke.supplied.per-call-locale-overrides-supplier",
+      "requirementIds": [],
+      "fixture": "ingress-smoke-supplied-match",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A per-call locale must override the ambient supplier, or the two ingresses are not separable."
+    },
+    {
+      "id": "ingress-smoke.fabricated.supplied-match-is-preserved-not-rederived",
+      "requirementIds": [],
+      "fixture": "ingress-smoke-fabricated-match",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "THE SHARP CASE: the supplied match claims EXACT on fr while naming de as its range. If the library re-derived the match instead of preserving it, the reported range and type would differ."
+    },
+    {
+      "id": "ingress-smoke.locale-supplier.plain-locale-carries-no-diagnostics",
+      "requirementIds": [],
+      "fixture": "ingress-smoke-locale-supplier",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A localeSupplier returns a bare Locale, so the result's match channel should differ in kind from the match-supplier case above."
+    }
+  ]
+}

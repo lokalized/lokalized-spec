@@ -1,0 +1,275 @@
+{
+  "formatVersion": 1,
+  "family": "m3b-negotiation",
+  "description": "Plan v7 section 8.3 fixture family 'm3b-negotiation'. Inputs only; the oracle emits expected.",
+  "cases": [
+    {
+      "id": "m3b-negotiation.equal-anchors-higher-weight-governs",
+      "requirementIds": [],
+      "fixture": "m3b-negotiation-en-only",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "en-gb",
+            "weight": 0.3
+          },
+          {
+            "range": "en-au",
+            "weight": 0.9
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings.matchFor:1676 (anchor selection) and :1754 (governor sweep), whose equal-specificity-higher-weight arms are both untaken. en-GB and en-AU relate to the bare en catalog with IDENTICAL specificity -- same CLDR_FALLBACK category, same structural depth, same fallback distance -- so nothing but weight can separate them. The reported languageRange must be en-au and the effectiveWeight 0.9. A port that kept the first anchor it saw reports en-gb at 0.3."
+    },
+    {
+      "id": "m3b-negotiation.equal-anchors-higher-weight-governs-reversed",
+      "requirementIds": [],
+      "fixture": "m3b-negotiation-en-only",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "en-au",
+            "weight": 0.3
+          },
+          {
+            "range": "en-gb",
+            "weight": 0.9
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The mirror of the row above with the two ranges swapped. This is what makes the pair a discriminator rather than a restatement: a first-wins implementation produces en-au here and en-gb above, so it fails exactly one of the two whichever way it is wrong."
+    },
+    {
+      "id": "m3b-negotiation.equal-anchors-equal-weight-request-order",
+      "requirementIds": [],
+      "fixture": "m3b-negotiation-en-only",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "en-gb",
+            "weight": 0.5
+          },
+          {
+            "range": "en-au",
+            "weight": 0.5
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The last rung: equal specificity AND equal weight fall back to stable request order, so the EARLIER range governs. Reported languageRange must be en-gb."
+    },
+    {
+      "id": "m3b-negotiation.equal-anchors-equal-weight-request-order-reversed",
+      "requirementIds": [],
+      "fixture": "m3b-negotiation-en-only",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "en-au",
+            "weight": 0.5
+          },
+          {
+            "range": "en-gb",
+            "weight": 0.5
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Its mirror, so 'earlier wins' is separated from 'en-gb wins' -- an implementation that sorted the ranges lexicographically or by locale tag passes one half and fails this one."
+    },
+    {
+      "id": "m3b-negotiation.zero-weight-heuristic-anchor-does-not-exclude",
+      "requirementIds": [],
+      "fixture": "m3b-negotiation-en-only",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "en-us",
+            "weight": 0
+          },
+          {
+            "range": "en",
+            "weight": 0.5
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings.matchFor:1671. en-US;q=0 relates to the bare en catalog only through CLDR fallback, which LanguageRangeMatchCategory marks as NOT eligible for exclusion, so the zero-weight range must be skipped rather than reserving (and thereby excluding) en. The answer must be en at 0.5. MEASURED CORRECTION (M7 A3 review): this row is a CONTROL, not a discriminator, and the claim it used to carry -- that a port letting any q=0 range exclude whatever it relates to answers NONE -- is false. Ablating the eligibility test in lokalized-js to accept every category leaves the whole corpus unchanged at 1,568 passed / 0 FAILED. The exclusion only bites when the q=0 member owns the MOST SPECIFIC cell for the locale, and here the q=0 en-us cell always loses the governor comparison to the q=0.5 EXACT en cell, so the ineligibility never gets to decide anything. The discriminating half of the pair is zero-weight-exact-anchor-does-exclude, which is lost by a weight-major governor comparison and by skipping q=0 members at classification time. Kept because a control that pins the q=0-does-not-always-exclude direction is worth having; read as discrimination it would hide the gap instead of recording it."
+    },
+    {
+      "id": "m3b-negotiation.zero-weight-exact-anchor-does-exclude",
+      "requirementIds": [],
+      "fixture": "m3b-negotiation-en-only",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "en",
+            "weight": 0
+          },
+          {
+            "range": "en-us",
+            "weight": 0.5
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The control that keeps the row above honest: an EXACT relationship IS eligible for exclusion, so en;q=0 does remove the catalog and the result is NONE. Without this pair a port that ignored q=0 entirely would satisfy the first case."
+    },
+    {
+      "id": "m3b-negotiation.specificity-depth-outranks-request-order",
+      "requirementIds": [],
+      "fixture": "m3b-negotiation-en-only",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "en-us",
+            "weight": 0.5
+          },
+          {
+            "range": "en-us-posix",
+            "weight": 0.5
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "LanguageRangeSpecificity.compareTo:3154, the structural-depth tie-break inside one category. Both ranges reach the bare en catalog by CLDR fallback at the same weight, and the DEEPER range must govern, so the reported languageRange is en-us-posix rather than the earlier en-us."
+    },
+    {
+      "id": "m3b-negotiation.same-language-incompatible-script-refused",
+      "requirementIds": [],
+      "fixture": "m3b-negotiation-sr-cyrillic",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "sr-latn",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings.languageRangeSpecificityFor:2077 and compatibleLikelyScripts:2427's both-known-and-differ arm. sr-Latn and the loaded sr share a primary language, but their likely scripts are Latn and Cyrl, so no relationship may be claimed and the answer is NONE. This is the guard that stops a Latin-script Serbian request from being served a Cyrillic catalog; a port that matched on primary language alone returns sr and no existing case notices."
+    },
+    {
+      "id": "m3b-negotiation.same-language-compatible-script-control",
+      "requirementIds": [],
+      "fixture": "m3b-negotiation-sr-cyrillic",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "sr",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The positive control: the same catalog, requested without a conflicting script, matches exactly. It separates 'the script check refused it' from 'this fixture never matches anything'."
+    },
+    {
+      "id": "m3b-negotiation.leading-wildcard-prefers-fallback-choice",
+      "requirementIds": [],
+      "fixture": "m3b-negotiation-de-regional",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "*-ch",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings.matchFor:1845's untaken arm: a range whose FIRST subtag is the wildcard is resolved by preferredLocaleForWildcard, not by preferredLocaleForRange, because it has no anchoring primary language. Every wildcard case in the corpus is of the anchored 'zh-*' shape."
+    },
+    {
+      "id": "m3b-negotiation.anchored-wildcard-control",
+      "requirementIds": [],
+      "fixture": "m3b-negotiation-de-regional",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "de-*",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The anchored counterpart on the same catalogs, so the two halves of the 1845 split are observed against one another rather than each in isolation."
+    },
+    {
+      "id": "m3b-negotiation.extension-singleton-stops-structural-walk",
+      "requirementIds": [],
+      "fixture": "m3b-negotiation-extension-singleton",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "de-*-phonebk",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings.structurallyMatches:2384, the single-character-subtag arm. Walking de-*-phonebk against de-u-co-phonebk reaches the tag's 'u' singleton while looking for 'phonebk'; RFC 4647 says a single-character subtag TERMINATES the match rather than being skipped, so the answer must be NONE. A port that skipped singletons like any other subtag matches the catalog, and no existing case carries an extension singleton at all."
+    },
+    {
+      "id": "m3b-negotiation.extension-singleton-control",
+      "requirementIds": [],
+      "fixture": "m3b-negotiation-extension-singleton",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "de-*",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The control: the same catalog IS reachable by a wildcard range that never has to walk past the singleton, so the row above is a statement about the singleton rule and not about the catalog being unreachable."
+    },
+    {
+      "id": "m3b-negotiation.structural-filter-rejects-nonmatching",
+      "requirementIds": [],
+      "fixture": "m3b-negotiation-zxx-regional",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "zxx-*-fr",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Kept for its BEHAVIOR, not for the branch it is named after. Range 'zxx-*-fr' over loaded zxx-DE, zxx-FR and zxx-IT answers zxx-FR; a port that carried its whole candidate set through the wildcard walk answers zxx-DE, the first entry of the configured tiebreaker order. That distinction is real and is why the case stays. CORRECTED ATTRIBUTION: it does NOT reach DefaultStrings.structurallyFilteredLocales:2343's rejecting arm, which the coverage data reports untaken (2 branches, 1 covered) with this case in the corpus. Java narrows the candidate set before that filter runs, and the :2343 disposition records that the rejecting arm has no reachable call site at any of its three call sites. The original note claimed the opposite and was written from the intent of the case rather than from a measurement."
+    },
+    {
+      "id": "m3b-negotiation.cldr-parent-matched-by-canonical-equivalence",
+      "requirementIds": [],
+      "fixture": "m3b-negotiation-equivalent-parent",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "ro-md",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings.lookupMatchByFallbackCandidates:2553, the SECOND pass of CLDR parent-locale fallback: the parent candidate 'ro' matches no catalog by tag, and is only found because the loaded 'mo' is canonically equivalent to it. The first pass (exact tag) is already covered; the equivalence pass is not, and a port that implemented only the first serves the French fallback instead."
+    }
+  ]
+}

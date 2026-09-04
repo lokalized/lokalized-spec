@@ -1,0 +1,21 @@
+{
+  "id": "custom-policy-single-candidate-throwing-policy",
+  "description": "A ONE-candidate chain with a throwing policy AND a throwing handler installed at the instance, deliberately given different messages so which callback fires is readable from the thrown identity alone. Loading only en with fallback en and requesting en produces the single-element chain [en], verified by execution. DefaultStrings.java:731-733 breaks on candidateIndex + 1 >= fallbackCandidates.size() BEFORE reaching shouldTryNextLocale, so a policy that would throw on any consultation is inert here and the handler's exception is what escapes. Requesting an unloaded de against the same fixture builds the two-element chain [de, en], restoring one consultation and making the policy fire, so chain length is isolated as the only variable. This is the sharpest available statement of 'no policy call after the final distinct candidate': the two callbacks are made to disagree, and which one fires names the answer.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "translationFailureHandler": {
+    "behavior": "throw-in-handler",
+    "message": "single-candidate handler refused"
+  },
+  "translationFallbackPolicy": {
+    "behavior": "throw-in-policy",
+    "message": "single-candidate policy refused to continue"
+  },
+  "files": {
+    "en": {
+      "Single.Present": "en: present"
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

@@ -1,0 +1,12 @@
+{
+  "id": "ingress-matrix-java-en-us-instance",
+  "description": "Seed row 5 catalog with the request tag en-US as the INSTANCE locale (realized as a constant localeSupplier).",
+  "fallbackLocale": "en",
+  "instanceLocale": "en-US",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Checkout.Title": "Checkout"
+    }
+  }
+}

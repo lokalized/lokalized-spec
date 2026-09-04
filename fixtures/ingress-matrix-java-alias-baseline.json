@@ -1,0 +1,26 @@
+{
+  "id": "ingress-matrix-java-alias-baseline",
+  "description": "Legacy-alias arm. On disk are the MODERN catalogs he, id, ro, sr, fil and en, each translated as its own tag so the resolved catalog is readable off the translation. The four deprecated request spellings split into two groups: iw and in are rewritten by Locale.forLanguageTag itself, while mo, sh and tl survive as their own Locale values and can only reach a modern catalog through CLDR canonicalization inside the matcher. Six distinct primary language codes, so no tiebreakers. No ambient supplier.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "he": {
+      "Checkout.Title": "he"
+    },
+    "id": {
+      "Checkout.Title": "id"
+    },
+    "ro": {
+      "Checkout.Title": "ro"
+    },
+    "sr": {
+      "Checkout.Title": "sr"
+    },
+    "fil": {
+      "Checkout.Title": "fil"
+    },
+    "en": {
+      "Checkout.Title": "en"
+    }
+  }
+}

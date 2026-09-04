@@ -1,0 +1,27 @@
+{
+  "id": "locale-identity-deprecated-fallback-locale-reordered",
+  "description": "Byte-for-byte the same files and the same hy-810 fallback and instance locale as locale-identity-deprecated-fallback-locale, with the tiebreaker list flipped to [hy-SU, hy-AM]. Every observable channel flips with it, which is the only way to show that the choice is made by list order rather than by canonicalization, alphabetical order, or directory order.",
+  "fallbackLocale": "hy-810",
+  "tiebreakers": {
+    "hy": [
+      "hy-SU",
+      "hy-AM"
+    ]
+  },
+  "files": {
+    "hy-AM": {
+      "Greeting": "barev AM",
+      "Only.Am": "am only"
+    },
+    "hy-SU": {
+      "Greeting": "barev SU",
+      "Only.Su": "su only"
+    },
+    "en": {
+      "Greeting": "hello",
+      "Only.En": "en only"
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

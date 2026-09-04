@@ -1,0 +1,11 @@
+{
+  "id": "classpath-discovery-sibling",
+  "description": "A single-locale catalog under its own package, existing only so another fixture's case can ask for THIS package by name. The oracle materializes every fixture as a sibling directory under one classpath root, so this proves discovery resolves the package argument against the root rather than against the case's own fixture directory.",
+  "fallbackLocale": "de",
+  "tiebreakers": null,
+  "files": {
+    "de": {
+      "Key.S": "s"
+    }
+  }
+}

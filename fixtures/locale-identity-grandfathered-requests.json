@@ -1,0 +1,35 @@
+{
+  "id": "locale-identity-grandfathered-requests",
+  "description": "The mirror of the grandfathered-FILENAME fixture: here the modern catalogs are on disk and the grandfathered spellings arrive as REQUESTS. Locale.forLanguageTag rewrites the request before the library sees it, so each case pins one row of the JDK's legacy table plus the match category the rewritten tag then earns. Catalogs are chosen so the eight rows land on four different match types (EXACT, CANONICAL, LIKELY_SUBTAG, CLDR_FALLBACK). Eight distinct primary languages, so no tiebreakers are needed.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Greeting": "hello"
+    },
+    "zh": {
+      "Greeting": "nihao",
+      "Only.Zh": "zh only"
+    },
+    "tlh": {
+      "Greeting": "g tlh"
+    },
+    "jbo": {
+      "Greeting": "g jbo"
+    },
+    "nan": {
+      "Greeting": "g nan"
+    },
+    "sfb": {
+      "Greeting": "g sfb"
+    },
+    "nb-NO": {
+      "Greeting": "g nb-NO"
+    },
+    "xtg": {
+      "Greeting": "g xtg"
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

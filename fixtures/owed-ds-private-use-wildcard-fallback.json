@@ -1,0 +1,17 @@
+{
+  "id": "owed-ds-private-use-wildcard-fallback",
+  "description": "Two private-use catalogs under one x-foo stem, reachable together only through an extended range. LocaleUtils.normalizedLanguage is empty for private-use tags, so DefaultStrings never records a language code for them and the tiebreaker map has NO entry the lookup key 'x' could hit -- the silent-fallthrough state of lookupMatchByTiebreakers:2640. preferredLocaleForRange must then prefer the configured fallback locale, which here is one of the two candidates and is NOT the first of them. The 'mo' catalog is present only so ingest's alias heuristic treats the fixture as alias-affected; Java requires no tiebreakers for private-use tags and would REFUSE a tiebreaker entry for 'x'.",
+  "fallbackLocale": "x-foo-baz",
+  "tiebreakers": null,
+  "files": {
+    "x-foo-bar": {
+      "Checkout.Title": "x-foo-bar"
+    },
+    "x-foo-baz": {
+      "Checkout.Title": "x-foo-baz"
+    },
+    "mo": {
+      "Checkout.Title": "mo"
+    }
+  }
+}

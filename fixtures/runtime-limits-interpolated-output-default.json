@@ -1,0 +1,134 @@
+{
+  "id": "runtime-limits-interpolated-output-default",
+  "description": "Plan v7 section 8.3: maximumInterpolatedOutputCharacters at its DEFAULT of 262,144 (256 * 1_024), pinned from both sides with no override. A nineteen-level doubling chain from a one-character leaf yields exactly 2^18 = 262,144 characters at d1; the second key appends a single literal X after the same chain to produce 262,145. Cumulative expansion for either key is 2^19 - 1 = 524,287, half the 1,048,576 default budget, and the deepest recursion is 19, inside the default depth of 32 — so the per-output cap and nothing else is what decides these two keys.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Output at the default maximum": {
+        "translation": "{{d1}}",
+        "placeholders": {
+          "d1": {
+            "translation": "{{d2}}{{d2}}"
+          },
+          "d2": {
+            "translation": "{{d3}}{{d3}}"
+          },
+          "d3": {
+            "translation": "{{d4}}{{d4}}"
+          },
+          "d4": {
+            "translation": "{{d5}}{{d5}}"
+          },
+          "d5": {
+            "translation": "{{d6}}{{d6}}"
+          },
+          "d6": {
+            "translation": "{{d7}}{{d7}}"
+          },
+          "d7": {
+            "translation": "{{d8}}{{d8}}"
+          },
+          "d8": {
+            "translation": "{{d9}}{{d9}}"
+          },
+          "d9": {
+            "translation": "{{d10}}{{d10}}"
+          },
+          "d10": {
+            "translation": "{{d11}}{{d11}}"
+          },
+          "d11": {
+            "translation": "{{d12}}{{d12}}"
+          },
+          "d12": {
+            "translation": "{{d13}}{{d13}}"
+          },
+          "d13": {
+            "translation": "{{d14}}{{d14}}"
+          },
+          "d14": {
+            "translation": "{{d15}}{{d15}}"
+          },
+          "d15": {
+            "translation": "{{d16}}{{d16}}"
+          },
+          "d16": {
+            "translation": "{{d17}}{{d17}}"
+          },
+          "d17": {
+            "translation": "{{d18}}{{d18}}"
+          },
+          "d18": {
+            "translation": "{{d19}}{{d19}}"
+          },
+          "d19": {
+            "translation": "A"
+          }
+        }
+      },
+      "Output one past the default maximum": {
+        "translation": "{{e1}}X",
+        "placeholders": {
+          "e1": {
+            "translation": "{{e2}}{{e2}}"
+          },
+          "e2": {
+            "translation": "{{e3}}{{e3}}"
+          },
+          "e3": {
+            "translation": "{{e4}}{{e4}}"
+          },
+          "e4": {
+            "translation": "{{e5}}{{e5}}"
+          },
+          "e5": {
+            "translation": "{{e6}}{{e6}}"
+          },
+          "e6": {
+            "translation": "{{e7}}{{e7}}"
+          },
+          "e7": {
+            "translation": "{{e8}}{{e8}}"
+          },
+          "e8": {
+            "translation": "{{e9}}{{e9}}"
+          },
+          "e9": {
+            "translation": "{{e10}}{{e10}}"
+          },
+          "e10": {
+            "translation": "{{e11}}{{e11}}"
+          },
+          "e11": {
+            "translation": "{{e12}}{{e12}}"
+          },
+          "e12": {
+            "translation": "{{e13}}{{e13}}"
+          },
+          "e13": {
+            "translation": "{{e14}}{{e14}}"
+          },
+          "e14": {
+            "translation": "{{e15}}{{e15}}"
+          },
+          "e15": {
+            "translation": "{{e16}}{{e16}}"
+          },
+          "e16": {
+            "translation": "{{e17}}{{e17}}"
+          },
+          "e17": {
+            "translation": "{{e18}}{{e18}}"
+          },
+          "e18": {
+            "translation": "{{e19}}{{e19}}"
+          },
+          "e19": {
+            "translation": "A"
+          }
+        }
+      }
+    }
+  }
+}

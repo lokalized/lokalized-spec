@@ -1,0 +1,18 @@
+{
+  "id": "ingress-matrix-java-alias-mo-on-disk-locale-supplier",
+  "description": "A file named mo reached through a constant localeSupplier spelled ro — the canonical tag asking for a catalog that exists only under its deprecated spelling.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "localeSupplier": {
+    "behavior": "constant",
+    "locale": "ro"
+  },
+  "files": {
+    "mo": {
+      "Checkout.Title": "mo-on-disk"
+    },
+    "en": {
+      "Checkout.Title": "en"
+    }
+  }
+}

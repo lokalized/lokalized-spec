@@ -1,0 +1,159 @@
+{
+  "id": "gender-multi-axis-nominal-axes",
+  "description": "Plan v7 section 8.3 multi-axis dispatch for the axes that have NO numeric fallback: grammatical-case, definiteness, classifier, formality, clusivity, animacy and phonetic each get a dispatching definition, so every one of the ten arms of the language-form branch in DefaultStrings.getInternal is exercised by some case in this family. Invitation.Message dispatches on three axes at once (formality, gender, cardinality). Arrival.Announcement's alternatives select on formality while its inherited placeholders select on definiteness and animacy. Section 3.7 says these selectors REQUIRE the expected tagged axis, so the fixture also carries the maps a wrong-axis, raw-string, or numeric value is fed into; each rejection uses a DIFFERENT key so the RETURNED_KEY translations stay distinguishable. The classifier map deliberately omits CLASSIFIER_PERSON so the absent-form path is reachable. Only the tagged-Phonetic input path is used: a CharSequence phonetic input would route through PhoneticResolver, which is outside the oracle's scope. Tiebreakers are null: only 'en' is loaded.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Gift.Recipient": {
+        "translation": "I gave the book to {{recipientForm}}.",
+        "placeholders": {
+          "recipientForm": {
+            "value": "grammaticalCase",
+            "translations": {
+              "CASE_NOMINATIVE": "Ivan",
+              "CASE_DATIVE": "Ivanu",
+              "CASE_ACCUSATIVE": "Ivana"
+            }
+          }
+        }
+      },
+      "Document.Open": {
+        "translation": "Open {{documentForm}}.",
+        "placeholders": {
+          "documentForm": {
+            "value": "definiteness",
+            "translations": {
+              "DEFINITENESS_DEFINITE": "the book",
+              "DEFINITENESS_INDEFINITE": "a book",
+              "DEFINITENESS_CONSTRUCT": "book of"
+            }
+          }
+        }
+      },
+      "Items.Bought": {
+        "translation": "I bought {{itemCount}} {{counter}}.",
+        "commentary": "The classifier map deliberately omits CLASSIFIER_PERSON so the absent-form path is reachable.",
+        "placeholders": {
+          "counter": {
+            "value": "classifier",
+            "translations": {
+              "CLASSIFIER_GENERAL": "things",
+              "CLASSIFIER_BOUND": "volumes",
+              "CLASSIFIER_MACHINE": "machines"
+            }
+          }
+        }
+      },
+      "Greeting.Formality": {
+        "translation": "{{greeting}}, {{name}}.",
+        "placeholders": {
+          "greeting": {
+            "value": "formality",
+            "translations": {
+              "FORMALITY_CASUAL": "Hey",
+              "FORMALITY_INFORMAL": "Hi",
+              "FORMALITY_FORMAL": "Hello",
+              "FORMALITY_HUMBLE": "I humbly greet you",
+              "FORMALITY_HONORIFIC": "Greetings"
+            }
+          }
+        }
+      },
+      "Meeting.Attendees": {
+        "translation": "{{we}} will meet at noon.",
+        "placeholders": {
+          "we": {
+            "value": "clusivity",
+            "translations": {
+              "CLUSIVITY_INCLUSIVE": "We (including you)",
+              "CLUSIVITY_EXCLUSIVE": "We (excluding you)"
+            }
+          }
+        }
+      },
+      "Object.Seen": {
+        "translation": "I see {{object}}.",
+        "placeholders": {
+          "object": {
+            "value": "animacy",
+            "translations": {
+              "ANIMACY_ANIMATE": "him",
+              "ANIMACY_INANIMATE": "it"
+            }
+          }
+        }
+      },
+      "Article.Choice": {
+        "translation": "{{article}}livre",
+        "commentary": "The tenth axis. A tagged Phonetic dispatches directly without consulting any PhoneticResolver (DefaultStrings.java:1159), so this arm is reachable inside the oracle's current scope; the CharSequence input path is not.",
+        "placeholders": {
+          "article": {
+            "value": "initialSound",
+            "translations": {
+              "PHONETIC_VOWEL": "l'",
+              "PHONETIC_CONSONANT": "le ",
+              "PHONETIC_H_ASPIRATED": "le "
+            }
+          }
+        }
+      },
+      "Invitation.Message": {
+        "translation": "{{greeting}}, {{guest}}: you have {{inviteCount}} {{invites}}.",
+        "commentary": "Formality, gender, and cardinality dispatch independently in one definition.",
+        "placeholders": {
+          "greeting": {
+            "value": "formality",
+            "translations": {
+              "FORMALITY_CASUAL": "Hey",
+              "FORMALITY_FORMAL": "Hello",
+              "FORMALITY_HONORIFIC": "Greetings"
+            }
+          },
+          "guest": {
+            "value": "guestGender",
+            "translations": {
+              "GENDER_MASCULINE": "sir",
+              "GENDER_FEMININE": "madam",
+              "GENDER_COMMON": "guest"
+            }
+          },
+          "invites": {
+            "value": "inviteCount",
+            "translations": {
+              "CARDINALITY_ONE": "invitation",
+              "CARDINALITY_OTHER": "invitations"
+            }
+          }
+        }
+      },
+      "Arrival.Announcement": {
+        "translation": "{{article}} {{noun}} arrived.",
+        "commentary": "Alternatives select on formality; the inherited placeholders select on definiteness and animacy.",
+        "placeholders": {
+          "article": {
+            "value": "definiteness",
+            "translations": {
+              "DEFINITENESS_DEFINITE": "The",
+              "DEFINITENESS_INDEFINITE": "A"
+            }
+          },
+          "noun": {
+            "value": "nounAnimacy",
+            "translations": {
+              "ANIMACY_ANIMATE": "visitor",
+              "ANIMACY_INANIMATE": "parcel"
+            }
+          }
+        },
+        "alternatives": [
+          {
+            "formality == FORMALITY_HONORIFIC": {
+              "translation": "{{article}} distinguished {{noun}} has arrived."
+            }
+          }
+        ]
+      }
+    }
+  }
+}

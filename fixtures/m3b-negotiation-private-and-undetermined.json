@@ -1,0 +1,20 @@
+{
+  "id": "m3b-negotiation-private-and-undetermined",
+  "description": "A catalog set that mixes an ordinary locale with the two SHAPES the range solver treats specially: a private-use tag (x-private) and an undetermined one (und-Latn). Both are loadable and both are unreachable by ordinary language matching, which is what makes them the right probes for the private-use and undetermined arms of the member classification.",
+  "fallbackLocale": "fr",
+  "tiebreakers": null,
+  "files": {
+    "fr": {
+      "Checkout.Title": "fr"
+    },
+    "en": {
+      "Checkout.Title": "en"
+    },
+    "x-private": {
+      "Checkout.Title": "x-private"
+    },
+    "und-Latn": {
+      "Checkout.Title": "und-Latn"
+    }
+  }
+}

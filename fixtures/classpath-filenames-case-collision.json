@@ -1,0 +1,16 @@
+{
+  "id": "classpath-filenames-case-collision",
+  "description": "A valid en catalog plus 'de' and 'DE.json', two names that differ by case AND extension and therefore stay distinct on a case-insensitive filesystem while resolving to the SAME locale. Establishes that the classpath path's leniency is confined to filename PARSING and never extends to duplicate detection, and that the classpath diagnostic names BOTH colliding origins where the filesystem one names only the file it was on.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "rawFiles": {
+    "de": "{\"Key.de\":\"de\"}",
+    "DE.json": "{\"Key.DEjson\":\"DEjson\"}"
+  }
+}

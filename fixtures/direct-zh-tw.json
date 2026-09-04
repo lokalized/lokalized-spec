@@ -1,0 +1,11 @@
+{
+  "id": "direct-zh-tw",
+  "description": "Plan v7 section 8.3 seed row 4: the diagnostic channel selects zh-Hant, but zh-Hant lacks the key, so per-key resolution continues to the fallback en WITHOUT visiting the loaded zh that does have it. This is the case that proves the two channels are genuinely independent.",
+  "fallbackLocale": "en",
+  "tiebreakers": { "zh": ["zh", "zh-Hant"] },
+  "files": {
+    "zh": { "Checkout.Title": "结账" },
+    "zh-Hant": { "Unrelated.Key": "無關" },
+    "en": { "Checkout.Title": "Checkout" }
+  }
+}

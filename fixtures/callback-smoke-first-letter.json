@@ -1,0 +1,25 @@
+{
+  "id": "callback-smoke-first-letter",
+  "description": "A resolver that classifies by first letter. The control: proves the resolver is reached for a raw term and that its return value selects the branch.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "phoneticResolver": {
+    "behavior": "first-letter-vowel"
+  },
+  "files": {
+    "en": {
+      "Article": {
+        "translation": "{{article}}",
+        "placeholders": {
+          "article": {
+            "value": "nounTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "an",
+              "PHONETIC_CONSONANT": "a"
+            }
+          }
+        }
+      }
+    }
+  }
+}

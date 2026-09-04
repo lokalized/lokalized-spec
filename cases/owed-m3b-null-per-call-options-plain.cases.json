@@ -1,0 +1,46 @@
+{
+  "formatVersion": 1,
+  "family": "owed-m3b-null-per-call-options-plain",
+  "description": "Plan v7 section 8.3 fixture family 'owed-m3b-null-per-call-options-plain'. Inputs only; the oracle emits expected.",
+  "cases": [
+    {
+      "id": "owed-null-options.ranges.explicit-null-alongside-a-locale-on-a-plain-fixture",
+      "requirementIds": [],
+      "fixture": "direct-und-latn",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "locale": "en",
+        "languageRanges": null
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same proposition as owed-null-options.ranges.explicit-null-alongside-a-locale-is-not-both-sources, restated on a fixture that carries no instance handler, policy, supplier or limits, so a port that has not yet implemented those capabilities still RUNS it instead of having it absorbed as unsupported. A locale with an explicitly null range key is a locale-only lookup: en resolves to 'Checkout'. A port implementing TranslationOptions' mutual exclusion (TranslationOptions.java:70-71) as a 'both keys present' test refuses the call; a port that lets the null range key displace the locale answers with the fr fallback 'Paiement'."
+    },
+    {
+      "id": "owed-null-options.handler.explicit-null-on-a-plain-fixture",
+      "requirementIds": [],
+      "fixture": "direct-und-latn",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "locale": "en",
+        "translationFailureHandler": null
+      },
+      "partition": "requiredPortableIds",
+      "notes": "An explicitly null failure-handler key on a fixture with no instance handler, so the case runs against a port that has not implemented handler ingress. Java's Builder.translationFailureHandler is documented @Nullable and null means 'no override' (TranslationOptions.java:361-365), so the lookup is an ordinary successful one. A port that validates the key's presence rather than its value rejects a call it should have accepted."
+    },
+    {
+      "id": "owed-null-options.policy.explicit-null-on-a-plain-fixture",
+      "requirementIds": [],
+      "fixture": "direct-und-latn",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "locale": "en",
+        "translationFallbackPolicy": null
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The fallback-policy mirror of owed-null-options.handler.explicit-null-on-a-plain-fixture, on the same instance-option-free fixture. Java's Builder.translationFallbackPolicy is documented @Nullable with null meaning 'no override' (TranslationOptions.java:377-381); the lookup succeeds at en. Together the two cases pin that every @Nullable per-call option key accepts an explicit no-value without changing the outcome, which is the runtime half of the port's structural TranslationOptions union."
+    }
+  ]
+}

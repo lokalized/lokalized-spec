@@ -1,0 +1,14 @@
+{
+  "id": "m3b-negotiation-en-only",
+  "description": "A single bare 'en' catalog with a French fallback. Every en-REGIONAL range therefore relates to it only through CLDR fallback, which is the one anchor category that is NOT eligible for q=0 exclusion, and en-GB and en-AU relate to it with identical specificity. That is the configuration the governor and anchor sweeps need: two equally specific anchors on one locale, whose competition can only be decided by weight and then by request order.",
+  "fallbackLocale": "fr",
+  "tiebreakers": null,
+  "files": {
+    "fr": {
+      "Checkout.Title": "fr"
+    },
+    "en": {
+      "Checkout.Title": "en"
+    }
+  }
+}

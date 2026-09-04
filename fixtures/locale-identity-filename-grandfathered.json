@@ -1,0 +1,35 @@
+{
+  "id": "locale-identity-filename-grandfathered",
+  "description": "Grandfathered/legacy IETF tags as filenames. Locale.forLanguageTag applies the JDK's registry mapping before the loader ever sees a locale, so the emitted tags are the modern replacements. Load-only: no `en` catalog exists here, so no Strings instance can be built from it.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "i-klingon": {
+      "Greeting": "g"
+    },
+    "art-lojban": {
+      "Greeting": "g"
+    },
+    "zh-guoyu": {
+      "Greeting": "g"
+    },
+    "cel-gaulish": {
+      "Greeting": "g"
+    },
+    "i-default": {
+      "Greeting": "g"
+    },
+    "zh-min-nan": {
+      "Greeting": "g"
+    },
+    "sgn-BE-FR": {
+      "Greeting": "g"
+    },
+    "no-bok": {
+      "Greeting": "g"
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

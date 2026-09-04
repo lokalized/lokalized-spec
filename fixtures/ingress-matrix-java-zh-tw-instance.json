@@ -1,0 +1,23 @@
+{
+  "id": "ingress-matrix-java-zh-tw-instance",
+  "description": "Seed row 4 catalog with the request tag zh-TW as the INSTANCE locale (realized as a constant localeSupplier).",
+  "fallbackLocale": "en",
+  "instanceLocale": "zh-TW",
+  "tiebreakers": {
+    "zh": [
+      "zh",
+      "zh-Hant"
+    ]
+  },
+  "files": {
+    "zh": {
+      "Checkout.Title": "结账"
+    },
+    "zh-Hant": {
+      "Unrelated.Key": "無關"
+    },
+    "en": {
+      "Checkout.Title": "Checkout"
+    }
+  }
+}

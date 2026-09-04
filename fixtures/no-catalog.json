@@ -1,0 +1,9 @@
+{
+  "id": "no-catalog",
+  "description": "A minimal catalog for operations that exercise the public classifier functions rather than translation. The Strings instance is built but unused; the fixture exists so every case has a uniform shape.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": { "Unused.Key": "unused" }
+  }
+}

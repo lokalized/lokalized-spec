@@ -1,0 +1,27 @@
+{
+  "id": "phonetic-resolver-first-letter-edges",
+  "description": "The first-letter-vowel resolver driven with terms whose first character is unusual: empty, whitespace, digit, punctuation, uppercase, precomposed versus decomposed accents, a byte-order mark, a control character and an astral emoji. The resolver inspects charAt(0) against 'aeiouAEIOU', so each term pins a different assumption a port might make about normalization, trimming, or code-point iteration.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "phoneticResolver": {
+    "behavior": "first-letter-vowel"
+  },
+  "files": {
+    "en": {
+      "Article": {
+        "translation": "[{{a}}]",
+        "placeholders": {
+          "a": {
+            "value": "term",
+            "translations": {
+              "PHONETIC_VOWEL": "an",
+              "PHONETIC_CONSONANT": "a"
+            }
+          }
+        }
+      }
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

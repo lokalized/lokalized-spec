@@ -1,0 +1,124 @@
+{
+  "id": "m3b-form-diagnostics-lowered-compact-exponent",
+  "description": "The same catalog as m3b-form-diagnostics-sparse with maximumCompactExponent lowered to 3, so a PluralOperands record carrying compactExponent 10 -- perfectly legal at PluralOperands' own default ceiling of 64 -- is refused by the INSTANCE limit inside DefaultStrings.ordinalityForValue's validatePluralOperands call rather than at operand construction. Separating the two ceilings is the whole point of the fixture.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "runtimeLimits": {
+    "maximumCompactExponent": 3
+  },
+  "files": {
+    "en": {
+      "Case.Gift": {
+        "translation": "I gave the book to {{who}}.",
+        "placeholders": {
+          "who": {
+            "value": "recipient",
+            "translations": {
+              "CASE_NOMINATIVE": "Ivan",
+              "CASE_DATIVE": "Ivanu"
+            }
+          }
+        }
+      },
+      "Definite.Open": {
+        "translation": "Open {{article}}.",
+        "placeholders": {
+          "article": {
+            "value": "target",
+            "translations": {
+              "DEFINITENESS_DEFINITE": "the book",
+              "DEFINITENESS_INDEFINITE": "a book"
+            }
+          }
+        }
+      },
+      "Classifier.Bought": {
+        "translation": "I bought {{counter}}.",
+        "placeholders": {
+          "counter": {
+            "value": "kind",
+            "translations": {
+              "CLASSIFIER_GENERAL": "things",
+              "CLASSIFIER_BOUND": "volumes"
+            }
+          }
+        }
+      },
+      "Formality.Greet": {
+        "translation": "{{greeting}}, friend.",
+        "placeholders": {
+          "greeting": {
+            "value": "register",
+            "translations": {
+              "FORMALITY_CASUAL": "Hey",
+              "FORMALITY_FORMAL": "Hello"
+            }
+          }
+        }
+      },
+      "Clusivity.Meet": {
+        "translation": "{{we}} will meet at noon.",
+        "placeholders": {
+          "we": {
+            "value": "party",
+            "translations": {
+              "CLUSIVITY_INCLUSIVE": "We (including you)"
+            }
+          }
+        }
+      },
+      "Animacy.See": {
+        "translation": "I see {{object}}.",
+        "placeholders": {
+          "object": {
+            "value": "subject",
+            "translations": {
+              "ANIMACY_ANIMATE": "him"
+            }
+          }
+        }
+      },
+      "Ordinal.Finish": {
+        "translation": "You finished {{position}}.",
+        "placeholders": {
+          "position": {
+            "value": "rank",
+            "translations": {
+              "ORDINALITY_ONE": "1st",
+              "ORDINALITY_TWO": "2nd"
+            }
+          }
+        }
+      },
+      "Range.Books": {
+        "translation": "I read {{books}}.",
+        "placeholders": {
+          "books": {
+            "range": {
+              "start": "low",
+              "end": "high"
+            },
+            "translations": {
+              "CARDINALITY_ONE": "one book",
+              "CARDINALITY_OTHER": "books"
+            }
+          }
+        }
+      },
+      "Range.SparseResult": {
+        "translation": "I read {{books}}.",
+        "placeholders": {
+          "books": {
+            "range": {
+              "start": "low",
+              "end": "high"
+            },
+            "translations": {
+              "CARDINALITY_ONE": "one book"
+            }
+          }
+        }
+      }
+    }
+  }
+}

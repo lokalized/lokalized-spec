@@ -1,0 +1,11 @@
+{
+  "id": "owed-loader-bom-prefixed",
+  "description": "An en catalog whose bytes begin with the UTF-8 BOM EF BB BF, and a byte-identical fr catalog without it. Supplied through rawFilesBase64 because a BOM cannot survive being written from a JSON object. normalizeLocalizedStringsFileContents strips a leading U+FEFF before the JSON parser ever sees it; a port that decodes UTF-8 without BOM handling fails to parse the en file entirely.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {},
+  "rawFilesBase64": {
+    "en": "77u/eyJHcmVldGluZyI6ImhlbGxvIiwiV3JhcCI6Ilt7e3ZhbHVlfX1dIn0K",
+    "fr": "eyJHcmVldGluZyI6ImhlbGxvIiwiV3JhcCI6Ilt7e3ZhbHVlfX1dIn0K"
+  }
+}

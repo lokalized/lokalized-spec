@@ -1,0 +1,25 @@
+{
+  "id": "ingress-smoke-browser-chooser",
+  "description": "Plan v7 section 8.3's small browser chooser verbatim: supported {zh, zh-Hant} plus en, tiebreaker zh:[zh, zh-Hant]. The clause states preferences zh-TW select zh-Hant through the shared single-locale kernel, so this fixture checks a published expectation the same way the direct-locale seed rows do.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "zh": [
+      "zh",
+      "zh-Hant"
+    ]
+  },
+  "files": {
+    "zh": {
+      "Checkout.Title": "结账"
+    },
+    "zh-Hant": {
+      "Checkout.Title": "結賬"
+    },
+    "en": {
+      "Checkout.Title": "Checkout"
+    },
+    "fr": {
+      "Checkout.Title": "Paiement"
+    }
+  }
+}

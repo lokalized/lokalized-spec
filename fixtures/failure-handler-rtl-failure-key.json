@@ -1,0 +1,14 @@
+{
+  "id": "failure-handler-rtl-failure-key",
+  "description": "NEW in this review pass, closing a real gap: nothing in the corpus exercised bidi isolation on the FAILURE-KEY path. interpolateFailureKey (DefaultStrings.java:1400-1412) applies shouldApplyBidiIsolation using the LOOKUP locale -- not a resolved donor locale, since a missing key has none -- so under the library default RTL_LOCALES an Arabic lookup of a missing template key wraps the caller's value in FSI/PDI while an English lookup of the same key does not. Both locales are loaded with only a marker key, so every lookup in this fixture is a genuine MISSING_TRANSLATION and the isolation markers are the only thing that varies. The existing options-smoke-bidi cases all isolate inside SUCCESSFUL translations, so a port could pass every one of them and still emit an unisolated failure key. Two loaded locales with distinct primary languages, so tiebreakers are null.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "ar": {
+      "Locale.Marker": "ar"
+    },
+    "en": {
+      "Locale.Marker": "en"
+    }
+  }
+}

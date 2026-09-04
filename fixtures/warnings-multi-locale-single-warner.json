@@ -1,0 +1,35 @@
+{
+  "id": "warnings-multi-locale-single-warner",
+  "description": "Two locale files where only one can warn: a complete Japanese catalog (CLDR gives Japanese only OTHER) and an Arabic catalog missing four of Arabic's six forms. Exactly one warning regardless of directory iteration order, which is what makes this fixture reproducible where a two-warner fixture would not be. Fallback and instance locale are Japanese so the warning's locale cannot have come from either.",
+  "fallbackLocale": "ja",
+  "tiebreakers": null,
+  "files": {
+    "ja": {
+      "Clean": {
+        "translation": "{{x}}",
+        "placeholders": {
+          "x": {
+            "value": "n",
+            "translations": {
+              "CARDINALITY_OTHER": "o"
+            }
+          }
+        }
+      }
+    },
+    "ar": {
+      "Warn": {
+        "translation": "{{x}}",
+        "placeholders": {
+          "x": {
+            "value": "n",
+            "translations": {
+              "CARDINALITY_ONE": "a",
+              "CARDINALITY_OTHER": "b"
+            }
+          }
+        }
+      }
+    }
+  }
+}

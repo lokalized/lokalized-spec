@@ -1,0 +1,289 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lokalized.org/schemas/pre-m0/production-calibration-record.schema.json",
+  "title": "Lokalized JS production registry calibration record",
+  "description": "Structural schema only. pre-m0/validate-artifacts.mjs is authoritative for cross-file bindings, arithmetic, phase ordering, role identity, frozen-validator receipts, and approval-state invariants.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "formatVersion",
+    "status",
+    "runId",
+    "rolesSha256",
+    "sourcePlanSha256",
+    "sourceSection",
+    "workflowArtifacts",
+    "people",
+    "monotonicClock",
+    "phases",
+    "sourceUnitLedger",
+    "counts",
+    "agentWallMinutes",
+    "activeHumanMinutes",
+    "zeroMinuteReasons",
+    "toolingEstimate",
+    "acceptedArtifacts",
+    "derived",
+    "approvals",
+    "blockingReasons"
+  ],
+  "properties": {
+    "formatVersion": { "const": 1 },
+    "status": {
+      "enum": ["not-run", "in-progress", "dry-run", "rejected", "approved"]
+    },
+    "runId": { "$ref": "#/$defs/nullableName" },
+    "rolesSha256": { "$ref": "#/$defs/nullableHash" },
+    "sourcePlanSha256": { "$ref": "#/$defs/hash" },
+    "sourceSection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["anchor", "sha256"],
+      "properties": {
+        "anchor": { "const": "2.2" },
+        "sha256": { "$ref": "#/$defs/hash" }
+      }
+    },
+    "workflowArtifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["registrySchema", "markerGrammar", "validator"],
+      "properties": {
+        "registrySchema": { "$ref": "#/$defs/nullableArtifactBinding" },
+        "markerGrammar": { "$ref": "#/$defs/nullableArtifactBinding" },
+        "validator": {
+          "description": "Self-contained single-file ESM validator using only the audited node: assert/buffer/crypto/fs/path/url/util allowlist; the outer validator executes it with filesystem reads limited to exact bound inputs.",
+          "$ref": "#/$defs/nullableArtifactBinding"
+        }
+      }
+    },
+    "people": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["productionImplementer", "humanReviewer", "humanDecisionOwner"],
+      "properties": {
+        "productionImplementer": { "$ref": "#/$defs/nullableName" },
+        "humanReviewer": { "$ref": "#/$defs/nullableName" },
+        "humanDecisionOwner": { "$ref": "#/$defs/nullableName" }
+      }
+    },
+    "monotonicClock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "unit", "continuousProcessIdentity"],
+      "properties": {
+        "source": { "$ref": "#/$defs/nullableName" },
+        "unit": { "$ref": "#/$defs/nullableName" },
+        "continuousProcessIdentity": { "$ref": "#/$defs/nullableName" }
+      }
+    },
+    "phases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "start", "end", "elapsedSeconds"],
+        "properties": {
+          "name": {
+            "enum": ["authoring", "review", "rework", "decision-review", "final-verification"]
+          },
+          "start": { "type": "number" },
+          "end": { "type": "number" },
+          "elapsedSeconds": { "type": "number", "minimum": 0 }
+        }
+      }
+    },
+    "sourceUnitLedger": {
+      "description": "Every checked section-2.2 source unit and the provisional CAL IDs produced in the initial pass. Empty ID lists represent units classified nonnormative before record drafting.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/sourceUnit" }
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "initialProvisionalRecords",
+        "acceptedRecords",
+        "sourceUnitsInitiallySplit",
+        "reviewRequestedSplits",
+        "netRecordsAddedByReviewSplits",
+        "reviewMergeGroups",
+        "netRecordsRemovedByMerges",
+        "netRecordsRemovedByRejectionOrReclassification",
+        "acceptedRecordsReworked"
+      ],
+      "properties": {
+        "initialProvisionalRecords": { "$ref": "#/$defs/nullableCount" },
+        "acceptedRecords": { "$ref": "#/$defs/nullableCount" },
+        "sourceUnitsInitiallySplit": { "$ref": "#/$defs/nullableCount" },
+        "reviewRequestedSplits": { "$ref": "#/$defs/nullableCount" },
+        "netRecordsAddedByReviewSplits": { "$ref": "#/$defs/nullableCount" },
+        "reviewMergeGroups": { "$ref": "#/$defs/nullableCount" },
+        "netRecordsRemovedByMerges": { "$ref": "#/$defs/nullableCount" },
+        "netRecordsRemovedByRejectionOrReclassification": { "$ref": "#/$defs/nullableCount" },
+        "acceptedRecordsReworked": { "$ref": "#/$defs/nullableCount" }
+      }
+    },
+    "agentWallMinutes": { "$ref": "#/$defs/agentMinutes" },
+    "activeHumanMinutes": { "$ref": "#/$defs/humanMinutes" },
+    "zeroMinuteReasons": { "$ref": "#/$defs/zeroReasons" },
+    "toolingEstimate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["minutes", "responsibleRole", "basis", "evidence"],
+      "properties": {
+        "minutes": { "$ref": "#/$defs/nullableMinutes" },
+        "responsibleRole": {
+          "type": ["string", "null"],
+          "enum": ["productionImplementer", "humanReviewer", "humanDecisionOwner", null]
+        },
+        "basis": { "$ref": "#/$defs/nullableName" },
+        "evidence": { "$ref": "#/$defs/nullableArtifactBinding" }
+      }
+    },
+    "acceptedArtifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["annotatedSection", "scratchRegistry", "timerLog"],
+      "properties": {
+        "annotatedSection": { "$ref": "#/$defs/nullableArtifactBinding" },
+        "scratchRegistry": { "$ref": "#/$defs/nullableArtifactBinding" },
+        "timerLog": { "$ref": "#/$defs/nullableArtifactBinding" }
+      }
+    },
+    "derived": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "humanMinutesPerAcceptedRecord",
+        "reviewedInitialSliceRecordCount",
+        "contingencyFactor",
+        "initialSliceHumanAllowanceMinutes"
+      ],
+      "properties": {
+        "humanMinutesPerAcceptedRecord": { "$ref": "#/$defs/nullableMinutes" },
+        "reviewedInitialSliceRecordCount": { "$ref": "#/$defs/nullableCount" },
+        "contingencyFactor": { "type": "number", "minimum": 1.5 },
+        "initialSliceHumanAllowanceMinutes": { "$ref": "#/$defs/nullableMinutes" }
+      }
+    },
+    "approvals": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["productionImplementer", "humanReviewer", "humanDecisionOwner", "approvedAt"],
+      "properties": {
+        "productionImplementer": { "$ref": "#/$defs/nullableName" },
+        "humanReviewer": { "$ref": "#/$defs/nullableName" },
+        "humanDecisionOwner": { "$ref": "#/$defs/nullableName" },
+        "approvedAt": { "type": ["string", "null"] }
+      }
+    },
+    "blockingReasons": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    }
+  },
+  "$defs": {
+    "sourceUnit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sourceAnchor", "initialProvisionalRecordIds"],
+      "properties": {
+        "sourceAnchor": { "$ref": "#/$defs/name" },
+        "initialProvisionalRecordIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^CAL-[A-Z][A-Z0-9-]*-[0-9]{3}$"
+          }
+        }
+      }
+    },
+    "hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "nullableHash": {
+      "anyOf": [
+        { "type": "null" },
+        { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+      ]
+    },
+    "artifactBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "sha256": { "$ref": "#/$defs/hash" }
+      }
+    },
+    "nullableArtifactBinding": {
+      "anyOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/artifactBinding" }
+      ]
+    },
+    "nullableName": {
+      "anyOf": [
+        { "type": "null" },
+        { "type": "string", "minLength": 1 }
+      ]
+    },
+    "nullableCount": {
+      "anyOf": [
+        { "type": "null" },
+        { "type": "integer", "minimum": 0 }
+      ]
+    },
+    "nullableMinutes": {
+      "anyOf": [
+        { "type": "null" },
+        { "type": "number", "minimum": 0 }
+      ]
+    },
+    "agentMinutes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["authoring", "review", "rework"],
+      "properties": {
+        "authoring": { "$ref": "#/$defs/nullableMinutes" },
+        "review": { "$ref": "#/$defs/nullableMinutes" },
+        "rework": { "$ref": "#/$defs/nullableMinutes" }
+      }
+    },
+    "humanMinutes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "implementer",
+        "reviewer",
+        "decisionOwnerPerRecordWork",
+        "decisionOwnerFixedBatchWork"
+      ],
+      "properties": {
+        "implementer": { "$ref": "#/$defs/nullableMinutes" },
+        "reviewer": { "$ref": "#/$defs/nullableMinutes" },
+        "decisionOwnerPerRecordWork": { "$ref": "#/$defs/nullableMinutes" },
+        "decisionOwnerFixedBatchWork": { "$ref": "#/$defs/nullableMinutes" }
+      }
+    },
+    "zeroReasons": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "implementer",
+        "reviewer",
+        "decisionOwnerPerRecordWork",
+        "decisionOwnerFixedBatchWork"
+      ],
+      "properties": {
+        "implementer": { "$ref": "#/$defs/nullableName" },
+        "reviewer": { "$ref": "#/$defs/nullableName" },
+        "decisionOwnerPerRecordWork": { "$ref": "#/$defs/nullableName" },
+        "decisionOwnerFixedBatchWork": { "$ref": "#/$defs/nullableName" }
+      }
+    }
+  }
+}

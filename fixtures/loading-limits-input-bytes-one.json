@@ -1,0 +1,14 @@
+{
+  "id": "loading-limits-input-bytes-one",
+  "description": "A two-byte empty-object file loaded with maximumInputBytes at 1, the lowest value the builder accepts. Written through rawFiles because a JSON-serialized fixture would add indentation and a trailing newline and the byte count would stop being exact.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumInputBytes": 1
+  },
+  "loadOnly": true,
+  "files": {},
+  "rawFiles": {
+    "en": "{}"
+  }
+}

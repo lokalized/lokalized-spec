@@ -1,0 +1,33 @@
+{
+  "id": "owed-supplied-match-matched-without-range",
+  "description": "A fabrication that selects a locale with a weight and a non-NONE type but omits the matched RANGE. The corpus's only matched-state violation is the NONE type; the range and weight disjuncts are unexercised.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "localeMatchSupplier": {
+    "behavior": "fabricated",
+    "locale": "fr",
+    "matchType": "EXACT",
+    "weight": 1,
+    "ranges": [
+      {
+        "range": "fr",
+        "weight": 1
+      }
+    ],
+    "fallbackLocale": "en",
+    "consideredLocales": [
+      "en",
+      "fr"
+    ]
+  },
+  "files": {
+    "en": {
+      "Locale.Marker": "en",
+      "Greeting.Hello": "Hello"
+    },
+    "fr": {
+      "Locale.Marker": "fr",
+      "Greeting.Hello": "Bonjour"
+    }
+  }
+}

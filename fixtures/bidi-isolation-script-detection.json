@@ -1,0 +1,25 @@
+{
+  "id": "bidi-isolation-script-detection",
+  "description": "Isolates the two branches of BidiUtils.localeUsesRightToLeftScript on one primary language. 'ar' has no script subtag, so the method takes the CldrLocaleData.likelySubtagFor branch (ar -> ar-Arab-EG, script Arab, which is in GeneratedCldrLocaleData.RTL_SCRIPTS); 'ar-Latn' carries an explicit script that short-circuits that lookup and is LTR. Both are loaded catalogs so each request resolves to itself and the requested/donor question does not confound the script question. Two locales share the language code ar, so tiebreakers are mandatory and list exactly {ar, ar-Latn} -- an exact permutation, as DefaultStrings.java:393-408 requires.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "ar": [
+      "ar",
+      "ar-Latn"
+    ]
+  },
+  "files": {
+    "en": {
+      "Locale.Marker": "en",
+      "Greeting.Named": "Hello, {{name}}"
+    },
+    "ar": {
+      "Locale.Marker": "ar",
+      "Greeting.Named": "مرحبا، {{name}}"
+    },
+    "ar-Latn": {
+      "Locale.Marker": "ar-Latn",
+      "Greeting.Named": "Marhaban, {{name}}"
+    }
+  }
+}

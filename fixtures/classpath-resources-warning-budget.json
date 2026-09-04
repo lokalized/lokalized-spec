@@ -1,0 +1,38 @@
+{
+  "id": "classpath-resources-warning-budget",
+  "description": "REWORKED from the authored draft, which held one file under maximumWarnings 0 and so could not demonstrate anything shared across a mapping. Now TWO incomplete-cardinality catalogs (ru and de) under maximumWarnings of 1: one mapped resource succeeds at exactly the limit, two exceed it. That pair is the only way to show the warning counter lives in the same LoadingSession that spans the whole explicit mapping. loadOnly because the filesystem load reads both files and fails the same way — verified.",
+  "fallbackLocale": "ru",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumWarnings": 1
+  },
+  "loadOnly": true,
+  "files": {
+    "ru": {
+      "Greet": {
+        "translation": "{{c}}",
+        "placeholders": {
+          "c": {
+            "value": "n",
+            "translations": {
+              "CARDINALITY_ONE": "one"
+            }
+          }
+        }
+      }
+    },
+    "de": {
+      "Greet": {
+        "translation": "{{c}}",
+        "placeholders": {
+          "c": {
+            "value": "n",
+            "translations": {
+              "CARDINALITY_ONE": "one"
+            }
+          }
+        }
+      }
+    }
+  }
+}

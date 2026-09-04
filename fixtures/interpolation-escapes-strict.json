@@ -1,0 +1,53 @@
+{
+  "id": "interpolation-escapes-strict",
+  "description": "Single en catalog whose translations carry every StringInterpolator escape sequence and every index-advancement boundary of the escape state machine. Every key here RESOLVES, so DefaultStrings.interpolateTemplate runs interpolateStrictly - this is the strict half of the plan v7 section 8.3 interpolation-escape clause. Every translation is deliberately strict-VALID because LocalizedStringLoader.validatePlaceholderReferences (LocalizedStringLoader.java:2308) runs the same strict scan at load time; a strict-invalid translation raises LocalizedStringLoadingException and aborts the whole corpus build rather than producing a case row (re-verified in this review with throwaway probe fixtures). The last two keys add generated language-form placeholders: one whose form translation itself contains an escape (single-pass expansion), and one whose only reference sits inside an escaped region (never expanded at all).",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "esc.backslash.literal": "A literal backslash: \\\\ done",
+      "esc.backslash.lone": "Windows path C:\\temp\\docs",
+      "esc.backslash.trailing": "Ends with a backslash \\",
+      "esc.close.escaped": "Braces close here: \\}} ok",
+      "esc.close.escaped-at-end": "Ends with escaped close \\}}",
+      "esc.close.single-brace": "Single braces: \\{ and \\} stay",
+      "esc.open.escaped-closed": "Show \\{{name}} verbatim",
+      "esc.open.escaped-at-end": "Ends with escaped placeholder \\{{name}}",
+      "esc.open.escaped-inner-name-invalid": "Ratio \\{{1:2}} shown",
+      "esc.open.escaped-region-verbatim": "Region \\{{a \\\\ b}} kept",
+      "esc.open.escaped-unclosed": "Trailing escaped open \\{{neverClosed",
+      "esc.open.escaped-swallows-real": "\\{{unclosed and {{realName}} tail",
+      "esc.backslash.doubled-before-placeholder": "\\\\{{name}} follows an escaped backslash",
+      "esc.backslash.tripled-before-placeholder": "\\\\\\{{name}} is a backslash then a literal placeholder",
+      "esc.mixed.all-forms": "Literal \\{{count}} vs real {{count}}, close \\}} and backslash \\\\ end",
+      "esc.strict.missing-value": "Hello {{name}} and \\}} tail",
+      "esc.value.raw": "Value: {{raw}}",
+      "esc.generated.single-pass": {
+        "translation": "{{label}} for {{name}}",
+        "commentary": "The language-form translations contain an escaped placeholder that must survive expansion without being re-interpolated against the outer context.",
+        "placeholders": {
+          "label": {
+            "value": "count",
+            "translations": {
+              "CARDINALITY_ONE": "one \\{{name}} literal",
+              "CARDINALITY_OTHER": "many \\{{name}} literals"
+            }
+          }
+        }
+      },
+      "esc.generated.escaped-only-reference": {
+        "translation": "only \\{{label}} escaped",
+        "commentary": "The sole reference to the declared generated placeholder sits inside an escaped region, so placeholderNamesIn never reports it and it is never expanded.",
+        "placeholders": {
+          "label": {
+            "value": "count",
+            "translations": {
+              "CARDINALITY_ONE": "one book",
+              "CARDINALITY_OTHER": "many books"
+            }
+          }
+        }
+      }
+    }
+  }
+}

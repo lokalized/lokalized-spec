@@ -1,0 +1,29 @@
+{
+  "id": "m3b-supplied-match-type-without-locale",
+  "description": "A localeMatchSupplier handing the library a LocaleMatchResult built through its PUBLIC constructor. The supplier is invoked lazily at lookup time, so the constructor's refusal surfaces as a per-case throw rather than as an unbuildable fixture. Caller-supplied match results are revalidated on every use, so each of these is a live validation path a port must reproduce rather than a Java-only assertion. A non-NONE match type with no selected locale.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "localeMatchSupplier": {
+    "behavior": "fabricated",
+    "ranges": [
+      {
+        "range": "fr",
+        "weight": 1
+      }
+    ],
+    "fallbackLocale": "en",
+    "consideredLocales": [
+      "en",
+      "fr"
+    ],
+    "matchType": "EXACT"
+  },
+  "files": {
+    "en": {
+      "Checkout.Title": "Checkout"
+    },
+    "fr": {
+      "Checkout.Title": "Paiement"
+    }
+  }
+}

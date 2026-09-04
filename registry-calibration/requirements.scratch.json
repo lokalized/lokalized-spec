@@ -1,0 +1,700 @@
+{
+  "formatVersion": 1,
+  "status": "calibration-only",
+  "sourceSectionSha256": "de22308d19e357db0dd77e35a7be712960c39e3cd15f3caaa28e86769b212000",
+  "requirements": [
+    {
+      "id": "CAL-FALLBACK-001",
+      "statement": "The pre-resolution candidate sequence is a first-wins ordered union.",
+      "registrationBefore": ["M3a"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector", "compatibility-run"],
+      "sourceAnchor": "2.2:L108"
+    },
+    {
+      "id": "CAL-FALLBACK-002",
+      "statement": "Tier 1 of the pre-resolution sequence is `fallbackLocalesFor(lookupLocale)`, preserving its output order.",
+      "registrationBefore": ["M3a"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector", "compatibility-run"],
+      "sourceAnchor": "2.2:L110-L114"
+    },
+    {
+      "id": "CAL-FALLBACK-003",
+      "statement": "`fallbackLocalesFor` forms an ordered union of raw-tag traversal, CLDR-canonical-tag traversal, then canonical-parent closure.",
+      "registrationBefore": ["M3b"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["generated-partition", "compatibility-run"],
+      "sourceAnchor": "2.2:L110-L112"
+    },
+    {
+      "id": "CAL-FALLBACK-004",
+      "statement": "Every fallback traversal inserts its current tag.",
+      "registrationBefore": ["M3a"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector", "compatibility-run"],
+      "sourceAnchor": "2.2:L111-L112"
+    },
+    {
+      "id": "CAL-FALLBACK-005",
+      "statement": "Every fallback traversal inserts applicable explicit CLDR parents.",
+      "registrationBefore": ["M3b"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["generated-partition", "compatibility-run"],
+      "sourceAnchor": "2.2:L112"
+    },
+    {
+      "id": "CAL-FALLBACK-006",
+      "statement": "Fallback traversal truncates exactly one subtag per truncation step.",
+      "registrationBefore": ["M3a"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector", "compatibility-run"],
+      "sourceAnchor": "2.2:L112-L113"
+    },
+    {
+      "id": "CAL-FALLBACK-007",
+      "statement": "Fallback truncation terminates when a parent reaches `root`.",
+      "registrationBefore": ["M3b"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector", "compatibility-run"],
+      "sourceAnchor": "2.2:L112-L113"
+    },
+    {
+      "id": "CAL-FALLBACK-008",
+      "statement": "Fallback truncation stops before crossing a likely-script boundary.",
+      "registrationBefore": ["M3b"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["generated-partition", "compatibility-run"],
+      "sourceAnchor": "2.2:L113"
+    },
+    {
+      "id": "CAL-FALLBACK-009",
+      "statement": "Each fallback traversal finally applies the `no` ↔ `nb` bridge.",
+      "registrationBefore": ["M3b"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector", "compatibility-run"],
+      "sourceAnchor": "2.2:L113-L114"
+    },
+    {
+      "id": "CAL-FALLBACK-010",
+      "statement": "The bridged `no`/`nb` locale is processed by the same fallback-traversal algorithm.",
+      "registrationBefore": ["M3b"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector", "compatibility-run"],
+      "sourceAnchor": "2.2:L113-L114"
+    },
+    {
+      "id": "CAL-FALLBACK-011",
+      "statement": "The `no` ↔ `nb` bridge must not recursively invoke the bridge again.",
+      "registrationBefore": ["M3b"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector", "compatibility-run"],
+      "sourceAnchor": "2.2:L114"
+    },
+    {
+      "id": "CAL-FALLBACK-012",
+      "statement": "Tier 2 contributes at most one supported likely-language/script match.",
+      "registrationBefore": ["M3b"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["generated-partition", "compatibility-run"],
+      "sourceAnchor": "2.2:L115"
+    },
+    {
+      "id": "CAL-FALLBACK-013",
+      "statement": "Tier 3 contributes script-compatible supported locales in normalized-primary-language tiebreaker order.",
+      "registrationBefore": ["M3b"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector", "compatibility-run"],
+      "sourceAnchor": "2.2:L116"
+    },
+    {
+      "id": "CAL-FALLBACK-014",
+      "statement": "Tier 4 contributes the resolved exact fallback-locale file.",
+      "registrationBefore": ["M3a"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector", "compatibility-run"],
+      "sourceAnchor": "2.2:L117"
+    },
+    {
+      "id": "CAL-FALLBACK-016",
+      "statement": "Candidate resolution first selects an exact normalized loaded tag when one exists.",
+      "registrationBefore": ["M3a"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector", "compatibility-run"],
+      "sourceAnchor": "2.2:L119"
+    },
+    {
+      "id": "CAL-FALLBACK-017",
+      "statement": "Without an exact normalized loaded tag, candidate resolution selects the sole CLDR-equivalent loaded tag when exactly one exists.",
+      "registrationBefore": ["M3b"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector", "compatibility-run"],
+      "sourceAnchor": "2.2:L119-L120"
+    },
+    {
+      "id": "CAL-FALLBACK-018",
+      "statement": "If prior resolution alternatives fail, candidate resolution selects the first equivalent tag in the applicable tiebreaker list.",
+      "registrationBefore": ["M3b"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector", "compatibility-run"],
+      "sourceAnchor": "2.2:L120"
+    },
+    {
+      "id": "CAL-FALLBACK-019",
+      "statement": "If prior resolution alternatives fail, candidate resolution selects the resolved fallback tag when it is among the equivalent tags.",
+      "registrationBefore": ["M3b"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector", "compatibility-run"],
+      "sourceAnchor": "2.2:L120-L121"
+    },
+    {
+      "id": "CAL-FALLBACK-020",
+      "statement": "If all earlier resolution alternatives fail, candidate resolution selects the lexicographically first equivalent normalized loaded tag.",
+      "registrationBefore": ["M3b"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector", "compatibility-run"],
+      "sourceAnchor": "2.2:L121-L122"
+    },
+    {
+      "id": "CAL-FALLBACK-021",
+      "statement": "A candidate for which no loaded file resolves remains catalog-less.",
+      "registrationBefore": ["M3a"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector", "compatibility-run"],
+      "sourceAnchor": "2.2:L122"
+    },
+    {
+      "id": "CAL-FALLBACK-022",
+      "statement": "When a file resolves, `attemptedLocale` is that file's exact normalized tag.",
+      "registrationBefore": ["M3a"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector", "compatibility-run"],
+      "sourceAnchor": "2.2:L125-L126"
+    },
+    {
+      "id": "CAL-FALLBACK-023",
+      "statement": "When no file resolves, `attemptedLocale` is the candidate's normalized tag.",
+      "registrationBefore": ["M3a"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector", "compatibility-run"],
+      "sourceAnchor": "2.2:L125-L126"
+    },
+    {
+      "id": "CAL-FALLBACK-024",
+      "statement": "Candidate deduplication is first-wins on the post-resolution exact attempted-locale tag.",
+      "registrationBefore": ["M3a"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector", "compatibility-run"],
+      "sourceAnchor": "2.2:L126"
+    },
+    {
+      "id": "CAL-FALLBACK-026",
+      "statement": "`attemptedLocales` contains only candidates that resolution actually entered.",
+      "registrationBefore": ["M3a"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector", "compatibility-run"],
+      "sourceAnchor": "2.2:L128-L129"
+    },
+    {
+      "id": "CAL-FALLBACK-027",
+      "statement": "`attemptedLocales` includes the candidate that succeeds.",
+      "registrationBefore": ["M3a"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector", "compatibility-run"],
+      "sourceAnchor": "2.2:L128-L129"
+    },
+    {
+      "id": "CAL-FALLBACK-028",
+      "statement": "A fallback-policy result of `false` truncates `attemptedLocales` at that point.",
+      "registrationBefore": ["M3b"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector", "compatibility-run"],
+      "sourceAnchor": "2.2:L129"
+    },
+    {
+      "id": "CAL-FALLBACK-029",
+      "statement": "The fallback policy is invoked only when another distinct post-resolution candidate exists and is never invoked after the last candidate.",
+      "registrationBefore": ["M3b"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector", "compatibility-run"],
+      "sourceAnchor": "2.2:L129-L130"
+    },
+    {
+      "id": "CAL-FALLBACK-030",
+      "statement": "Normalized primary language is obtained by CLDR-canonicalizing the complete tag before extracting its primary language.",
+      "registrationBefore": ["M3b"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["generated-partition", "compatibility-run"],
+      "sourceAnchor": "2.2:L132-L133"
+    },
+    {
+      "id": "CAL-FALLBACK-031",
+      "statement": "A private-use tag has no normalized primary language.",
+      "registrationBefore": ["M3b"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector", "compatibility-run"],
+      "sourceAnchor": "2.2:L133"
+    },
+    {
+      "id": "CAL-FALLBACK-032",
+      "statement": "An undetermined tag has no normalized primary language.",
+      "registrationBefore": ["M3b"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector", "compatibility-run"],
+      "sourceAnchor": "2.2:L133"
+    },
+    {
+      "id": "CAL-FALLBACK-033",
+      "statement": "A tag without a normalized primary language creates no tiebreaker requirement.",
+      "registrationBefore": ["M3b"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector", "compatibility-run"],
+      "sourceAnchor": "2.2:L133-L134"
+    },
+    {
+      "id": "CAL-FALLBACK-034",
+      "statement": "For a normalized primary language with one loaded locale, an omitted tiebreaker is synthesized as the one-element identity order.",
+      "registrationBefore": ["M3b"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector", "compatibility-run"],
+      "sourceAnchor": "2.2:L134-L135"
+    },
+    {
+      "id": "CAL-FALLBACK-035",
+      "statement": "For a normalized primary language with more than one loaded locale, a tiebreaker is mandatory.",
+      "registrationBefore": ["M3b"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector", "compatibility-run"],
+      "sourceAnchor": "2.2:L135"
+    },
+    {
+      "id": "CAL-FALLBACK-036",
+      "statement": "Every supplied tiebreaker order contains each exact loaded tag for its language exactly once and no other tag.",
+      "registrationBefore": ["M3b"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector", "compatibility-run"],
+      "sourceAnchor": "2.2:L135-L137"
+    },
+    {
+      "id": "CAL-FALLBACK-037",
+      "statement": "Every tiebreaker key is a well-formed primary language subtag.",
+      "registrationBefore": ["M3b"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector", "static-check"],
+      "sourceAnchor": "2.2:L137-L138"
+    },
+    {
+      "id": "CAL-FALLBACK-038",
+      "statement": "Every tiebreaker key is normalized through the locale alias process used by the rest of the contract.",
+      "registrationBefore": ["M3b"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["generated-partition", "compatibility-run"],
+      "sourceAnchor": "2.2:L137-L138"
+    },
+    {
+      "id": "CAL-FALLBACK-039",
+      "statement": "Alias-equivalent duplicate tiebreaker keys are rejected.",
+      "registrationBefore": ["M3b"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector", "compatibility-run"],
+      "sourceAnchor": "2.2:L138"
+    },
+    {
+      "id": "CAL-FALLBACK-040",
+      "statement": "Manifest tiebreakers are validated against the manifest's full file set before subset planning.",
+      "registrationBefore": ["M8"],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "evidenceKinds": ["vector"],
+      "sourceAnchor": "2.2:L138-L140"
+    },
+    {
+      "id": "CAL-FALLBACK-041",
+      "statement": "A loader may stable-filter an already-valid manifest tiebreaker order to the successfully loaded exact tags.",
+      "registrationBefore": ["M8"],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "evidenceKinds": ["vector"],
+      "sourceAnchor": "2.2:L139-L140"
+    },
+    {
+      "id": "CAL-FALLBACK-042",
+      "statement": "A loader-produced `createStrings` tiebreaker remains an exact permutation of the successfully loaded tags for that language.",
+      "registrationBefore": ["M8"],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "evidenceKinds": ["vector"],
+      "sourceAnchor": "2.2:L140-L141"
+    },
+    {
+      "id": "CAL-FALLBACK-043",
+      "statement": "Configured-fallback validation permits a non-byte-identical configured tag when it resolves under the fallback-resolution rules.",
+      "registrationBefore": ["M3b"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector", "compatibility-run"],
+      "sourceAnchor": "2.2:L143"
+    },
+    {
+      "id": "CAL-FALLBACK-044",
+      "statement": "A configured fallback tag must resolve to an exact loaded tag.",
+      "registrationBefore": ["M3a"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector", "compatibility-run"],
+      "sourceAnchor": "2.2:L143-L144"
+    },
+    {
+      "id": "CAL-FALLBACK-045",
+      "statement": "Configured-fallback resolution first prefers an exact normalized file tag.",
+      "registrationBefore": ["M3a"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector", "compatibility-run"],
+      "sourceAnchor": "2.2:L144"
+    },
+    {
+      "id": "CAL-FALLBACK-046",
+      "statement": "Without an exact normalized file tag, configured-fallback resolution selects the sole CLDR-equivalent file when exactly one exists.",
+      "registrationBefore": ["M3b"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector", "compatibility-run"],
+      "sourceAnchor": "2.2:L144-L145"
+    },
+    {
+      "id": "CAL-FALLBACK-047",
+      "statement": "If earlier configured-fallback alternatives fail, resolution selects the first equivalent file in the applicable tiebreaker order.",
+      "registrationBefore": ["M3b"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector", "compatibility-run"],
+      "sourceAnchor": "2.2:L144-L145"
+    },
+    {
+      "id": "CAL-FALLBACK-048",
+      "statement": "Construction validation rejects a configured fallback unless fallback resolution produces one unambiguous exact loaded tag.",
+      "registrationBefore": ["M3b"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector", "compatibility-run"],
+      "sourceAnchor": "2.2:L145-L146"
+    },
+    {
+      "id": "CAL-FALLBACK-049",
+      "statement": "Manifest validation rejects a configured fallback unless fallback resolution produces one unambiguous exact loaded tag.",
+      "registrationBefore": ["M8"],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "evidenceKinds": ["vector"],
+      "sourceAnchor": "2.2:L145-L146"
+    },
+    {
+      "id": "CAL-FALLBACK-050",
+      "statement": "Runtime configuration exposes the resolved exact loaded fallback tag as its fallback value.",
+      "registrationBefore": ["M3a"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector", "compatibility-run"],
+      "sourceAnchor": "2.2:L146-L147"
+    },
+    {
+      "id": "CAL-FALLBACK-051",
+      "statement": "Every locale-match result exposes the resolved exact loaded fallback tag as its fallback value.",
+      "registrationBefore": ["M3a"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector", "compatibility-run"],
+      "sourceAnchor": "2.2:L146-L147"
+    },
+    {
+      "id": "CAL-FALLBACK-052",
+      "statement": "Fallback-file loading targets the resolved exact loaded fallback tag.",
+      "registrationBefore": ["M8"],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "evidenceKinds": ["vector"],
+      "sourceAnchor": "2.2:L146-L147"
+    },
+    {
+      "id": "CAL-FALLBACK-053",
+      "statement": "SSR metadata exposes the resolved exact loaded fallback tag as its fallback value.",
+      "registrationBefore": ["M8"],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "evidenceKinds": ["vector"],
+      "sourceAnchor": "2.2:L146-L147"
+    },
+    {
+      "id": "CAL-FALLBACK-054",
+      "statement": "Resolving a configured fallback does not rewrite a direct request's separate `lookupLocale`.",
+      "registrationBefore": ["M3a"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector", "compatibility-run"],
+      "sourceAnchor": "2.2:L147-L148"
+    },
+    {
+      "id": "CAL-FALLBACK-055",
+      "statement": "Candidate-chain output is determined by the supplied lookup locale rather than by one instance-wide constant.",
+      "registrationBefore": ["M3a"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector", "compatibility-run"],
+      "sourceAnchor": "2.2:L150"
+    },
+    {
+      "id": "CAL-FALLBACK-056",
+      "statement": "If candidate chains are memoized, each `Strings` instance owns its own cache.",
+      "registrationBefore": ["M7"],
+      "owner": "M7",
+      "parityClass": "implementation-required",
+      "evidenceKinds": ["vector", "static-check"],
+      "sourceAnchor": "2.2:L150-L152"
+    },
+    {
+      "id": "CAL-FALLBACK-057",
+      "statement": "An enabled candidate-chain cache uses deterministic LRU eviction.",
+      "registrationBefore": ["M7"],
+      "owner": "M7",
+      "parityClass": "implementation-required",
+      "evidenceKinds": ["vector"],
+      "sourceAnchor": "2.2:L151-L152"
+    },
+    {
+      "id": "CAL-FALLBACK-058",
+      "statement": "An enabled candidate-chain cache is keyed by normalized requested tag.",
+      "registrationBefore": ["M7"],
+      "owner": "M7",
+      "parityClass": "implementation-required",
+      "evidenceKinds": ["vector"],
+      "sourceAnchor": "2.2:L151-L152"
+    },
+    {
+      "id": "CAL-FALLBACK-059",
+      "statement": "An enabled candidate-chain cache retains at most 256 entries per `Strings` instance.",
+      "registrationBefore": ["M7"],
+      "owner": "M7",
+      "parityClass": "implementation-required",
+      "evidenceKinds": ["vector", "benchmark"],
+      "sourceAnchor": "2.2:L151-L152"
+    },
+    {
+      "id": "CAL-FALLBACK-060",
+      "statement": "Disabling candidate-chain caching is a conforming implementation choice.",
+      "registrationBefore": ["M7"],
+      "owner": "M7",
+      "parityClass": "implementation-required",
+      "evidenceKinds": ["vector"],
+      "sourceAnchor": "2.2:L152"
+    },
+    {
+      "id": "CAL-FALLBACK-061",
+      "statement": "A test-only cache probe reports retained-entry count without exposing mutable cache state.",
+      "registrationBefore": ["M7"],
+      "owner": "M7",
+      "parityClass": "implementation-required",
+      "evidenceKinds": ["static-check", "vector"],
+      "sourceAnchor": "2.2:L152-L153"
+    },
+    {
+      "id": "CAL-FALLBACK-062",
+      "statement": "Enabled-cache stress evidence inserts at least 4,096 distinct well-formed junk tags.",
+      "registrationBefore": ["M7"],
+      "owner": "M7",
+      "parityClass": "implementation-required",
+      "evidenceKinds": ["benchmark", "static-check"],
+      "sourceAnchor": "2.2:L153-L154"
+    },
+    {
+      "id": "CAL-FALLBACK-063",
+      "statement": "Enabled-cache stress evidence asserts the 256-entry ceiling.",
+      "registrationBefore": ["M7"],
+      "owner": "M7",
+      "parityClass": "implementation-required",
+      "evidenceKinds": ["benchmark", "vector"],
+      "sourceAnchor": "2.2:L153-L154"
+    },
+    {
+      "id": "CAL-FALLBACK-064",
+      "statement": "Enabled-cache stress evidence asserts deterministic eviction.",
+      "registrationBefore": ["M7"],
+      "owner": "M7",
+      "parityClass": "implementation-required",
+      "evidenceKinds": ["vector"],
+      "sourceAnchor": "2.2:L153-L154"
+    },
+    {
+      "id": "CAL-FALLBACK-065",
+      "statement": "Disabled-cache stress evidence asserts zero retained cache entries.",
+      "registrationBefore": ["M7"],
+      "owner": "M7",
+      "parityClass": "implementation-required",
+      "evidenceKinds": ["vector"],
+      "sourceAnchor": "2.2:L154-L155"
+    },
+    {
+      "id": "CAL-FALLBACK-066",
+      "statement": "Retained-memory evidence for both cache modes uses the locked forced-GC/heap protocol.",
+      "registrationBefore": ["M7"],
+      "owner": "M7",
+      "parityClass": "implementation-required",
+      "evidenceKinds": ["benchmark", "static-check"],
+      "sourceAnchor": "2.2:L155-L156"
+    },
+    {
+      "id": "CAL-FALLBACK-067",
+      "statement": "Retained-memory evidence compares workloads of 4,096 and 40,960 distinct well-formed junk tags.",
+      "registrationBefore": ["M7"],
+      "owner": "M7",
+      "parityClass": "implementation-required",
+      "evidenceKinds": ["benchmark"],
+      "sourceAnchor": "2.2:L155-L156"
+    },
+    {
+      "id": "CAL-FALLBACK-068",
+      "statement": "Neither enabled nor disabled cache mode may exhibit a retained-growth regression between the locked 4,096-tag and 40,960-tag workloads.",
+      "registrationBefore": ["M7"],
+      "owner": "M7",
+      "parityClass": "implementation-required",
+      "evidenceKinds": ["benchmark"],
+      "sourceAnchor": "2.2:L155-L156"
+    },
+    {
+      "id": "CAL-FALLBACK-069",
+      "statement": "Direct-locale input identifies a lookup request, not a catalog selector.",
+      "registrationBefore": ["M3a"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector", "compatibility-run"],
+      "sourceAnchor": "2.2:L158"
+    },
+    {
+      "id": "CAL-FALLBACK-070",
+      "statement": "Every direct-locale input that normalizes to a well-formed tag is accepted regardless of whether the normalized tag is loaded, supported, known to pinned validity data, or declared by a manifest.",
+      "registrationBefore": ["M3a"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["generated-partition", "compatibility-run", "vector"],
+      "sourceAnchor": "2.2:L158-L160"
+    },
+    {
+      "id": "CAL-FALLBACK-075",
+      "statement": "Core preserves the normalized serialized direct tag as `lookupLocale`.",
+      "registrationBefore": ["M3a"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector", "compatibility-run"],
+      "sourceAnchor": "2.2:L160"
+    },
+    {
+      "id": "CAL-FALLBACK-076",
+      "statement": "A direct `lookupLocale` enters the complete fallback cascade.",
+      "registrationBefore": ["M3a"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector", "compatibility-run"],
+      "sourceAnchor": "2.2:L160"
+    },
+    {
+      "id": "CAL-FALLBACK-077",
+      "statement": "The automatic match selection described in §3.4 is diagnostic only and never replaces a direct input's `lookupLocale`.",
+      "registrationBefore": ["M3a"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["generated-partition", "compatibility-run"],
+      "sourceAnchor": "2.2:L161"
+    },
+    {
+      "id": "CAL-FALLBACK-078",
+      "statement": "Malformed direct-locale input is rejected at the direct-input validation boundary.",
+      "registrationBefore": ["M3b"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector", "compatibility-run"],
+      "sourceAnchor": "2.2:L161-L163"
+    },
+    {
+      "id": "CAL-FALLBACK-079",
+      "statement": "Malformed direct-locale rejection occurs before candidate resolution begins.",
+      "registrationBefore": ["M3b"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector"],
+      "sourceAnchor": "2.2:L162"
+    },
+    {
+      "id": "CAL-FALLBACK-080",
+      "statement": "Malformed direct-locale rejection occurs before fallback-policy invocation.",
+      "registrationBefore": ["M3b"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector"],
+      "sourceAnchor": "2.2:L162"
+    },
+    {
+      "id": "CAL-FALLBACK-081",
+      "statement": "Malformed direct-locale rejection occurs before fallback observation.",
+      "registrationBefore": ["M3b"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector"],
+      "sourceAnchor": "2.2:L162-L163"
+    },
+    {
+      "id": "CAL-FALLBACK-082",
+      "statement": "Malformed direct-locale rejection occurs before failure handling.",
+      "registrationBefore": ["M3b"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["vector"],
+      "sourceAnchor": "2.2:L163"
+    },
+    {
+      "id": "CAL-FALLBACK-083",
+      "statement": "An exact-supported restriction may apply only to an inspection API that explicitly states that restriction.",
+      "registrationBefore": ["M3b"],
+      "owner": "M7",
+      "parityClass": "portable",
+      "evidenceKinds": ["static-check", "vector"],
+      "sourceAnchor": "2.2:L163-L164"
+    }
+  ]
+}

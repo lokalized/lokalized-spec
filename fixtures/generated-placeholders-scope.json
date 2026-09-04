@@ -1,0 +1,84 @@
+{
+  "id": "generated-placeholders-scope",
+  "description": "Plan v7 section 8.3 generated-placeholder clause: the scope in which raw caller input is visible. Language-form selectors, range endpoints, and generated-fragment alternative expressions read only the caller's placeholder map, never the values other generated placeholders produced, while interpolation of a file-defined name prefers the generated value over a same-named raw input. Every generated value is deliberately chosen to differ from the raw value of the same name, and the sibling that a selector names is always referenced EARLIER in the template so it is genuinely resolved before the selector runs — otherwise a port reading the wrong scope would merely fail for the same reason Java does instead of rendering a visibly different string.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Selector ignores generated values": {
+        "translation": "{{level}} and {{levelLabel}}",
+        "placeholders": {
+          "level": {
+            "translation": "5"
+          },
+          "levelLabel": {
+            "value": "level",
+            "translations": {
+              "CARDINALITY_ONE": "one level",
+              "CARDINALITY_OTHER": "many levels"
+            }
+          }
+        }
+      },
+      "Same name both scopes": {
+        "translation": "You have {{count}}.",
+        "placeholders": {
+          "count": {
+            "value": "count",
+            "translations": {
+              "CARDINALITY_ONE": "one message",
+              "CARDINALITY_OTHER": "several messages"
+            }
+          }
+        }
+      },
+      "Fragment selector scope": {
+        "translation": "{{size}} / {{report}}",
+        "placeholders": {
+          "size": {
+            "translation": "10"
+          },
+          "report": {
+            "translation": "unknown",
+            "alternatives": [
+              {
+                "size == 10": "matched generated ten"
+              }
+            ]
+          }
+        }
+      },
+      "Range selector scope": {
+        "translation": "From {{minHours}}: {{hours}}",
+        "placeholders": {
+          "minHours": {
+            "translation": "2"
+          },
+          "hours": {
+            "range": {
+              "start": "minHours",
+              "end": "maxHours"
+            },
+            "translations": {
+              "CARDINALITY_ONE": "one hour",
+              "CARDINALITY_OTHER": "hours"
+            }
+          }
+        }
+      },
+      "Generated template uses raw input": {
+        "translation": "{{greetingFragment}}",
+        "placeholders": {
+          "greetingFragment": {
+            "translation": "Hello, {{userName}}!",
+            "alternatives": [
+              {
+                "vip == 1": "Welcome back, {{userName}}!"
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

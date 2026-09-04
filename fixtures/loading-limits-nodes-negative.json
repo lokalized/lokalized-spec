@@ -1,0 +1,15 @@
+{
+  "id": "loading-limits-nodes-negative",
+  "description": "A trivially loadable catalog whose loading options request maximumTranslationNodes -1. The builder refuses it as not nonnegative, which is what makes 0 a legitimate value rather than an accident.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumTranslationNodes": -1
+  },
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  }
+}

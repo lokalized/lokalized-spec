@@ -1,0 +1,15 @@
+{
+  "id": "classpath-filenames-emoji-name",
+  "description": "A valid en catalog plus a file named with a single astral-plane emoji (U+1F389) and a .json extension — a surrogate pair in Java's and JavaScript's UTF-16 string model, so any diagnostic that slices by code unit can split it. Informational.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "rawFiles": {
+    "🎉.json": "{\"Key.emoji\":\"emoji\"}"
+  }
+}

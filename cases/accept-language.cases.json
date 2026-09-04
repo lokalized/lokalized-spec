@@ -1,0 +1,252 @@
+{
+  "formatVersion": 1,
+  "family": "accept-language",
+  "description": "Plan v7 section 8.3 fixture family 'accept-language'. Inputs only; the oracle emits expected.",
+  "skipped": [
+    {
+      "what": "The :119 boundary pair spelled with ASTRAL characters, as the disposition prescribed it.",
+      "why": "The :119 disposition asked for the 4,096/4,097 pair 'with astral characters in one, so a byte-length implementation fails'. MEASURED and struck rather than shipped: a 4,096-code-unit all-emoji header and a 4,098-code-unit one both answer ja, because any non-ASCII character makes LanguageRange.parse throw into the :132 catch, which returns the same fallback the length cap returns. Byte-length, code-point-length and code-unit-length ports are therefore indistinguishable on any header containing an astral character. The comma-padded pair that shipped discriminates the boundary AND the 'measured after normalization' port the note names second."
+    },
+    {
+      "what": "An acceptLanguage observation channel that also emits the NORMALIZER's output, or the parsed range list.",
+      "why": "An alternative oracle shape was considered and declined: invoking the default method through a recording LocaleMatcher whose bestMatchFor(List) delegates to the fixture's Strings would capture the parsed range list and observe the normalizer's output directly. It executes the same LocaleMatcher bytecode and would credit identical coverage, but it emits a field no JS implementation produces from its public surface -- conformance.mjs compares expected blocks whole, so every acceptLanguage case would then FAIL or need an attribution rule -- and it would quietly impose a structural constraint on M7's LocaleNegotiator. The decision is recorded here because it is worth more than the extra field."
+    },
+    {
+      "what": "Not a shape but a CLAIM that was struck: this family's discrimination accounting, corrected downward from 2 non-discriminating rows to 7.",
+      "why": "The slice's own report banked more discrimination than the rows deliver -- the recurring failure this project keeps paying for. Measured against the pinned JDK, SEVEN of the 21 rows do not discriminate against Java and are coverage-only or redundant: blank.whitespace-only, empty.zero-length-header, normalized-empty.commas-only, empty-element.trailing, ows.spaces-on-both-sides, ows.leading-space (LanguageRange.parse accepts ' de;q=0.8, fr;q=0.9' raw and answers fr, which its own note says and the report's accounting omitted), and ows-set.trailing-space-is-trimmed (legitimately labelled a control). The other 14 DO discriminate. Every one of the seven is kept -- each states its own honest limit and several discriminate at the PORT level, which is a real proposition -- but the count belongs in the record, because a summary that banks discrimination the rows do not carry is how a blind branch goes invisible."
+    }
+  ],
+  "cases": [
+    {
+      "id": "accept-language.control.plain-header-matches",
+      "requirementIds": [],
+      "fixture": "accept-language-chooser",
+      "operation": "acceptLanguage",
+      "input": {
+        "header": "fr"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "THE CONTROL, and every other row here is read against it. It is the only input in the family that traverses the whole method without taking a fail-soft exit: LocaleMatcher:118 FALSE, :119 FALSE, :120 FALSE, :125 FALSE, :136 FALSE, and :151's end-of-string member boundary with no trailing comma. Without it the family degenerates into 'everything returns ja' and could not tell a correct implementation from one that returns the fallback unconditionally."
+    },
+    {
+      "id": "accept-language.absent.null-header",
+      "requirementIds": [],
+      "fixture": "accept-language-chooser",
+      "operation": "acceptLanguage",
+      "input": {
+        "header": null
+      },
+      "partition": "requiredPortableIds",
+      "notes": "LocaleMatcher:118 TRUE -- the absent header. Spelled as an explicit JSON null rather than by omitting the key, because plan v7 section 3.5 types the JS parameter `string | null | undefined` and both spellings must land on this row; ingest refuses the omitted key so the two can never be conflated. DISCRIMINATING: a port without the null guard dereferences the header and throws (TypeError) where Java answers ja, and a throw on this operation is by itself a defect."
+    },
+    {
+      "id": "accept-language.empty.zero-length-header",
+      "requirementIds": [],
+      "fixture": "accept-language-chooser",
+      "operation": "acceptLanguage",
+      "input": {
+        "header": ""
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The present-but-empty header, which is NOT the same input as the absent one: it passes :118 and is stopped at :120 by \"\".trim().isEmpty(). Read against accept-language.absent.null-header, which reaches the same answer down a different path. HONEST LIMIT, corrected by measurement after a reviewer challenged an earlier claim here that \"both are needed because a port that treats null and \\\"\\\" as one value passes either alone\": that is incoherent, because Java answers ja for BOTH inputs, so a port conflating them answers correctly on both and passes both. Measured, \"\" and \"   \" take an IDENTICAL arm set (:118 FALSE, :119 FALSE, :120 TRUE), so this row closes no arm accept-language.blank.whitespace-only does not already close, and with :120 deleted \"\" normalizes to \"\" and :125 returns the same fallback. Against Java it is COVERAGE-ONLY. Its value is at the PORT level: a JS implementation that null-checks but hands \"\" to a parser that throws surfaces a throw where Java answers ja."
+    },
+    {
+      "id": "accept-language.blank.whitespace-only",
+      "requirementIds": [],
+      "fixture": "accept-language-chooser",
+      "operation": "acceptLanguage",
+      "input": {
+        "header": "   "
+      },
+      "partition": "requiredPortableIds",
+      "notes": "LocaleMatcher:120 TRUE -- the whitespace-only header. HONEST LIMIT, measured rather than assumed: against Java this branch is COVERAGE-ONLY. With the check deleted, \"   \" normalizes to \"\" and :125 returns the same fallback, so the two arms are indistinguishable in Java. It still discriminates at the PORT level -- a JS implementation whose own parser throws on a blank header and which lacks an equivalent guard surfaces a throw where Java answers ja -- which is why the case is authored, but the record should not claim more than that."
+    },
+    {
+      "id": "accept-language.normalized-empty.commas-only",
+      "requirementIds": [],
+      "fixture": "accept-language-chooser",
+      "operation": "acceptLanguage",
+      "input": {
+        "header": ",,,"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "LocaleMatcher:125 TRUE -- a header that survives :120 (\",,,\".trim() is not empty) and normalizes to the empty string. Also the FALSE arms of :157 (a zero-length member, so the leading-OWS scan never runs), :162 and :166. Same honest limit as the blank row: measured that LanguageRange.parse(\"\") throws IllegalArgumentException(\"range=\") into the :132 catch and that parse(\",,,\") raw returns zero ranges, so all three roads end at bestMatchFor(List.of()) and the same fallback -- against Java this is coverage, not discrimination. It discriminates against a port whose parser throws out."
+    },
+    {
+      "id": "accept-language.length.at-cap-four-thousand-ninety-six",
+      "requirementIds": [],
+      "fixture": "accept-language-chooser",
+      "operation": "acceptLanguage",
+      "input": {
+        "header": ",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,fr"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "LocaleMatcher:119 FALSE at the boundary -- 4,094 commas plus \"fr\", exactly 4,096 UTF-16 code units, which is accepted and normalizes to \"fr\" -> fr. Read as a PAIR with accept-language.length.over-cap-four-thousand-ninety-seven, which is one code unit longer and answers ja. DISCRIMINATING TWICE: it catches the off-by-one (`>=` instead of `>`), and it catches a port that measures AFTER normalizing, because both headers normalize to the same two characters. THE DISPOSITION'S OWN PRESCRIPTION FOR THIS BRANCH DOES NOT WORK and was struck: it asked for astral characters so a byte-length port would fail, but measured, a 4,096-code-unit all-emoji header and a 4,098-code-unit one BOTH answer ja, because any non-ASCII character makes LanguageRange.parse throw into the :132 catch, which returns the very fallback the length cap returns. Byte-, code-point- and code-unit-length ports are indistinguishable on any astral header."
+    },
+    {
+      "id": "accept-language.length.over-cap-four-thousand-ninety-seven",
+      "requirementIds": [],
+      "fixture": "accept-language-chooser",
+      "operation": "acceptLanguage",
+      "input": {
+        "header": ",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,fr"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "LocaleMatcher:119 TRUE -- 4,097 UTF-16 code units, one past the cap, rejected BEFORE normalization or parsing so parser work stays bounded independently of the parsed-range limit. Read as a pair with accept-language.length.at-cap-four-thousand-ninety-six; the pair is what discriminates, neither row alone does."
+    },
+    {
+      "id": "accept-language.limit.thirty-three-expanded-ranges",
+      "requirementIds": [],
+      "fixture": "accept-language-chooser",
+      "operation": "acceptLanguage",
+      "input": {
+        "header": "he,id,yi,cmn,yue,nan,hak,jbo,tlh,gan,wuu,hsn,ase,fr;q=0.1"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "LocaleMatcher:136 TRUE -- 14 header entries that LanguageRange.parse expands to 33 ranges via the IANA equivalence table, one past MAXIMUM_LANGUAGE_RANGES. THE STRONGEST ROW IN THE FAMILY: this is the same header the corpus already carries as browser-chooser.limit.alias-expansion-crosses-thirty-two, where the identical range list through bestMatchFor(List) THROWS `IllegalArgumentException: At most 32 language ranges are supported, but received 33` (measured). Fail-soft here versus strict there, on one input, is the whole reason this entry point exists. PINNED-TABLE-DEPENDENT, as its matchFor twin already is: 14 entries expanding to exactly 33 is a property of the JDK's IANA equivalence table, which lokalized-spec pins, not of Lokalized -- a port whose table differs by one entry lands on the wrong side of a boundary that will look like a parsing bug."
+    },
+    {
+      "id": "accept-language.limit.thirty-two-expanded-ranges",
+      "requirementIds": [],
+      "fixture": "accept-language-chooser",
+      "operation": "acceptLanguage",
+      "input": {
+        "header": "he,id,yi,cmn,yue,nan,jbo,tlh,gan,wuu,hsn,ase,fr;q=0.9,de;q=0.8,es;q=0.7,it;q=0.6"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "LocaleMatcher:136 FALSE -- 16 header entries expanding to exactly 32 ranges, accepted and passed through whole; preferences are never truncated, so the q=0.9 preference for fr wins -> fr. The twin of accept-language.limit.thirty-three-expanded-ranges; a port that truncates to 32 instead of rejecting at 33 answers this row correctly and the other one wrong."
+    },
+    {
+      "id": "accept-language.empty-element.interior",
+      "requirementIds": [],
+      "fixture": "accept-language-chooser",
+      "operation": "acceptLanguage",
+      "input": {
+        "header": "fr,,de"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "LocaleMatcher:152's comma arm, :166 FALSE (the empty member is dropped) and :167 TRUE (a comma is re-inserted before the second survivor). EMPTY LIST ELEMENT removal is the reason the normalizer exists. DISCRIMINATING: measured that LanguageRange.parse(\"fr,,de\") raw THROWS IllegalArgumentException(\"range=\"), so a port that does not drop the empty element answers ja where Java answers fr. The corpus already carries this exact header as browser-chooser.malformed.empty-list-element, partitioned informational because the JDK parser throws on it before the library is reached; this operation is what turns that informational curiosity into required portable behavior."
+    },
+    {
+      "id": "accept-language.empty-element.leading",
+      "requirementIds": [],
+      "fixture": "accept-language-chooser",
+      "operation": "acceptLanguage",
+      "input": {
+        "header": ",fr"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "LocaleMatcher:167 FALSE reached after a member was dropped -- the first SURVIVOR is not the first member, so nothing may be prepended. DISCRIMINATING: a port that appends the separator unconditionally produces \",fr\", and measured, LanguageRange.parse(\",fr\") throws, so such a port answers ja where Java answers fr."
+    },
+    {
+      "id": "accept-language.empty-element.trailing",
+      "requirementIds": [],
+      "fixture": "accept-language-chooser",
+      "operation": "acceptLanguage",
+      "input": {
+        "header": "fr,"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The VIRTUAL member after a final comma: zero-length, so :166 takes its FALSE arm and nothing is appended. Read against accept-language.control.plain-header-matches, which differs only in the trailing comma. HONEST LIMIT, and this row REDUNDANT AGAINST JAVA -- an earlier note claimed it closed :151's loop boundary and discriminated against a port that emits a trailing separator, and measurement refutes both. :151's loop-exit arm is taken by every non-null header, the control included, so this row closes nothing unique; and LanguageRange.parse(\"fr,\") does NOT reject -- measured on the pinned JDK it returns one range, fr@1.0, because String.split drops trailing empties -- so a port that faithfully mirrors parse and emits the trailing separator still answers fr and this row cannot see that defect. It is kept rather than retired because it costs nothing and pins the trailing-comma shape as answering fr, but no disposition depends on it and the record must not bank it as discrimination."
+    },
+    {
+      "id": "accept-language.ows.leading-space",
+      "requirementIds": [],
+      "fixture": "accept-language-chooser",
+      "operation": "acceptLanguage",
+      "input": {
+        "header": " de;q=0.8, fr;q=0.9"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "LocaleMatcher:157's leading-OWS trim with a SPACE, and :183's first disjunct. RFC 9110 optional whitespace after a list separator is legal and must be removed before parsing: measured, LanguageRange.parse accepts this raw, so the row's force is that a port must not CORRUPT it -- and read with its tab twin it fixes exactly which two characters count as OWS."
+    },
+    {
+      "id": "accept-language.ows.leading-tab",
+      "requirementIds": [],
+      "fixture": "accept-language-chooser",
+      "operation": "acceptLanguage",
+      "input": {
+        "header": "de;q=0.8,\tfr;q=0.9"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "LocaleMatcher:157's leading-OWS trim with a HORIZONTAL TAB, and :183's second disjunct. DISCRIMINATING: measured that LanguageRange.parse of this header raw THROWS IllegalArgumentException(\"range=\\tfr\"), so a port that treats only the space as OWS answers ja where Java answers fr. The corpus twin browser-chooser.malformed.horizontal-tab-ows is informational for that reason. NOTE FOR ANYONE READING THE :172 DISPOSITION: this header does NOT reach :172. Its tab is LEADING within its member and is consumed by the trim loop at :157 before the copy loop at :170 ever runs -- measured through the private normalizer, this header normalizes to \"de;q=0.8,fr;q=0.9\" with NO space in it. See accept-language.interior-tab.converted-to-space."
+    },
+    {
+      "id": "accept-language.interior-tab.converted-to-space",
+      "requirementIds": [],
+      "fixture": "accept-language-chooser",
+      "operation": "acceptLanguage",
+      "input": {
+        "header": "de;q=0.8,f\tr;q=0.9"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "LocaleMatcher:172 TRUE -- the tab-to-space CONVERSION inside a surviving member, and the ONLY input in this family that reaches it. The disposition for this branch prescribed the leading-tab header, which is the zh-123 trap: that tab is eaten by the :157 trim loop and the conversion arm never runs, so an author following the note literally would ship a passing case and specify nothing. MEASURED through the private normalizer: this header normalizes to \"de;q=0.8,f r;q=0.9\" -- a real space -- and LanguageRange.parse then strips the space and selects fr. THREE-WAY DISCRIMINATION: a port that lets the tab survive answers ja (parse throws on it), one that drops the whole malformed member answers de, and only conversion answers fr."
+    },
+    {
+      "id": "accept-language.ows.tab-on-both-sides",
+      "requirementIds": [],
+      "fixture": "accept-language-chooser",
+      "operation": "acceptLanguage",
+      "input": {
+        "header": "\tfr\t,de;q=0.1"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "LocaleMatcher:162 and :163 -- the TRAILING-trim loop, whose guard and whose isOptionalWhitespace test are separate branch points from the leading trim at :157. The first member is tab-padded on both sides. DISCRIMINATING: measured that parse of this header raw throws IllegalArgumentException(\"range=\\tfr\\t\"), so a port that trims only the leading side answers ja where Java answers fr."
+    },
+    {
+      "id": "accept-language.ows.spaces-on-both-sides",
+      "requirementIds": [],
+      "fixture": "accept-language-chooser",
+      "operation": "acceptLanguage",
+      "input": {
+        "header": "  fr  ,  de  "
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The space spelling of the trailing trim at :163, and multiple OWS characters per side rather than one. Read against accept-language.ows.tab-on-both-sides: together they establish that the trim loops are loops over the OWS SET, not single-character strips. HONEST LIMIT: measured, LanguageRange.parse accepts this header raw (2 ranges -> fr), so against Java the trim is not what decides the answer -- this row pins the loop shape -- multiple OWS characters per side -- and discriminates only against a port that CORRUPTS a member while trimming it. It does NOT uniquely close ':163's space spelling', as an earlier draft claimed: the space arm of the OWS test at :183 is also taken by accept-language.ows-set.trailing-space-is-trimmed (\"fr \") and by accept-language.ows.leading-space, and :163 itself is a loop guard whose two arms carry no character spelling at all. Its tab twin, accept-language.ows.tab-on-both-sides, is the half that discriminates against Java."
+    },
+    {
+      "id": "accept-language.malformed.unparseable-header",
+      "requirementIds": [],
+      "fixture": "accept-language-chooser",
+      "operation": "acceptLanguage",
+      "input": {
+        "header": "not a header!"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The :132 catch -- an exception HANDLER, not a branch, so it carries no disposition and closes nothing. Authored anyway because it is the boundary the whole fail-soft contract rests on: measured, LanguageRange.parse throws IllegalArgumentException(\"range=notaheader!\") and Java answers ja. A port that lets its own parser's error escape produces a `thrown` row here instead of a tag."
+    },
+    {
+      "id": "accept-language.ows-set.trailing-space-is-trimmed",
+      "requirementIds": [],
+      "fixture": "accept-language-chooser",
+      "operation": "acceptLanguage",
+      "input": {
+        "header": "fr "
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The CONTROL half of the OWS-set pair, and the one that stops the other half from being read as 'any odd character returns the fallback'. An ASCII space is OWS, so it is trimmed and the header still answers fr."
+    },
+    {
+      "id": "accept-language.ows-set.no-break-space-is-not-ows",
+      "requirementIds": [],
+      "fixture": "accept-language-chooser",
+      "operation": "acceptLanguage",
+      "input": {
+        "header": " fr"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "THE SHARPEST JS-SPECIFIC ROW HERE, and one no disposition proposes. Java's OWS set is exactly {space, tab} (LocaleMatcher:183), while the trim at :120 is String.trim(), which cuts everything <= U+0020 -- the two are deliberately different widths. U+00A0 survives BOTH, so the member reaches LanguageRange.parse intact and parse throws (measured: `range=\\u00a0fr`) -> ja. DISCRIMINATING: a JS port that trims members with String.prototype.trim(), which strips U+00A0 and U+FEFF, answers fr. Read against accept-language.ows-set.trailing-space-is-trimmed, which differs only in which whitespace character it uses."
+    },
+    {
+      "id": "accept-language.ows-set.newline-is-not-ows",
+      "requirementIds": [],
+      "fixture": "accept-language-chooser",
+      "operation": "acceptLanguage",
+      "input": {
+        "header": "\nfr"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The other half of the same divergence, from the opposite direction. A newline IS cut by String.trim() at :120, so the header is not blank there; it is NOT OWS at :183, so the normalizer preserves it; parse then throws -> ja. DISCRIMINATING: a JS port that trims members with a `\\s`-class regex, which matches \\n, answers fr. The pair with the no-break-space row pins the OWS set from both sides -- narrower than \\s, and not the same set as the blank check one line above it."
+    }
+  ]
+}

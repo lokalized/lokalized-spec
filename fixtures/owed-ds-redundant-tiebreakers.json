@@ -1,0 +1,18 @@
+{
+  "id": "owed-ds-redundant-tiebreakers",
+  "description": "A tiebreaker list supplied for a language that has exactly ONE loaded catalog. Java keeps the caller's single-element list instead of synthesizing the identity one, and -- the observable part -- ACCEPTS the configuration rather than rejecting it as redundant. No existing fixture supplies tiebreakers for an unambiguous language, so a port that refused them would pass the entire corpus.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "fr": [
+      "fr"
+    ]
+  },
+  "files": {
+    "en": {
+      "Checkout.Title": "en"
+    },
+    "fr": {
+      "Checkout.Title": "fr"
+    }
+  }
+}

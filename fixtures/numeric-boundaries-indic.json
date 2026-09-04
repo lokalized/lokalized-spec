@@ -1,0 +1,65 @@
+{
+  "id": "numeric-boundaries-indic",
+  "description": "Plan v7 section 8.3: the Indic `i = 0 or n = 1` cardinal family (hi, bn, gu) carried through the translation path at 10^17, 10^18, and 10^20 as well as through both the i = 0 and the n = 1 branches. Each locale's generated placeholder tags the category it selected so the recorded translation names the branch. Every non-fallback catalog is selected by at least one case. No two loaded locales share a primary language code, so tiebreakers are absent.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "{{itemCount}} counted": {
+        "translation": "{{items}}",
+        "commentary": "The required fallback catalog. Emits only the generated form so that if fallback ever were used the recorded translation would name it.",
+        "placeholders": {
+          "items": {
+            "value": "itemCount",
+            "translations": {
+              "CARDINALITY_ONE": "en-one",
+              "CARDINALITY_OTHER": "en-other"
+            }
+          }
+        }
+      }
+    },
+    "hi": {
+      "{{itemCount}} counted": {
+        "translation": "{{items}}",
+        "placeholders": {
+          "items": {
+            "value": "itemCount",
+            "translations": {
+              "CARDINALITY_ONE": "hi-one",
+              "CARDINALITY_OTHER": "hi-other"
+            }
+          }
+        }
+      }
+    },
+    "bn": {
+      "{{itemCount}} counted": {
+        "translation": "{{items}}",
+        "placeholders": {
+          "items": {
+            "value": "itemCount",
+            "translations": {
+              "CARDINALITY_ONE": "bn-one",
+              "CARDINALITY_OTHER": "bn-other"
+            }
+          }
+        }
+      }
+    },
+    "gu": {
+      "{{itemCount}} counted": {
+        "translation": "{{items}}",
+        "placeholders": {
+          "items": {
+            "value": "itemCount",
+            "translations": {
+              "CARDINALITY_ONE": "gu-one",
+              "CARDINALITY_OTHER": "gu-other"
+            }
+          }
+        }
+      }
+    }
+  }
+}

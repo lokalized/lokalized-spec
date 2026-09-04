@@ -1,0 +1,99 @@
+{
+  "formatVersion": 1,
+  "family": "owed-m3b-member-statics",
+  "description": "Plan v7 section 8.3 fixture family 'owed-m3b-member-statics'. Inputs only; the oracle emits expected.",
+  "cases": [
+    {
+      "id": "owed-member-statics.private-use.wildcard-free-range-selects-nothing",
+      "requirementIds": [],
+      "fixture": "owed-member-statics",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "x-lokal",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A wildcard-free PRIVATE-USE range. Every private-use range already in the corpus (x-*, x-foo-*) carries a wildcard, so nothing had shown what a bare one does. DISCRIMINATION: a private-use member gets no canonicalRange, no canonicalRangeSubtags, no fallbackChainCanonicalTags, no requestedLikelyLanguageScript and semanticDepth 0 (DefaultStrings$MemberStatics.<init>:3051 else arm), which structurally disables every derived rung. A port that computed those statics would hold canonicalRangeSubtags [x, lokal] and reach the loaded x-lokal-a catalog by prefix truncation, exactly as en reaches en-US. Java selects nothing."
+    },
+    {
+      "id": "owed-member-statics.private-use.wildcard-free-range-yields-to-a-later-member",
+      "requirementIds": [],
+      "fixture": "owed-member-statics",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "x-lokal",
+            "weight": 1
+          },
+          {
+            "range": "fr",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The positive half of the same discrimination, so the observable difference is a SELECTION rather than an absence: the private-use member is listed FIRST at equal weight and Java still selects fr. A port that derived a match for x-lokal from canonical statics would answer x-lokal-a instead."
+    },
+    {
+      "id": "owed-member-statics.private-use.exact-spelling-still-matches",
+      "requirementIds": [],
+      "fixture": "owed-member-statics",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "x-lokal-a",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The guard against overcorrecting: withholding the canonical/fallback-chain precomputation must not make a private-use range unmatchable. The exact spelling of the loaded private-use catalog still selects it EXACTLY, so a port that answered NONE for every private-use range fails here while passing the two rows above."
+    },
+    {
+      "id": "owed-member-statics.undetermined.und-us-selects-nothing",
+      "requirementIds": [],
+      "fixture": "owed-member-statics",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "und-US",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "An undetermined range with a REGION attached, which is where the withheld statics bite hardest: CLDR's likely subtag for und-US is en-Latn, so a port that computed requestedLikelyLanguageScript and the fallback chain for this member would reach the loaded en-US catalog. Java computes none of them and selects nothing. The corpus's only prior undetermined range (und-latn) is bare, so nothing had shown that the undetermined refusal survives an attached region that would otherwise resolve."
+    },
+    {
+      "id": "owed-member-statics.mixed.private-use-and-undetermined-alongside-an-ordinary-member",
+      "requirementIds": [],
+      "fixture": "owed-member-statics",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "und-US",
+            "weight": 1
+          },
+          {
+            "range": "x-lokal",
+            "weight": 1
+          },
+          {
+            "range": "fr",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "One member of each shape in a single list, all at equal weight, with the ordinary member LAST. Java answers fr. A port that computed statics for either special member answers en-US (from und-US, via likely subtag en-Latn) or x-lokal-a (from x-lokal, via prefix truncation) instead, so this row separates the arms twice over. FINDING recorded while authoring it: this list cannot cover the private-use conjunct of DefaultStrings$MemberStatics.<init>:3051, because CldrLocaleData.TagParts.forLanguageTag sets privateUse=true only on its startsWith(\"x-\") early return, and that same return sets language=\"\" -- so privateUse implies undetermined and the third conjunct is unreachable in the true direction. That disposition is now excluded, not owed."
+    }
+  ]
+}

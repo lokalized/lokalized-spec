@@ -1,0 +1,117 @@
+{
+  "formatVersion": 1,
+  "family": "m3b-supplied-match",
+  "description": "Plan v7 section 8.3 fixture family 'm3b-supplied-match'. Inputs only; the oracle emits expected.",
+  "cases": [
+    {
+      "id": "m3b-supplied-match.none-with-range",
+      "requirementIds": [],
+      "fixture": "m3b-supplied-match-none-with-range",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "LocaleMatchResult.<init>:103, the unmatched-result invariant, whose range clause is one of the untaken outcomes. A NONE result may not carry a language range; a port that only checked the match type accepts this and then reports a range for a match that does not exist."
+    },
+    {
+      "id": "m3b-supplied-match.none-with-weight",
+      "requirementIds": [],
+      "fixture": "m3b-supplied-match-none-with-weight",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The weight clause of the same invariant at :103. Paired with the row above so the two clauses are distinguished rather than one standing in for both."
+    },
+    {
+      "id": "m3b-supplied-match.type-without-locale",
+      "requirementIds": [],
+      "fixture": "m3b-supplied-match-type-without-locale",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The match-type clause of :103: a non-NONE type with no locale is refused by the SAME message as the two rows above, which is itself the assertion -- all three malformed unmatched shapes must be rejected under one diagnostic rather than falling through to a different failure."
+    },
+    {
+      "id": "m3b-supplied-match.locale-without-range",
+      "requirementIds": [],
+      "fixture": "m3b-supplied-match-locale-without-range",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "LocaleMatchResult.<init>:106, the matched-result invariant. Two of its three clauses are never the one that fires; this is the missing-range clause."
+    },
+    {
+      "id": "m3b-supplied-match.locale-without-weight",
+      "requirementIds": [],
+      "fixture": "m3b-supplied-match-locale-without-weight",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The missing-weight clause of :106."
+    },
+    {
+      "id": "m3b-supplied-match.locale-with-none-type",
+      "requirementIds": [],
+      "fixture": "m3b-supplied-match-locale-with-none-type",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The NONE-type clause of :106, which is the shape a port is most likely to accept: every field is populated and only the type contradicts them."
+    },
+    {
+      "id": "m3b-supplied-match.weight-above-one",
+      "requirementIds": [],
+      "fixture": "m3b-supplied-match-weight-above-one",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "LocaleMatchResult.<init>:111, the effective-weight domain. 1.5 exercises the upper-bound clause; the zero row exercises the lower one. (The non-finite clause is not expressible through this fixture format, since JSON has no NaN or Infinity literal -- a JS caller can produce both, so the port owes those two shapes on its own side.)"
+    },
+    {
+      "id": "m3b-supplied-match.weight-zero",
+      "requirementIds": [],
+      "fixture": "m3b-supplied-match-weight-zero",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The lower-bound clause of :111. A weight of 0 is the value an Accept-Language q=0 would produce, so a port that clamped rather than refused would silently turn an exclusion into a selection."
+    },
+    {
+      "id": "m3b-supplied-match.locale-not-considered",
+      "requirementIds": [],
+      "fixture": "m3b-supplied-match-locale-not-considered",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "LocaleMatchResult.<init>:131, whose refusing arm is untaken. The sibling check for the FALLBACK locale at 129 is exercised by the corpus and this one is not, so a fabricated match naming a locale outside its own considered set is accepted today by the corpus's silence."
+    },
+    {
+      "id": "m3b-supplied-match.valid",
+      "requirementIds": [],
+      "fixture": "m3b-supplied-match-valid",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The control. Every fixture above differs from this one in exactly one field, so each refusal is attributable to that field rather than to the fabricated-match machinery as a whole."
+    }
+  ]
+}

@@ -1,0 +1,1492 @@
+{
+  "formatVersion": 1,
+  "family": "browser-chooser",
+  "description": "Plan v7 section 8.3 fixture family 'browser-chooser'. Inputs only; the oracle emits expected.",
+  "skipped": [
+    {
+      "what": "localeResolver and localeMatchResolver ingress axes named in plan v7 section 8.3",
+      "why": "Not Java APIs. They are JS-surface names belonging to the port's own design, so there is no reference behavior for an oracle to emit. DefaultStrings offers only localeSupplier and localeMatchSupplier and requires exactly one of them (VERIFIED at DefaultStrings.java:254-256, which throws 'You must specify exactly one of localeSupplier or localeMatchSupplier'); both are already exercised by ingress-smoke and ingress-matrix."
+    },
+    {
+      "what": "LocaleMatcher.bestMatchForAcceptLanguage, the fail-soft raw-header entry point (LocaleMatcher.java:99-142)",
+      "why": "Not reachable through any corpus operation. The `matchFor` operation takes either a pre-parsed range list or a single locale (VectorOracle.java:241-249), and a string `languageRanges` is parsed with Locale.LanguageRange.parse in the harness before the library is entered. bestMatchForAcceptLanguage is where Lokalized's own behavior lives for every shape this family's malformed rows probe: the 4,096 code-unit length cap, horizontal-tab-to-space normalization, empty HTTP list-element removal, and returning the configured fallback rather than throwing on a parse failure or on a parsed list above MAXIMUM_LANGUAGE_RANGES. Covering it needs a new oracle operation plus a corresponding observation shape; I did not add one because both repositories are read-only to me."
+    },
+    {
+      "what": "bestMatchFor(Locale) and bestMatchFor(List<LanguageRange>), the fallback-manufacturing counterparts of matchFor (DefaultStrings.java:1529-1540)",
+      "why": "No corpus operation reaches them either. Several cases here assert that matchFor returns NONE rather than the configured fallback (rejection.en-rejected-outright, rejection.sole-zero-weight-yields-no-match, rejection.zero-weight-outranks-higher-weighted-derived-range, shape.empty-range-list-yields-no-match); the complementary assertion that bestMatchFor DOES substitute the fallback for the same inputs cannot be expressed with the current operation set."
+    },
+    {
+      "what": "Classpath loading of strings files",
+      "why": "Stated as unsupported in the family brief; the oracle materializes fixtures to a temporary directory and loads through LocalizedStringLoader.loadFromFilesystem (VectorOracle.java:135-137)."
+    },
+    {
+      "what": "JS-side delivery concerns: SSR serialization of a negotiated match, Fetch/Node request planning, digest capability, shard merges",
+      "why": "Stated as unsupported in the family brief. None has a lokalized-java counterpart for the oracle to execute, so no case could carry an oracle-emitted expected block."
+    },
+    {
+      "what": "Reference identity between the LocaleMatchResult object on a result and the one handed to a failure handler (matchObjectIdenticalToResult)",
+      "why": "Observable only from Java and already covered by the failure-handler and supplied-match families. This family's two getResult cases assert the negotiated match's CONTENT reaching the result, not object identity, to avoid duplicating another family's proposition."
+    },
+    {
+      "what": "Three submitted cases removed rather than reworded: chooser.zh-hant-rejected-selects-zh, chooser.zh-rejected-selects-zh-hant, rejection.zero-weight-is-rejection-not-low-preference",
+      "why": "Not unexecutable — they run fine — but they do not discriminate, which I confirmed by executing each input with the q=0 clause deleted and getting a byte-identical answer. 'zh;q=1,zh-Hant;q=0' and a bare 'zh' both select zh (zh is a loaded source and wins on an exact match, so the exclusion never decides anything); the mirror has the same defect; and 'fr;q=0,en;q=0.5' selects en exactly as 'fr;q=0.1,en;q=0.5' would, so a port ranking by weight alone passes it. Their propositions are now carried by chooser.extended-range-exclusion-moves-answer, chooser.equal-specificity-exclusion-is-inert, and the zero-weight-outranks-higher-weighted-derived-range pair, each of which I verified moves the answer relative to its own control."
+    }
+  ],
+  "cases": [
+    {
+      "id": "browser-chooser.chooser.zh-tw-reversed-tiebreaker.ranges",
+      "requirementIds": [],
+      "fixture": "browser-chooser-zh-chooser-reversed",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "zh-TW"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ingress-smoke pins zh-TW under tiebreaker zh:[zh, zh-Hant]. This is the same request against the REVERSED tiebreaker, and the proposition is that reversal does NOT move it: zh-TW's likely subtag is a unique candidate, so no tiebreaker is consulted. The case could have failed — the sibling zh-* cases on these same two fixtures DO move — so this is a real control, not a restatement."
+    },
+    {
+      "id": "browser-chooser.chooser.zh-tw-reversed-tiebreaker.locale",
+      "requirementIds": [],
+      "fixture": "browser-chooser-zh-chooser-reversed",
+      "operation": "matchFor",
+      "input": {
+        "locale": "zh-TW"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The single-locale kernel for the same request, so the reversal control is asserted on both solvers rather than only the range-list one."
+    },
+    {
+      "id": "browser-chooser.chooser.zh-hans-cldr-fallback.ranges",
+      "requirementIds": [],
+      "fixture": "browser-chooser-zh-chooser",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "zh-Hans"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "zh-Hans has no loaded source but resolves to zh through CLDR parent-locale fallback, and the reported match type is neither EXACT nor the LIKELY_SUBTAG the zh-TW row above produces. A port that classified every derived match under one type would lose that distinction."
+    },
+    {
+      "id": "browser-chooser.chooser.zh-hans-cldr-fallback.locale",
+      "requirementIds": [],
+      "fixture": "browser-chooser-zh-chooser",
+      "operation": "matchFor",
+      "input": {
+        "locale": "zh-Hans"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The single-locale kernel counterpart. Both routes must produce byte-identical match blocks here, which they do — unlike the sgn-NO and zh-guoyu pairs later in this family."
+    },
+    {
+      "id": "browser-chooser.chooser.zh-hant-exact.ranges",
+      "requirementIds": [],
+      "fixture": "browser-chooser-zh-chooser",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "zh-Hant"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The control for the two derived rows: when a source for the requested tag genuinely exists the match is EXACT, with the reported languageRange lowercased by the range parser. A port that reported the caller's original casing would differ here."
+    },
+    {
+      "id": "browser-chooser.chooser.zh-hant-exact.locale",
+      "requirementIds": [],
+      "fixture": "browser-chooser-zh-chooser",
+      "operation": "matchFor",
+      "input": {
+        "locale": "zh-Hant"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The single-locale kernel counterpart. The reported range is lowercased on BOTH routes even though the caller wrote zh-Hant, so casing is not a solver-dependent artifact."
+    },
+    {
+      "id": "browser-chooser.chooser.zh-star-tiebreaker-first",
+      "requirementIds": [],
+      "fixture": "browser-chooser-zh-chooser",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "zh-*"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "THE TIEBREAKER PROOF, first half. The extended range zh-* matches both loaded zh sources structurally, so preferredLocaleForRange (DefaultStrings.java:2561) must consult the configured tiebreaker order, and the reported type is EXTENDED_RANGE rather than any heuristic type."
+    },
+    {
+      "id": "browser-chooser.chooser.zh-star-tiebreaker-reversed",
+      "requirementIds": [],
+      "fixture": "browser-chooser-zh-chooser-reversed",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "zh-*"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The second half: the identical request against a fixture differing ONLY in tiebreaker order selects the other source. A port that ignored tiebreakers, or used sorted or insertion order, would return the same locale for both halves and fail exactly one. There is no single-locale counterpart — a wildcard is not expressible as a Locale."
+    },
+    {
+      "id": "browser-chooser.chooser.extended-range-exclusion-moves-answer",
+      "requirementIds": [],
+      "fixture": "browser-chooser-zh-chooser-reversed",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "zh-*;q=1,zh-Hant;q=0"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "q=0 against an extended range, on the fixture where it bites. Compare chooser.zh-star-tiebreaker-reversed, whose request is this one minus the exclusion and which selects the OTHER source: excluding the tiebreaker-preferred locale leaves the remaining structural candidate standing, still reported as EXTENDED_RANGE. The exclusion wins because it is strictly more specific (an exact tag, depth 2) than the positive extended range that also reaches that locale."
+    },
+    {
+      "id": "browser-chooser.chooser.equal-specificity-exclusion-is-inert",
+      "requirementIds": [],
+      "fixture": "browser-chooser-zh-chooser",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "zh-*;q=1,zh;q=0"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "THE COUNTERINTUITIVE HALF, and the reason the case above needs a partner. MEASURED: this does NOT exclude the bare zh source — the answer is the same one plain zh-* gives. RFC 4647 strips noninitial wildcards before categorization, so for locale zh the ranges zh-* and zh both classify as EXACT at depth 1 (DefaultStrings.java:2014-2033) and the governor sweep breaks a specificity TIE by weight (:1717-1745), leaving the q=1 member in charge. LocaleMatcher's javadoc (:55-58) states the rule as 'the most-specific matching range determines its effective quality, including a q=0 exclusion' — most specific, not any. A port implementing q=0 as set subtraction over matching locales answers zh-Hant here while still passing every other exclusion case in this family."
+    },
+    {
+      "id": "browser-chooser.chooser.bare-wildcard-selects-fallback",
+      "requirementIds": [],
+      "fixture": "browser-chooser-zh-chooser",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "*"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A bare wildcard against the chooser: the reported match type is WILDCARD and the selection is en — not a zh source, and not the fallback-shaped 'first zh in the tiebreaker'. HONEST LIMIT: en is simultaneously the configured fallback AND the first supported locale in sorted order here, so this row does NOT separate the two branches of preferredLocaleForWildcard; it establishes the type and the family baseline. wildcard.prefers-fallback-over-loaded-family and the browser-chooser-wildcard-fallback cases are where those branches are actually separated."
+    },
+    {
+      "id": "browser-chooser.chooser.zh-tw-header-serves-translation",
+      "requirementIds": [],
+      "fixture": "browser-chooser-zh-chooser",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "languageRanges": "zh-TW,zh;q=0.9,en;q=0.5"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The end-to-end half of the chooser clause: the same Accept-Language header supplied per call to getResult, so the negotiated locale is shown actually serving a translation rather than only appearing in a diagnostic. The oracle emits a standalone `match` block only when the input carries a `locale` (VectorOracle.java:224), so the negotiation is observed here through the result's own localeMatchResult, alongside lookupLocale, resolvedLocale, attemptedLocales and the translation itself."
+    },
+    {
+      "id": "browser-chooser.tiebreaker.en-bare-first-order.ranges",
+      "requirementIds": [],
+      "fixture": "browser-chooser-en-regional",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A bare en against two same-language regional sources and no bare en source. Resolution runs through likely-subtag inference and lands on whichever source the tiebreaker names first. Baseline for the reversal pair below, and for the q=0 case that moves it."
+    },
+    {
+      "id": "browser-chooser.tiebreaker.en-bare-first-order.locale",
+      "requirementIds": [],
+      "fixture": "browser-chooser-en-regional",
+      "operation": "matchFor",
+      "input": {
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The single-locale kernel counterpart, asserting the two solvers agree on a tiebreaker-decided answer and not merely on exact matches."
+    },
+    {
+      "id": "browser-chooser.tiebreaker.en-bare-reversed-order.ranges",
+      "requirementIds": [],
+      "fixture": "browser-chooser-en-regional-reversed",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The identical request against a fixture differing ONLY in tiebreaker order. The answer must move to the other regional source. A port resolving same-language ambiguity by sorted order, insertion order, or 'prefer the fallback's region' returns the same locale for this and for the first-order case."
+    },
+    {
+      "id": "browser-chooser.tiebreaker.en-bare-reversed-order.locale",
+      "requirementIds": [],
+      "fixture": "browser-chooser-en-regional-reversed",
+      "operation": "matchFor",
+      "input": {
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The single-locale kernel counterpart of the reversal, so tiebreaker sensitivity is asserted on both solvers."
+    },
+    {
+      "id": "browser-chooser.tiebreaker.en-ca-likely-subtag-first-order.ranges",
+      "requirementIds": [],
+      "fixture": "browser-chooser-en-regional",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "en-CA"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A region the fixture does not carry. en-CA cannot match structurally, so the answer comes from likely-subtag inference plus the tiebreaker, while the reported range remains the caller's own en-ca rather than the selected locale's tag. A port that reported the tiebreaker-selected locale's tag as the range would differ."
+    },
+    {
+      "id": "browser-chooser.tiebreaker.en-ca-likely-subtag-first-order.locale",
+      "requirementIds": [],
+      "fixture": "browser-chooser-en-regional",
+      "operation": "matchFor",
+      "input": {
+        "locale": "en-CA"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The single-locale kernel counterpart, so the tiebreaker-decided answer for an unlisted region is asserted on both solvers."
+    },
+    {
+      "id": "browser-chooser.tiebreaker.en-ca-likely-subtag-reversed-order.ranges",
+      "requirementIds": [],
+      "fixture": "browser-chooser-en-regional-reversed",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "en-CA"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The reversal half: an unlisted region resolves through the tiebreaker just as a bare language does, so reversing the order moves this answer too."
+    },
+    {
+      "id": "browser-chooser.tiebreaker.en-ca-likely-subtag-reversed-order.locale",
+      "requirementIds": [],
+      "fixture": "browser-chooser-en-regional-reversed",
+      "operation": "matchFor",
+      "input": {
+        "locale": "en-CA"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The single-locale kernel counterpart of that reversal."
+    },
+    {
+      "id": "browser-chooser.tiebreaker.en-star-first-order",
+      "requirementIds": [],
+      "fixture": "browser-chooser-en-regional",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "en-*"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The extended-range route to the same ambiguity: en-* filters structurally to both regional sources and the tiebreaker decides, reported as EXTENDED_RANGE rather than the heuristic type the bare-en row produces. Pairs the reported TYPE against a row that selects the same locale by a different route."
+    },
+    {
+      "id": "browser-chooser.tiebreaker.en-star-reversed-order",
+      "requirementIds": [],
+      "fixture": "browser-chooser-en-regional-reversed",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "en-*"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The reversal half of the extended-range route. No single-locale counterpart exists; a wildcard cannot be expressed as a Locale."
+    },
+    {
+      "id": "browser-chooser.tiebreaker.en-us-exact-control",
+      "requirementIds": [],
+      "fixture": "browser-chooser-en-regional",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "en-US"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Direct-reachability control. Asked for by its own tag, en-US is an EXACT match. Without this and its en-GB partner, every tiebreaker and q=0 row in this fixture could in principle be passed by an implementation for which one of the two sources was simply unreachable."
+    },
+    {
+      "id": "browser-chooser.tiebreaker.en-gb-exact-control",
+      "requirementIds": [],
+      "fixture": "browser-chooser-en-regional",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "en-GB"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same control for the other regional source, so the q=0 rows below are about which source wins rather than about one being unreachable."
+    },
+    {
+      "id": "browser-chooser.rejection.en-us-rejected-shifts-to-en-gb",
+      "requirementIds": [],
+      "fixture": "browser-chooser-en-regional",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "en;q=1,en-US;q=0"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "THE SHARPEST q=0 CASE. Compare tiebreaker.en-bare-first-order, whose request is this one minus the exclusion: adding en-US;q=0 to a header whose only positive range is en;q=1 moves the answer to the other regional source. Java's own comment at DefaultStrings.java:1717-1722 states exactly this. The exclusion bites because en-US;q=0 is an EXACT depth-2 cell while the positive bare en is only a heuristic one; a port that applied q=0 only to ranges matching a locale exactly, or that let the broad positive range reach back over the excluded one, still answers en-US."
+    },
+    {
+      "id": "browser-chooser.rejection.en-gb-rejected-shifts-to-en-us",
+      "requirementIds": [],
+      "fixture": "browser-chooser-en-regional",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "en;q=1,en-GB;q=0"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The mirror: excluding the other regional source moves the answer back. Together the two prove the exclusion is targeted at the named range rather than a fixed reordering."
+    },
+    {
+      "id": "browser-chooser.rejection.en-us-rejected-shifts-extended-range",
+      "requirementIds": [],
+      "fixture": "browser-chooser-en-regional",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "en-*;q=1,en-US;q=0"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same exclusion against an extended range instead of a bare one: compare tiebreaker.en-star-first-order, which is this request minus the exclusion and selects the other source. Contrast chooser.equal-specificity-exclusion-is-inert, where the excluded range is NOT more specific than the wildcard range and therefore does nothing. The two rows together define when an exclusion fires."
+    },
+    {
+      "id": "browser-chooser.rejection.en-rejected-outright",
+      "requirementIds": [],
+      "fixture": "browser-chooser-en-regional",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "en;q=0"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Rejecting the only positive language leaves nothing: no match at all, NOT the configured fallback. matchFor is the strict entry point and must not manufacture a fallback match (LocaleMatcher.java:47-52); bestMatchFor is the one that substitutes the fallback, and no corpus operation reaches it."
+    },
+    {
+      "id": "browser-chooser.wildcard.prefers-fallback-over-loaded-family",
+      "requirementIds": [],
+      "fixture": "browser-chooser-en-regional",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "*"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A bare wildcard in a fixture whose fallback (fr) is a genuinely different language from the two en sources, and does NOT sort first. The wildcard selects the configured fallback rather than the first sorted supported locale, which here would have been en-GB. This is the row that actually discriminates the two candidate implementations of preferredLocaleForWildcard, which the chooser fixture's bare-wildcard row cannot."
+    },
+    {
+      "id": "browser-chooser.shape.weight-beats-list-order-three-deep",
+      "requirementIds": [],
+      "fixture": "browser-chooser-many-languages",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "de;q=0.8,fr;q=0.9,en;q=0.7"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Weight beats list position with three competing preferences, not just two: the middle entry carries the highest q and wins, and the reported effectiveWeight is its q rather than 1. ingress-smoke pins the two-entry version; a port that sorted stably but compared only adjacent pairs could pass that and fail this."
+    },
+    {
+      "id": "browser-chooser.shape.equal-weight-takes-list-order",
+      "requirementIds": [],
+      "fixture": "browser-chooser-many-languages",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "de,fr"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Two ranges at the implicit q=1. Java sorts by weight descending only (DefaultStrings.java:1562, a stable sort), so equal weights leave list order intact and the first entry wins. This pins the tiebreak that the weight rule alone does not determine."
+    },
+    {
+      "id": "browser-chooser.shape.equal-weight-takes-list-order-reversed",
+      "requirementIds": [],
+      "fixture": "browser-chooser-many-languages",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "fr,de"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same two languages in the opposite order. The answer must flip. A port using an unstable sort, or one that broke weight ties by locale tag or by supported-locale order, returns the same language for both halves."
+    },
+    {
+      "id": "browser-chooser.shape.equal-explicit-weight-takes-list-order",
+      "requirementIds": [],
+      "fixture": "browser-chooser-many-languages",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "fr;q=0.5,de;q=0.5"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Equal EXPLICIT weights rather than equal implicit ones, and at a weight below 1, so the rule is shown not to depend on the q=1 default. The reported effectiveWeight is the shared 0.5, not a normalized 1."
+    },
+    {
+      "id": "browser-chooser.shape.three-equal-weights-take-list-order",
+      "requirementIds": [],
+      "fixture": "browser-chooser-many-languages",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "es,fr,de"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Three-way equal weight: the first listed wins, which rules out 'ties go to the supported-locale order' (de sorts first among the loaded set) and 'ties go to the fallback' (en is the fallback)."
+    },
+    {
+      "id": "browser-chooser.rejection.zero-weight-outranks-higher-weighted-derived-range",
+      "requirementIds": [],
+      "fixture": "browser-chooser-many-languages",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "fr;q=0,fr-CA;q=0.9"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "THE CASE THAT SEPARATES REJECTION FROM RANKING. Compare rejection.derived-range-without-exclusion-control, which is this request minus the fr;q=0 and DOES select fr through CLDR fallback at 0.9. Here the exact-tag exclusion is more specific than the higher-weighted derived range that reaches the same locale, so it governs and the whole request yields no match. A port that ranked by weight — 0.9 beats 0.0 — selects fr. A port that applied q=0 only when nothing else matched also selects fr."
+    },
+    {
+      "id": "browser-chooser.rejection.derived-range-without-exclusion-control",
+      "requirementIds": [],
+      "fixture": "browser-chooser-many-languages",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "fr-CA;q=0.9"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The control that makes the row above legible: a regional range with no loaded regional source reaches the bare language through CLDR parent fallback, reported with the fallback match type and the caller's own range at its stated weight. Also the only place in this flat fixture where a non-exact match type is produced at all."
+    },
+    {
+      "id": "browser-chooser.rejection.sole-zero-weight-yields-no-match",
+      "requirementIds": [],
+      "fixture": "browser-chooser-many-languages",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "fr;q=0"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A header consisting of a single q=0 range yields NO match even though that language is loaded and no other preference competes for it, and specifically not the fallback."
+    },
+    {
+      "id": "browser-chooser.rejection.every-weight-zero-yields-no-match",
+      "requirementIds": [],
+      "fixture": "browser-chooser-many-languages",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "fr;q=0,de;q=0"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Every preference rejected: still no match. Pins that the all-zero path is the same NONE as the nothing-matched path rather than an error, which a port could plausibly get wrong in either direction."
+    },
+    {
+      "id": "browser-chooser.rejection.zero-weight-on-unloaded-language-is-inert",
+      "requirementIds": [],
+      "fixture": "browser-chooser-many-languages",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "zz;q=0,fr;q=0.5"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A q=0 on a language that is not loaded must be inert rather than poisoning the whole request. Contrast rejection.sole-zero-weight-yields-no-match, whose q=0 names a loaded language."
+    },
+    {
+      "id": "browser-chooser.shape.duplicate-range-keeps-first-weight",
+      "requirementIds": [],
+      "fixture": "browser-chooser-many-languages",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "fr;q=0.5,fr;q=0.9"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same range appears twice at different weights. MEASURED: the parsed list collapses to ONE entry keeping the FIRST occurrence's weight, so the emitted requestedLanguageRanges has a single member and the reported effectiveWeight is the lower 0.5, not the later 0.9. A port whose header parser deduplicated to the maximum weight, or kept both entries, differs in both channels."
+    },
+    {
+      "id": "browser-chooser.shape.two-unmatched-preferences-advance",
+      "requirementIds": [],
+      "fixture": "browser-chooser-many-languages",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "xx;q=0.9,yy;q=0.8,de;q=0.7,fr;q=0.6"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The advance-past-unmatched clause taken two steps rather than the one ingress-smoke pins: the two highest-weighted preferences match nothing, the third does, and the fourth is never reached. The reported effectiveWeight is the third entry's q, which is how a port proves it advanced rather than restarted or normalized."
+    },
+    {
+      "id": "browser-chooser.shape.chrome-header-region-then-language",
+      "requirementIds": [],
+      "fixture": "browser-chooser-many-languages",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "en-US,en;q=0.9,fr-CA;q=0.8,fr;q=0.7"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A real Chrome-shaped header, and a genuine choice between two live cells rather than an artifact. MEASURED SEPARATELY: en-US alone DOES reach the loaded en, through CLDR fallback, at weight 1. Yet here the answer is en reported as EXACT at 0.9, because a locale's effective quality comes from its MOST SPECIFIC matching range (DefaultStrings.java:1717-1722, LocaleMatcher.java:55-58), not its highest-weighted one. A port taking the maximum weight of any matching range reports 1 and the wrong languageRange and matchType while still selecting the right locale."
+    },
+    {
+      "id": "browser-chooser.shape.chrome-header-french-first",
+      "requirementIds": [],
+      "fixture": "browser-chooser-many-languages",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "fr-CA,fr;q=0.9,en-US;q=0.8,en;q=0.7"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same header shape with the language groups swapped, so the previous row's result cannot be an artifact of en being the configured fallback."
+    },
+    {
+      "id": "browser-chooser.shape.empty-range-list-yields-no-match",
+      "requirementIds": [],
+      "fixture": "browser-chooser-many-languages",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": []
+      },
+      "partition": "requiredPortableIds",
+      "notes": "An empty parsed range list is a distinct early-return path (DefaultStrings.java:1558) from a list that matches nothing. Emits an empty requestedLanguageRanges alongside NONE, which is how a port proves it did not substitute the fallback or the instance locale. Reached through the explicit array form, since no header string parses to an empty list."
+    },
+    {
+      "id": "browser-chooser.shape.header-serves-translation-end-to-end",
+      "requirementIds": [],
+      "fixture": "browser-chooser-many-languages",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "fr-CA,fr;q=0.9,en;q=0.5"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "MOVED TO matchFor DELIBERATELY? No — this row keeps its per-call header on getResult in the paired row below; here it stays a matcher observation of the same header shape used by ingress-smoke's supplied-match fixture, so the whole-list solver's answer for that header is pinned independently of any resolution behavior."
+    },
+    {
+      "id": "browser-chooser.shape.advance-past-unmatched-serves-translation",
+      "requirementIds": [],
+      "fixture": "browser-chooser-many-languages",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "languageRanges": "xx;q=0.9,de;q=0.7,fr;q=0.6"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The section 8.3 clause 'advances to a later matching preference BEFORE fallback' asserted end to end rather than only in the diagnostic channel. The unmatched leading preference is skipped, the second serves the translation, and attemptedLocales plus the result's fallback flag show the configured fallback was never consulted. A port that fell back to the instance locale on a first-preference miss and then recovered would produce the same translation but a different attempted-locale chain."
+    },
+    {
+      "id": "browser-chooser.limit.thirty-two-parsed-ranges-accepted",
+      "requirementIds": [],
+      "fixture": "browser-chooser-many-languages",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "he,id,yi,cmn,yue,nan,jbo,tlh,gan,wuu,hsn,ase,fr;q=0.9,de;q=0.8,es;q=0.7,it;q=0.6"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "THE PINNED-TABLE BOUNDARY, accepting half. VERIFIED by reading the emitted requestedLanguageRanges: sixteen header entries expand to exactly 32 parsed ranges — the documented MAXIMUM_LANGUAGE_RANGES (LocaleMatcher.java:52) — and the request succeeds, selecting fr. The count is only reproducible against the pinned equivalence table, so a port whose table differs by a single entry lands on the wrong side of the boundary."
+    },
+    {
+      "id": "browser-chooser.limit.alias-expansion-crosses-thirty-two",
+      "requirementIds": [],
+      "fixture": "browser-chooser-many-languages",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "he,id,yi,cmn,yue,nan,hak,jbo,tlh,gan,wuu,hsn,ase,fr;q=0.1"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The rejecting half, and the reason the limit is documented as applying to the PARSED list rather than to comma-separated header entries: fourteen entries expand to 33 ranges and matchFor throws with Lokalized's own message naming 32 and 33. A port that counted header commas accepts this; one whose equivalence table under- or over-expands reports a different count in the message. CROSS-REFERENCE: accept-language.limit.thirty-three-expanded-ranges is this exact header through bestMatchForAcceptLanguage, which is FAIL-SOFT and answers the configured fallback where this row throws. The pair is the sharpest statement of the two entry points contract difference, on one input."
+    },
+    {
+      "id": "browser-chooser.limit.explicit-thirty-three-ranges-rejected",
+      "requirementIds": [],
+      "fixture": "browser-chooser-many-languages",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "qaa",
+            "weight": 0.5
+          },
+          {
+            "range": "qab",
+            "weight": 0.5
+          },
+          {
+            "range": "qac",
+            "weight": 0.5
+          },
+          {
+            "range": "qad",
+            "weight": 0.5
+          },
+          {
+            "range": "qae",
+            "weight": 0.5
+          },
+          {
+            "range": "qaf",
+            "weight": 0.5
+          },
+          {
+            "range": "qag",
+            "weight": 0.5
+          },
+          {
+            "range": "qah",
+            "weight": 0.5
+          },
+          {
+            "range": "qai",
+            "weight": 0.5
+          },
+          {
+            "range": "qaj",
+            "weight": 0.5
+          },
+          {
+            "range": "qak",
+            "weight": 0.5
+          },
+          {
+            "range": "qal",
+            "weight": 0.5
+          },
+          {
+            "range": "qam",
+            "weight": 0.5
+          },
+          {
+            "range": "qan",
+            "weight": 0.5
+          },
+          {
+            "range": "qao",
+            "weight": 0.5
+          },
+          {
+            "range": "qap",
+            "weight": 0.5
+          },
+          {
+            "range": "qaq",
+            "weight": 0.5
+          },
+          {
+            "range": "qar",
+            "weight": 0.5
+          },
+          {
+            "range": "qas",
+            "weight": 0.5
+          },
+          {
+            "range": "qat",
+            "weight": 0.5
+          },
+          {
+            "range": "qau",
+            "weight": 0.5
+          },
+          {
+            "range": "qav",
+            "weight": 0.5
+          },
+          {
+            "range": "qaw",
+            "weight": 0.5
+          },
+          {
+            "range": "qax",
+            "weight": 0.5
+          },
+          {
+            "range": "qay",
+            "weight": 0.5
+          },
+          {
+            "range": "qaz",
+            "weight": 0.5
+          },
+          {
+            "range": "qba",
+            "weight": 0.5
+          },
+          {
+            "range": "qbb",
+            "weight": 0.5
+          },
+          {
+            "range": "qbc",
+            "weight": 0.5
+          },
+          {
+            "range": "qbd",
+            "weight": 0.5
+          },
+          {
+            "range": "qbe",
+            "weight": 0.5
+          },
+          {
+            "range": "qbf",
+            "weight": 0.5
+          },
+          {
+            "range": "qbg",
+            "weight": 0.5
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same limit reached without any alias expansion at all: 33 explicit range/weight pairs, private-use-adjacent codes that match nothing. Separates 'the limit exists' from 'the expansion crossed it', so a failure of the previous case can be attributed to the table rather than the counter."
+    },
+    {
+      "id": "browser-chooser.wildcard.bare-wildcard-selects-configured-fallback",
+      "requirementIds": [],
+      "fixture": "browser-chooser-wildcard-fallback",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "*"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Branch one of preferredLocaleForWildcard: the configured fallback survives and is selected. The fixture's fallback (ja) is neither the first nor the last supported locale in sorted order, so 'first supported' and 'last supported' both produce a different answer."
+    },
+    {
+      "id": "browser-chooser.wildcard.rejected-fallback-falls-to-first-supported",
+      "requirementIds": [],
+      "fixture": "browser-chooser-wildcard-fallback",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "*;q=0.9,ja;q=0"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "BRANCH TWO, and the case the fixture exists for: the wildcard still applies but the fallback itself is rejected by q=0, so the selection falls to the first surviving supported locale. The reported matchType stays WILDCARD and the reported range stays '*' even though the fallback was excluded, and the reported weight is the wildcard's own."
+    },
+    {
+      "id": "browser-chooser.wildcard.second-exclusion-advances-first-supported",
+      "requirementIds": [],
+      "fixture": "browser-chooser-wildcard-fallback",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "*;q=0.9,ja;q=0,de;q=0"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Branch two taken one step further: with both the fallback and the previously-selected first supported locale excluded, the selection advances again in sorted order rather than stopping. Compare the row above, whose answer would be indistinguishable from 'the locale immediately after the fallback' or 'a fixed second choice'. Two exclusions are what make branch two's ordering observable."
+    },
+    {
+      "id": "browser-chooser.wildcard.unmatched-specific-advances-to-wildcard",
+      "requirementIds": [],
+      "fixture": "browser-chooser-wildcard-fallback",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "xx,*;q=0.5"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The advance clause with a wildcard as the later preference: an unmatched higher-weighted specific range yields to the wildcard, and the reported effectiveWeight is the wildcard's 0.5 rather than the leading range's 1."
+    },
+    {
+      "id": "browser-chooser.wildcard.outranks-lower-weight-specific",
+      "requirementIds": [],
+      "fixture": "browser-chooser-wildcard-fallback",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "de;q=0.2,*;q=0.9"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A wildcard at a HIGHER weight than a matching specific range wins outright, so the wildcard is not merely a last resort. A port that always tried specific ranges first answers de."
+    },
+    {
+      "id": "browser-chooser.wildcard.rejected-wildcard-leaves-specific-standing",
+      "requirementIds": [],
+      "fixture": "browser-chooser-wildcard-fallback",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "*;q=0,fr;q=0.5"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The inverse: a rejected wildcard does not reject everything, and the surviving specific preference is selected with an exact match type. Guards against a port implementing '*;q=0' as a global exclusion."
+    },
+    {
+      "id": "browser-chooser.wildcard.noninitial-wildcard-not-broadened",
+      "requirementIds": [],
+      "fixture": "browser-chooser-wildcard-fallback",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "*-CH"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A noninitial wildcard has RFC 4647 extended-filtering semantics ONLY (LocaleMatcher.java:33-37, DefaultStrings.java:1835-1850). *-CH matches no loaded locale structurally and must NOT be broadened through CLDR, likely-subtag, or primary-language inference — so the answer is no match even though every loaded locale is a plausible 'any language' target. A port that treated a leading * as 'any language' and then applied its normal heuristics matches something here."
+    },
+    {
+      "id": "browser-chooser.alias.iw-selects-he.ranges",
+      "requirementIds": [],
+      "fixture": "browser-chooser-iana-aliases",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "iw"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Whole-list solver. The range iw has no loaded source of its own; the parser materializes its pinned IANA equivalent as a SECOND member of the parsed list, and it is that member — not the one the caller wrote — that the matcher reports as the effective languageRange. A port whose parser did not expand the class matches nothing; one that expanded but reported the caller's spelling differs in the diagnostic channel."
+    },
+    {
+      "id": "browser-chooser.alias.iw-selects-he.locale",
+      "requirementIds": [],
+      "fixture": "browser-chooser-iana-aliases",
+      "operation": "matchFor",
+      "input": {
+        "locale": "iw"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The single-locale kernel for the same request. MEASURED: Locale.forLanguageTag('iw') already normalizes to he, so the kernel is handed a range identical to a loaded tag and reports a plain exact match. What this row therefore discriminates is the PORT'S OWN tag canonicalization of a JDK legacy code, not Lokalized's identity table — and the pair as a whole shows the two routes reaching one locale by two different mechanisms with different reported ranges available to them. Contrast the sgn-US pair, the one tag in this fixture that forLanguageTag leaves alone."
+    },
+    {
+      "id": "browser-chooser.alias.in-selects-id.ranges",
+      "requirementIds": [],
+      "fixture": "browser-chooser-iana-aliases",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "in"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Whole-list solver, second of the three JDK legacy codes. Included separately because the LOADER also rewrites in->id in file names, so a port could pass the loader half and fail the matcher half; all three are listed together in the loader's rewrite rule, so all three are checked rather than sampled."
+    },
+    {
+      "id": "browser-chooser.alias.in-selects-id.locale",
+      "requirementIds": [],
+      "fixture": "browser-chooser-iana-aliases",
+      "operation": "matchFor",
+      "input": {
+        "locale": "in"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The single-locale kernel counterpart. MEASURED: Locale.forLanguageTag('in') already normalizes to id, so this asserts the port's own legacy-code canonicalization rather than the library's identity table."
+    },
+    {
+      "id": "browser-chooser.alias.ji-selects-yi.ranges",
+      "requirementIds": [],
+      "fixture": "browser-chooser-iana-aliases",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "ji"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Whole-list solver, third of the three JDK legacy codes the loader also rewrites."
+    },
+    {
+      "id": "browser-chooser.alias.ji-selects-yi.locale",
+      "requirementIds": [],
+      "fixture": "browser-chooser-iana-aliases",
+      "operation": "matchFor",
+      "input": {
+        "locale": "ji"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The single-locale kernel counterpart. MEASURED: Locale.forLanguageTag('ji') already normalizes to yi."
+    },
+    {
+      "id": "browser-chooser.alias.zh-guoyu-selects-cmn.ranges",
+      "requirementIds": [],
+      "fixture": "browser-chooser-iana-aliases",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "zh-guoyu"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Whole-list solver against a THREE-member equivalence class (cmn, zh-cmn, zh-guoyu): the parsed list carries all three and the matcher reports the canonical member. zh is deliberately not loaded in this fixture — browser-chooser-canonical-collision is the contrasting fixture where it is, and where this same range makes the two solvers disagree."
+    },
+    {
+      "id": "browser-chooser.alias.zh-guoyu-selects-cmn.locale",
+      "requirementIds": [],
+      "fixture": "browser-chooser-iana-aliases",
+      "operation": "matchFor",
+      "input": {
+        "locale": "zh-guoyu"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The single-locale kernel counterpart. MEASURED: Locale.forLanguageTag('zh-guoyu') already normalizes to cmn, which is why this route has nothing to disagree with here — and why it does not move when a zh source is added in the collision fixture while the range-list route does."
+    },
+    {
+      "id": "browser-chooser.alias.zh-cmn-selects-cmn.ranges",
+      "requirementIds": [],
+      "fixture": "browser-chooser-iana-aliases",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "zh-cmn"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The other non-canonical member of the cmn class, so the class is checked from both directions rather than one. The parsed expansion is the same three members in a different order, which is what makes the collision fixture's divergence a property of the class rather than of one spelling."
+    },
+    {
+      "id": "browser-chooser.alias.zh-cmn-selects-cmn.locale",
+      "requirementIds": [],
+      "fixture": "browser-chooser-iana-aliases",
+      "operation": "matchFor",
+      "input": {
+        "locale": "zh-cmn"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The single-locale kernel counterpart. MEASURED: Locale.forLanguageTag('zh-cmn') already normalizes to cmn."
+    },
+    {
+      "id": "browser-chooser.alias.zh-yue-selects-yue.ranges",
+      "requirementIds": [],
+      "fixture": "browser-chooser-iana-aliases",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "zh-yue"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Cantonese, the equivalence a naive implementation is most likely to hard-code as a zh region rather than as a distinct language. A port that treated zh-yue as zh plus a subtag would look for a zh source, which this fixture does not have."
+    },
+    {
+      "id": "browser-chooser.alias.zh-yue-selects-yue.locale",
+      "requirementIds": [],
+      "fixture": "browser-chooser-iana-aliases",
+      "operation": "matchFor",
+      "input": {
+        "locale": "zh-yue"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The single-locale kernel counterpart. MEASURED: Locale.forLanguageTag('zh-yue') already normalizes to yue."
+    },
+    {
+      "id": "browser-chooser.alias.i-klingon-selects-tlh.ranges",
+      "requirementIds": [],
+      "fixture": "browser-chooser-iana-aliases",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "i-klingon"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A grandfathered i- tag. Its equivalence lives in the IANA table, not in any subtag-structure rule, so a port deriving equivalence structurally cannot match it at all."
+    },
+    {
+      "id": "browser-chooser.alias.i-klingon-selects-tlh.locale",
+      "requirementIds": [],
+      "fixture": "browser-chooser-iana-aliases",
+      "operation": "matchFor",
+      "input": {
+        "locale": "i-klingon"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The single-locale kernel counterpart. MEASURED: Locale.forLanguageTag('i-klingon') already normalizes to tlh, so this asserts the port's grandfathered-tag canonicalization."
+    },
+    {
+      "id": "browser-chooser.alias.zh-min-nan-selects-nan.ranges",
+      "requirementIds": [],
+      "fixture": "browser-chooser-iana-aliases",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "zh-min-nan"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A grandfathered THREE-subtag tag in a three-member class (nan, zh-min-nan, zh-nan). The extra subtag is where a port that truncates rather than looks up goes wrong."
+    },
+    {
+      "id": "browser-chooser.alias.zh-min-nan-selects-nan.locale",
+      "requirementIds": [],
+      "fixture": "browser-chooser-iana-aliases",
+      "operation": "matchFor",
+      "input": {
+        "locale": "zh-min-nan"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The single-locale kernel counterpart. MEASURED: Locale.forLanguageTag('zh-min-nan') already normalizes to nan."
+    },
+    {
+      "id": "browser-chooser.alias.zh-nan-selects-nan.ranges",
+      "requirementIds": [],
+      "fixture": "browser-chooser-iana-aliases",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "zh-nan"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The other non-canonical member of the nan class, reachable only through the table and not by truncating zh-min-nan."
+    },
+    {
+      "id": "browser-chooser.alias.zh-nan-selects-nan.locale",
+      "requirementIds": [],
+      "fixture": "browser-chooser-iana-aliases",
+      "operation": "matchFor",
+      "input": {
+        "locale": "zh-nan"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The single-locale kernel counterpart. MEASURED: Locale.forLanguageTag('zh-nan') already normalizes to nan."
+    },
+    {
+      "id": "browser-chooser.alias.art-lojban-selects-jbo.ranges",
+      "requirementIds": [],
+      "fixture": "browser-chooser-iana-aliases",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "art-lojban"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A grandfathered art- tag, structurally unlike the i- and zh- forms above, so the family covers three distinct grandfathered shapes rather than three spellings of one."
+    },
+    {
+      "id": "browser-chooser.alias.art-lojban-selects-jbo.locale",
+      "requirementIds": [],
+      "fixture": "browser-chooser-iana-aliases",
+      "operation": "matchFor",
+      "input": {
+        "locale": "art-lojban"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The single-locale kernel counterpart. MEASURED: Locale.forLanguageTag('art-lojban') already normalizes to jbo."
+    },
+    {
+      "id": "browser-chooser.alias.sgn-us-selects-ase.ranges",
+      "requirementIds": [],
+      "fixture": "browser-chooser-iana-aliases",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "sgn-US"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Whole-list solver on a sgn- prefixed sign-language equivalence. The parsed list materializes ase as a later member and the matcher reports that member, as an exact match. Paired with the .locale row, which selects the SAME locale but reports different diagnostics — the sharpest diagnostic-divergence row in the family."
+    },
+    {
+      "id": "browser-chooser.alias.sgn-us-selects-ase.locale",
+      "requirementIds": [],
+      "fixture": "browser-chooser-iana-aliases",
+      "operation": "matchFor",
+      "input": {
+        "locale": "sgn-US"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "MEASURED DIVERGENCE, and the exception that makes the other .locale rows legible. Locale.forLanguageTag('sgn-US') does NOT normalize — it is the only tag in this fixture that survives intact — so this is the one kernel row that actually reaches Lokalized's own identity collection (DefaultStrings.java:2145-2159, applied at :2044-2050). Both routes select the same locale; the range-list route reports the parser-materialized canonical tag with an exact type, this route reports the caller's own sgn-us with a canonical type. Authored as a pair to record that the two solvers agree on the SELECTION and not on the DIAGNOSTICS, which the section 8.3 clause as written does not distinguish."
+    },
+    {
+      "id": "browser-chooser.alias.sgn-ase-selects-ase.ranges",
+      "requirementIds": [],
+      "fixture": "browser-chooser-iana-aliases",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "sgn-ase"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The other sgn- form for the same target, so the class is checked from both directions."
+    },
+    {
+      "id": "browser-chooser.alias.sgn-ase-selects-ase.locale",
+      "requirementIds": [],
+      "fixture": "browser-chooser-iana-aliases",
+      "operation": "matchFor",
+      "input": {
+        "locale": "sgn-ase"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The single-locale kernel counterpart, and the direct control for the sgn-US divergence: MEASURED, Locale.forLanguageTag('sgn-ase') DOES normalize to ase while forLanguageTag('sgn-US') does not, so these two structurally identical sgn- forms take different routes and report differently. A port that normalized both, or neither, fails exactly one of the two."
+    },
+    {
+      "id": "browser-chooser.alias.zh-hakka-has-no-loaded-target.ranges",
+      "requirementIds": [],
+      "fixture": "browser-chooser-iana-aliases",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "zh-hakka"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The negative control for the whole alias family: zh-hakka is a genuine FOUR-member equivalence class in the pinned table (the parsed list carries all four), but none of its members is loaded, so the answer is no match. Without this, every alias case could be passed by an implementation that matched aliases too eagerly."
+    },
+    {
+      "id": "browser-chooser.alias.zh-hakka-has-no-loaded-target.locale",
+      "requirementIds": [],
+      "fixture": "browser-chooser-iana-aliases",
+      "operation": "matchFor",
+      "input": {
+        "locale": "zh-hakka"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The single-locale kernel counterpart of the negative control. MEASURED: Locale.forLanguageTag('zh-hakka') normalizes to hak, which is also unloaded, so the negative holds through a different route than the range-list one."
+    },
+    {
+      "id": "browser-chooser.alias.rejected-alias-excludes-its-target",
+      "requirementIds": [],
+      "fixture": "browser-chooser-iana-aliases",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "iw;q=0,en;q=0.5"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "q=0 on an ALIAS excludes the aliased source: the exclusion travels through the equivalence class to the loaded canonical tag, leaving the lower-weighted en. A port that applied exclusions before resolving equivalences still selects the aliased source."
+    },
+    {
+      "id": "browser-chooser.alias.alias-and-target-in-one-header",
+      "requirementIds": [],
+      "fixture": "browser-chooser-iana-aliases",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "iw;q=0.9,he;q=0.4"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Both sides of one equivalence class in the same header at DIFFERENT weights. MEASURED, and NOT what a group-maximum rule would give: the parser drops the later duplicate entirely and applies the FIRST occurrence's weight to the whole class, so the emitted requestedLanguageRanges is two members both carrying 0.9 and the explicitly written 0.4 vanishes. Paired with the mirror below, which is the same two ranges in the other order and reports the other weight."
+    },
+    {
+      "id": "browser-chooser.alias.target-first-alias-second-keeps-first-weight",
+      "requirementIds": [],
+      "fixture": "browser-chooser-iana-aliases",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "he;q=0.4,iw;q=0.9"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The mirror that turns the row above into a falsifiable pair: same class, same two weights, opposite order, and the reported effectiveWeight is now the LOWER 0.4 while the same locale is still selected. A port that took the maximum weight across an equivalence class reports 0.9 for both rows and fails exactly one; a port that kept both entries at their written weights fails both."
+    },
+    {
+      "id": "browser-chooser.conflict.sgn-no-solvers-diverge.ranges",
+      "requirementIds": [],
+      "fixture": "browser-chooser-jdk-cldr-conflict",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "sgn-NO"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "THE MOST IMPORTANT CASE IN THIS FAMILY. Section 8.3 claims the range-list solver and the single-locale kernel agree; against this fixture they DO NOT, and the divergence is a direct consequence of the conflict Java documents at DefaultStrings.java:1570-1576. Through the range list, the parser expands sgn-NO into its JDK equivalents (the emitted requestedLanguageRanges shows three members) and the CLDR canonicalization of the written range decides first. Whatever this route selects, the paired .locale case selects the OTHER loaded source. A port cannot satisfy both halves with one code path."
+    },
+    {
+      "id": "browser-chooser.conflict.sgn-no-solvers-diverge.locale",
+      "requirementIds": [],
+      "fixture": "browser-chooser-jdk-cldr-conflict",
+      "operation": "matchFor",
+      "input": {
+        "locale": "sgn-NO"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The other half of the divergence. MEASURED: Locale.forLanguageTag('sgn-NO') does not normalize, so the kernel builds a single range with no parser expansion and takes the JDK identity route, selecting the source the range-list solver did not. Authored as a pair precisely so the corpus records the disagreement instead of asserting an equality that does not hold here."
+    },
+    {
+      "id": "browser-chooser.conflict.nsl-exact.ranges",
+      "requirementIds": [],
+      "fixture": "browser-chooser-jdk-cldr-conflict",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "nsl"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The control: asked for directly, nsl is an exact match even though its parsed expansion also names sgn-no and sgn-nsl. Establishes that both loaded sources are individually reachable, so the divergence above is about which one wins, not about one being unreachable."
+    },
+    {
+      "id": "browser-chooser.conflict.nsl-exact.locale",
+      "requirementIds": [],
+      "fixture": "browser-chooser-jdk-cldr-conflict",
+      "operation": "matchFor",
+      "input": {
+        "locale": "nsl"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The single-locale kernel counterpart of that control; here the two solvers do agree, which is what makes their disagreement on sgn-NO meaningful rather than a general property of this fixture."
+    },
+    {
+      "id": "browser-chooser.conflict.nsi-exact.ranges",
+      "requirementIds": [],
+      "fixture": "browser-chooser-jdk-cldr-conflict",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "nsi"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same direct-request control for the other loaded source in the conflict fixture."
+    },
+    {
+      "id": "browser-chooser.conflict.nsi-exact.locale",
+      "requirementIds": [],
+      "fixture": "browser-chooser-jdk-cldr-conflict",
+      "operation": "matchFor",
+      "input": {
+        "locale": "nsi"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The single-locale kernel counterpart of that control; the two solvers agree here too."
+    },
+    {
+      "id": "browser-chooser.conflict.sgn-nsl-selects-nsl.ranges",
+      "requirementIds": [],
+      "fixture": "browser-chooser-jdk-cldr-conflict",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "sgn-nsl"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "sgn-nsl is in the JDK equivalence class of nsl but is NOT the tag CLDR canonicalizes sgn-NO to, so it resolves unambiguously. Isolates which half of the sgn-NO conflict comes from which data source."
+    },
+    {
+      "id": "browser-chooser.conflict.sgn-nsl-selects-nsl.locale",
+      "requirementIds": [],
+      "fixture": "browser-chooser-jdk-cldr-conflict",
+      "operation": "matchFor",
+      "input": {
+        "locale": "sgn-nsl"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The single-locale kernel counterpart, which agrees. MEASURED: unlike sgn-NO, Locale.forLanguageTag('sgn-nsl') DOES normalize, to nsl — so the divergence above is specific to the one tag CLDR reassigns, not to sgn- forms in general, and a port that normalized sgn-NO the way it normalizes sgn-nsl would fail the divergence pair."
+    },
+    {
+      "id": "browser-chooser.conflict.sgn-nsi-selects-nsi.ranges",
+      "requirementIds": [],
+      "fixture": "browser-chooser-jdk-cldr-conflict",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "sgn-nsi"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The mirror probe for the CLDR side of the conflict; its parsed expansion is two members rather than three, which is the observable difference from sgn-nsl."
+    },
+    {
+      "id": "browser-chooser.conflict.sgn-nsi-selects-nsi.locale",
+      "requirementIds": [],
+      "fixture": "browser-chooser-jdk-cldr-conflict",
+      "operation": "matchFor",
+      "input": {
+        "locale": "sgn-nsi"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The single-locale kernel counterpart, which agrees; Locale.forLanguageTag('sgn-nsi') normalizes to nsi."
+    },
+    {
+      "id": "browser-chooser.conflict.nsl-preferred-over-nsi",
+      "requirementIds": [],
+      "fixture": "browser-chooser-jdk-cldr-conflict",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "nsl,nsi;q=0.5"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Both conflicting sources named explicitly at different weights. They must remain DISTINCT preference groups: a port that took the transitive closure of the JDK and CLDR tables would union them into one group, collapse the weights the way the alias-class rows do, and lose the caller's expressed ordering."
+    },
+    {
+      "id": "browser-chooser.conflict.nsi-preferred-over-nsl",
+      "requirementIds": [],
+      "fixture": "browser-chooser-jdk-cldr-conflict",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "nsi,nsl;q=0.5"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The mirror, so the previous row cannot be passed by a fixed preference for one of the two."
+    },
+    {
+      "id": "browser-chooser.collision.mo-exact-source-beats-canonical-sibling.ranges",
+      "requirementIds": [],
+      "fixture": "browser-chooser-canonical-collision",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "mo"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "mo and ro collide under CLDR canonicalization while remaining distinct loaded sources, and the parsed expansion of mo names ro at the same weight. An actual exact source must still beat a canonically equivalent one (DefaultStrings.java:1822-1826), so mo wins even though ro is the canonical tag AND is named second in the tiebreaker list. A port that canonicalized the request before looking for an exact source answers ro."
+    },
+    {
+      "id": "browser-chooser.collision.mo-exact-source-beats-canonical-sibling.locale",
+      "requirementIds": [],
+      "fixture": "browser-chooser-canonical-collision",
+      "operation": "matchFor",
+      "input": {
+        "locale": "mo"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The single-locale kernel counterpart. MEASURED: Locale.forLanguageTag('mo') does NOT normalize the way the iw/in/ji legacy codes do, so this route genuinely carries the caller's tag with no expansion at all — and still lands on the exact source."
+    },
+    {
+      "id": "browser-chooser.collision.ro-exact.ranges",
+      "requirementIds": [],
+      "fixture": "browser-chooser-canonical-collision",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "ro"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The other side of the collision asked for directly, confirming both sources are individually reachable."
+    },
+    {
+      "id": "browser-chooser.collision.ro-exact.locale",
+      "requirementIds": [],
+      "fixture": "browser-chooser-canonical-collision",
+      "operation": "matchFor",
+      "input": {
+        "locale": "ro"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The single-locale kernel counterpart, confirming both solvers agree on a plain exact match inside the very fixture where they diverge on zh-guoyu."
+    },
+    {
+      "id": "browser-chooser.collision.ro-md-fallback-not-materialized-alias.ranges",
+      "requirementIds": [],
+      "fixture": "browser-chooser-canonical-collision",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "ro-MD"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "An unloaded regional tag whose parsed expansion materializes an EQUAL-WEIGHT alias naming the other side of the collision (the emitted requestedLanguageRanges shows both). MEASURED: the answer is the CLDR parent of the written range, not the loaded source the alias points at. A port that let a materialized equal-weight alias claim the selection answers the other locale, and the case sits in the one fixture where both candidate answers are loaded."
+    },
+    {
+      "id": "browser-chooser.collision.ro-md-fallback-not-materialized-alias.locale",
+      "requirementIds": [],
+      "fixture": "browser-chooser-canonical-collision",
+      "operation": "matchFor",
+      "input": {
+        "locale": "ro-MD"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The single-locale kernel counterpart, which has no materialized alias member at all and still produces the identical match block. Agreement here could have failed — it does fail for zh-guoyu two rows down, in this same fixture."
+    },
+    {
+      "id": "browser-chooser.collision.zh-guoyu-solvers-diverge.ranges",
+      "requirementIds": [],
+      "fixture": "browser-chooser-canonical-collision",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "zh-guoyu"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "THE SECOND SOLVER DIVERGENCE, and the contrast that makes it legible: the SAME range against browser-chooser-iana-aliases (where zh is not loaded) has both solvers agreeing. Add a loaded zh and this route's answer MOVES, because the parser-materialized alias member and the CLDR canonical target now name different loaded sources; the reported range becomes the caller's own spelling with a canonical type rather than the materialized member with an exact one. Paired with the .locale case, which does not move."
+    },
+    {
+      "id": "browser-chooser.collision.zh-guoyu-solvers-diverge.locale",
+      "requirementIds": [],
+      "fixture": "browser-chooser-canonical-collision",
+      "operation": "matchFor",
+      "input": {
+        "locale": "zh-guoyu"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The single-locale kernel for the same request. MEASURED: Locale.forLanguageTag('zh-guoyu') normalizes to cmn before the library sees anything, so this route has no expansion to serve at a later position and keeps the answer the alias fixture gives. The pair is the assertion, and it is only observable because the two fixtures differ by one loaded source."
+    },
+    {
+      "id": "browser-chooser.collision.zh-cmn-solvers-diverge.ranges",
+      "requirementIds": [],
+      "fixture": "browser-chooser-canonical-collision",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "zh-cmn"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same divergence reached through the other non-canonical member of the cmn class, so it is a property of the class rather than of one spelling."
+    },
+    {
+      "id": "browser-chooser.collision.zh-cmn-solvers-diverge.locale",
+      "requirementIds": [],
+      "fixture": "browser-chooser-canonical-collision",
+      "operation": "matchFor",
+      "input": {
+        "locale": "zh-cmn"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The single-locale kernel counterpart. Like the zh-guoyu pair, it does not move when a zh source is added, so the pair records the divergence."
+    },
+    {
+      "id": "browser-chooser.collision.zh-tw-no-match-without-hant-source.ranges",
+      "requirementIds": [],
+      "fixture": "browser-chooser-canonical-collision",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "zh-TW"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The section 8.3 chooser row with its zh-Hant source REMOVED. zh-TW's likely subtag is Hant, and Lokalized will not serve it from a plain zh source, so the answer is no match rather than zh. A port that fell back to the primary language whenever likely-subtag inference failed answers zh here and would still pass the chooser fixture, where zh-Hant exists."
+    },
+    {
+      "id": "browser-chooser.collision.zh-tw-no-match-without-hant-source.locale",
+      "requirementIds": [],
+      "fixture": "browser-chooser-canonical-collision",
+      "operation": "matchFor",
+      "input": {
+        "locale": "zh-TW"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The single-locale kernel counterpart of that negative."
+    },
+    {
+      "id": "browser-chooser.collision.zh-hant-no-match-without-hant-source.ranges",
+      "requirementIds": [],
+      "fixture": "browser-chooser-canonical-collision",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "zh-Hant"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The script named explicitly rather than inferred from a region: still no match, because zh-Hant's CLDR parent is root and not zh. Pairs directly against collision.zh-hans-cldr-fallback-to-zh, whose only difference is the script."
+    },
+    {
+      "id": "browser-chooser.collision.zh-hant-no-match-without-hant-source.locale",
+      "requirementIds": [],
+      "fixture": "browser-chooser-canonical-collision",
+      "operation": "matchFor",
+      "input": {
+        "locale": "zh-Hant"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The single-locale kernel counterpart of the explicit-script negative, so both routes are shown to refuse a plain zh source for a Hant request."
+    },
+    {
+      "id": "browser-chooser.collision.zh-hans-cldr-fallback-to-zh.ranges",
+      "requirementIds": [],
+      "fixture": "browser-chooser-canonical-collision",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "zh-Hans"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The asymmetry that makes the two rows above meaningful: zh-Hans DOES resolve to zh through CLDR parent-locale fallback while zh-Hant does not. A port with a symmetric 'strip the script' rule matches both, and a port with no script rule at all matches neither."
+    },
+    {
+      "id": "browser-chooser.collision.zh-hans-cldr-fallback-to-zh.locale",
+      "requirementIds": [],
+      "fixture": "browser-chooser-canonical-collision",
+      "operation": "matchFor",
+      "input": {
+        "locale": "zh-Hans"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The single-locale kernel counterpart, asserting the Hans/Hant asymmetry holds identically on both solvers inside the fixture where they diverge on zh-guoyu."
+    },
+    {
+      "id": "browser-chooser.malformed.free-text",
+      "requirementIds": [],
+      "fixture": "browser-chooser-many-languages",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "not a header!"
+      },
+      "partition": "informationalIds",
+      "notes": "Free text that is not a language range at all. INFORMATIONAL: the corpus's string form of languageRanges is parsed by java.util.Locale.LanguageRange.parse inside the oracle harness (VectorOracle.java:577) before the library is reached, so the recorded throw carries the JDK parser's identity and message rather than Lokalized's. A JS port is not expected to reproduce that text; the row documents which header shapes never reach the matcher at all. Lokalized's own fail-soft entry point, LocaleMatcher.bestMatchForAcceptLanguage, would return the fallback for this instead of throwing, and is not reachable through any corpus operation."
+    },
+    {
+      "id": "browser-chooser.malformed.nonnumeric-weight",
+      "requirementIds": [],
+      "fixture": "browser-chooser-many-languages",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "fr;q=abc"
+      },
+      "partition": "informationalIds",
+      "notes": "A well-formed range with a non-numeric q value. INFORMATIONAL for the same reason as its neighbours: the throw comes from the JDK parser in the harness, before the library. Recorded so a port knows this shape is a parse-time rejection rather than a match-time one."
+    },
+    {
+      "id": "browser-chooser.malformed.empty-list-element",
+      "requirementIds": [],
+      "fixture": "browser-chooser-many-languages",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "fr,,de"
+      },
+      "partition": "informationalIds",
+      "notes": "An empty HTTP list element between two valid ranges — the exact shape LocaleMatcher.normalizeAcceptLanguage exists to strip before parsing (LocaleMatcher.java:143-160). INFORMATIONAL: the throw is the JDK parser's, raised in the harness before the library, and the library's own normalizing entry point is unreachable from the corpus. CROSS-REFERENCE: this header is not malformed to Lokalized at all -- empty HTTP list elements are exactly what LocaleMatcher.normalizeAcceptLanguage exists to remove. accept-language.empty-element.interior states the same input as REQUIRED portable behavior through bestMatchForAcceptLanguage, where it answers fr instead of throwing. The row stays informational because THIS operation hands the header to LanguageRange.parse before the library is reached."
+    },
+    {
+      "id": "browser-chooser.malformed.weight-above-one",
+      "requirementIds": [],
+      "fixture": "browser-chooser-many-languages",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "fr;q=1.5"
+      },
+      "partition": "informationalIds",
+      "notes": "A q value above the RFC-permitted maximum. INFORMATIONAL: rejected by the JDK parser in the harness before the library is reached."
+    },
+    {
+      "id": "browser-chooser.malformed.blank-header",
+      "requirementIds": [],
+      "fixture": "browser-chooser-many-languages",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "   "
+      },
+      "partition": "informationalIds",
+      "notes": "A whitespace-only header. INFORMATIONAL: the JDK parser throws rather than producing an empty list — contrast shape.empty-range-list-yields-no-match, which reaches the library with a genuinely empty list and returns NONE. The two rows together show that 'blank header' and 'empty range list' are different inputs, which is the distinction bestMatchForAcceptLanguage collapses and matchFor does not. CROSS-REFERENCE: accept-language.blank.whitespace-only states the same input as REQUIRED portable behavior through bestMatchForAcceptLanguage, where it returns the configured fallback rather than throwing. The row stays informational because THIS operation hands the header to LanguageRange.parse before the library is reached."
+    },
+    {
+      "id": "browser-chooser.malformed.horizontal-tab-ows",
+      "requirementIds": [],
+      "fixture": "browser-chooser-many-languages",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "de;q=0.8,\tfr;q=0.9"
+      },
+      "partition": "informationalIds",
+      "notes": "RFC 9110 permits horizontal tab as optional whitespace and the JDK parser rejects it — again the shape LocaleMatcher.normalizeAcceptLanguage converts before parsing. INFORMATIONAL: the throw is raised in the harness before the library. Attributable because the space-form control below, identical but for the tab, parses and negotiates. CROSS-REFERENCE: accept-language.ows.leading-tab states the same input as REQUIRED portable behavior through bestMatchForAcceptLanguage, where the tab is trimmed as RFC 9110 optional whitespace and the answer is fr, not a throw. The row stays informational because THIS operation hands the header to LanguageRange.parse before the library is reached."
+    },
+    {
+      "id": "browser-chooser.malformed.space-ows",
+      "requirementIds": [],
+      "fixture": "browser-chooser-many-languages",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": " de;q=0.8, fr;q=0.9"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The POSITIVE control for the whitespace rows, and PORTABLE rather than informational: this one does not throw. MEASURED — leading optional whitespace and whitespace after the comma parse cleanly and the higher-weighted later entry is selected at its own weight, so the tab row above is about the tab specifically and not about optional whitespace in general. A port whose header parser trims aggressively enough to accept the tab fails the pair by passing both."
+    }
+  ]
+}

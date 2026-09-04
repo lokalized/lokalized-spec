@@ -1,0 +1,15 @@
+{
+  "id": "malformed-structure-degenerate-keys",
+  "description": "A catalog whose keys include the empty string and a whitespace-only string alongside an ordinary key. Deliberately LOADABLE: whether these are rejected at load or become ordinary keys is exactly the clause's question, and it turns out they load, so the fixture also carries lookup cases.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "": "the empty key's translation",
+      "   ": "the whitespace key's translation",
+      "Key.Normal": "n"
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

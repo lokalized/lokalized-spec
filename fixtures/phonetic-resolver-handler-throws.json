@@ -1,0 +1,30 @@
+{
+  "id": "phonetic-resolver-handler-throws",
+  "description": "A throwing translation failure handler over a phonetic resolution failure, so the failure the resolver's answer produced is re-raised rather than absorbed into a returned key -- on getResult as well as on get.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "translationFailureHandler": {
+    "behavior": "throw"
+  },
+  "phoneticResolver": {
+    "behavior": "constant",
+    "phonetic": "PHONETIC_Z"
+  },
+  "files": {
+    "en": {
+      "Article": {
+        "translation": "[{{a}}]",
+        "placeholders": {
+          "a": {
+            "value": "term",
+            "translations": {
+              "PHONETIC_VOWEL": "an"
+            }
+          }
+        }
+      }
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

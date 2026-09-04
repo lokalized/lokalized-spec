@@ -1,0 +1,39 @@
+{
+  "id": "phonetic-resolver-expression-donor",
+  "description": "The donor rule for the EXPRESSION dispatch. The key exists only in the fr fallback, so an en request is evaluated against the fr entry; the by-locale resolver's answer selects between two alternatives that name which locale the evaluator handed it.",
+  "fallbackLocale": "fr",
+  "instanceLocale": "en",
+  "tiebreakers": null,
+  "phoneticResolver": {
+    "behavior": "by-locale",
+    "mapping": {
+      "fr": "PHONETIC_VOWEL",
+      "en": "PHONETIC_CONSONANT"
+    },
+    "default": "PHONETIC_OTHER"
+  },
+  "files": {
+    "en": {
+      "Unrelated": "unrelated"
+    },
+    "fr": {
+      "Expr.One": {
+        "translation": "fr-no-alternative",
+        "alternatives": [
+          {
+            "noun == PHONETIC_VOWEL": {
+              "translation": "fr-handed-fr"
+            }
+          },
+          {
+            "noun == PHONETIC_CONSONANT": {
+              "translation": "fr-handed-en"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

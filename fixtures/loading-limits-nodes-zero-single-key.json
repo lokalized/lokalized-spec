@@ -1,0 +1,15 @@
+{
+  "id": "loading-limits-nodes-zero-single-key",
+  "description": "One root entry loaded with maximumTranslationNodes lowered to 0. The single root entry costs one node, which a budget of 0 cannot pay, so the load fails. Also the fixture behind the node-limit parse case.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumTranslationNodes": 0
+  },
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  }
+}

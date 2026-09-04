@@ -1,0 +1,25 @@
+{
+  "id": "m3b-negotiation-de-regional",
+  "description": "Two German regional catalogs plus an unrelated en-US, so an extended range's structural filter has both matching and non-matching locales to choose between, and a LEADING wildcard ('*-CH') has more than one language to pick from.",
+  "fallbackLocale": "fr",
+  "tiebreakers": {
+    "de": [
+      "de-CH",
+      "de-DE"
+    ]
+  },
+  "files": {
+    "fr": {
+      "Checkout.Title": "fr"
+    },
+    "de-CH": {
+      "Checkout.Title": "de-CH"
+    },
+    "de-DE": {
+      "Checkout.Title": "de-DE"
+    },
+    "en-US": {
+      "Checkout.Title": "en-US"
+    }
+  }
+}

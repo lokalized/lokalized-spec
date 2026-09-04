@@ -1,0 +1,16 @@
+{
+  "id": "failure-handler-instance-return-string",
+  "description": "Identical catalog again, with an instance handler returning TranslationFailureResponse.returnString. The configured text deliberately contains a placeholder token and is longer than the key, so a port that interpolates or truncates the handler's own string is caught: DefaultStrings.java:758-760 puts that string on the TranslationResult verbatim and never routes it through interpolateFailureKey.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "translationFailureHandler": {
+    "behavior": "return-string",
+    "text": "No translation for {{name}} yet."
+  },
+  "files": {
+    "en": {
+      "Locale.Marker": "en",
+      "Greeting.Present": "Hello there."
+    }
+  }
+}

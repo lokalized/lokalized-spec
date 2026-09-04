@@ -1,0 +1,18 @@
+{
+  "id": "custom-policy-dedup-chain",
+  "description": "Post-resolution first-wins dedup observed through the POLICY channel. Loads ro and en with fallback en; no mo catalog exists, so every mo observation is resolution behavior rather than loading behavior. Requesting mo-MD produces a raw candidate set containing both mo and ro, but localizedStringsFor folds each raw candidate onto a catalog BEFORE the putIfAbsent at DefaultStrings.java:2498, which is keyed by that RESOLVED attempted locale; the executed chain is therefore exactly [mo-MD, ro, ro-MD, en] — measured, not assumed — with raw mo already collapsed onto loaded ro and the later raw ro candidate producing NO second entry and hence no second consultation. Requesting bare mo collapses further to [ro, en], with mo absent from attemptedLocales entirely. Dedup.OnlyInRo and Dedup.OnlyInEn separate the two catalogs, Dedup.Shared exists in both so first-wins is visible, and Dedup.Missing exists nowhere. Loaded ro and en have distinct primary language codes, so no tiebreakers are required.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "ro": {
+      "Dedup.OnlyInRo": "ro: only here",
+      "Dedup.Shared": "ro: shared"
+    },
+    "en": {
+      "Dedup.OnlyInEn": "en: only here",
+      "Dedup.Shared": "en: shared"
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

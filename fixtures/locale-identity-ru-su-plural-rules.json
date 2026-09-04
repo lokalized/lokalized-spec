@@ -1,0 +1,28 @@
+{
+  "id": "locale-identity-ru-su-plural-rules",
+  "description": "A Russian catalog whose FILENAME is the deprecated ru-SU and whose only cardinality forms are ONE and OTHER. Locale identity is observed through plural-rule selection: the forms the validator demands and the form the evaluator selects both depend on resolving ru-SU to Russian.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "ru-SU": {
+      "Greeting": "privet",
+      "I read {{n}} books": {
+        "translation": "{{n}} {{books}}",
+        "placeholders": {
+          "books": {
+            "value": "n",
+            "translations": {
+              "CARDINALITY_ONE": "kniga",
+              "CARDINALITY_OTHER": "knig"
+            }
+          }
+        }
+      }
+    },
+    "en": {
+      "Greeting": "hello"
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

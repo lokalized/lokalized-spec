@@ -1,0 +1,20 @@
+{
+  "id": "classpath-resources-discovery-budget",
+  "description": "Two files under maximumDiscoveryEntries of 1. Discovery on this package fails on the budget; an explicit mapping of both files succeeds, because loadFromClasspathResources never charges a discovery entry. The two cases on this fixture are a matched pair on one option. loadOnly because directory discovery fails — verified for both the filesystem and classpath directory forms.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumDiscoveryEntries": 1
+  },
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Common.Greeting": "Hello",
+      "Only.En": "en"
+    },
+    "de": {
+      "Common.Greeting": "Hallo",
+      "Only.De": "de"
+    }
+  }
+}

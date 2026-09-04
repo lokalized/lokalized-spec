@@ -1,0 +1,22 @@
+{
+  "id": "owed-ds-likely-subtag-tiebreakerless-fallback",
+  "description": "Two Min Nan catalogs whose likely subtag is identically nan-Hans, requested through the grandfathered spelling zh-min-nan. The tiebreaker lookup key is derived from the range's FIRST subtag -- 'zh' -- while the catalogs are keyed under 'nan', so the lookup misses and lookupMatchByLikelySubtag must disambiguate by fallback-then-first instead. Here the configured fallback is the SECOND candidate, so 'first candidate' and 'fallback' disagree.",
+  "fallbackLocale": "nan-MY",
+  "tiebreakers": {
+    "nan": [
+      "nan-CN",
+      "nan-MY"
+    ]
+  },
+  "files": {
+    "en": {
+      "Checkout.Title": "en"
+    },
+    "nan-CN": {
+      "Checkout.Title": "nan-CN"
+    },
+    "nan-MY": {
+      "Checkout.Title": "nan-MY"
+    }
+  }
+}

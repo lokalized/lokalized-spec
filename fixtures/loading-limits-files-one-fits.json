@@ -1,0 +1,14 @@
+{
+  "id": "loading-limits-files-one-fits",
+  "description": "A single-file directory loaded with maximumLocalizedStringsFiles at 1, the lowest value the builder accepts. Also the fixture behind the single-resource parse case.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumLocalizedStringsFiles": 1
+  },
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  }
+}

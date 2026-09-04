@@ -1,0 +1,10 @@
+{
+  "id": "manifest-loads-uppercase-filename",
+  "description": "A single file named with an uppercase tag. Discovery parses the name into a Locale and keys the manifest by the canonical lowercase form, which is the mechanism behind the duplicate-spelling collision. Written through rawFiles so the literal uppercase filename reaches disk.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {},
+  "rawFiles": {
+    "EN": "{\"Greeting\":\"Hello\"}"
+  }
+}

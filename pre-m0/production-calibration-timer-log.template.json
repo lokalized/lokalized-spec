@@ -1,0 +1,18 @@
+{
+  "formatVersion": 1,
+  "runId": "REPLACE-WITH-PRODUCTION-RUN-ID",
+  "monotonicClock": {
+    "source": "REPLACE-WITH-CLOCK-SOURCE",
+    "unit": "seconds",
+    "continuousProcessIdentity": "REPLACE-WITH-TIMER-PROCESS-IDENTITY"
+  },
+  "phases": [
+    { "name": "authoring", "start": 0, "end": 0, "elapsedSeconds": 0 },
+    { "name": "review", "start": 0, "end": 0, "elapsedSeconds": 0 },
+    { "name": "rework", "start": 0, "end": 0, "elapsedSeconds": 0 },
+    { "name": "decision-review", "start": 0, "end": 0, "elapsedSeconds": 0 },
+    { "name": "final-verification", "start": 0, "end": 0, "elapsedSeconds": 0 }
+  ],
+  "humanIntervals": [],
+  "agentIntervals": []
+}

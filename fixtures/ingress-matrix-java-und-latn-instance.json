@@ -1,0 +1,15 @@
+{
+  "id": "ingress-matrix-java-und-latn-instance",
+  "description": "Seed row 1 catalog with the request tag und-Latn as the INSTANCE locale and no per-call locale. Note for porters: DefaultStrings has no separate instance-locale slot — the harness installs a constant localeSupplier for instanceLocale, so this fixture and ingress-matrix-java-und-latn-locale-supplier-constant drive the SAME branch (DefaultStrings.java:2456-2458). The pair records that equivalence for a port that does model an instance locale separately.",
+  "fallbackLocale": "fr",
+  "instanceLocale": "und-Latn",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Checkout.Title": "Checkout"
+    },
+    "fr": {
+      "Checkout.Title": "Paiement"
+    }
+  }
+}

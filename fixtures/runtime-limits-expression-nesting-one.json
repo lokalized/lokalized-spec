@@ -1,0 +1,36 @@
+{
+  "id": "runtime-limits-expression-nesting-one",
+  "description": "Plan v7 section 8.3 runtime-limits clause: maximumExpressionNestingDepth pinned exactly at 1, the maximum group depth of both expressions in this catalog. ExpressionEvaluator.validateInfixTokens increments a counter on GROUP_START, throws when it exceeds the limit, and decrements on GROUP_END, so an implementation that seeded the counter at 1 for the whole expression, or that never decremented, would refuse to construct this fixture. Probe-verified: at limit 0 the library reports 'Expression grouping depth exceeds maximum supported depth 0'. Same catalog as the characters and tokens fixtures.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "runtimeLimits": {
+    "maximumExpressionNestingDepth": 1
+  },
+  "files": {
+    "en": {
+      "Bag": {
+        "translation": "bag-default",
+        "alternatives": [
+          {
+            "(a > 0) && b == 1": {
+              "translation": "bag-matched"
+            }
+          }
+        ]
+      },
+      "Frag": {
+        "translation": "{{f}}",
+        "placeholders": {
+          "f": {
+            "translation": "frag-default",
+            "alternatives": [
+              {
+                "(a > 1) && a == 2": "frag-matched"
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

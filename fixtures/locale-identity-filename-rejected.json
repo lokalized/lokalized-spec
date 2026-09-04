@@ -1,0 +1,23 @@
+{
+  "id": "locale-identity-filename-rejected",
+  "description": "Filenames the loader refuses to treat as locales at all, each failing a DIFFERENT clause of isLanguageTag (LocalizedStringLoader.java:1649): root passes Locale.Builder but is not CldrLocaleData.isKnownLanguageTag; en-ANT builds to the extlang-promoted 'ant' and is likewise not known; i-enochian IS a known tag but builds to x-i-enochian, whose primary language is empty and which is not explicitly undetermined. One valid file proves the load still succeeds around them. Load-only.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "root": {
+      "Greeting": "g"
+    },
+    "en-ANT": {
+      "Greeting": "g"
+    },
+    "i-enochian": {
+      "Greeting": "g"
+    },
+    "en": {
+      "Greeting": "hello"
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

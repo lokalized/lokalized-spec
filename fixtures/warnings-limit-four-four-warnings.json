@@ -1,0 +1,56 @@
+{
+  "id": "warnings-limit-four-four-warnings",
+  "description": "The four-warning ordering catalog with maximumWarnings 4. Exactly at the limit the load succeeds, proving the comparison is 'already emitted >= limit' rather than 'about to emit > limit'. Loadable, and verified to construct a Strings instance.",
+  "fallbackLocale": "ru",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumWarnings": 4
+  },
+  "files": {
+    "ru": {
+      "Zulu": {
+        "translation": "{{zc}}",
+        "placeholders": {
+          "zc": {
+            "value": "n",
+            "translations": {
+              "CARDINALITY_ONE": "z"
+            }
+          }
+        }
+      },
+      "Alpha": {
+        "translation": "{{zeta}} {{beta}}",
+        "placeholders": {
+          "zeta": {
+            "value": "n",
+            "translations": {
+              "ORDINALITY_ONE": "1"
+            }
+          },
+          "beta": {
+            "value": "n",
+            "translations": {
+              "CARDINALITY_FEW": "f"
+            }
+          }
+        },
+        "alternatives": [
+          {
+            "n > 100": {
+              "translation": "{{gamma}}",
+              "placeholders": {
+                "gamma": {
+                  "value": "n",
+                  "translations": {
+                    "CARDINALITY_MANY": "m"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

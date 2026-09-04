@@ -1,0 +1,29 @@
+{
+  "formatVersion": 1,
+  "repository": "lokalized/lokalized-java",
+  "commit": null,
+  "inputsSha256": "sha256:8b29adf8934c85e2e99fe45829b8a3296e76c507c201798e5b27e8e3dbe088fe",
+  "files": [
+    {
+      "sourcePath": "src/build/resources/cldr/cldr-plural-data.json",
+      "snapshotPath": "vendor/lokalized-java/src/build/resources/cldr/cldr-plural-data.json",
+      "byteLength": 79598,
+      "sha256": "sha256:7ade4692762aac80144f915b62de19f29eb039ec3cf28c3f9f2c34b810cdc0e7",
+      "license": "Unicode-3.0"
+    },
+    {
+      "sourcePath": "src/build/resources/cldr/cldr-locale-data.json",
+      "snapshotPath": "vendor/lokalized-java/src/build/resources/cldr/cldr-locale-data.json",
+      "byteLength": 360048,
+      "sha256": "sha256:6241d8889b507a6edc0d6dae7e7812c372b62208ba8649701a819de877eade93",
+      "license": "Unicode-3.0"
+    },
+    {
+      "sourcePath": "src/build/resources/cldr/cldr-conformance-vectors.json",
+      "snapshotPath": "vendor/lokalized-java/src/build/resources/cldr/cldr-conformance-vectors.json",
+      "byteLength": 48325,
+      "sha256": "sha256:404e2fb3fbff0ee9564226527c0645c723a16afaf76dff2db7942e5015a54926",
+      "license": "Unicode-3.0"
+    }
+  ]
+}

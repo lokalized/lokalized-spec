@@ -1,0 +1,15 @@
+{
+  "id": "bidi-isolation-ltr-request-rtl-donor",
+  "description": "The clause built in the opposite direction: Arabic is the fallback locale and owns the only Greeting.Named entry, so an English request is served by an RTL donor and the default RTL_LOCALES DOES isolate. localeFallbackCandidates appends getFallbackLocale() (DefaultStrings.java:2489), so the en request's candidate list is [en, ar]. Together with bidi-isolation-rtl-request-ltr-donor this answers, in both directions, which locale decides isolation when the requested and supplying locales disagree. 'Farewell {{name}}' is again absent everywhere so the returned-key path can be shown to use the requested (LTR) locale even on an RTL-fallback instance.",
+  "fallbackLocale": "ar",
+  "tiebreakers": null,
+  "files": {
+    "ar": {
+      "Locale.Marker": "ar",
+      "Greeting.Named": "مرحبا، {{name}}"
+    },
+    "en": {
+      "Locale.Marker": "en"
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "m3b-negotiation-sr-cyrillic",
+  "description": "A Cyrillic-only Serbian catalog. sr's likely subtag is sr-Cyrl-RS, so a Latin-script Serbian request shares the primary language but implies a different script -- the exact state DefaultStrings.languageRangeSpecificityFor:2077 and compatibleLikelyScripts:2427 exist to refuse.",
+  "fallbackLocale": "fr",
+  "tiebreakers": null,
+  "files": {
+    "fr": {
+      "Checkout.Title": "fr"
+    },
+    "sr": {
+      "Checkout.Title": "sr"
+    }
+  }
+}

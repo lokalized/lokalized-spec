@@ -1,0 +1,26 @@
+{
+  "id": "phonetic-resolver-expression-throws",
+  "description": "A throwing resolver reached through an expression. The resolver's own exception propagates UNWRAPPED out of the evaluator, unlike the length-limit failure on the same path, which is caught and rewrapped.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "phoneticResolver": {
+    "behavior": "throw",
+    "message": "resolver refuses in expression"
+  },
+  "files": {
+    "en": {
+      "Expr.One": {
+        "translation": "no-alternative",
+        "alternatives": [
+          {
+            "noun == PHONETIC_VOWEL": {
+              "translation": "alt-vowel"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

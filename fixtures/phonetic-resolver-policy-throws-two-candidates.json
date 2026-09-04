@@ -1,0 +1,46 @@
+{
+  "id": "phonetic-resolver-policy-throws-two-candidates",
+  "description": "The same throwing policy where a SECOND candidate exists, so the identical phonetic failure does consult it and the policy's exception escapes the lookup entirely.",
+  "fallbackLocale": "fr",
+  "instanceLocale": "en",
+  "tiebreakers": null,
+  "translationFallbackPolicy": {
+    "behavior": "throw-in-policy",
+    "message": "policy refuses"
+  },
+  "phoneticResolver": {
+    "behavior": "constant",
+    "phonetic": "PHONETIC_Z"
+  },
+  "files": {
+    "en": {
+      "Article": {
+        "translation": "en:[{{a}}]",
+        "placeholders": {
+          "a": {
+            "value": "term",
+            "translations": {
+              "PHONETIC_VOWEL": "an"
+            }
+          }
+        }
+      }
+    },
+    "fr": {
+      "Article": {
+        "translation": "fr:[{{a}}]",
+        "placeholders": {
+          "a": {
+            "value": "term",
+            "translations": {
+              "PHONETIC_VOWEL": "un",
+              "PHONETIC_Z": "zed"
+            }
+          }
+        }
+      }
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

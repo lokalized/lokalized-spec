@@ -1,0 +1,22 @@
+{
+  "id": "warnings-cardinality-matrix",
+  "description": "One catalog whose only cardinality-driven placeholder supplies CARDINALITY_ONE and CARDINALITY_OTHER. Parsed under many locales it serves the 8.3 'warning sets' clause: the missing-form set is a function of the locale's CLDR cardinal categories, never of the catalog.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Books": {
+        "translation": "{{count}} {{books}}",
+        "placeholders": {
+          "books": {
+            "value": "count",
+            "translations": {
+              "CARDINALITY_ONE": "book",
+              "CARDINALITY_OTHER": "books"
+            }
+          }
+        }
+      }
+    }
+  }
+}

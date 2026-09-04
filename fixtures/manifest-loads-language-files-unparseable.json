@@ -1,0 +1,15 @@
+{
+  "id": "manifest-loads-language-files-unparseable",
+  "description": "The other reading of 'every file for one nonfallback language fails': the single German file is genuinely unparseable rather than undiscovered. Java's filesystem load has no per-file tolerance, so the entire directory load throws even though en is valid and the observed locale list comes back EMPTY. loadOnly because no Strings can be built from it. Exactly one bad file, so the diagnostic does not depend on directory iteration order.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Greeting": "Hello"
+    }
+  },
+  "rawFiles": {
+    "de": "{\"Greeting\": \"unterminated"
+  }
+}

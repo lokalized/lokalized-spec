@@ -1,0 +1,35 @@
+{
+  "id": "resolver-locale-rtl-request-ltr-donor",
+  "description": "An RTL request served by an LTR donor, with both donor-rule consumers in one string. ar carries only a marker, so an ar request for Article is supplied by the en fallback. getResult hands getInternal the candidateLocale (DefaultStrings.java:712) — the same locale shouldApplyBidiIsolation consults at :1367 and the same one the resolver is handed at :1167 — so under the default RTL_LOCALES the interpolated Hebrew name must NOT be isolated AND the resolver must be handed en. The template joins the phonetic branch and the caller-supplied name with a pipe so neither channel can be satisfied while the other is wrong. A per-call bidiIsolation override on this same fixture then shows the two knobs are independent.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "phoneticResolver": {
+    "behavior": "by-locale",
+    "mapping": {
+      "en": "PHONETIC_VOWEL",
+      "ar": "PHONETIC_SOLAR"
+    },
+    "default": "PHONETIC_OTHER"
+  },
+  "files": {
+    "en": {
+      "Locale.Marker": "en",
+      "Article": {
+        "translation": "{{article}}|{{name}}",
+        "placeholders": {
+          "article": {
+            "value": "nounTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "got:en",
+              "PHONETIC_SOLAR": "got:ar",
+              "PHONETIC_OTHER": "got:unmapped"
+            }
+          }
+        }
+      }
+    },
+    "ar": {
+      "Locale.Marker": "ar"
+    }
+  }
+}

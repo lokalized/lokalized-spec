@@ -1,0 +1,24 @@
+{
+  "id": "warnings-limit-one-one-warning",
+  "description": "The same one-warning Russian catalog with maximumWarnings 1. The satisfied side of the one boundary: exactly at the limit the load succeeds and the warning is delivered, so this fixture is loadable.",
+  "fallbackLocale": "ru",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumWarnings": 1
+  },
+  "files": {
+    "ru": {
+      "Zulu": {
+        "translation": "{{zc}}",
+        "placeholders": {
+          "zc": {
+            "value": "n",
+            "translations": {
+              "CARDINALITY_ONE": "z"
+            }
+          }
+        }
+      }
+    }
+  }
+}

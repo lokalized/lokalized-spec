@@ -1,0 +1,17 @@
+{
+  "id": "locale-identity-nb-no-macrolanguage",
+  "description": "nb-NO alone on disk, so every no-* request must arrive through the Norwegian macrolanguage bridge in CldrLocaleData.addMacrolanguageBridgeTags (line 403) rather than by ordinary parent walking.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "nb-NO": {
+      "Greeting": "hei",
+      "Only.Nb": "nb only"
+    },
+    "en": {
+      "Greeting": "hello"
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

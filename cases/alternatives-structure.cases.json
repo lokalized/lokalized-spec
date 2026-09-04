@@ -1,0 +1,126 @@
+{
+  "formatVersion": 1,
+  "family": "alternatives-structure",
+  "description": "Plan v7 section 8.3 fixture family 'alternatives-structure'. Inputs only; the oracle emits expected.",
+  "skipped": [
+    {
+      "what": "alternative nesting depth 128 and 129, as named in plan v7 section 8.3",
+      "why": "MEASURED UNREACHABLE. LocalizedStringValidator caps alternative depth at 128, but each alternative level costs three JSON container levels, and LocalizedStringLoadingOptions caps maximumJsonNestingDepth at 128 (default 64). Probing every depth with the cap raised to its 128 maximum: depth 42 loads (JSON depth 127) and depth 43 does not (JSON depth 130). The validator's 128 limit therefore cannot be reached through LocalizedStringLoader at all, and the real observable boundary is the JSON-nesting one at alternative depth 42/43. Depth 41 and 42 are authored instead; 43 cannot be a case because its fixture does not load. Reaching the validator's limit would require constructing LocalizedString objects programmatically rather than loading a strings file."
+    },
+    {
+      "what": "alternative-graph cycles",
+      "why": "Not expressible in a strings file: alternatives form a JSON tree with no reference mechanism, so a cycle cannot be written. Cycles ARE reachable between generated placeholders, which reference one another by name, and are covered by the generated-placeholders family."
+    },
+    {
+      "what": "shallow-first/deep-second shared DAG reuse",
+      "why": "Same reason: a JSON strings file cannot express sharing between two alternative branches. Any DAG reuse in this library arises through generated-placeholder references, not through the alternatives tree."
+    }
+  ],
+  "cases": [
+    {
+      "id": "alternatives-structure.depth.1-levels",
+      "requirementIds": [],
+      "fixture": "alternatives-structure-depth-1",
+      "operation": "getResult",
+      "input": {
+        "key": "Nested.Alternatives",
+        "locale": "en",
+        "placeholders": {
+          "count": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Probes the reachable alternative-nesting depth. LocalizedStringValidator caps alternative depth at 128, but each level costs several JSON container levels and the loader's JSON-depth ceiling is 128, so the two limits interact."
+    },
+    {
+      "id": "alternatives-structure.depth.10-levels",
+      "requirementIds": [],
+      "fixture": "alternatives-structure-depth-10",
+      "operation": "getResult",
+      "input": {
+        "key": "Nested.Alternatives",
+        "locale": "en",
+        "placeholders": {
+          "count": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Probes the reachable alternative-nesting depth. LocalizedStringValidator caps alternative depth at 128, but each level costs several JSON container levels and the loader's JSON-depth ceiling is 128, so the two limits interact."
+    },
+    {
+      "id": "alternatives-structure.depth.41-levels",
+      "requirementIds": [],
+      "fixture": "alternatives-structure-depth-41",
+      "operation": "getResult",
+      "input": {
+        "key": "Nested.Alternatives",
+        "locale": "en",
+        "placeholders": {
+          "count": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Probes the reachable alternative-nesting depth. LocalizedStringValidator caps alternative depth at 128, but each level costs several JSON container levels and the loader's JSON-depth ceiling is 128, so the two limits interact."
+    },
+    {
+      "id": "alternatives-structure.depth.42-levels",
+      "requirementIds": [],
+      "fixture": "alternatives-structure-depth-42",
+      "operation": "getResult",
+      "input": {
+        "key": "Nested.Alternatives",
+        "locale": "en",
+        "placeholders": {
+          "count": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Probes the reachable alternative-nesting depth. LocalizedStringValidator caps alternative depth at 128, but each level costs several JSON container levels and the loader's JSON-depth ceiling is 128, so the two limits interact."
+    },
+    {
+      "id": "alternatives-structure.width.128-siblings-last-branch",
+      "requirementIds": [],
+      "fixture": "alternatives-structure-width-128",
+      "operation": "getResult",
+      "input": {
+        "key": "Wide.Alternatives",
+        "locale": "en",
+        "placeholders": {
+          "count": 127
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Selects the LAST sibling, so the case fails if a port truncates or reorders a wide alternatives list."
+    },
+    {
+      "id": "alternatives-structure.width.129-siblings-last-branch",
+      "requirementIds": [],
+      "fixture": "alternatives-structure-width-129",
+      "operation": "getResult",
+      "input": {
+        "key": "Wide.Alternatives",
+        "locale": "en",
+        "placeholders": {
+          "count": 128
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Selects the LAST sibling, so the case fails if a port truncates or reorders a wide alternatives list."
+    },
+    {
+      "id": "alternatives-structure.width.200-siblings-last-branch",
+      "requirementIds": [],
+      "fixture": "alternatives-structure-width-200",
+      "operation": "getResult",
+      "input": {
+        "key": "Wide.Alternatives",
+        "locale": "en",
+        "placeholders": {
+          "count": 199
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Selects the LAST sibling, so the case fails if a port truncates or reorders a wide alternatives list."
+    }
+  ]
+}

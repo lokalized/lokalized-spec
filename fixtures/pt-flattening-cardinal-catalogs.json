@@ -1,0 +1,45 @@
+{
+  "id": "pt-flattening-cardinal-catalogs",
+  "description": "Plan v7 section 8.3, clause 'pt to pt-PT at 0, 0.0, and 1.5 to prohibit same-language flattening'. Loads pt and pt-PT as two independent catalogs for one key whose generated placeholder selects on cardinality. GeneratedCldrPluralData.java:794 gives pt cardinal 'one' as `i = 0..1`; :799 gives pt-PT cardinal 'one' as `i = 1 and v = 0`, so the two locales are in different rule groups and disagree at exactly 0, 0.0 and 1.5 (CLDR's own decimal samples in those two rows are literally \"0.0\" and \"1.5\"). Each catalog tags its text with the locale that supplied it on every branch, so catalog merging is observable independently of rule selection: the integer-two pair is a value where pt and pt-PT choose the SAME category and only the catalog prefix differs. Both catalogs enumerate every category pt and pt-PT support (ONE, MANY, OTHER) so no case in this family can trip a missing-branch resolution failure by accident; MANY is present for that completeness and is deliberately not exercised here (see skipped). Tiebreakers are mandatory because pt and pt-PT share the primary language code 'pt', and DefaultStrings.java:394 requires the list to be an exact permutation of the loaded locales for that language.",
+  "fallbackLocale": "pt",
+  "tiebreakers": {
+    "pt": [
+      "pt",
+      "pt-PT"
+    ]
+  },
+  "files": {
+    "pt": {
+      "I have {{itemCount}} items": {
+        "translation": "pt|{{itemCount}}|{{items}}",
+        "commentary": "The literal 'pt|' prefix makes the SUPPLYING catalog visible in the emitted translation, so a port that merged the two same-language catalogs is detectable even at values where pt and pt-PT choose the same cardinality.",
+        "placeholders": {
+          "items": {
+            "value": "itemCount",
+            "translations": {
+              "CARDINALITY_ONE": "pt-ONE",
+              "CARDINALITY_MANY": "pt-MANY",
+              "CARDINALITY_OTHER": "pt-OTHER"
+            }
+          }
+        }
+      }
+    },
+    "pt-PT": {
+      "I have {{itemCount}} items": {
+        "translation": "ptPT|{{itemCount}}|{{items}}",
+        "commentary": "The literal 'ptPT|' prefix makes the SUPPLYING catalog visible in the emitted translation, so a port that merged the two same-language catalogs is detectable even at values where pt and pt-PT choose the same cardinality.",
+        "placeholders": {
+          "items": {
+            "value": "itemCount",
+            "translations": {
+              "CARDINALITY_ONE": "ptPT-ONE",
+              "CARDINALITY_MANY": "ptPT-MANY",
+              "CARDINALITY_OTHER": "ptPT-OTHER"
+            }
+          }
+        }
+      }
+    }
+  }
+}

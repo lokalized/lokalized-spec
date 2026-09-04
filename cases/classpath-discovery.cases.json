@@ -1,0 +1,455 @@
+{
+  "formatVersion": 1,
+  "family": "classpath-discovery",
+  "description": "Plan v7 section 8.3 fixture family 'classpath-discovery'. Inputs only; the oracle emits expected.",
+  "skipped": [
+    {
+      "what": "classpath-discovery.exhaustive.disabled-twin-loads-the-same-catalog and classpath-discovery.exhaustive.enabled-matches-disabled-under-default-limits, plus the classpath-discovery-exhaustive fixture they used.",
+      "why": "REMOVED BY REVIEW as duplication of classpath-smoke. The disabled twin is byte-identical input to classpath-smoke.agreement.classpath-load, and the enabled half is byte-identical to classpath-smoke.exhaustive.search-enabled against a fixture that copied classpath-smoke-exhaustive field for field. Both were confirmed by execution to emit exactly the smoke family's observations. The one exhaustive-vs-disabled proposition smoke does NOT already carry is the discovery-entry budget pair, which is retained."
+    },
+    {
+      "what": "The originally authored input '..\\classpath-discovery-basic' for the backslash-precedence case.",
+      "why": "REPLACED BY REVIEW; recorded because its claim was false. Splitting on '/' yields the single segment '..\\classpath-discovery-basic', which is not '..', so the segment rule never fired, and Paths.get() leaves it relative on POSIX so the beneath-root rule never fired either. It was rejected by the backslash disjunct alone, restating classpath-smoke.package.backslash-is-rejected and pinning no ordering. The replacement '../classpath-discovery-basic\\en' violates both rules and was measured to emit the slash-relative message."
+    },
+    {
+      "what": "A deep nested classpath package that actually EXISTS and loads (for example com/example/messages containing en).",
+      "why": "The oracle's fixture writer creates only work/fixtures/<fixture-id> and writes every files/rawFiles/rawFilesBase64 entry directly into it with no recursive mkdir (build.mjs: writeFileSync(join(fixtureDir, name))), and fixture ids may not contain '/'. A rawFiles key with a slash would throw ENOENT and break the whole run. Covered instead by classpath-discovery.validation.deep-nested-package-passes-validation, which pins that a nested package passes validation and fails only as a missing package."
+    },
+    {
+      "what": "Real multi-release JAR discovery: entries under META-INF/versions/N inside a packaged JAR, and loadFromClasspathResources actually READING one.",
+      "why": "The oracle roots a URLClassLoader at a directory, so a JAR entry and the physical multi-release namespace cannot be materialized. The reserved-namespace cases pin the validation and the resources-path permission; the read itself is unreachable here."
+    },
+    {
+      "what": "The 'must remain beneath its classpath root' branch reached by packagePath.normalize().startsWith(\"..\"), by getRoot() != null, or by isAbsolute(), rather than by the Windows drive prefix.",
+      "why": "Unreachable by construction and confirmed by execution: a leading '/' is caught by rule 1, only a literal '..' segment can make a relative path normalize to one starting with '..', and rule 2 rejects those first. On a POSIX oracle the drive-prefix test is the sole reachable route to that message, which classpath-discovery.validation.windows-drive-prefix-is-rejected covers."
+    },
+    {
+      "what": "validateClasspathResourcePath's dedicated \"Classpath resource '...' must identify a file, not a package\" message.",
+      "why": "Unreachable, confirmed by execution: resource paths are not trailing-slash normalized, so any trailing slash produces an empty final segment and validateClasspathPackage's segment rule fires first. Pinned as the actual behavior in classpath-discovery.resources.trailing-slash-hits-the-segment-rule, with the no-trailing-slash variant pinned as a parse failure in classpath-discovery.resources.package-without-a-trailing-slash-reaches-the-parser."
+    },
+    {
+      "what": "Case sensitivity of package RESOLUTION (for example package 'CLASSPATH-DISCOVERY-BASIC' against the lowercase directory).",
+      "why": "MEASURED as host-dependent: on the macOS case-insensitive volume the uppercase spelling LOADS the catalog, while on a case-sensitive filesystem it would fail as a missing package. The emitted expectation would encode the oracle host's filesystem rather than the library. Distinct from the reserved-namespace case-sensitivity case, which is safe because neither spelling of META-INF exists under the classpath root."
+    },
+    {
+      "what": "exhaustiveClasspathSearch discovering a SECOND location for one package (multi-root classpath, JAR roots, non-JAR regular-file roots and their ZipException branch), and classpathRootsFor's system-classloader delegation plus manifest Class-Path expansion.",
+      "why": "The oracle installs exactly one directory root in a URLClassLoader with a null parent, so delegatesToSystemClassLoader is never true, no root is a regular file, and the exhaustive pass can only rediscover and dedupe the directory the URL enumeration already processed (the identities agree because both sides use canonicalPathForPath). The option's only observable effect through this oracle is the extra 'classpath roots' discovery entry, which the two budget cases capture."
+    }
+  ],
+  "cases": [
+    {
+      "id": "classpath-discovery.validation.slash-only-is-rejected",
+      "requirementIds": [],
+      "fixture": "classpath-discovery-basic",
+      "operation": "loadClasspath",
+      "input": {
+        "package": "/"
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: normalizeClasspathPackage strips trailing slashes only while length > 1, so a lone '/' survives normalization intact and the rejection message quotes '/'. Empty and leading-slash are two disjuncts of ONE branch emitting one message template, so what discriminates here is the quoted string, not which disjunct fired: a port that stripped unconditionally would reach validation with '' and emit the empty-package spelling instead."
+    },
+    {
+      "id": "classpath-discovery.validation.double-slash-normalizes-to-slash-then-rejected",
+      "requirementIds": [],
+      "fixture": "classpath-discovery-basic",
+      "operation": "loadClasspath",
+      "input": {
+        "package": "//"
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: normalization runs BEFORE validation and the validator sees the normalized value, so the message quotes '/' and not the '//' the caller passed. A port that validated first, or that reported the caller's original string, differs on the message text while still rejecting."
+    },
+    {
+      "id": "classpath-discovery.validation.empty-segment-is-rejected",
+      "requirementIds": [],
+      "fixture": "classpath-discovery-basic",
+      "operation": "loadClasspath",
+      "input": {
+        "package": "classpath-discovery-basic//en"
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: an interior empty segment is rejected by the segment loop, which splits with limit -1 so empty segments are preserved. A port that collapsed repeated separators before validating would happily resolve this to a real package and load it."
+    },
+    {
+      "id": "classpath-discovery.validation.dot-segment-is-rejected",
+      "requirementIds": [],
+      "fixture": "classpath-discovery-basic",
+      "operation": "loadClasspath",
+      "input": {
+        "package": "classpath-discovery-basic/./en"
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: an interior '.' segment is rejected outright even though normalizing it away would leave a path that stays inside the root. Pins that the rule is syntactic, not a reachability check."
+    },
+    {
+      "id": "classpath-discovery.validation.leading-dot-segment-is-rejected",
+      "requirementIds": [],
+      "fixture": "classpath-discovery-basic",
+      "operation": "loadClasspath",
+      "input": {
+        "package": "./classpath-discovery-basic"
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: the './' prefix is the shape a port is most tempted to treat as a harmless synonym for the bare package. It is rejected by the segment rule, and the message quotes the whole argument './classpath-discovery-basic' rather than any normalized form."
+    },
+    {
+      "id": "classpath-discovery.validation.parent-traversal-is-a-segment-rejection",
+      "requirementIds": [],
+      "fixture": "classpath-discovery-basic",
+      "operation": "loadClasspath",
+      "input": {
+        "package": "../fixtures/classpath-discovery-basic"
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: a package that genuinely escapes the classpath root is caught by the SEGMENT rule, not by the 'must remain beneath its classpath root' rule — the segment loop runs first and no path lacking a literal '..' segment can normalize to one. A port that checked containment first would reject with the wrong message."
+    },
+    {
+      "id": "classpath-discovery.validation.trailing-slash-strip-exposes-dotdot",
+      "requirementIds": [],
+      "fixture": "classpath-discovery-basic",
+      "operation": "loadClasspath",
+      "input": {
+        "package": "../"
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: trailing-slash normalization is applied before validation even to a traversal, so the message quotes '..' rather than '../'. Combines the normalization-order rule with the segment rule in one observation."
+    },
+    {
+      "id": "classpath-discovery.validation.backslash-rule-precedes-segment-rule",
+      "requirementIds": [],
+      "fixture": "classpath-discovery-basic",
+      "operation": "loadClasspath",
+      "input": {
+        "package": "../classpath-discovery-basic\\en"
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED, and CORRECTED BY REVIEW: the authored input '..\\classpath-discovery-basic' splits on '/' into a single segment that is not '..', so the segment rule never fired and the case pinned nothing beyond classpath-smoke's plain backslash rejection. This input carries a literal '..' SEGMENT as well as a backslash, so rules 1 and 2 both apply; the observed message is the slash-relative one, proving rule 1 wins. A port reordering the two checks would still reject but with the segment message."
+    },
+    {
+      "id": "classpath-discovery.validation.windows-drive-prefix-is-rejected",
+      "requirementIds": [],
+      "fixture": "classpath-discovery-basic",
+      "operation": "loadClasspath",
+      "input": {
+        "package": "C:/classpath-discovery-basic"
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: the explicit Windows drive-prefix test is the ONLY way to reach the 'must remain beneath its classpath root' message on a POSIX oracle — a leading slash is caught by rule 1 and a '..' segment by rule 2, and Paths.get() never reports a root or an absolute path for a slash-relative string here. Without this case that message is unreachable and a port could omit it entirely."
+    },
+    {
+      "id": "classpath-discovery.validation.bare-windows-drive-is-rejected",
+      "requirementIds": [],
+      "fixture": "classpath-discovery-basic",
+      "operation": "loadClasspath",
+      "input": {
+        "package": "C:"
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: the drive test needs only length >= 2 with a letter then a colon; no separator or remainder is required. A port requiring 'C:/' would let this through to discovery and fail with a not-found LocalizedStringLoadingException instead of an IllegalArgumentException."
+    },
+    {
+      "id": "classpath-discovery.validation.lowercase-drive-letter-is-rejected",
+      "requirementIds": [],
+      "fixture": "classpath-discovery-basic",
+      "operation": "loadClasspath",
+      "input": {
+        "package": "c:/x"
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: Character.isLetter, not an uppercase-only test. A port matching /^[A-Z]:/ would accept this and report not-found rather than the beneath-root rejection."
+    },
+    {
+      "id": "classpath-discovery.validation.digit-before-colon-is-not-a-drive",
+      "requirementIds": [],
+      "fixture": "classpath-discovery-basic",
+      "operation": "loadClasspath",
+      "input": {
+        "package": "1:/x"
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED negative half of the drive rule: a digit is not a letter, so this PASSES validation and reaches discovery, failing as \"Unable to find package '1:/x' on the classpath\" rather than as an IllegalArgumentException. A port testing merely for a colon at index 1 would reject it and diverge on the failure type."
+    },
+    {
+      "id": "classpath-discovery.validation.colon-at-index-two-is-not-a-drive",
+      "requirementIds": [],
+      "fixture": "classpath-discovery-basic",
+      "operation": "loadClasspath",
+      "input": {
+        "package": "ab:/x"
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: the colon must sit at index 1 exactly. This passes validation and fails at discovery as a missing package, so a port scanning for a colon anywhere in the string diverges on the failure type."
+    },
+    {
+      "id": "classpath-discovery.validation.multiple-trailing-slashes-are-stripped",
+      "requirementIds": [],
+      "fixture": "classpath-discovery-basic",
+      "operation": "loadClasspath",
+      "input": {
+        "package": "classpath-discovery-basic///"
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: the normalize loop strips trailing slashes repeatedly, so several are as harmless as one and the package still loads both locales. A port stripping only a single trailing slash would be left with an empty final segment and reject. classpath-smoke pins one trailing slash; this pins the loop."
+    },
+    {
+      "id": "classpath-discovery.validation.digits-and-hyphens-package-loads",
+      "requirementIds": [],
+      "fixture": "classpath-discovery-pkg-42-b7",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "MEASURED: an accepted package name carrying digits and hyphens, resolved through the default (fixture-id) package and actually loading. Guards against a port over-tightening the package grammar to Java identifier segments."
+    },
+    {
+      "id": "classpath-discovery.validation.deep-nested-package-passes-validation",
+      "requirementIds": [],
+      "fixture": "classpath-discovery-basic",
+      "operation": "loadClasspath",
+      "input": {
+        "package": "com/example/messages"
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: a multi-segment package with no reserved or traversal shape. It does not exist here, and the point is precisely that it fails as a MISSING PACKAGE (LocalizedStringLoadingException) rather than as an IllegalArgumentException: a port that rejected nested packages, or that only accepted single-segment ones, would emit the wrong failure type."
+    },
+    {
+      "id": "classpath-discovery.discovery.exact-package-loads",
+      "requirementIds": [],
+      "fixture": "classpath-discovery-prefix-target",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "The positive control for the prefix pair: this package exists and loads its one locale. Without it the companion prefix-miss case could be satisfied by a port that never resolves anything."
+    },
+    {
+      "id": "classpath-discovery.discovery.prefix-of-a-real-package-does-not-resolve",
+      "requirementIds": [],
+      "fixture": "classpath-discovery-prefix-target",
+      "operation": "loadClasspath",
+      "input": {
+        "package": "classpath-discovery-prefix"
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: a strict prefix of the real package 'classpath-discovery-prefix-target', which exists on the same classpath root, fails as a missing package. Resolution is exact; a port matching classpath entries by startsWith would load the target's catalog instead."
+    },
+    {
+      "id": "classpath-discovery.discovery.longer-name-than-a-real-package-does-not-resolve",
+      "requirementIds": [],
+      "fixture": "classpath-discovery-basic",
+      "operation": "loadClasspath",
+      "input": {
+        "package": "classpath-discovery-basic-nope"
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED mirror of the prefix case: a real package name extended with extra characters fails as missing, so a port doing prefix matching in the other direction — treating a real package as a prefix of the request — is caught too."
+    },
+    {
+      "id": "classpath-discovery.discovery.package-resolves-against-the-classpath-not-the-fixture",
+      "requirementIds": [],
+      "fixture": "classpath-discovery-basic",
+      "operation": "loadClasspath",
+      "input": {
+        "package": "classpath-discovery-sibling"
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: the case runs on the basic fixture but names the SIBLING package, which the oracle materializes under the same classpath root, and the loaded content is the sibling's de catalog rather than basic's en/fr. Proves discovery is driven by the package argument searched from the root, not by the fixture directory the case belongs to."
+    },
+    {
+      "id": "classpath-discovery.discovery.existing-package-with-no-catalogs-yields-empty",
+      "requirementIds": [],
+      "fixture": "classpath-discovery-empty-package",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "MEASURED: a package that exists but holds no loadable filename returns an EMPTY map with no warning and no failure, because processedLocations is non-empty even though nothing parsed. This is the sharp counterpart to the missing-package failure — a port that treated 'no locales found' as 'package not found' would throw here."
+    },
+    {
+      "id": "classpath-discovery.discovery.filesystem-agrees-on-the-empty-directory",
+      "requirementIds": [],
+      "fixture": "classpath-discovery-empty-package",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The filesystem half of the empty-package pair, on the SAME fixture. MEASURED: both paths return an empty result silently, so the classpath case above cannot be satisfied by a path-specific special case."
+    },
+    {
+      "id": "classpath-discovery.discovery.package-naming-a-file-is-rejected",
+      "requirementIds": [],
+      "fixture": "classpath-discovery-basic",
+      "operation": "loadClasspath",
+      "input": {
+        "package": "classpath-discovery-basic/en"
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: a syntactically valid package that resolves to a regular FILE fails with \"Location '<fixtures>/classpath-discovery-basic/en' exists but is not a directory\" — a distinct failure from both missing-package and parse failure. A port that fed the resolved resource to the parser would report a parse error instead, and one that ignored non-directories would report the package as missing."
+    },
+    {
+      "id": "classpath-discovery.duplicate.classpath-names-both-origins",
+      "requirementIds": [],
+      "fixture": "manifest-loads-duplicate-locale-spellings",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "ADDED BY REVIEW. MEASURED: an extensionless 'en' beside an 'en.json' fails on the classpath with \"Duplicate localized strings file for locale 'en' found in 'A' and 'B'\", naming BOTH canonical origins, where the filesystem path says \"found at 'B'\", naming one. loadFromDirectoryWithOrigins and loadFromDirectory carry genuinely different diagnostics for the same condition and nothing in the corpus pinned the classpath half. Reuses the existing fixture rather than cloning it; the filesystem twin is the already-present manifest-loads.load.two-filename-spellings-of-one-locale-collide. informationalIds for the same reason that case carries: the message quotes whichever entry the directory stream reached second, a filesystem property. Measured stable across three runs on APFS."
+    },
+    {
+      "id": "classpath-discovery.reserved.exact-namespace-is-rejected",
+      "requirementIds": [],
+      "fixture": "classpath-discovery-basic",
+      "operation": "loadClasspath",
+      "input": {
+        "package": "META-INF/versions"
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: validateClasspathDiscoveryPackage rejects the namespace root itself via the equals branch, not only its children. A port implementing only the startsWith('META-INF/versions/') half would let this through to discovery and fail as a missing package."
+    },
+    {
+      "id": "classpath-discovery.reserved.deep-child-is-rejected",
+      "requirementIds": [],
+      "fixture": "classpath-discovery-basic",
+      "operation": "loadClasspath",
+      "input": {
+        "package": "META-INF/versions/9/messages"
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: the reservation covers arbitrarily deep descendants, not just the immediate version directory, and the message names loadFromClasspathResources as the escape hatch. Pins that the guidance clause travels with the deep case; classpath-smoke pins only 'META-INF/versions/9'."
+    },
+    {
+      "id": "classpath-discovery.reserved.trailing-slash-is-stripped-before-the-reserved-check",
+      "requirementIds": [],
+      "fixture": "classpath-discovery-basic",
+      "operation": "loadClasspath",
+      "input": {
+        "package": "META-INF/versions/9/"
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: normalization precedes the reserved-namespace test, so the reservation fires and the message quotes the stripped 'META-INF/versions/9'. A port checking the reservation against the raw argument would still reject but quote the trailing slash; one checking an equals-comparison before normalizing could miss the reservation entirely."
+    },
+    {
+      "id": "classpath-discovery.reserved.versions-prefix-without-a-slash-is-not-reserved",
+      "requirementIds": [],
+      "fixture": "classpath-discovery-basic",
+      "operation": "loadClasspath",
+      "input": {
+        "package": "META-INF/versionsX"
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: the prefix test requires the trailing separator. This name merely starts with the reserved text, reaches discovery, and fails as a missing package. A port using startsWith('META-INF/versions') without the slash would reject it as reserved and diverge on the failure type."
+    },
+    {
+      "id": "classpath-discovery.reserved.lowercase-spelling-is-not-reserved",
+      "requirementIds": [],
+      "fixture": "classpath-discovery-basic",
+      "operation": "loadClasspath",
+      "input": {
+        "package": "meta-inf/versions/9"
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: the reservation is case-sensitive — the lowercase spelling passes validation and fails at discovery as a missing package. Safe to author despite the oracle host's case-insensitive volume, because no META-INF directory exists under the classpath root in either spelling, so the outcome does not depend on filesystem case folding. A port case-folding resource paths would reject it as reserved."
+    },
+    {
+      "id": "classpath-discovery.reserved.meta-inf-alone-is-not-reserved",
+      "requirementIds": [],
+      "fixture": "classpath-discovery-basic",
+      "operation": "loadClasspath",
+      "input": {
+        "package": "META-INF"
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: the reservation begins at META-INF/versions, not at META-INF. Discovery of an ordinary META-INF package is permitted and fails only because nothing is there, so a port that blanket-reserved META-INF diverges on the failure type."
+    },
+    {
+      "id": "classpath-discovery.reserved.explicit-resources-permit-the-namespace",
+      "requirementIds": [],
+      "fixture": "classpath-discovery-basic",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "en": "META-INF/versions/9/en"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: the escape hatch the discovery rejection names. validateClasspathResourcePath calls validateClasspathPackage, NOT the discovery variant, so a multi-release path is accepted here and fails only as \"Unable to find localized strings resource ...\" — a LocalizedStringLoadingException, never the IllegalArgumentException discovery raises. A port sharing one validator between both entry points would reject it."
+    },
+    {
+      "id": "classpath-discovery.resources.trailing-slash-hits-the-segment-rule",
+      "requirementIds": [],
+      "fixture": "classpath-discovery-basic",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "en": "classpath-discovery-basic/"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED, and REFILED BY REVIEW out of the 'reserved' sub-family, where it did not belong. Resource paths are NOT trailing-slash normalized, so a trailing slash produces an empty final segment and validateClasspathPackage's segment message fires. validateClasspathResourcePath's own \"must identify a file, not a package\" message is therefore unreachable — a port that emitted it here would diverge, as would one that normalized resource paths the way packages are normalized and then loaded the directory."
+    },
+    {
+      "id": "classpath-discovery.resources.empty-path-is-rejected",
+      "requirementIds": [],
+      "fixture": "classpath-discovery-basic",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "en": ""
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "ADDED BY REVIEW. MEASURED: an empty resource path is rejected by the SHARED package validator and the message reads \"Classpath package '' must be a nonempty slash-relative resource path\" — it says 'package', not 'resource', even though the caller passed a resource. classpath-smoke pins this branch for packages only; a port that gave the resources entry point its own wording diverges on the message while still rejecting."
+    },
+    {
+      "id": "classpath-discovery.resources.parent-segment-is-rejected",
+      "requirementIds": [],
+      "fixture": "classpath-discovery-basic",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "en": "classpath-discovery-basic/../classpath-discovery-basic/en"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "ADDED BY REVIEW. MEASURED: a traversal segment in a RESOURCE path is rejected by the same segment rule as a package, quoting the caller's string unnormalized, even though this particular path resolves back to a real loadable file. Pins that the explicit-resource entry point is not a normalization-tolerant back door around the package rules."
+    },
+    {
+      "id": "classpath-discovery.resources.package-without-a-trailing-slash-reaches-the-parser",
+      "requirementIds": [],
+      "fixture": "classpath-discovery-basic",
+      "operation": "loadClasspathResources",
+      "input": {
+        "resources": {
+          "en": "classpath-discovery-basic"
+        }
+      },
+      "partition": "informationalIds",
+      "notes": "ADDED BY REVIEW. MEASURED, and the sharp complement to the unreachable file-not-a-package guard: naming a real PACKAGE as a resource path with no trailing slash passes validation entirely, getResourceAsStream returns the directory LISTING, and the load fails as a parse error — \"classpath:classpath-discovery-basic:1:1: unable to parse localized strings file\". There is no clean diagnostic for this mistake at all; a port that detected it and reported a package-shaped error would diverge. informationalIds because whether a classloader streams a directory listing rather than returning null is a JDK and filesystem property, not a library property. Measured stable across three runs."
+    },
+    {
+      "id": "classpath-discovery.exhaustive.does-not-rescue-a-nonexistent-package",
+      "requirementIds": [],
+      "fixture": "classpath-smoke-exhaustive",
+      "operation": "loadClasspath",
+      "input": {
+        "package": "classpath-discovery-prefix"
+      },
+      "partition": "informationalIds",
+      "notes": "MEASURED: with exhaustiveClasspathSearch on, the classpath-root scan also finds no such package directory, so processedLocations stays empty and the load still fails as missing. A port treating the exhaustive pass as a permissive fallback — or seeding processedLocations from the root list — would return an empty success instead. Reuses the existing classpath-smoke-exhaustive fixture rather than cloning it; the package named is a strict prefix of a real sibling package, so this also re-tests exact resolution under the exhaustive pass."
+    },
+    {
+      "id": "classpath-discovery.exhaustive.budget-disabled-fits-two-discovery-entries",
+      "requirementIds": [],
+      "fixture": "classpath-discovery-entry-budget",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "MEASURED control half: a non-exhaustive classpath load of a one-file package charges exactly two discovery entries (the package URL, then the directory entry) and fits a budget of 2. Informational because the entry count reflects JVM classloader enumeration, but paired with the next case it is the only observable difference exhaustiveClasspathSearch makes through this oracle."
+    },
+    {
+      "id": "classpath-discovery.exhaustive.budget-enabled-charges-classpath-roots",
+      "requirementIds": [],
+      "fixture": "classpath-discovery-entry-budget-exhaustive",
+      "operation": "loadClasspath",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "MEASURED: identical content and budget with exhaustiveClasspathSearch enabled fails with \"classpath roots: localized strings load exceeds the aggregate maximum of 2 discovery entries\". classpathRootsFor charges the root enumeration against the same budget and the failure names the roots source rather than the package. A port that enabled the option without charging for root enumeration would succeed here and lose the pair's discrimination."
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "id": "ingress-matrix-java-und-latn-match-supplier-ranges",
+  "description": "Seed row 1 catalog, supplied match produced by the whole-list solver on the header 'und-Latn'. Paired with ingress-matrix-java-und-latn-match-supplier-locale to show the two solvers agree here, and with the baseline to show a supplied match does not agree with a per-call locale.",
+  "fallbackLocale": "fr",
+  "tiebreakers": null,
+  "localeMatchSupplier": {
+    "behavior": "match-ranges",
+    "ranges": "und-Latn"
+  },
+  "files": {
+    "en": {
+      "Checkout.Title": "Checkout"
+    },
+    "fr": {
+      "Checkout.Title": "Paiement"
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "id": "supplied-match-unmatched-none",
+  "description": "A VALID unmatched fabrication: null locale, NONE, no range and no weight, while still reporting a requested range (de) that matched nothing. localeLookupFor falls back to the supplied result's own fallbackLocale (DefaultStrings.java:2453), so the lookup locale is en even though nothing was selected.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "localeMatchSupplier": {
+    "behavior": "fabricated",
+    "matchType": "NONE",
+    "ranges": [
+      {
+        "range": "de",
+        "weight": 1
+      }
+    ],
+    "fallbackLocale": "en",
+    "consideredLocales": [
+      "en",
+      "fr"
+    ]
+  },
+  "files": {
+    "fr": {
+      "Locale.Marker": "fr",
+      "Greeting.Hello": "Bonjour",
+      "Only.Fr": "fr-only"
+    },
+    "en": {
+      "Locale.Marker": "en",
+      "Greeting.Hello": "Hello",
+      "Only.En": "en-only"
+    }
+  }
+}

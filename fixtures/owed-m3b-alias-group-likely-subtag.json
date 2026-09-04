@@ -1,0 +1,17 @@
+{
+  "id": "owed-m3b-alias-group-likely-subtag",
+  "description": "The alias-group semantic-member election, made observable. nsl and nsi are the two sides of the JDK/CLDR alias conflict named in DefaultStrings.matchFor's own comment: the JDK's IANA table maps nsl to sgn-NO, while CLDR canonicalizes sgn-NO to nsi. The catalogs are deliberately nsl-Latn-DE and nsi-Latn-DE rather than bare nsl and nsi: a bare catalog is reachable through the SYNTACTIC exact/identity/canonical rungs, which are NOT gated by the election, and every such shape answers 'nsl' whichever member is elected. Attaching a script and a region leaves only the LIKELY-SUBTAG rung -- nsl's likely language-script is nsl-Latn and sgn-NO's is nsi-Latn -- and that rung is non-syntactic, so it is supplied by the elected semantic member alone (matchFor:1642-1648). The three primary languages en, nsl and nsi are pairwise distinct, so construction needs no tiebreakers and nothing here is attributable to tiebreaker order.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Checkout.Title": "en"
+    },
+    "nsl-Latn-DE": {
+      "Checkout.Title": "nsl-Latn-DE"
+    },
+    "nsi-Latn-DE": {
+      "Checkout.Title": "nsi-Latn-DE"
+    }
+  }
+}

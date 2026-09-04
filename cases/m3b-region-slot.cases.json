@@ -1,0 +1,39 @@
+{
+  "formatVersion": 1,
+  "family": "m3b-region-slot",
+  "description": "Plan v7 section 8.3 fixture family 'm3b-region-slot'. Inputs only; the oracle emits expected.",
+  "cases": [
+    {
+      "id": "m3b-region-slot.two-char-nonalphabetic-is-not-a-region",
+      "requirementIds": [],
+      "fixture": "m3b-region-slot-alias-region-adoption",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "prs-1a",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "CldrLocaleData$TagParts.isRegionSubtag:711, the arm where a TWO-CHARACTER subtag fails the alphabetic test and therefore does NOT take the region slot. Because the region slot stays empty, aliasLanguageTagOnce:297 adopts prs's alias region AF and the canonical form is fa-AF-1a, whose CLDR chain is [fa-AF, fa] -- so the fa-AF catalog is selected. A port whose isRegionSubtag accepted any two-character subtag puts 1A in the region slot, refuses AF at 297, canonicalizes to fa-1A whose chain is [fa], and serves the fa catalog instead: a different translation with no error. Must use languageRanges, not locale: java.util.Locale.forLanguageTag('prs-1a') discards the subtag before the library is entered."
+    },
+    {
+      "id": "m3b-region-slot.two-char-alphabetic-is-a-region",
+      "requirementIds": [],
+      "fixture": "m3b-region-slot-alias-region-adoption",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "prs-gb",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The discriminating partner: the same shape with an ALPHABETIC two-character subtag, which DOES take the region slot, so 297 refuses the alias's AF and the canonical form is fa-GB, whose chain is [fa-GB, fa] -- the fa catalog. The two rows differ in one character class and must select DIFFERENT catalogs; a port that slots every two-character subtag as a region collapses them onto fa, and a port that slots none as a region collapses them onto fa-AF."
+    }
+  ]
+}

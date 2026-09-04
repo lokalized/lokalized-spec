@@ -1,0 +1,92 @@
+{
+  "formatVersion": 1,
+  "family": "owed-m3b-null-per-call-options",
+  "description": "Plan v7 section 8.3 fixture family 'owed-m3b-null-per-call-options'. Inputs only; the oracle emits expected.",
+  "cases": [
+    {
+      "id": "owed-null-options.handler.explicit-null-alone-is-no-options",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-handler-return-string",
+      "operation": "get",
+      "input": {
+        "key": "Absent.Key",
+        "translationFailureHandler": null
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The ONLY input shape that reaches TranslationOptions.Builder.build()'s all-fields-null shortcut (TranslationOptions.java:385), which returns the shared TranslationOptions.none() instead of constructing an options object. Every other corpus case sets at least one field, so the last of that line's ten outcomes was untaken and a port could treat an all-undefined options object as something other than 'no options' while passing all 1,965 cases. The discriminating half is the instance handler: a per-call handler REPLACES the instance one (DefaultStrings.java:683-685), so a port that keys on KEY PRESENCE rather than on a non-null VALUE installs `undefined` as the handler here and returns the key 'Absent.Key' instead of the instance handler's 'INSTANCE-HANDLER-TEXT'. No per-call locale, so the ambient instance locale en is used."
+    },
+    {
+      "id": "owed-null-options.handler.explicit-null-with-locale-keeps-instance-handler",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-handler-return-string",
+      "operation": "get",
+      "input": {
+        "key": "Absent.Key",
+        "locale": "en",
+        "translationFailureHandler": null
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same present-but-null handler key, this time alongside a real per-call locale so the options object is genuinely constructed rather than collapsing to none(). Separates the two propositions: 'an all-undefined options object is no options' (the sibling case) from 'an explicitly undefined handler key does not replace the instance handler'. A port that conflates them passes one and fails the other."
+    },
+    {
+      "id": "owed-null-options.policy.explicit-null-keeps-instance-never",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-policy-never",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.EnOnly",
+        "locale": "ru",
+        "translationFallbackPolicy": null
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The strongest discriminator in this family. The instance policy is `never`, which halts at the ru candidate on a plain MISSING_TRANSLATION instead of falling back to en. A port that reads a present-but-null translationFallbackPolicy as 'no per-call policy was set, so use the library default' -- or as 'replace the instance policy with the default missing-or-no-match' -- continues to en and returns 'en:only-here'. Java keeps the instance policy and produces the halted result. Compare ingress-matrix.policy.instance-never-halts-on-missing-translation, which is the same request with the key absent entirely."
+    },
+    {
+      "id": "owed-null-options.bidi.explicit-null-keeps-instance-always",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-bidi-always",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Named",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        },
+        "bidiIsolation": null
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Bidi is the option whose per-call override is most visible in the output text. The instance leg is ALWAYS, which isolates even an LTR request, so a port that treats the present-but-null bidiIsolation key as an override to the RTL_LOCALES default emits the placeholder WITHOUT isolation marks while Java still isolates it. The isolation characters are in the recorded translation, so the two arms differ character for character."
+    },
+    {
+      "id": "owed-null-options.ranges.explicit-null-alongside-a-locale-is-not-both-sources",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-policy-never",
+      "operation": "getResult",
+      "input": {
+        "key": "Locale.Marker",
+        "locale": "ru",
+        "languageRanges": null
+      },
+      "partition": "requiredPortableIds",
+      "notes": "TranslationOptions refuses to hold a locale and language ranges at once (TranslationOptions.java:70-71). In Java the builder makes that state unconstructible; in JS TranslationOptions is a caller-written structural union, so '{ locale, localeMatch: undefined }' is an ordinary caller shape and the mutual exclusion becomes a RUNTIME check. This pins that an explicitly undefined range key is ABSENT, not a second locale source: the lookup is locale-driven and resolves in ru. A port implementing the exclusion as a crude 'both keys present' test refuses this call. The reverse shape -- an explicitly null locale alongside real ranges -- is not expressible through the oracle, because VectorOracle.optionsFrom reads the locale with JsonObject.getString, which throws on a present JSON null rather than returning the default."
+    },
+    {
+      "id": "owed-null-options.every-behaviour-key-null-is-equivalent-to-omitting-options",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-bidi-always",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Named",
+        "placeholders": {
+          "name": "Sarah"
+        },
+        "languageRanges": null,
+        "bidiIsolation": null,
+        "translationFailureHandler": null,
+        "translationFallbackPolicy": null
+      },
+      "partition": "requiredPortableIds",
+      "notes": "All four nullable behaviour keys present and null at once, with no locale: the whole options object must be indistinguishable from passing none. Java reaches TranslationOptions.Builder.build() with every field null and returns TranslationOptions.none(), so the ambient instance locale en and the instance ALWAYS isolation both survive. Any port that lets one of the four present-undefined keys through as an override changes the output -- isolation marks disappear, the handler or policy is displaced, or the call is refused for naming two locale sources."
+    }
+  ]
+}

@@ -1,0 +1,476 @@
+{
+  "formatVersion": 1,
+  "family": "loading-limits",
+  "description": "Plan v7 section 8.3 fixture family 'loading-limits'. Inputs only; the oracle emits expected.",
+  "skipped": [
+    {
+      "what": "Reader-input boundaries for maximumReaderCharacters (a Reader that just fits and just exceeds the UTF-16 code-unit budget).",
+      "why": "The oracle drives only loadFromFilesystem and parse(InputStream, ...); LocalizedStringLoader.parse(Reader, ...) has no ingress in VectorOracle.java, so readCharacters() is never reached. Only the builder's zero rejection and the fact that the limit does NOT bound byte input are observable, and both are authored above."
+    },
+    {
+      "what": "maximumTotalInputBytes exceeded ACROSS two or more files in one directory, maximumTranslationNodes exceeded across files, and maximumWarnings exhausted across files -- the aggregate limits' distinguishing behavior versus their per-resource counterparts.",
+      "why": "Executed in the scratchpad and they work, but every such message names whichever file the walker reached when the budget tripped. Measured on this machine: Java's Files.newDirectoryStream returns raw readdir order while Node's fs.readdirSync goes through libuv scandir()+alphasort, and the two disagree on the same directory, so the expected block would encode a non-portable filename. The single-file aggregate cases pin the same message shape deterministically. The two file-count cases that unavoidably need multiple files are authored as informationalIds instead of skipped, because they bracket the shipped default."
+    },
+    {
+      "what": "Every limit at its shipped default: maximumInputBytes 8 MiB, maximumTotalInputBytes 32 MiB, maximumTranslationNodes 100000, maximumWarnings 1000, maximumDiscoveryEntries 100000, maximumJsonNestingDepth 64.",
+      "why": "Reaching them requires multi-megabyte or hundred-thousand-entry fixtures, which the corpus materializes on every build. The family instead lowers each limit so the boundary is exact. The one default that IS pinned is maximumLocalizedStringsFiles 256, bracketed by the 256-file manifest (portable, succeeds) and the 257-file manifest (informational, fails), because trivial two-byte files are cheap."
+    },
+    {
+      "what": "exhaustiveClasspathSearch, and the classpath-side consumers of the discovery-entry budget: package-resource locations, physical JAR entries, classpath-root candidates, and manifest Class-Path entries (LocalizedStringLoader.java lines 402, 738, 756, 823), plus the aggregate file-limit check on loadFromClasspathResources(Map) at line 661, which has its own distinct message.",
+      "why": "Classpath loading is not driven by the oracle. Only the filesystem child charge at line 1245 is reachable, and it is covered."
+    },
+    {
+      "what": "INVALID_CLASSPATH_LOCALE_FILENAME warnings counted against maximumWarnings.",
+      "why": "That warning type is emitted only by languageTagForClasspathFileName on the classpath path, which the oracle does not drive. Filesystem loading returns null for a non-language-tag filename and warns nothing -- confirmed by reading languageTagForFileName, which only throws for a name ending in .json, and that throw is fatal rather than a warning on the filesystem path."
+    },
+    {
+      "what": "A zero-length (0-byte) localized strings file as the one-boundary case for the byte limits.",
+      "why": "It fails earlier and for a different reason -- 'a localized strings file may not be blank; use an empty JSON object ({}) for an empty file' -- so it would observe blank-file rejection rather than a byte budget. The two-byte {} is the smallest file that isolates the limit, and is what the fixtures use."
+    }
+  ],
+  "cases": [
+    {
+      "id": "loading-limits.nodes.zero-admits-a-zero-node-catalog",
+      "requirementIds": [],
+      "fixture": "loading-limits-nodes-zero-empty-catalog",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "maximumTranslationNodes is documented NONNEGATIVE, unlike the positive-only limits, so 0 survives the builder. A root object with no members charges 0 and the guard 'spent > limit - cost' is 0 > 0, which is false: the load SUCCEEDS with locales ['en'] and an empty key list. Executed against the real loader. A port that treats 0 as invalid, or that rejects any load once the node budget is 0, produces a builder rejection or a load failure here instead."
+    },
+    {
+      "id": "loading-limits.nodes.zero-rejects-a-single-root-entry",
+      "requirementIds": [],
+      "fixture": "loading-limits-nodes-zero-single-key",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The other half of the zero boundary: one root entry costs one node and a budget of 0 cannot pay it. Pins that the aggregate-limit message names the file and quotes the CONFIGURED limit (0), not the count that was attempted."
+    },
+    {
+      "id": "loading-limits.nodes.one-admits-a-single-root-entry",
+      "requirementIds": [],
+      "fixture": "loading-limits-nodes-one-single-key",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The one boundary from the admitting side: a limit of 1 exactly pays for a one-entry file. A port that charges the budget with an off-by-one (>= instead of the library's 'spent > limit - cost') fails this load. Distinct from loader-smoke's node-limit case, which puts a TWO-key file at the same limit of 1 and observes the failure."
+    },
+    {
+      "id": "loading-limits.nodes.negative-is-refused-by-the-builder",
+      "requirementIds": [],
+      "fixture": "loading-limits-nodes-negative",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "Completes the zero boundary from below: -1 IS refused, with 'maximumTranslationNodes must be nonnegative', while 0 is accepted. Without this case a port could pass the zero-admits case by accident, treating every out-of-range value as clamped. The recorded failure is a plain IllegalArgumentException from the builder, not a LocalizedStringLoadingException, and no file is opened."
+    },
+    {
+      "id": "loading-limits.nodes.five-admits-root-placeholder-and-alternatives",
+      "requirementIds": [],
+      "fixture": "loading-limits-nodes-composition-fits",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "Pins WHAT a translation node is. Verified against LocalizedStringLoader: nodes are charged at outerJsonObject.size() for root entries (one batch), 1 per placeholder definition, 1 per whole-message alternative, and 1 per expression-fragment alternative. This entry costs 1 + 1 + 2 + 1 = exactly 5 and the limit is 5. Must be read with the paired 4-node case."
+    },
+    {
+      "id": "loading-limits.nodes.four-is-one-short-of-the-composed-entry",
+      "requirementIds": [],
+      "fixture": "loading-limits-nodes-composition-exceeds",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The discriminating half: a port that counts only root entries (1), or root entries plus placeholders (2), sees a budget of 4 as ample and loads successfully, where Java fails. Executed both ways against the real loader: the identical file passes at 5 and fails at 4, so the composition is measured rather than asserted."
+    },
+    {
+      "id": "loading-limits.nodes.zero-applies-to-single-resource-parse",
+      "requirementIds": [],
+      "fixture": "loading-limits-nodes-zero-single-key",
+      "operation": "parse",
+      "input": {
+        "file": "en",
+        "locale": "en",
+        "source": "loading-limits-nodes"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "LocalizedStringLoadingOptions documents that the node limit applies to every load 'including single-resource parse(...)'. parse(InputStream, ...) builds its own LoadingSession, so a port that charges the budget only in the directory walker admits this file. The message uses the caller-supplied source label rather than a temp path, so it is byte-stable without post-processing."
+    },
+    {
+      "id": "loading-limits.warnings.zero-admits-a-warning-free-load",
+      "requirementIds": [],
+      "fixture": "loading-limits-warnings-zero-clean-load",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "maximumWarnings is the other nonnegative limit. Zero is accepted by the builder and costs nothing when nothing warns, so the load succeeds. Establishes that the failure in the next case comes from the warning, not from the value 0 itself."
+    },
+    {
+      "id": "loading-limits.warnings.zero-turns-the-first-warning-into-a-failure",
+      "requirementIds": [],
+      "fixture": "loading-limits-warnings-zero-one-warning",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The surprising half of the zero boundary, confirmed by execution: with maximumWarnings 0 a NON-FATAL validation warning becomes a hard LocalizedStringLoadingException and nothing loads -- locales is empty and the warnings array is empty too, because LoadingSession.handle throws BEFORE delegating. A port that treats the warning budget as a cap on how many warnings to REPORT, dropping the excess and loading anyway, succeeds here where Java fails."
+    },
+    {
+      "id": "loading-limits.warnings.one-admits-exactly-one-warning",
+      "requirementIds": [],
+      "fixture": "loading-limits-warnings-one-single-warning",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The one boundary from the admitting side: the budget is checked before the increment, so a limit of 1 delivers exactly one warning and the load still succeeds, carrying the key. Reuses the incomplete-cardinality vehicle that loader-smoke pins, but the proposition here is the budget, not the warning's own shape."
+    },
+    {
+      "id": "loading-limits.warnings.one-delivers-the-first-then-fails-on-the-second",
+      "requirementIds": [],
+      "fixture": "loading-limits-warnings-one-two-warnings",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "Two-channel observation, verified: the load FAILS and the warning channel still carries the FIRST warning, because the handler is invoked for warning one and only warning two trips the budget. A port that validates everything and then checks the count emits two warnings or zero alongside the failure; a port that aborts before delivering emits none. Warning order follows JSON document order (Items before Books)."
+    },
+    {
+      "id": "loading-limits.warnings.two-admits-both-warnings",
+      "requirementIds": [],
+      "fixture": "loading-limits-warnings-two-two-warnings",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "Control for the pair above: at a budget of exactly 2 both warnings are delivered in document order and the load succeeds with both keys, so the failure above is attributable to the limit rather than to the second entry."
+    },
+    {
+      "id": "loading-limits.warnings.negative-is-refused-by-the-builder",
+      "requirementIds": [],
+      "fixture": "loading-limits-warnings-negative",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "Completes the warning zero boundary from below: -1 IS refused ('maximumWarnings must be nonnegative') while 0 is accepted. Together with warnings.zero-admits-a-warning-free-load this fixes 0 as a deliberate legal value rather than an unvalidated one."
+    },
+    {
+      "id": "loading-limits.warnings.zero-applies-to-single-resource-parse",
+      "requirementIds": [],
+      "fixture": "loading-limits-warnings-zero-one-warning",
+      "operation": "parse",
+      "input": {
+        "file": "ru",
+        "locale": "ru",
+        "source": "loading-limits-warnings"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The warning budget is charged inside the LoadingSession that parse(InputStream, ...) creates, so a single-resource parse with maximumWarnings 0 fails on the validator's first warning. The message is byte-stable because the source is the caller-supplied label."
+    },
+    {
+      "id": "loading-limits.depth.one-admits-a-flat-object",
+      "requirementIds": [],
+      "fixture": "loading-limits-depth-one-flat",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The one boundary for JSON nesting: the outermost object itself counts as depth 1, so a flat catalog is admissible at the lowest configurable depth. A port that starts counting at 0 for the root rejects this file."
+    },
+    {
+      "id": "loading-limits.depth.one-rejects-a-nested-object",
+      "requirementIds": [],
+      "fixture": "loading-limits-depth-one-nested",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The same limit against an entry whose value is an object, reaching depth 2. Pins that depth is measured over JSON containers in the raw text by validateJsonNestingDepth, BEFORE Json.parse runs, and that the message quotes the configured maximum rather than the depth reached."
+    },
+    {
+      "id": "loading-limits.depth.two-admits-a-nested-object",
+      "requirementIds": [],
+      "fixture": "loading-limits-depth-two-nested",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "Closes the depth-1/2 boundary from the admitting side so the failure above is attributable to the limit rather than to the file."
+    },
+    {
+      "id": "loading-limits.depth.zero-rejected-before-any-file-is-read",
+      "requirementIds": [],
+      "fixture": "loading-limits-depth-zero",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "Zero rejection for a positive-only limit. The builder throws IllegalArgumentException while the options are being constructed, so the failure identity recorded here is a plain java.lang.IllegalArgumentException with the builder's range text -- NOT a LocalizedStringLoadingException -- and no file is opened. A port that clamps an out-of-range limit instead of throwing loads the catalog successfully."
+    },
+    {
+      "id": "loading-limits.depth.ceiling-of-128-is-inclusive",
+      "requirementIds": [],
+      "fixture": "loading-limits-depth-at-ceiling",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "MAXIMUM_JSON_NESTING_DEPTH is 128 and the guard is 'value > MAXIMUM', so 128 itself is accepted. Existing fixtures use 128 as an enabling value; nothing in the corpus yet asserts it is the inclusive ceiling. Pairs with the 129 case to fix which side of the bound is inclusive."
+    },
+    {
+      "id": "loading-limits.depth.129-rejected-before-any-file-is-read",
+      "requirementIds": [],
+      "fixture": "loading-limits-depth-above-ceiling",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "One above the ceiling. Pins that the loader enforces an UPPER bound on a limit at all -- a port that accepts any positive depth loads the catalog instead of throwing. Note the emitted message is byte-identical to the zero case ('must be between 1 and 128'), so what discriminates here is the fixture's option value, not the text."
+    },
+    {
+      "id": "loading-limits.input-bytes.zero-rejected-before-any-file-is-read",
+      "requirementIds": [],
+      "fixture": "loading-limits-input-bytes-zero",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "Zero rejection for the per-resource byte limit. Its builder message is distinctive: the guard also excludes Integer.MAX_VALUE, so the text names a range ('must be between 1 and Integer.MAX_VALUE - 1') rather than saying 'must be positive'. A port that emits a uniform 'must be positive' message for every limit differs here."
+    },
+    {
+      "id": "loading-limits.input-bytes.integer-max-value-rejected-by-the-same-guard",
+      "requirementIds": [],
+      "fixture": "loading-limits-input-bytes-integer-max",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The non-obvious second arm of the same guard: 2147483647 is refused too, because readStrictUtf8 allocates limit+1 and the sentinel would overflow. A port that validates only 'positive' accepts it and then either overflows its buffer size or silently reads unbounded input. Verified executable and expressible under the corpus schema exactly as it stands, unlike most of this family."
+    },
+    {
+      "id": "loading-limits.input-bytes.one-rejects-a-two-byte-file",
+      "requirementIds": [],
+      "fixture": "loading-limits-input-bytes-one",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The one boundary for the per-resource byte limit, using the smallest legal localized strings file: the two-byte empty object {}. Written verbatim through rawFiles because build.mjs re-serializes `files` with two-space indentation and a trailing newline, at which point the byte count would stop being exact."
+    },
+    {
+      "id": "loading-limits.input-bytes.exact-size-is-admitted",
+      "requirementIds": [],
+      "fixture": "loading-limits-input-bytes-exact",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "A verbatim 13-byte file at a limit of exactly 13. The loader reads up to limit+1 bytes and then compares 'length > limit', so an exact fit is admissible; a port that stops reading AT the limit and treats a full buffer as overflow rejects this file."
+    },
+    {
+      "id": "loading-limits.input-bytes.one-byte-short-reports-resource-size",
+      "requirementIds": [],
+      "fixture": "loading-limits-input-bytes-one-short",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The same 13-byte file at 12. Pins the per-resource wording -- 'localized strings resource exceeds the maximum size of 12 bytes' -- which is deliberately different from the aggregate wording that total-bytes.one-byte-short-reports-aggregate-budget exercises on the identical file at the identical number. A port that reports one budget for both cannot satisfy both cases."
+    },
+    {
+      "id": "loading-limits.input-bytes.one-byte-short-also-fails-single-resource-parse",
+      "requirementIds": [],
+      "fixture": "loading-limits-input-bytes-one-short",
+      "operation": "parse",
+      "input": {
+        "file": "en",
+        "locale": "en",
+        "source": "loading-limits-input-bytes"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The per-resource byte limit applies to parse(InputStream, ...) as well as to directory loading, and the message carries the caller-supplied source label instead of a path."
+    },
+    {
+      "id": "loading-limits.total-bytes.zero-rejected-before-any-file-is-read",
+      "requirementIds": [],
+      "fixture": "loading-limits-total-bytes-zero",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "Zero rejection for the aggregate byte limit, which is a long rather than an int and carries its own builder message ('maximumTotalInputBytes must be positive')."
+    },
+    {
+      "id": "loading-limits.total-bytes.one-rejects-a-two-byte-file",
+      "requirementIds": [],
+      "fixture": "loading-limits-total-bytes-one",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The one boundary for the aggregate budget against the two-byte empty object. The aggregate is charged inside the read loop as bytes arrive, so it trips BEFORE the per-resource size comparison that happens after the buffer is drained, and the aggregate message is what surfaces. A port that checks both budgets after reading reports the wrong one."
+    },
+    {
+      "id": "loading-limits.total-bytes.exact-size-is-admitted",
+      "requirementIds": [],
+      "fixture": "loading-limits-total-bytes-exact",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "A verbatim 13-byte file at an aggregate budget of exactly 13: the guard is 'spent > limit - incoming', so consuming the budget to the last byte is admissible."
+    },
+    {
+      "id": "loading-limits.total-bytes.one-byte-short-reports-aggregate-budget",
+      "requirementIds": [],
+      "fixture": "loading-limits-total-bytes-one-short",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The same file at 12. Read together with input-bytes.one-byte-short-reports-resource-size, this pins that the two byte limits are separate budgets with separate messages at the identical size: 'load exceeds the aggregate maximum of 12 input bytes' versus 'resource exceeds the maximum size of 12 bytes'."
+    },
+    {
+      "id": "loading-limits.reader-characters.zero-rejected-before-any-file-is-read",
+      "requirementIds": [],
+      "fixture": "loading-limits-reader-characters-zero",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "Zero rejection for the UTF-16 code-unit limit. Nothing in filesystem loading consults this limit, so the ONLY observable behavior is the builder's refusal -- which is the point: it happens while the options are constructed, before any directory is listed, and it completes the 'rejection of zero for each positive-only limit' clause for the one limit the oracle cannot otherwise reach."
+    },
+    {
+      "id": "loading-limits.reader-characters.one-does-not-bound-byte-input",
+      "requirementIds": [],
+      "fixture": "loading-limits-reader-characters-one",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "A limit of 1 UTF-16 code unit alongside a catalog far larger than that, loaded successfully -- verified. maximumReaderCharacters governs Reader input only, whose original byte representation is unavailable to the library; filesystem and InputStream loading are bounded by maximumInputBytes. A port that folds the two limits into one character budget fails this load, which is the likeliest JS mistake since JS has no byte-oriented reader distinction."
+    },
+    {
+      "id": "loading-limits.files.zero-rejected-before-any-file-is-read",
+      "requirementIds": [],
+      "fixture": "loading-limits-files-zero",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "Zero rejection for the localized-strings-file limit, whose builder message is the bare 'must be positive' form rather than a range."
+    },
+    {
+      "id": "loading-limits.files.one-admits-a-single-file-directory",
+      "requirementIds": [],
+      "fixture": "loading-limits-files-one-fits",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The one boundary from the admitting side. beginLocalizedStringsFile checks 'spent >= limit' BEFORE the increment, so a limit of 1 admits exactly one file."
+    },
+    {
+      "id": "loading-limits.files.one-rejects-a-second-file",
+      "requirementIds": [],
+      "fixture": "loading-limits-files-one-exceeds",
+      "operation": "load",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "INFORMATIONAL, not portable, and the demotion is deliberate. The emitted failureMessage names whichever locale file the walker reached when the budget tripped, and directory-iteration order is NOT portable: measured on this machine, Java's Files.newDirectoryStream returns raw readdir order while Node's fs.readdirSync goes through libuv's scandir(), which applies alphasort. The two disagree on the same directory on the same filesystem, so a JS port would emit the other filename and fail parity for a reason that is not a behavior difference. The portable content -- failure type plus the quoted limit -- is preserved here; promote this case to requiredPortableIds only after the oracle normalizes the trailing path segment the way withoutTemporaryPaths already normalizes the temp directory."
+    },
+    {
+      "id": "loading-limits.files.one-admits-a-single-resource-parse",
+      "requirementIds": [],
+      "fixture": "loading-limits-files-one-fits",
+      "operation": "parse",
+      "input": {
+        "file": "en",
+        "locale": "en",
+        "source": "loading-limits-files"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "parse() opens its own LoadingSession and charges exactly ONE localized strings file, so a budget of 1 is enough for a single resource -- verified to succeed and return the key. Discriminates a port that charges the file budget twice on the parse path (once opening the session, once for the resource), which would fail this parse at 1 while still passing the directory case."
+    },
+    {
+      "id": "loading-limits.files.zero-rejected-on-the-parse-path-too",
+      "requirementIds": [],
+      "fixture": "loading-limits-files-zero",
+      "operation": "parse",
+      "input": {
+        "file": "en",
+        "locale": "en",
+        "source": "loading-limits-files-zero"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The zero rejection is a property of the OPTIONS, not of directory walking: parse(InputStream, ...) receives the same LocalizedStringLoadingOptions and so records the same builder IllegalArgumentException. A port that validates its limits only where it lists a directory admits this parse."
+    },
+    {
+      "id": "loading-limits.files.manifest-of-256-fits-the-default",
+      "requirementIds": [],
+      "fixture": "loading-limits-manifest-256-default",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The manifest clause's deterministic half: 256 trivial locale files under DEFAULT options load completely, because beginLocalizedStringsFile checks 'spent >= 256' before the increment and the 256th file sees 255. Verified to emit all 256 locales in language-tag order, with no filename in any message, so it is byte-stable across filesystems and languages. This is what actually gates parity on DEFAULT_MAXIMUM_LOCALIZED_STRINGS_FILES: a port shipping a smaller default fails here."
+    },
+    {
+      "id": "loading-limits.files.manifest-of-257-exceeds-the-default",
+      "requirementIds": [],
+      "fixture": "loading-limits-manifest-257-default",
+      "operation": "load",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "INFORMATIONAL for the same iteration-order reason as files.one-rejects-a-second-file: Java names the file its raw-readdir walk reached at the 257th charge (observed: 'afu'), whereas a Node port's alphasorted listing would name 'amh'. Kept because it brackets the default from above -- read with manifest-of-256-fits-the-default it fixes DEFAULT_MAXIMUM_LOCALIZED_STRINGS_FILES at exactly 256 -- but it must not gate cross-language parity while the failing filename is in the message."
+    },
+    {
+      "id": "loading-limits.files.manifest-of-257-fits-a-raised-limit",
+      "requirementIds": [],
+      "fixture": "loading-limits-manifest-257-raised",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The same 257-file manifest with the limit raised to exactly 257: every locale loads. Verified deterministic -- the emitted locale list is ordered by language tag, not by directory-iteration order, and all 257 three-letter tags round-trip through Locale.forLanguageTag unchanged. Discriminates a port that hardcodes 256 rather than reading the configured limit."
+    },
+    {
+      "id": "loading-limits.discovery.zero-rejected-before-any-directory-is-listed",
+      "requirementIds": [],
+      "fixture": "loading-limits-discovery-zero",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "Zero rejection for the discovery-entry limit, whose builder message names a range ('must be between 1 and 1000000') because the limit also has a ceiling."
+    },
+    {
+      "id": "loading-limits.discovery.above-ceiling-rejected-before-any-directory-is-listed",
+      "requirementIds": [],
+      "fixture": "loading-limits-discovery-above-ceiling",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "One above MAXIMUM_DISCOVERY_ENTRIES (1,000,000). The emitted message is byte-identical to the zero case, so the discriminating content is the fixture's option value: a port that bounds discovery only from below accepts 1000001 and loads."
+    },
+    {
+      "id": "loading-limits.discovery.ceiling-of-1000000-is-inclusive",
+      "requirementIds": [],
+      "fixture": "loading-limits-discovery-at-ceiling",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The ceiling value itself is accepted, fixing which side of the bound is inclusive."
+    },
+    {
+      "id": "loading-limits.discovery.one-admits-a-single-child-directory",
+      "requirementIds": [],
+      "fixture": "loading-limits-discovery-one-fits",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The one boundary from the admitting side: one directory child costs one discovery entry and a budget of 1 pays for it, since discoverEntry checks 'spent >= limit' before the increment."
+    },
+    {
+      "id": "loading-limits.discovery.non-locale-sibling-consumes-the-budget",
+      "requirementIds": [],
+      "fixture": "loading-limits-discovery-one-exceeds",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "Two children, one of which is not named with a language tag and is skipped -- yet the load fails at a budget of 1, because loadFromDirectory calls discoverEntry as the FIRST statement of the loop, before the isDirectory, hidden-file, and language-tag filters. Verified. A port that counts only the files it decides to parse loads this directory successfully. The failure message names the DIRECTORY rather than a file, so it is iteration-order-independent and byte-stable after the standard temp-path normalization."
+    },
+    {
+      "id": "loading-limits.discovery.hidden-and-non-locale-children-fit-at-three",
+      "requirementIds": [],
+      "fixture": "loading-limits-discovery-mixed-fits",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "Three children -- one locale file, one dot-prefixed hidden file, one non-language-tag file -- at a budget of exactly 3. Pins that hidden files are charged too, and that the skipped children cost budget without producing locales: the load succeeds with exactly one locale."
+    },
+    {
+      "id": "loading-limits.discovery.hidden-and-non-locale-children-exceed-at-two",
+      "requirementIds": [],
+      "fixture": "loading-limits-discovery-mixed-exceeds",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The same three children at 2. Verified to fail, which is the proof that the dotfile really was charged: a port that filters dotfiles before charging discovery sees only two entries and loads successfully. Directory-named message, so byte-stable."
+    }
+  ]
+}

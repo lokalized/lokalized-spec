@@ -1,0 +1,14 @@
+{
+  "id": "loading-limits-discovery-at-ceiling",
+  "description": "A single-file directory loaded with maximumDiscoveryEntries at the ceiling of 1000000.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumDiscoveryEntries": 1000000
+  },
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  }
+}

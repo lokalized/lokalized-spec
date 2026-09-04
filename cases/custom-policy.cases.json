@@ -1,0 +1,1044 @@
+{
+  "formatVersion": 1,
+  "family": "custom-policy",
+  "description": "Plan v7 section 8.3 fixture family 'custom-policy'. Inputs only; the oracle emits expected.",
+  "skipped": [
+    {
+      "what": "A recorded policyCalls entry for the consultation that THROWS, under throw-in-policy.",
+      "why": "FINDING, re-verified against the harness source and by execution, not an authoring omission. VectorOracle.recordingPolicy (VectorOracle.java:533-546) calls delegate.shouldTryNextLocale FIRST and appends the record afterwards, so a throwing delegate never reaches the append and the whole policyCalls channel comes back ABSENT — confirmed on all nine throw-in-policy cases in this set. The reason, locale and cause the throwing policy was handed are therefore unobservable. Those cases assert the absence plus the thrown identity, which still discriminates precedence, but a port could pass them while handing the policy the wrong locale or reason on that final consultation. Moving the POLICY_CALLS.add into a try/finally in recordingPolicy (recording a threw field the way resolverFrom already does at VectorOracle.java:462-481) would close it; nothing else in the corpus changes, because no other family uses throw-in-policy."
+    },
+    {
+      "what": "A caller-supplied policy that returns null, which DefaultStrings.java:734-735 rejects with requireNonNull(..., \"translationFallbackPolicy returned null\") and turns into a NullPointerException.",
+      "why": "Section 8.2 forbids embedding executable callbacks and VectorOracle.customPolicyFrom (VectorOracle.java:584-604) offers only continue-for-locales, continue-for-reasons and throw-in-policy. A named 'return-null' behavior would have to be added there and to the schema's fallbackPolicy enum first. The same gap was recorded by the earlier fallback-policy family and is unchanged. Note the asymmetry worth closing: the resolver vocabulary DOES have return-null, so the null-rejection clause is stated for one callback and unstatable for the other."
+    },
+    {
+      "what": "A policy that decides on the CAUSE argument, for example continuing only for ExpressionEvaluationException while halting for IllegalStateException.",
+      "why": "The vocabulary actuates on locale and reason only. custom-policy.cause.three-consecutive-calls-carry-three-distinct-types proves three structurally different Throwables reach three consecutive consultations with distinct causeTypes, so the argument is OBSERVED per call; it is simply never the thing that drives the decision. A 'continue-for-cause-types' behavior in customPolicyFrom would let the observation become an actuation."
+    },
+    {
+      "what": "A phoneticResolver supplied PER CALL rather than at the fixture level.",
+      "why": "There is no per-call form: TranslationOptions carries locale, bidiIsolation, translationFailureHandler and translationFallbackPolicy only, and the oracle's optionsFrom (VectorOracle.java:409-426) reads exactly those four. So the replacement semantics this family pins for the policy (built-in over custom, custom over custom, restrictive over permissive) have no resolver analogue to state. The resolver-exception fixture therefore installs its resolver at the instance and varies only the policy."
+    },
+    {
+      "what": "Concurrent invocation of a caller-supplied policy, which TranslationFallbackPolicy's contract requires implementations to tolerate (@ThreadSafe on the interface).",
+      "why": "The oracle drives one case at a time on a single thread and the recording wrapper's POLICY_CALLS list is a plain per-case ArrayList cleared between cases. A concurrency clause is not expressible in this corpus shape and would need a different harness, not a different vector."
+    },
+    {
+      "what": "localeSupplier, localeMatchSupplier and localeMatchResolver as the ingress into a policy-truncated walk.",
+      "why": "Explicitly listed as still unsupported in the brief. This family fixes the candidate chain entirely through fallbackLocale, tiebreakers and an explicit per-call locale, which is enough to state every clause in section 8.3's 'no policy call after the final distinct candidate; policy-truncated attempted lists; callback exceptions' without touching negotiation."
+    },
+    {
+      "what": "Classpath loading of the strings files backing these chains.",
+      "why": "Explicitly listed as still unsupported. Every fixture here loads from a materialized directory through the real LocalizedStringLoader, which is the only supported path."
+    },
+    {
+      "what": "JS-side delivery of a truncated walk: SSR match serialization, Fetch planning, and browser digest capability.",
+      "why": "Explicitly listed as still unsupported, and section 8.3 scopes those to requiredImplementationIds at M8. Every case in this family is requiredPortableIds and asserts only core resolution behavior."
+    }
+  ],
+  "cases": [
+    {
+      "id": "custom-policy.locales.halts-at-the-first-of-four",
+      "requirementIds": [],
+      "fixture": "custom-policy-four-candidate-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Chain.OnlyInFallback",
+        "locale": "en-GB",
+        "translationFallbackPolicy": {
+          "behavior": "continue-for-locales",
+          "locales": []
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A caller-supplied policy that continues for nothing truncates a four-candidate chain to a single attempt with exactly one recorded decision of false. Executed: attemptedLocales [en-GB], policyCalls [(en-GB, MISSING_TRANSLATION, false)]. Distinct from the built-in never policy in that it proves the caller-supplied path itself is honored on the very first consultation rather than short-circuited before the delegate is entered."
+    },
+    {
+      "id": "custom-policy.locales.halts-at-the-second-of-four",
+      "requirementIds": [],
+      "fixture": "custom-policy-four-candidate-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Chain.OnlyInFallback",
+        "locale": "en-GB",
+        "translationFallbackPolicy": {
+          "behavior": "continue-for-locales",
+          "locales": [
+            "en-GB"
+          ]
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Policy-truncated attempted list, stopped at the SECOND of four. Executed: attemptedLocales [en-GB, en-001], policyCalls [en-GB true, en-001 false]. A port that treated a caller-supplied policy's false as 'skip this candidate' rather than 'stop the walk', or that applied the decision one candidate late, would produce a longer list and reach fr."
+    },
+    {
+      "id": "custom-policy.locales.halts-at-the-third-of-four",
+      "requirementIds": [],
+      "fixture": "custom-policy-four-candidate-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Chain.OnlyInFallback",
+        "locale": "en-GB",
+        "translationFallbackPolicy": {
+          "behavior": "continue-for-locales",
+          "locales": [
+            "en-GB",
+            "en-001"
+          ]
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same chain and key stopped one candidate later: attemptedLocales [en-GB, en-001, en], policyCalls (true, true, false). Paired with halts-at-the-second-of-four this makes 'stopped at the second of four' distinguishable from 'stopped at the third', which a single truncation case cannot do."
+    },
+    {
+      "id": "custom-policy.locales.reaches-the-fourth-and-final-candidate",
+      "requirementIds": [],
+      "fixture": "custom-policy-four-candidate-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Chain.OnlyInFallback",
+        "locale": "en-GB",
+        "translationFallbackPolicy": {
+          "behavior": "continue-for-locales",
+          "locales": [
+            "en-GB",
+            "en-001",
+            "en"
+          ]
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The untruncated arm of the same trio: three true decisions carry the walk to fr, which serves. Executed: FOUR attemptedLocales and exactly THREE policyCalls, because DefaultStrings.java:731-733 breaks before consulting for the final candidate. Without this arm the two truncation cases could be satisfied by a port that simply stops early always."
+    },
+    {
+      "id": "custom-policy.locales.policy-sees-the-current-candidate-not-the-next",
+      "requirementIds": [],
+      "fixture": "custom-policy-four-candidate-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Chain.OnlyInFallback",
+        "locale": "en-GB",
+        "translationFallbackPolicy": {
+          "behavior": "continue-for-locales",
+          "locales": [
+            "en-001",
+            "en",
+            "fr"
+          ]
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The policy lists every candidate EXCEPT the first, so a port that hands shouldTryNextLocale the locale it is about to try would continue all the way to fr and translate. Java hands it the locale just ATTEMPTED (DefaultStrings.java:734 passes candidateLocale), so the first consultation returns false and the walk stops at en-GB. Off-by-one detector; executed, the result is the interpolated key with one recorded call."
+    },
+    {
+      "id": "custom-policy.locales.continues-exactly-far-enough-to-serve",
+      "requirementIds": [],
+      "fixture": "custom-policy-four-candidate-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Chain.OnlyInEn",
+        "locale": "en-GB",
+        "translationFallbackPolicy": {
+          "behavior": "continue-for-locales",
+          "locales": [
+            "en-GB",
+            "en-001"
+          ]
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Two true decisions reach the third candidate, which holds the only copy of the key: executed as TRANSLATED with resolvedLocale en, attemptedLocales [en-GB, en-001, en] and exactly two policyCalls. Shows a truncating policy that still succeeds, so 'truncated' is not conflated with 'failed'."
+    },
+    {
+      "id": "custom-policy.locales.no-consultation-when-the-first-candidate-serves",
+      "requirementIds": [],
+      "fixture": "custom-policy-four-candidate-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Chain.InEveryCatalog",
+        "locale": "en-GB",
+        "translationFallbackPolicy": {
+          "behavior": "continue-for-locales",
+          "locales": []
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The assertion lives in the ABSENCE of the policyCalls channel. getResult returns from inside the loop at DefaultStrings.java:714-716 before any consultation, so a policy that would halt everything is never asked; executed, the channel is absent entirely. Falsifiable because a port that consulted the policy unconditionally per candidate would emit a call here even though the rendered string would be unchanged."
+    },
+    {
+      "id": "custom-policy.finalcandidate.no-call-though-the-last-locale-is-listed",
+      "requirementIds": [],
+      "fixture": "custom-policy-four-candidate-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Chain.MissingEverywhere",
+        "locale": "en-GB",
+        "translationFallbackPolicy": {
+          "behavior": "continue-for-locales",
+          "locales": [
+            "en-GB",
+            "en-001",
+            "en",
+            "fr"
+          ]
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The sharp clause. Every candidate fails and the policy explicitly lists ALL FOUR locales including the terminal fr, yet policyCalls has exactly THREE entries against FOUR attemptedLocales. Listing fr makes the absence unambiguous: a port that consults after the final distinct candidate would emit a fourth entry {locale: fr, decision: true}, which nothing in the rendered string would reveal."
+    },
+    {
+      "id": "custom-policy.finalcandidate.every-candidate-fails-with-a-cause",
+      "requirementIds": [],
+      "fixture": "custom-policy-four-candidate-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Chain.FailsEverywhere",
+        "locale": "en-GB",
+        "translationFallbackPolicy": {
+          "behavior": "continue-for-reasons",
+          "reasons": [
+            "RESOLUTION_FAILURE"
+          ]
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The count assertion under RESOLUTION_FAILURE rather than MISSING_TRANSLATION: all four catalogs throw IllegalArgumentException for the same absent placeholder value, the policy continues for that reason, and policyCalls is still exactly one shorter than attemptedLocales. Also pins that a non-null cause accompanies every one of the three recorded calls, and that the fourth candidate's failure is what the result reports even though no policy call followed it."
+    },
+    {
+      "id": "custom-policy.finalcandidate.every-candidate-fails-under-locale-policy",
+      "requirementIds": [],
+      "fixture": "custom-policy-four-candidate-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Chain.FailsEverywhere",
+        "locale": "en-GB",
+        "translationFallbackPolicy": {
+          "behavior": "continue-for-locales",
+          "locales": [
+            "en-GB",
+            "en-001",
+            "en",
+            "fr"
+          ]
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same all-fail chain reached through the OTHER caller-supplied mechanism, so the 'one fewer call than attempt' invariant is shown to be a property of the loop rather than of a particular policy shape. Executed, this emits the same observation as every-candidate-fails-with-a-cause; that equality is the proposition. A port that special-cased one policy kind — for example by evaluating a locale list eagerly over the whole chain instead of per consultation — would diverge on exactly one of this pair."
+    },
+    {
+      "id": "custom-policy.finalcandidate.library-default-also-stops-short-of-the-last",
+      "requirementIds": [],
+      "fixture": "custom-policy-four-candidate-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Chain.OnlyInFallback",
+        "locale": "en-GB"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "No policy override at all, so the library default fallbackOnMissingTranslationOrNoMatchingAlternative runs (DefaultStrings.java:473). policyCalls is recorded around the default too and again holds three entries for four attempts before fr serves. Establishes that the clause is not an artifact of wrapping a caller-supplied policy."
+    },
+    {
+      "id": "custom-policy.reasons.halts-on-the-unlisted-no-matching-alternative",
+      "requirementIds": [],
+      "fixture": "custom-policy-four-candidate-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Chain.NoMatchAtGb",
+        "locale": "en-GB",
+        "placeholders": {
+          "tier": 7
+        },
+        "translationFallbackPolicy": {
+          "behavior": "continue-for-reasons",
+          "reasons": [
+            "MISSING_TRANSLATION"
+          ]
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A reason-sensitive caller policy halts at the very first candidate because its unmatched alternatives-only entry reports NO_MATCHING_ALTERNATIVE, which the policy does not list. Executed: one recorded call carrying that reason with decision false, and the result's failureReason is NO_MATCHING_ALTERNATIVE. A port that passed MISSING_TRANSLATION for an unmatched alternative would continue instead."
+    },
+    {
+      "id": "custom-policy.reasons.halts-on-the-unlisted-missing-translation",
+      "requirementIds": [],
+      "fixture": "custom-policy-four-candidate-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Chain.NoMatchAtGb",
+        "locale": "en-GB",
+        "placeholders": {
+          "tier": 7
+        },
+        "translationFallbackPolicy": {
+          "behavior": "continue-for-reasons",
+          "reasons": [
+            "NO_MATCHING_ALTERNATIVE"
+          ]
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The mirror image of the previous case on the same key and placeholders: the policy now continues past NO_MATCHING_ALTERNATIVE at en-GB and halts at en-001's MISSING_TRANSLATION. The two recorded calls carry DIFFERENT reasons, so the reason argument is proven to vary per candidate rather than being a constant for the walk. The final reported reason stays NO_MATCHING_ALTERNATIVE via the sticky flag at DefaultStrings.java:741-745, so per-call reason and reported reason are separated in one observation."
+    },
+    {
+      "id": "custom-policy.reasons.both-listed-reasons-reach-the-third-candidate",
+      "requirementIds": [],
+      "fixture": "custom-policy-four-candidate-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Chain.NoMatchAtGb",
+        "locale": "en-GB",
+        "placeholders": {
+          "tier": 7
+        },
+        "translationFallbackPolicy": {
+          "behavior": "continue-for-reasons",
+          "reasons": [
+            "MISSING_TRANSLATION",
+            "NO_MATCHING_ALTERNATIVE"
+          ]
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Listing both reasons carries the same walk through to en, which serves plain text. Completes the three-way discrimination on one key and one placeholder set: reasons {M} stops at 1, {N} stops at 2, {M,N} reaches 3."
+    },
+    {
+      "id": "custom-policy.reasons.no-consultation-when-the-alternative-matches",
+      "requirementIds": [],
+      "fixture": "custom-policy-four-candidate-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Chain.NoMatchAtGb",
+        "locale": "en-GB",
+        "placeholders": {
+          "tier": 1
+        },
+        "translationFallbackPolicy": {
+          "behavior": "continue-for-reasons",
+          "reasons": [
+            "MISSING_TRANSLATION",
+            "NO_MATCHING_ALTERNATIVE"
+          ]
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Control for the three cases above: with tier 1 the alternative matches, the first candidate serves 'en-GB: tier one', and the policyCalls channel is absent entirely. Without it, a port that never consults the policy at all would pass the halting cases by accident of ordering."
+    },
+    {
+      "id": "custom-policy.reasons.halts-at-the-resolution-failure-it-does-not-list",
+      "requirementIds": [],
+      "fixture": "custom-policy-four-candidate-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Chain.ResolutionAtEn001",
+        "locale": "en-GB",
+        "placeholders": {
+          "orderGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_NEUTER"
+          }
+        },
+        "translationFallbackPolicy": {
+          "behavior": "continue-for-reasons",
+          "reasons": [
+            "MISSING_TRANSLATION"
+          ]
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Two recorded calls whose reason AND cause both differ, confirmed by execution: en-GB is MISSING_TRANSLATION with causeType null, en-001 is RESOLUTION_FAILURE with causeType java.lang.IllegalStateException (missing GENDER_NEUTER branch). The walk stops there and forfeits en's plain text. Pins that the cause argument is null for non-resolution failures and populated only where the attempt threw."
+    },
+    {
+      "id": "custom-policy.reasons.listing-resolution-failure-walks-past-it",
+      "requirementIds": [],
+      "fixture": "custom-policy-four-candidate-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Chain.ResolutionAtEn001",
+        "locale": "en-GB",
+        "placeholders": {
+          "orderGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_NEUTER"
+          }
+        },
+        "translationFallbackPolicy": {
+          "behavior": "continue-for-reasons",
+          "reasons": [
+            "MISSING_TRANSLATION",
+            "RESOLUTION_FAILURE"
+          ]
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same failure now continued past: en serves and the result is TRANSLATED with a null failureReason and a null failureCause, even though firstFallbackFailure was assigned internally at DefaultStrings.java:724-725. Proves a caller policy can recover a resolution failure the library default would have halted on, and that a later success discards the retained cause from the RESULT while the policyCalls channel still shows the IllegalStateException was passed."
+    },
+    {
+      "id": "custom-policy.reasons.resolution-only-policy-halts-at-a-missing-translation",
+      "requirementIds": [],
+      "fixture": "custom-policy-four-candidate-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Chain.ResolutionAtEn001",
+        "locale": "en-GB",
+        "placeholders": {
+          "orderGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_NEUTER"
+          }
+        },
+        "translationFallbackPolicy": {
+          "behavior": "continue-for-reasons",
+          "reasons": [
+            "RESOLUTION_FAILURE"
+          ]
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Third arm on the same key and placeholders: a policy that continues ONLY for resolution failures never reaches the resolution failure, because the plain missing translation at en-GB stops it first. Catches a port that evaluates the policy against the eventual reported reason rather than the per-attempt reason — the eventual reason here would have been RESOLUTION_FAILURE and the walk would have continued."
+    },
+    {
+      "id": "custom-policy.cause.three-consecutive-calls-carry-three-distinct-types",
+      "requirementIds": [],
+      "fixture": "custom-policy-four-candidate-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Chain.ThreeDistinctCauses",
+        "locale": "en-GB",
+        "placeholders": {
+          "orderGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_NEUTER"
+          },
+          "rank": "high"
+        },
+        "translationFallbackPolicy": {
+          "behavior": "continue-for-reasons",
+          "reasons": [
+            "RESOLUTION_FAILURE"
+          ]
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The cause-argument clause. Three consecutive candidates fail for structurally different reasons and the recorded causeType differs on every call — verified by execution as java.lang.IllegalStateException (missing GENDER_NEUTER), java.lang.IllegalArgumentException (placeholder value never supplied), then com.lokalized.ExpressionEvaluationException (raw string compared with >). fr then serves, giving three calls against four attempts. A port that passed a single wrapped or first-seen throwable to every consultation collapses all three to one type."
+    },
+    {
+      "id": "custom-policy.cause.first-call-carries-the-first-candidates-cause",
+      "requirementIds": [],
+      "fixture": "custom-policy-four-candidate-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Chain.ThreeDistinctCauses",
+        "locale": "en-GB",
+        "placeholders": {
+          "orderGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_NEUTER"
+          },
+          "rank": "high"
+        },
+        "translationFallbackPolicy": {
+          "behavior": "continue-for-reasons",
+          "reasons": [
+            "MISSING_TRANSLATION"
+          ]
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Same key and placeholders, but the policy halts on the first consultation, so exactly one recorded call and it must carry en-GB's IllegalStateException rather than either of the two later types. Isolates 'the cause belongs to THIS attempt' from 'the cause belongs to the walk'."
+    },
+    {
+      "id": "custom-policy.cause.null-cause-for-a-non-resolution-failure",
+      "requirementIds": [],
+      "fixture": "custom-policy-four-candidate-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Chain.MissingEverywhere",
+        "locale": "en-GB",
+        "translationFallbackPolicy": {
+          "behavior": "continue-for-reasons",
+          "reasons": [
+            "MISSING_TRANSLATION"
+          ]
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The negative half of the cause clause: three consultations for a key absent from every catalog, all with causeType null. A port that fabricated a synthetic throwable for missing translations would show a non-null type on all three. Also a second instance of three calls against four attempts, this time with no candidate ever entering the try block."
+    },
+    {
+      "id": "custom-policy.cause.truncated-walk-still-reports-the-first-cause",
+      "requirementIds": [],
+      "fixture": "custom-policy-four-candidate-chain",
+      "operation": "get",
+      "input": {
+        "key": "Chain.ThreeDistinctCauses",
+        "locale": "en-GB",
+        "placeholders": {
+          "orderGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_NEUTER"
+          },
+          "rank": "high"
+        },
+        "translationFallbackPolicy": {
+          "behavior": "continue-for-locales",
+          "locales": [
+            "en-GB"
+          ]
+        },
+        "translationFailureHandler": {
+          "behavior": "throw"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Combines truncation, first-cause retention, and a throwing handler on one call. The locale policy continues past en-GB and halts at en-001, so the policyCalls channel shows IllegalStateException then IllegalArgumentException, yet the thrown exception carries the FIRST cause — verified as IllegalStateException with message ending 'Missing Gender translation for NEUTER' — because firstFallbackFailure is assigned only while still null (DefaultStrings.java:724-725). A port retaining the last cause would throw carrying the IllegalArgumentException."
+    },
+    {
+      "id": "custom-policy.truncation.get-returns-the-interpolated-key",
+      "requirementIds": [],
+      "fixture": "custom-policy-four-candidate-chain",
+      "operation": "get",
+      "input": {
+        "key": "Chain.OnlyInFallback",
+        "locale": "en-GB",
+        "translationFallbackPolicy": {
+          "behavior": "continue-for-locales",
+          "locales": [
+            "en-GB"
+          ]
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Truncation observed through the get operation rather than getResult: the walk stops at the second candidate and the return-key handler yields the key text, with the failures channel carrying the truncated attemptedLocales [en-GB, en-001]. Confirms the policy governs get identically, since get delegates to the same loop."
+    },
+    {
+      "id": "custom-policy.truncation.get-reaches-the-fallback-catalog",
+      "requirementIds": [],
+      "fixture": "custom-policy-four-candidate-chain",
+      "operation": "get",
+      "input": {
+        "key": "Chain.OnlyInFallback",
+        "locale": "en-GB",
+        "translationFallbackPolicy": {
+          "behavior": "continue-for-locales",
+          "locales": [
+            "en-GB",
+            "en-001",
+            "en"
+          ]
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The contrast for the previous case on the identical key and operation: the wider policy reaches fr and get returns the real translation with no failures channel at all. The two together prove the policy, not the key, decides which of the two get outcomes occurs."
+    },
+    {
+      "id": "custom-policy.truncation.throwing-handler-sees-the-truncated-attempted-list",
+      "requirementIds": [],
+      "fixture": "custom-policy-four-candidate-chain",
+      "operation": "get",
+      "input": {
+        "key": "Chain.MissingEverywhere",
+        "locale": "en-GB",
+        "translationFallbackPolicy": {
+          "behavior": "continue-for-locales",
+          "locales": [
+            "en-GB"
+          ]
+        },
+        "translationFailureHandler": {
+          "behavior": "throw-in-handler",
+          "message": "handler refused after truncation"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Truncation and a raising handler in one call, which the rest of the family separates. The policy halts at en-001, and the handler — which is reached, unlike in every throwing-policy case — is handed a TranslationFailure whose attemptedLocales is the truncated [en-GB, en-001] rather than the full four, and then raises. Executed: the failures channel records the truncated list and the thrown identity is the handler's IllegalStateException with its own message. A port that built the failure from the full candidate list, or that computed the failure before the walk finished, diverges on the recorded attemptedLocales while the thrown identity stays the same."
+    },
+    {
+      "id": "custom-policy.instance.custom-policy-applies-without-a-per-call-override",
+      "requirementIds": [],
+      "fixture": "custom-policy-instance-continue-for-locales",
+      "operation": "getResult",
+      "input": {
+        "key": "Inst.OnlyInFallback",
+        "locale": "es-AR"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A caller-supplied policy installed on the INSTANCE, with no per-call option at all: the es-AR/es-419/es/en chain truncates to three attempts and forfeits the fallback catalog that holds the key. Exercises the orElse(getTranslationFallbackPolicy()) arm of DefaultStrings.java:685-686 for a policy that is not one of the three library singletons."
+    },
+    {
+      "id": "custom-policy.instance.custom-policy-truncates-a-missing-key-walk",
+      "requirementIds": [],
+      "fixture": "custom-policy-instance-continue-for-locales",
+      "operation": "getResult",
+      "input": {
+        "key": "Inst.MissingEverywhere",
+        "locale": "es-AR"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The instance policy truncating a walk for a key that exists nowhere, so the truncation is visible purely in attemptedLocales and policyCalls rather than in a forfeited translation. Distinguishes 'stopped by policy at es' from 'exhausted the chain', which the rendered key text alone cannot: both render the key."
+    },
+    {
+      "id": "custom-policy.instance.per-call-builtin-replaces-the-instance-custom-policy",
+      "requirementIds": [],
+      "fixture": "custom-policy-instance-continue-for-locales",
+      "operation": "getResult",
+      "input": {
+        "key": "Inst.OnlyInFallback",
+        "locale": "es-AR",
+        "translationFallbackPolicy": "any-failure"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A per-call BUILT-IN policy replaces, rather than composes with, a caller-supplied instance policy: the walk now reaches en and translates, with three true decisions and still no fourth call. A port that intersected the two policies would stop at es and render the key."
+    },
+    {
+      "id": "custom-policy.instance.per-call-custom-policy-replaces-the-instance-custom-policy",
+      "requirementIds": [],
+      "fixture": "custom-policy-instance-continue-for-locales",
+      "operation": "getResult",
+      "input": {
+        "key": "Inst.OnlyInFallback",
+        "locale": "es-AR",
+        "translationFallbackPolicy": {
+          "behavior": "continue-for-reasons",
+          "reasons": [
+            "MISSING_TRANSLATION"
+          ]
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Custom-over-custom override: a per-call reason-based policy displaces an instance locale-based one entirely. Covers the case a built-in override cannot, namely that the replacement path is not special-cased to the three library singletons — a port that only honored per-call overrides when they were one of the named built-ins would keep the instance policy here and stop at es."
+    },
+    {
+      "id": "custom-policy.instance.per-call-never-narrows-the-instance-custom-policy",
+      "requirementIds": [],
+      "fixture": "custom-policy-instance-continue-for-locales",
+      "operation": "getResult",
+      "input": {
+        "key": "Inst.OnlyInFallback",
+        "locale": "es-AR",
+        "translationFallbackPolicy": "never"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Override in the restrictive direction: the instance policy would have reached three candidates, the per-call never stops after one. Together with the two widening overrides this pins replacement semantics in both directions rather than 'per-call may only widen'."
+    },
+    {
+      "id": "custom-policy.instance.no-consultation-when-the-first-candidate-serves",
+      "requirementIds": [],
+      "fixture": "custom-policy-instance-continue-for-locales",
+      "operation": "getResult",
+      "input": {
+        "key": "Inst.InEveryCatalog",
+        "locale": "es-AR"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Absent policyCalls channel under an instance-level caller policy, proving the no-consultation-on-success rule is not limited to per-call policies. First-wins also visibly picks es-AR's copy over the three later ones, so the case fails visibly if a port reorders the chain."
+    },
+    {
+      "id": "custom-policy.dedup.repeated-candidate-produces-no-second-consultation",
+      "requirementIds": [],
+      "fixture": "custom-policy-dedup-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Dedup.OnlyInEn",
+        "locale": "mo-MD",
+        "translationFallbackPolicy": {
+          "behavior": "continue-for-locales",
+          "locales": [
+            "mo-MD",
+            "ro",
+            "ro-MD"
+          ]
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The dedup variant of the clause. The raw candidate set for mo-MD contains both mo (which resolves onto loaded ro) and ro itself, but putIfAbsent at DefaultStrings.java:2498 is keyed by the RESOLVED attempted locale, so the executed chain is [mo-MD, ro, ro-MD, en] and ro is consulted exactly ONCE. Three calls, four attempts, en serves. A port that deduped before resolution, or not at all, would consult a second time for a locale this policy does not list and halt short of en."
+    },
+    {
+      "id": "custom-policy.dedup.policy-is-handed-the-resolved-catalog-locale",
+      "requirementIds": [],
+      "fixture": "custom-policy-dedup-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Dedup.OnlyInEn",
+        "locale": "mo-MD",
+        "translationFallbackPolicy": {
+          "behavior": "continue-for-locales",
+          "locales": [
+            "mo",
+            "ro"
+          ]
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The policy lists mo and ro but not mo-MD, so it halts on the first consultation with attemptedLocales [mo-MD]. A port that handed the policy the raw pre-resolution candidate would see mo somewhere in the chain and continue. Isolates 'the policy receives the resolved catalog locale' from 'the policy receives the requested tag'."
+    },
+    {
+      "id": "custom-policy.dedup.deduped-chain-has-one-fewer-call-than-attempt",
+      "requirementIds": [],
+      "fixture": "custom-policy-dedup-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Dedup.Missing",
+        "locale": "mo-MD",
+        "translationFallbackPolicy": {
+          "behavior": "continue-for-reasons",
+          "reasons": [
+            "MISSING_TRANSLATION"
+          ]
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The count invariant restated on a chain that only reaches four entries AFTER dedup: four attemptedLocales, three policyCalls, no call for the final en. Combines the dedup clause with the no-call-after-the-last clause in one observation, and does so on candidates that have no loaded catalog at all (mo-MD and ro-MD), where the reason is MISSING_TRANSLATION with a null cause."
+    },
+    {
+      "id": "custom-policy.dedup.bare-mo-collapses-onto-ro-before-the-first-call",
+      "requirementIds": [],
+      "fixture": "custom-policy-dedup-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Dedup.Missing",
+        "locale": "mo",
+        "translationFallbackPolicy": {
+          "behavior": "continue-for-locales",
+          "locales": [
+            "ro",
+            "en"
+          ]
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A bare mo request collapses to the two-element chain [ro, en], so the FIRST recorded locale is ro and there is exactly one call even though the policy also lists en. mo never appears in attemptedLocales at all. A port emitting a mo attempt, or a second call for the final en, diverges."
+    },
+    {
+      "id": "custom-policy.dedup.first-wins-serves-ro-without-any-consultation",
+      "requirementIds": [],
+      "fixture": "custom-policy-dedup-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Dedup.Shared",
+        "locale": "mo",
+        "translationFallbackPolicy": {
+          "behavior": "continue-for-locales",
+          "locales": []
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "First-wins on a key present in both catalogs, under a policy that would halt any walk: ro's copy is returned, resolvedLocale is ro, attemptedLocales is [ro], and the policyCalls channel is absent. Proves the mo-to-ro collapse happens while building the chain rather than by a policy decision during it."
+    },
+    {
+      "id": "custom-policy.dedup.halting-at-the-collapsed-candidate-forfeits-the-fallback",
+      "requirementIds": [],
+      "fixture": "custom-policy-dedup-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Dedup.OnlyInEn",
+        "locale": "mo",
+        "translationFallbackPolicy": {
+          "behavior": "continue-for-locales",
+          "locales": [
+            "mo",
+            "mo-MD"
+          ]
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The policy lists only tags that dedup removed from this chain, so its single consultation for ro returns false and the reachable en translation is forfeited. Truncation and dedup interacting: the port must get BOTH right to produce attemptedLocales [ro] with one false decision."
+    },
+    {
+      "id": "custom-policy.throwing.propagates-out-of-get-result",
+      "requirementIds": [],
+      "fixture": "custom-policy-throwing-policy",
+      "operation": "getResult",
+      "input": {
+        "key": "Throwing.OnlyInFallback",
+        "locale": "en-GB"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A policy callback that itself raises. shouldTryNextLocale is invoked OUTSIDE the try that guards getInternal (DefaultStrings.java:718-735), so the exception is not converted into a RESOLUTION_FAILURE and not recovered by fallback: it leaves getResult verbatim with the policy's own message. Both the failures channel and the policyCalls channel are absent, since the handler is never consulted and the recording wrapper never reaches its append."
+    },
+    {
+      "id": "custom-policy.throwing.propagates-out-of-get",
+      "requirementIds": [],
+      "fixture": "custom-policy-throwing-policy",
+      "operation": "get",
+      "input": {
+        "key": "Throwing.OnlyInFallback",
+        "locale": "en-GB"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same throwing policy on get, where a port might reasonably have routed the exception through the failure handler's response machinery. It does not: executed, get and getResult produce the identical thrown identity and the identical absent channels."
+    },
+    {
+      "id": "custom-policy.throwing.outranks-a-return-string-handler",
+      "requirementIds": [],
+      "fixture": "custom-policy-throwing-policy",
+      "operation": "get",
+      "input": {
+        "key": "Throwing.OnlyInFallback",
+        "locale": "en-GB",
+        "translationFailureHandler": {
+          "behavior": "return-string",
+          "text": "substitute text"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "First arm of the precedence matrix, and the one whose wrong answer is loudest: a substitute-string handler is unreachable, so the emitted observation is the policy's exception and never the string 'substitute text'. Distinguishes 'handler suppressed the failure' from 'handler was never asked', because a port that pre-computed the failure response would return the substitute text instead of throwing."
+    },
+    {
+      "id": "custom-policy.throwing.outranks-a-throwing-handler",
+      "requirementIds": [],
+      "fixture": "custom-policy-throwing-policy",
+      "operation": "get",
+      "input": {
+        "key": "Throwing.OnlyInFallback",
+        "locale": "en-GB",
+        "translationFailureHandler": {
+          "behavior": "throw"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Second arm, where both callbacks would raise: the thrown identity must be the POLICY's java.lang.IllegalStateException with message 'instance policy refused to continue', not the handler's MissingTranslationException. Type and message together name which callback won."
+    },
+    {
+      "id": "custom-policy.throwing.outranks-a-handler-that-raises-in-its-callback",
+      "requirementIds": [],
+      "fixture": "custom-policy-throwing-policy",
+      "operation": "getResult",
+      "input": {
+        "key": "Throwing.OnlyInFallback",
+        "locale": "en-GB",
+        "translationFailureHandler": {
+          "behavior": "throw-in-handler",
+          "message": "handler refused"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Third arm: two callbacks that both raise IllegalStateException, separated ONLY by message. The emitted message is the policy's, proving order of consultation rather than order of catch. The absent failures channel independently confirms the handler was never entered — under throw-in-handler the recording wrapper appends the failure BEFORE raising, so its absence here cannot be explained by the wrapper."
+    },
+    {
+      "id": "custom-policy.throwing.not-consulted-when-the-first-candidate-serves",
+      "requirementIds": [],
+      "fixture": "custom-policy-throwing-policy",
+      "operation": "getResult",
+      "input": {
+        "key": "Throwing.Present",
+        "locale": "en-GB"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Control for the whole throwing fixture: a key present at the first candidate translates normally even though the instance policy would throw on any consultation. Without this, every case in the fixture is satisfiable by a port that throws unconditionally at lookup time."
+    },
+    {
+      "id": "custom-policy.throwing.per-call-policy-neutralizes-the-throwing-instance",
+      "requirementIds": [],
+      "fixture": "custom-policy-throwing-policy",
+      "operation": "getResult",
+      "input": {
+        "key": "Throwing.OnlyInFallback",
+        "locale": "en-GB",
+        "translationFallbackPolicy": "any-failure"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The per-call option fully displaces the throwing instance policy: the walk completes to fr with three ordinary recorded decisions and no exception. Proves the instance policy is read through options.getTranslationFallbackPolicy().orElse(...) at call time (DefaultStrings.java:685-686) rather than captured at construction. This case is why the fixture's fallback locale must be fr: with the chain ending at en there is no reachable copy of the key and the neutralization would be invisible."
+    },
+    {
+      "id": "custom-policy.throwing.per-call-throwing-policy-replaces-the-instance-one",
+      "requirementIds": [],
+      "fixture": "custom-policy-throwing-policy",
+      "operation": "getResult",
+      "input": {
+        "key": "Throwing.OnlyInFallback",
+        "locale": "en-GB",
+        "translationFallbackPolicy": {
+          "behavior": "throw-in-policy",
+          "message": "per-call policy refused to continue"
+        },
+        "translationFailureHandler": {
+          "behavior": "throw"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Two throwing policies, instance and per-call, distinguished only by message. The emitted message must be the per-call one, so a port that consulted the instance policy despite an override is caught even though both paths throw the same type. The throwing handler override is present to confirm it still loses to both."
+    },
+    {
+      "id": "custom-policy.throwing.raises-on-a-key-absent-from-every-catalog",
+      "requirementIds": [],
+      "fixture": "custom-policy-throwing-policy",
+      "operation": "getResult",
+      "input": {
+        "key": "Throwing.MissingEverywhere",
+        "locale": "en-GB"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The throwing policy fires on a key no catalog holds, so no candidate could ever have succeeded. Separates 'the policy throws while deciding whether to continue' from 'the policy throws because a later candidate would have served', which the OnlyInFallback cases leave open."
+    },
+    {
+      "id": "custom-policy.singlecandidate.throwing-policy-is-inert-and-the-handler-fires",
+      "requirementIds": [],
+      "fixture": "custom-policy-single-candidate-throwing-policy",
+      "operation": "getResult",
+      "input": {
+        "key": "Single.Missing",
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The strongest statement of 'no policy call after the final distinct candidate'. The chain has exactly ONE element, the instance policy would throw on any consultation, and the instance handler throws a different message. Executed, the emitted exception is the HANDLER's ('single-candidate handler refused') and the failures channel shows attemptedLocales [en]. A port that consults the policy for the last candidate throws the policy's message instead, and the two are told apart by message alone."
+    },
+    {
+      "id": "custom-policy.singlecandidate.throwing-policy-is-inert-on-get-too",
+      "requirementIds": [],
+      "fixture": "custom-policy-single-candidate-throwing-policy",
+      "operation": "get",
+      "input": {
+        "key": "Single.Missing",
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same disagreement resolved on get, where the handler's response is applied rather than returned. The winner is still the handler, so the break-before-consult at DefaultStrings.java:731-733 is not an artifact of the getResult return path."
+    },
+    {
+      "id": "custom-policy.singlecandidate.no-policy-channel-at-all-on-a-one-element-chain",
+      "requirementIds": [],
+      "fixture": "custom-policy-single-candidate-throwing-policy",
+      "operation": "getResult",
+      "input": {
+        "key": "Single.Missing",
+        "locale": "en",
+        "translationFailureHandler": {
+          "behavior": "return-key"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The quiet form of the same clause: a benign per-call handler lets the lookup finish normally, and the ENTIRE policyCalls channel is absent for a one-candidate walk that failed. The assertion is the absence, and it is falsifiable because a port that consulted once would, given this fixture's throwing policy, throw instead of returning the key."
+    },
+    {
+      "id": "custom-policy.singlecandidate.present-key-reaches-neither-callback",
+      "requirementIds": [],
+      "fixture": "custom-policy-single-candidate-throwing-policy",
+      "operation": "getResult",
+      "input": {
+        "key": "Single.Present",
+        "locale": "en",
+        "translationFailureHandler": {
+          "behavior": "return-key"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Baseline for the fixture: a present key on a one-element chain translates with neither callback channel present. Establishes that both throwing callbacks are genuinely installed but genuinely unreached, so the preceding cases measure reachability rather than configuration."
+    },
+    {
+      "id": "custom-policy.singlecandidate.a-second-candidate-makes-the-same-policy-fire",
+      "requirementIds": [],
+      "fixture": "custom-policy-single-candidate-throwing-policy",
+      "operation": "getResult",
+      "input": {
+        "key": "Single.Missing",
+        "locale": "de",
+        "translationFailureHandler": {
+          "behavior": "return-key"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The in-fixture contrast that closes the argument. Same fixture, same key, same benign handler override, but requesting an unloaded de builds the two-element chain [de, en], so a consultation now exists and the policy DOES throw its own message. Paired with no-policy-channel-at-all-on-a-one-element-chain it isolates chain LENGTH as the sole variable: one candidate returns the key, two candidates throw."
+    },
+    {
+      "id": "custom-policy.resolver.exception-is-a-resolution-failure-the-policy-continues-past",
+      "requirementIds": [],
+      "fixture": "custom-policy-resolver-exception-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Res.Article",
+        "locale": "fr-CA",
+        "placeholders": {
+          "nounTerm": "apple"
+        },
+        "translationFallbackPolicy": {
+          "behavior": "continue-for-reasons",
+          "reasons": [
+            "RESOLUTION_FAILURE"
+          ]
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The third callback's exception inside a walk, which neither this family's other fixtures nor callback-smoke reach. A raw term hits the throwing PhoneticResolver at fr-CA and again at fr; each throw is caught by the getInternal guard and surfaces to the policy as RESOLUTION_FAILURE whose CAUSE is the resolver's own java.lang.IllegalStateException, and en's plain text then serves. Executed: resolverCalls carries TWO entries whose locales are fr-CA and fr — the donor rule for callbacks proven to be re-evaluated per candidate rather than fixed at the requested locale — and policyCalls carries two matching causeTypes. A port that resolved the phonetic term once per lookup, or that passed the requested locale to every candidate's resolver call, emits one entry or two identical ones."
+    },
+    {
+      "id": "custom-policy.resolver.default-policy-halts-at-the-resolver-exception",
+      "requirementIds": [],
+      "fixture": "custom-policy-resolver-exception-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Res.Article",
+        "locale": "fr-CA",
+        "placeholders": {
+          "nounTerm": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same resolver exception under the LIBRARY DEFAULT policy, which does not continue for RESOLUTION_FAILURE: one resolver call, one policy call with decision false, attemptedLocales [fr-CA], and the key returned with failureReason RESOLUTION_FAILURE whose causeMessage ends in the resolver's own message. Paired with the previous case this shows a callback exception is recoverable or fatal purely by policy choice, on identical input."
+    },
+    {
+      "id": "custom-policy.resolver.final-candidate-resolver-exception-draws-no-further-call",
+      "requirementIds": [],
+      "fixture": "custom-policy-resolver-exception-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Res.OnlyAtEn",
+        "locale": "fr-CA",
+        "placeholders": {
+          "nounTerm": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The no-call-after-the-last clause stated where the last candidate fails INSIDE a callback rather than by a missing key. Res.OnlyAtEn is absent from fr-CA and fr, so the default policy continues twice on MISSING_TRANSLATION, and the resolver then throws at en — the final candidate. Executed: three attemptedLocales, exactly TWO policyCalls, and a single resolverCall whose locale is en. A port that consulted after the last candidate would emit a third policy entry carrying the resolver's IllegalStateException, which the rendered key text cannot reveal."
+    },
+    {
+      "id": "custom-policy.resolver.tagged-value-serves-the-first-candidate-with-neither-channel",
+      "requirementIds": [],
+      "fixture": "custom-policy-resolver-exception-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Res.Article",
+        "locale": "fr-CA",
+        "placeholders": {
+          "nounTerm": {
+            "$lokalized": "language-form",
+            "axis": "phonetic",
+            "name": "PHONETIC_VOWEL"
+          }
+        },
+        "translationFallbackPolicy": {
+          "behavior": "continue-for-reasons",
+          "reasons": [
+            "RESOLUTION_FAILURE"
+          ]
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The fixture's control, and the reason the two cases above measure the resolver rather than the entry. The same key, candidate and policy, but a tagged PHONETIC_VOWEL bypasses the resolver at DefaultStrings.java:1157-1186, so fr-CA serves 'fr-CA: un-vowel' with BOTH channels absent: no resolverCalls because the tag short-circuits the callback, and no policyCalls because the first candidate succeeded. The falsifier is concrete — a port that resolved the tagged value through the resolver would throw here instead of translating, and would walk to en."
+    },
+    {
+      "id": "custom-policy.resolver.throwing-policy-outranks-the-throwing-resolver",
+      "requirementIds": [],
+      "fixture": "custom-policy-resolver-exception-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Res.Article",
+        "locale": "fr-CA",
+        "placeholders": {
+          "nounTerm": "apple"
+        },
+        "translationFallbackPolicy": {
+          "behavior": "throw-in-policy",
+          "message": "policy refused after the resolver already failed"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Two raising callbacks of different kinds in one lookup, ordered by the loop. The resolver throws first and is CAUGHT (its record appears in resolverCalls with threw java.lang.IllegalStateException, and the walk did not abort on it); the policy then throws and is NOT caught, so the escaping exception carries the policy's message. Executed: resolverCalls present, policyCalls absent, thrown message 'policy refused after the resolver already failed'. A port that let the resolver's exception escape getInternal would surface 'resolver refused this term' instead."
+    }
+  ]
+}

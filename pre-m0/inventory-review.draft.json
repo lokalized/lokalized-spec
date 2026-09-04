@@ -1,0 +1,64 @@
+{
+  "formatVersion": 1,
+  "status": "agent-reviewed-awaiting-human",
+  "sourcePlanSha256": "4ace5e349bedd45b16cd87182aed3306d33fae92b034ed01ddb93bc733c5f62d",
+  "inventoryFiles": [
+    {
+      "path": "inventory/sections-1-4.json",
+      "sha256": "2f43dbf81591dfb03ecce5a3d5cfa477dd85892c6f401f16eec9812d16531867"
+    },
+    {
+      "path": "inventory/sections-5-7.json",
+      "sha256": "c444f46e0745d2ddacb797ff1f1164d68a47cb05fa97ef1742ccd94b6519371a"
+    },
+    {
+      "path": "inventory/sections-8-14.json",
+      "sha256": "e225cd8b396b440e74268a5bfd604496e4e95bb659fffef8ff68a76aae536b8d"
+    }
+  ],
+  "counts": {
+    "totalBlocks": 632,
+    "anticipatedInitialRecords": 1963,
+    "m0FrontierRecords": 1338,
+    "m1FrontierRecords": 213,
+    "m2FrontierRecords": 155,
+    "m3aFrontierRecords": 257
+  },
+  "agentReviews": [
+    {
+      "reviewer": "Codex agent /root/inventory_5_7",
+      "scope": "sections 1-4",
+      "status": "stale-after-atomization-recount"
+    },
+    {
+      "reviewer": "Codex agent /root/audit_reconciled_1_4",
+      "scope": "sections 1-4 reconciliation",
+      "status": "stale-after-atomization-recount"
+    },
+    {
+      "reviewer": "Codex agent /root/audit_5_7",
+      "scope": "sections 5-7",
+      "status": "stale-after-atomization-recount"
+    },
+    {
+      "reviewer": "Codex agent /root/inventory_1_4",
+      "scope": "sections 8-14",
+      "status": "stale-after-atomization-recount"
+    },
+    {
+      "reviewer": "Codex agent /root/appendix_inventory_audit",
+      "scope": "Appendices A-B and uncovered heading/table residues",
+      "status": "stale-after-atomization-recount"
+    }
+  ],
+  "approvals": {
+    "humanReviewer": null,
+    "humanDecisionOwner": null,
+    "approvedAt": null
+  },
+  "blockingReasons": [
+    "Per-block anticipated counts were reconciled to actual atomization; agent reviews must be redone.",
+    "The named human decision owner has not approved the inventory basis.",
+    "The named human reviewer has not reviewed the inventory."
+  ]
+}

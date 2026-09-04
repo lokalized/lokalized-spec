@@ -1,0 +1,298 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lokalized.org/schemas/pre-m0/bootstrap.requirements.schema.json",
+  "title": "Lokalized JS pre-M0 bootstrap requirement candidates",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "formatVersion",
+    "status",
+    "sourcePlanSha256",
+    "selectedProfileId",
+    "markerSchema",
+    "markerArtifact",
+    "registryLinter",
+    "requirements"
+  ],
+  "properties": {
+    "formatVersion": {
+      "const": 1
+    },
+    "status": {
+      "enum": [
+        "bootstrap-candidate",
+        "bootstrap-approved"
+      ]
+    },
+    "sourcePlanSha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "selectedProfileId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "markerArtifact": {
+      "$ref": "#/$defs/nullableArtifactBinding"
+    },
+    "markerSchema": {
+      "$ref": "#/$defs/nullableArtifactBinding"
+    },
+    "registryLinter": {
+      "$ref": "#/$defs/nullableLinterGraph"
+    },
+    "requirements": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/requirement"
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "status": { "const": "bootstrap-approved" } },
+        "required": ["status"]
+      },
+      "then": {
+        "properties": {
+          "markerSchema": { "$ref": "#/$defs/artifactBinding" },
+          "markerArtifact": { "$ref": "#/$defs/artifactBinding" },
+          "registryLinter": { "$ref": "#/$defs/linterGraph" },
+          "requirements": {
+            "items": {
+              "properties": {
+                "requirementId": {
+                  "type": "string",
+                  "pattern": "^LJ-[A-Z][A-Z0-9-]*-[0-9]{3}$"
+                },
+                "sourceMarker": {
+                  "type": "string",
+                  "pattern": "^LJ-[A-Z][A-Z0-9-]*-[0-9]{3}$"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "milestone": {
+      "enum": [
+        "M0",
+        "M1",
+        "M2",
+        "M3a",
+        "M3b",
+        "M4",
+        "M5a",
+        "M5b",
+        "M6",
+        "M7",
+        "M8",
+        "M9",
+        "M-D",
+        "M-R",
+        "M-E",
+        "M-X"
+      ]
+    },
+    "requirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "requirementId",
+        "inventoryId",
+        "sourceBlockSha256",
+        "statement",
+        "statementSha256",
+        "sourceAnchor",
+        "sourceMarker",
+        "sourceLineStart",
+        "sourceLineEnd",
+        "verificationClass",
+        "parityClass",
+        "activationMilestone",
+        "ownerMilestone",
+        "registrationBefore",
+        "releaseProfileIds",
+        "evidence",
+        "evidenceExpressionSha256",
+        "reviewStatus"
+      ],
+      "properties": {
+        "requirementId": {
+          "type": "string",
+          "pattern": "^(?:BOOT-M0-(?!0000)[0-9]{4}|LJ-[A-Z][A-Z0-9-]*-[0-9]{3})$"
+        },
+        "inventoryId": {
+          "type": "string",
+          "pattern": "^INV-[0-9]+-[0-9]+-[0-9]{3}$"
+        },
+        "sourceBlockSha256": {
+          "description": "SHA-256 of the UTF-8 plan lines covered by inventoryId, joined by LF with no added trailing LF.",
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 1
+        },
+        "statementSha256": {
+          "description": "SHA-256 of the exact UTF-8 JCS encoding of the statement string value, including JSON string quotes and escapes.",
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "sourceAnchor": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sourceMarker": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sourceLineStart": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "sourceLineEnd": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "verificationClass": {
+          "description": "Human-reviewed classification used to enforce that a decision record cannot discharge runtime behavior.",
+          "enum": [
+            "runtime-behavior",
+            "non-runtime"
+          ]
+        },
+        "parityClass": {
+          "enum": [
+            "portable",
+            "implementation-required",
+            "informational-nonportable"
+          ]
+        },
+        "activationMilestone": {
+          "$ref": "#/$defs/milestone"
+        },
+        "ownerMilestone": {
+          "$ref": "#/$defs/milestone"
+        },
+        "registrationBefore": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "contains": {
+            "const": "M0"
+          },
+          "items": {
+            "$ref": "#/$defs/milestone"
+          }
+        },
+        "releaseProfileIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/evidenceTerm"
+          }
+        },
+        "evidenceExpressionSha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "reviewStatus": {
+          "enum": [
+            "unreviewed",
+            "human-reviewed",
+            "decision-owner-approved"
+          ]
+        }
+      }
+    },
+    "artifactBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+      }
+    },
+    "nullableArtifactBinding": {
+      "anyOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/artifactBinding" }
+      ]
+    },
+    "linterGraph": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["entrypoint", "dependencies"],
+      "properties": {
+        "entrypoint": { "$ref": "#/$defs/artifactBinding" },
+        "dependencies": {
+          "type": "array",
+          "description": "Reserved and required to be empty. The linter is one self-contained ESM file using only the audited node: assert/buffer/crypto/fs/path/url/util allowlist.",
+          "maxItems": 0,
+          "items": { "$ref": "#/$defs/artifactBinding" }
+        }
+      }
+    },
+    "nullableLinterGraph": {
+      "anyOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/linterGraph" }
+      ]
+    },
+    "evidenceLeaf": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "producerMilestone", "evidenceId"],
+      "properties": {
+        "kind": {
+          "enum": [
+            "vector",
+            "generated-partition",
+            "static-check",
+            "benchmark",
+            "compatibility-run",
+            "decision-record"
+          ]
+        },
+        "producerMilestone": { "$ref": "#/$defs/milestone" },
+        "evidenceId": { "type": "string", "minLength": 1 }
+      }
+    },
+    "evidenceAnyOf": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["anyOf", "rationale"],
+      "properties": {
+        "anyOf": {
+          "type": "array",
+          "minItems": 2,
+          "items": { "$ref": "#/$defs/evidenceLeaf" }
+        },
+        "rationale": { "type": "string", "minLength": 1 }
+      }
+    },
+    "evidenceTerm": {
+      "oneOf": [
+        { "$ref": "#/$defs/evidenceLeaf" },
+        { "$ref": "#/$defs/evidenceAnyOf" }
+      ]
+    }
+  }
+}

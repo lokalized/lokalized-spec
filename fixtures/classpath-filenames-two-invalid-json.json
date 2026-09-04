@@ -1,0 +1,16 @@
+{
+  "id": "classpath-filenames-two-invalid-json",
+  "description": "A valid en catalog plus TWO offending names, 'zz.json' and 'notes.json'. Pins that discovery reports one warning PER offending file rather than collapsing to one, and that the filesystem path aborts on the first it reaches rather than collecting. Warning order and which name the filesystem failure quotes both follow DirectoryStream iteration order, which is filesystem- and platform-dependent — hence both its cases are informational.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "rawFiles": {
+    "zz.json": "{\"Key.zz\":\"zz\"}",
+    "notes.json": "{\"Key.notes\":\"notes\"}"
+  }
+}

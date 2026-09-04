@@ -1,0 +1,15 @@
+{
+  "id": "loading-limits-depth-above-ceiling",
+  "description": "The same catalog with maximumJsonNestingDepth at 129, one above the ceiling. Verified to produce the identical builder message as 0, so the discriminating content is the option value, not the text.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumJsonNestingDepth": 129
+  },
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  }
+}

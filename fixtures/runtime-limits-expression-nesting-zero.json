@@ -1,0 +1,36 @@
+{
+  "id": "runtime-limits-expression-nesting-zero",
+  "description": "Plan v7 section 8.3 zero-boundary clause: maximumExpressionNestingDepth is non-negative, so zero builds, and it is the one expression setting that forbids grouping outright. Every expression here is the parenthesis-free form of the corresponding expression in runtime-limits-expression-nesting-one, so group depth never leaves zero and the catalog compiles; an implementation that counted an implicit top-level group would reject it. Holding the operands identical also lets the case pairs show that the grouped and ungrouped forms evaluate alike.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "runtimeLimits": {
+    "maximumExpressionNestingDepth": 0
+  },
+  "files": {
+    "en": {
+      "Bag": {
+        "translation": "bag-default",
+        "alternatives": [
+          {
+            "a > 0 && b == 1": {
+              "translation": "bag-matched"
+            }
+          }
+        ]
+      },
+      "Frag": {
+        "translation": "{{f}}",
+        "placeholders": {
+          "f": {
+            "translation": "frag-default",
+            "alternatives": [
+              {
+                "a > 1 && a == 2": "frag-matched"
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

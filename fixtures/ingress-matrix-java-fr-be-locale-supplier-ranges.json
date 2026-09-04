@@ -1,0 +1,23 @@
+{
+  "id": "ingress-matrix-java-fr-be-locale-supplier-ranges",
+  "description": "Seed row 2 catalog with a localeSupplier that negotiates 'fr-BE' and collapses the answer to the bare Locale fr-FR. DefaultStrings re-derives the match from that Locale, so the LIKELY_SUBTAG diagnostic the negotiation actually produced is replaced by EXACT/fr-FR — the observable cost of the collapse.",
+  "fallbackLocale": "fr-FR",
+  "tiebreakers": {
+    "fr": [
+      "fr-FR",
+      "fr-CA"
+    ]
+  },
+  "localeSupplier": {
+    "behavior": "match-ranges",
+    "ranges": "fr-BE"
+  },
+  "files": {
+    "fr-FR": {
+      "Checkout.Title": "Paiement (FR)"
+    },
+    "fr-CA": {
+      "Checkout.Title": "Paiement (CA)"
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "id": "dedup-and-candidates-equivalent-am-first",
+  "description": "Plan v7 section 8.3 'distinct-but-equivalent loaded tags remaining separate and resolving through exact identity plus tiebreakers'. hy-AM and hy-SU are canonically equivalent (canonicalLanguageTag('hy-SU') is 'hy-AM') but are DISTINCT java.util.Locale values, so the loader keeps two catalogs. Both normalize to language code 'hy', so DefaultStrings requires - and this fixture supplies - the exact permutation tiebreaker list, here ordered hy-AM before hy-SU. Pair.InBoth exists in both equivalent catalogs so the tiebreaker choice is visible in the translation itself; Pair.OnlyInAm and Pair.OnlyInSu prove the catalogs were not merged; Pair.Missing exercises the whole deduped chain. Paired with dedup-and-candidates-equivalent-su-first, which differs ONLY in tiebreaker order.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "hy": [
+      "hy-AM",
+      "hy-SU"
+    ]
+  },
+  "files": {
+    "hy-AM": {
+      "Pair.OnlyInAm": "hy-AM: only here",
+      "Pair.InBoth": "hy-AM: in both"
+    },
+    "hy-SU": {
+      "Pair.OnlyInSu": "hy-SU: only here",
+      "Pair.InBoth": "hy-SU: in both"
+    },
+    "en": {
+      "Pair.OnlyInEn": "en: only here"
+    }
+  }
+}

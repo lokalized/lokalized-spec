@@ -1,0 +1,36 @@
+{
+  "id": "supplied-match-type-none-with-locale",
+  "description": "A fabrication that contradicts itself: matchType NONE paired with a non-null locale, a range, and a weight. LocaleMatchResult's constructor (LocaleMatchResult.java:107-108) rejects the matched-state combination, and because the supplier is a lambda the library invokes lazily, the rejection lands on the CALL rather than on instance construction -- which is what makes the ingress-bypass cases on this same fixture possible.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "localeMatchSupplier": {
+    "behavior": "fabricated",
+    "locale": "fr",
+    "matchType": "NONE",
+    "range": "fr",
+    "weight": 1,
+    "ranges": [
+      {
+        "range": "fr",
+        "weight": 1
+      }
+    ],
+    "fallbackLocale": "en",
+    "consideredLocales": [
+      "en",
+      "fr"
+    ]
+  },
+  "files": {
+    "fr": {
+      "Locale.Marker": "fr",
+      "Greeting.Hello": "Bonjour",
+      "Only.Fr": "fr-only"
+    },
+    "en": {
+      "Locale.Marker": "en",
+      "Greeting.Hello": "Hello",
+      "Only.En": "en-only"
+    }
+  }
+}

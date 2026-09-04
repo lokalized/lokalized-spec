@@ -1,0 +1,24 @@
+{
+  "id": "browser-chooser-en-regional-reversed",
+  "description": "browser-chooser-en-regional with the tiebreaker flipped to en:[en-GB, en-US] and nothing else changed, so the reversal cases have an otherwise-identical control.",
+  "fallbackLocale": "fr",
+  "tiebreakers": {
+    "en": [
+      "en-GB",
+      "en-US"
+    ]
+  },
+  "files": {
+    "en-US": {
+      "Checkout.Title": "Checkout"
+    },
+    "en-GB": {
+      "Checkout.Title": "Chequeout"
+    },
+    "fr": {
+      "Checkout.Title": "Paiement"
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

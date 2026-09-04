@@ -1,0 +1,15 @@
+{
+  "id": "classpath-smoke-json-extension",
+  "description": "A valid catalog plus a file whose name carries a .json extension over a stem that is not a loadable tag. On the filesystem this shape is a HARD load failure naming the file. This fixture asks what classpath discovery does with the same shape.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "rawFiles": {
+    "strings.json": "{\"Key.A\":\"from strings.json\"}"
+  }
+}

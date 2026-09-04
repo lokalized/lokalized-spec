@@ -1,0 +1,15 @@
+{
+  "id": "classpath-filenames-cjk-name",
+  "description": "A valid en catalog plus a CJK-named file with a .json extension — multi-byte in UTF-8, one UTF-16 unit per character. Informational: filesystem encoding of non-ASCII names is platform-dependent.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "rawFiles": {
+    "日本語.json": "{\"Key.cjk\":\"cjk\"}"
+  }
+}

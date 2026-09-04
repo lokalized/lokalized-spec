@@ -1,0 +1,11 @@
+{
+  "id": "loader-smoke-malformed-utf8",
+  "description": "Raw bytes that are not valid UTF-8. Only expressible as bytes; a JS string cannot carry them.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {},
+  "rawFilesBase64": {
+    "en": "eyJLZXkuQSI6Iv/+In0="
+  }
+}

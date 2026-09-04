@@ -1,0 +1,23 @@
+{
+  "id": "warnings-control-expression-placeholder",
+  "description": "Russian catalog whose only placeholder is an EXPRESSION (generated-fragment) translation, which is not a LanguageFormTranslation at all and is skipped by the instanceof guard before any form inspection. Separated from the gender control so a port that mishandles one of the two cannot hide behind the other.",
+  "fallbackLocale": "ru",
+  "tiebreakers": null,
+  "files": {
+    "ru": {
+      "Expr": {
+        "translation": "{{e}}",
+        "placeholders": {
+          "e": {
+            "translation": "d",
+            "alternatives": [
+              {
+                "n > 1": "x"
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

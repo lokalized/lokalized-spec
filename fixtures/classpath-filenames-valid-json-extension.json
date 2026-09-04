@@ -1,0 +1,15 @@
+{
+  "id": "classpath-filenames-valid-json-extension",
+  "description": "A valid en catalog plus a file named 'de.json' — a valid IETF BCP 47 tag carrying the .json extension. Serves the 'valid tag WITH .json' side of the filename boundary; the classpath-smoke family only ever wrote extensionless names. MEASURED: loads as de on both paths.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "rawFiles": {
+    "de.json": "{\"Key.dejson\":\"dejson\"}"
+  }
+}

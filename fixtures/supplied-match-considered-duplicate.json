@@ -1,0 +1,37 @@
+{
+  "id": "supplied-match-considered-duplicate",
+  "description": "A fabrication listing fr twice among its considered locales. The constructor deduplicates by lowercased language TAG (LocaleMatchResult.java:120-123); as a SET this list equals the supported locales exactly, so the instance validation would have accepted it and only the constructor's duplicate check can catch it. Its fallback locale IS considered, so this fixture deliberately makes no claim about check ORDER -- that is what supplied-match-considered-duplicate-and-fallback-absent is for.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "localeMatchSupplier": {
+    "behavior": "fabricated",
+    "locale": "fr",
+    "matchType": "EXACT",
+    "range": "fr",
+    "weight": 1,
+    "ranges": [
+      {
+        "range": "fr",
+        "weight": 1
+      }
+    ],
+    "fallbackLocale": "en",
+    "consideredLocales": [
+      "fr",
+      "en",
+      "fr"
+    ]
+  },
+  "files": {
+    "fr": {
+      "Locale.Marker": "fr",
+      "Greeting.Hello": "Bonjour",
+      "Only.Fr": "fr-only"
+    },
+    "en": {
+      "Locale.Marker": "en",
+      "Greeting.Hello": "Hello",
+      "Only.En": "en-only"
+    }
+  }
+}

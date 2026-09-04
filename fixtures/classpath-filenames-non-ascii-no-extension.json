@@ -1,0 +1,15 @@
+{
+  "id": "classpath-filenames-non-ascii-no-extension",
+  "description": "A valid en catalog plus the precomposed accented name with NO extension. The control for the non-ASCII group: without .json a non-ASCII name returns null instead of throwing, so it never reaches the diagnostic at all. MEASURED: silent skip on both paths. Informational for the same platform-encoding reason as the rest of the group.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "rawFiles": {
+    "café": "{\"Key.nfcnoext\":\"nfcnoext\"}"
+  }
+}

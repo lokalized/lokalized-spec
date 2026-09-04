@@ -1,0 +1,16 @@
+{
+  "id": "failure-handler-instance-throws-in-handler",
+  "description": "Identical catalog, with an instance handler whose own body raises before returning a response. This is section 8.3's 'callback exceptions' in its literal form: the exception escapes from inside translationFailureHandler.handle at DefaultStrings.java:749-750, before any TranslationFailureResponse action is inspected, so neither the returned-key nor the returned-string arm can run. The oracle's throw-in-handler behavior raises an IllegalStateException carrying the configured message.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "translationFailureHandler": {
+    "behavior": "throw-in-handler",
+    "message": "handler failed while logging"
+  },
+  "files": {
+    "en": {
+      "Locale.Marker": "en",
+      "Greeting.Present": "Hello there."
+    }
+  }
+}

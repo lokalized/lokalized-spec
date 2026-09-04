@@ -1,0 +1,16 @@
+{
+  "id": "ingress-matrix-handler-throw-in-handler",
+  "description": "Failure-handler ingress matrix, instance leg pinned to a handler that throws from inside itself (section 8.3's 'callback exceptions'). Identical catalog to ingress-matrix-handler-default. The message is distinctive so a per-call handler of the SAME behavior with a DIFFERENT message still discriminates, and so a port that composed rather than replaced handlers would surface the wrong message.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "translationFailureHandler": {
+    "behavior": "throw-in-handler",
+    "message": "instance handler exploded"
+  },
+  "files": {
+    "en": {
+      "Locale.Marker": "en",
+      "Greeting.Named": "en:Hello, {{name}}"
+    }
+  }
+}

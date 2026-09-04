@@ -1,0 +1,13 @@
+{
+  "id": "loading-limits-total-bytes-exact",
+  "description": "A verbatim 13-byte catalog loaded with maximumTotalInputBytes at exactly 13.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumTotalInputBytes": 13
+  },
+  "files": {},
+  "rawFiles": {
+    "en": "{\"Key.A\":\"a\"}"
+  }
+}

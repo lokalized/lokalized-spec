@@ -1,0 +1,23 @@
+{
+  "id": "ingress-matrix-java-en-au-match-supplier-locale",
+  "description": "Seed row 3 catalog with a localeMatchSupplier returning matchFor(Locale en-AU); lookup starts at the selection en-001.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "en": [
+      "en",
+      "en-001"
+    ]
+  },
+  "localeMatchSupplier": {
+    "behavior": "match-locale",
+    "locale": "en-AU"
+  },
+  "files": {
+    "en-001": {
+      "Checkout.Title": "Checkout (world English)"
+    },
+    "en": {
+      "Checkout.Title": "Checkout"
+    }
+  }
+}

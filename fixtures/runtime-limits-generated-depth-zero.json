@@ -1,0 +1,22 @@
+{
+  "id": "runtime-limits-generated-depth-zero",
+  "description": "Plan v7 section 8.3 zero-boundary clause, from the permitted side: maximumGeneratedPlaceholderDepth is validated as NON-negative (TranslationRuntimeLimits.Builder.build line 426), so zero builds and is meaningful — it forbids generated placeholders entirely while leaving plain templates working. Same catalog as runtime-limits-generated-depth-two minus the deeper chains.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "runtimeLimits": {
+    "maximumGeneratedPlaceholderDepth": 0
+  },
+  "files": {
+    "en": {
+      "Depth zero": "plain text",
+      "Depth one": {
+        "translation": "{{p1}}",
+        "placeholders": {
+          "p1": {
+            "translation": "one"
+          }
+        }
+      }
+    }
+  }
+}

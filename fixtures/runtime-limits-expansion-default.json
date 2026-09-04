@@ -1,0 +1,170 @@
+{
+  "id": "runtime-limits-expansion-default",
+  "description": "Plan v7 section 8.3: the cumulative generated-expansion budget at its DEFAULT of 1,048,576 (1_024 * 1_024), pinned from both sides with no override. Each key is a six-link constant passthrough chain a1..a6 feeding an eighteen-level doubling chain b1..b18 whose leaf is one character, plus a sibling z. Billing is one consume per distinct placeholder: the b chain costs 1+2+...+131072 = 262,143, each of the six a levels costs 131,072 for 786,432, and z costs its own length. z = \"A\" totals exactly 1,048,576 and z = \"AB\" totals 1,048,577. The deepest recursion is 24, inside the default generated-placeholder depth of 32; the largest single expansion is 131,072 and the top-level output is 131,073, both far below the 262,144 interpolated-output default, so the cumulative budget — not the depth cap or the per-output cap — is what decides these two keys.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Expansion at the default budget": {
+        "translation": "{{a1}}{{z}}",
+        "placeholders": {
+          "a1": {
+            "translation": "{{a2}}"
+          },
+          "a2": {
+            "translation": "{{a3}}"
+          },
+          "a3": {
+            "translation": "{{a4}}"
+          },
+          "a4": {
+            "translation": "{{a5}}"
+          },
+          "a5": {
+            "translation": "{{a6}}"
+          },
+          "a6": {
+            "translation": "{{b1}}"
+          },
+          "b1": {
+            "translation": "{{b2}}{{b2}}"
+          },
+          "b2": {
+            "translation": "{{b3}}{{b3}}"
+          },
+          "b3": {
+            "translation": "{{b4}}{{b4}}"
+          },
+          "b4": {
+            "translation": "{{b5}}{{b5}}"
+          },
+          "b5": {
+            "translation": "{{b6}}{{b6}}"
+          },
+          "b6": {
+            "translation": "{{b7}}{{b7}}"
+          },
+          "b7": {
+            "translation": "{{b8}}{{b8}}"
+          },
+          "b8": {
+            "translation": "{{b9}}{{b9}}"
+          },
+          "b9": {
+            "translation": "{{b10}}{{b10}}"
+          },
+          "b10": {
+            "translation": "{{b11}}{{b11}}"
+          },
+          "b11": {
+            "translation": "{{b12}}{{b12}}"
+          },
+          "b12": {
+            "translation": "{{b13}}{{b13}}"
+          },
+          "b13": {
+            "translation": "{{b14}}{{b14}}"
+          },
+          "b14": {
+            "translation": "{{b15}}{{b15}}"
+          },
+          "b15": {
+            "translation": "{{b16}}{{b16}}"
+          },
+          "b16": {
+            "translation": "{{b17}}{{b17}}"
+          },
+          "b17": {
+            "translation": "{{b18}}{{b18}}"
+          },
+          "b18": {
+            "translation": "A"
+          },
+          "z": {
+            "translation": "A"
+          }
+        }
+      },
+      "Expansion one past the default budget": {
+        "translation": "{{a1}}{{z}}",
+        "placeholders": {
+          "a1": {
+            "translation": "{{a2}}"
+          },
+          "a2": {
+            "translation": "{{a3}}"
+          },
+          "a3": {
+            "translation": "{{a4}}"
+          },
+          "a4": {
+            "translation": "{{a5}}"
+          },
+          "a5": {
+            "translation": "{{a6}}"
+          },
+          "a6": {
+            "translation": "{{b1}}"
+          },
+          "b1": {
+            "translation": "{{b2}}{{b2}}"
+          },
+          "b2": {
+            "translation": "{{b3}}{{b3}}"
+          },
+          "b3": {
+            "translation": "{{b4}}{{b4}}"
+          },
+          "b4": {
+            "translation": "{{b5}}{{b5}}"
+          },
+          "b5": {
+            "translation": "{{b6}}{{b6}}"
+          },
+          "b6": {
+            "translation": "{{b7}}{{b7}}"
+          },
+          "b7": {
+            "translation": "{{b8}}{{b8}}"
+          },
+          "b8": {
+            "translation": "{{b9}}{{b9}}"
+          },
+          "b9": {
+            "translation": "{{b10}}{{b10}}"
+          },
+          "b10": {
+            "translation": "{{b11}}{{b11}}"
+          },
+          "b11": {
+            "translation": "{{b12}}{{b12}}"
+          },
+          "b12": {
+            "translation": "{{b13}}{{b13}}"
+          },
+          "b13": {
+            "translation": "{{b14}}{{b14}}"
+          },
+          "b14": {
+            "translation": "{{b15}}{{b15}}"
+          },
+          "b15": {
+            "translation": "{{b16}}{{b16}}"
+          },
+          "b16": {
+            "translation": "{{b17}}{{b17}}"
+          },
+          "b17": {
+            "translation": "{{b18}}{{b18}}"
+          },
+          "b18": {
+            "translation": "A"
+          },
+          "z": {
+            "translation": "AB"
+          }
+        }
+      }
+    }
+  }
+}

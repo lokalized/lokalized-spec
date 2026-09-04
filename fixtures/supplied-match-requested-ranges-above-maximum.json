@@ -1,0 +1,164 @@
+{
+  "id": "supplied-match-requested-ranges-above-maximum",
+  "description": "One range past the ceiling: 33 requested ranges, which the constructor rejects with an explicit count message before any other check runs.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "localeMatchSupplier": {
+    "behavior": "fabricated",
+    "locale": "fr",
+    "matchType": "EXACT",
+    "range": "fr",
+    "weight": 1,
+    "ranges": [
+      {
+        "range": "fr",
+        "weight": 1
+      },
+      {
+        "range": "aa",
+        "weight": 1
+      },
+      {
+        "range": "ab",
+        "weight": 1
+      },
+      {
+        "range": "ae",
+        "weight": 1
+      },
+      {
+        "range": "af",
+        "weight": 1
+      },
+      {
+        "range": "ak",
+        "weight": 1
+      },
+      {
+        "range": "am",
+        "weight": 1
+      },
+      {
+        "range": "an",
+        "weight": 1
+      },
+      {
+        "range": "as",
+        "weight": 1
+      },
+      {
+        "range": "av",
+        "weight": 1
+      },
+      {
+        "range": "ay",
+        "weight": 1
+      },
+      {
+        "range": "az",
+        "weight": 1
+      },
+      {
+        "range": "ba",
+        "weight": 1
+      },
+      {
+        "range": "be",
+        "weight": 1
+      },
+      {
+        "range": "bg",
+        "weight": 1
+      },
+      {
+        "range": "bi",
+        "weight": 1
+      },
+      {
+        "range": "bm",
+        "weight": 1
+      },
+      {
+        "range": "bn",
+        "weight": 1
+      },
+      {
+        "range": "bo",
+        "weight": 1
+      },
+      {
+        "range": "br",
+        "weight": 1
+      },
+      {
+        "range": "bs",
+        "weight": 1
+      },
+      {
+        "range": "ca",
+        "weight": 1
+      },
+      {
+        "range": "ce",
+        "weight": 1
+      },
+      {
+        "range": "ch",
+        "weight": 1
+      },
+      {
+        "range": "co",
+        "weight": 1
+      },
+      {
+        "range": "cr",
+        "weight": 1
+      },
+      {
+        "range": "cs",
+        "weight": 1
+      },
+      {
+        "range": "cu",
+        "weight": 1
+      },
+      {
+        "range": "cv",
+        "weight": 1
+      },
+      {
+        "range": "cy",
+        "weight": 1
+      },
+      {
+        "range": "da",
+        "weight": 1
+      },
+      {
+        "range": "dv",
+        "weight": 1
+      },
+      {
+        "range": "dz",
+        "weight": 1
+      }
+    ],
+    "fallbackLocale": "en",
+    "consideredLocales": [
+      "en",
+      "fr"
+    ]
+  },
+  "files": {
+    "fr": {
+      "Locale.Marker": "fr",
+      "Greeting.Hello": "Bonjour",
+      "Only.Fr": "fr-only"
+    },
+    "en": {
+      "Locale.Marker": "en",
+      "Greeting.Hello": "Hello",
+      "Only.En": "en-only"
+    }
+  }
+}

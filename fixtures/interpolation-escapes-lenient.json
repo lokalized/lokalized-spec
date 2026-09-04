@@ -1,0 +1,11 @@
+{
+  "id": "interpolation-escapes-lenient",
+  "description": "Single en catalog that deliberately does NOT contain the keys the lenient cases look up; it holds one unrelated anchor translation so the file is a real loaded catalog. A missing key drives DefaultStrings.interpolateFailureKey (DefaultStrings.java:1391), which uses StringInterpolator.placeholderNamesInLeniently plus the non-strict interpolate overload, making the lookup KEY itself the string being interpolated. This is the only route by which the oracle can observe lenient interpolation, and it is the lenient half of the section 8.3 escape clause. Every lenient case here binds at least one real placeholder or contains at least one escape, so its rendered output differs from the raw key - interpolateFailureKey swallows any RuntimeException and returns the raw key, so a case whose correct output equals its key would pass even against a port that threw.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "esc.lenient.anchor": "Anchor translation that the lenient cases never look up"
+    }
+  }
+}

@@ -1,0 +1,589 @@
+{
+  "formatVersion": 1,
+  "family": "generated-placeholders",
+  "description": "Plan v7 section 8.3 fixture family 'generated-placeholders'. Inputs only; the oracle emits expected.",
+  "skipped": [
+    {
+      "what": "Assertions on the contextualized failure MESSAGE — the declaring path of a placeholder definition (`key` for an inherited definition versus `key -> alternative[expr]` for one a branch replaced), the rendered cycle path (`ring -> link -> ring`), the depth-limit path list, and the `selected <description>` clause.",
+      "why": "DefaultStrings' default TranslationFailureHandler is `returnKey`, so a generated-placeholder failure never escapes `getResult`; it becomes a TranslationResult with status RETURNED_KEY and failureReason RESOLUTION_FAILURE, and VectorOracle's `describeResult` projects only key/translation/status/lookupLocale/resolvedLocale/attemptedLocales/isFallback/failureReason/localeMatchResult — no message and no cause. Observing the message requires `TranslationFailureHandler.throwException()`, and translation failure handlers are on the oracle's unsupported list. I re-verified out-of-band against the unmodified library that these messages exist and carry the distinctions claimed: `Missing Cardinality translation for ONE` at `definition declared at Partial replacement -> alternative[mode == 1]`, `Generated placeholder cycle for key 'Cycle only in unselected fragment': ring -> link -> ring`, `exceeds the maximum depth of 32: [q1 ... q33]`, and `exceeds the cumulative limit of 1048576 characters`. Every failing case in this set is instead made decisive by pairing it with a sibling case, on the same key, that succeeds — so a port cannot pass by failing everything."
+    },
+    {
+      "what": "The `IllegalStateException(\"No effective definition was found for generated placeholder '%s' in key '%s'\")` branch of DefaultStrings.getInternal.",
+      "why": "Unreachable from any strings file. `enqueueGeneratedPlaceholderDependencies` only enqueues names already present in `effectivePlaceholderBindings.keySet()`, and the subsequent lookup is against that same map, so the null check is defensive and can fire only for a programmatically constructed LocalizedString whose bindings were mutated between enqueue and lookup. Authoring a case for it would require a Java-only construction path the oracle does not expose."
+    },
+    {
+      "what": "The proposition that a template name which IS file-defined but has no generated value does not fall back to a same-named raw caller input — i.e. the `distinctLanguageForms == 0` `continue` in DefaultStrings.getInternal, which leaves the name bound in `placeholderBindings` but absent from `generatedContext`, so interpolateTemplate reports it unresolved instead of reading `immutableContext`.",
+      "why": "Also unreachable from a strings file, which I established empirically rather than by reading. The only route to `distinctLanguageForms == 0` is an empty `translations` map, and LocalizedStringLoader rejects that at load with `placeholder translations are required. Key is '...'` (I built the fixture and watched it fail). Every other definition shape either yields a String into generatedContext or throws first, so the shadowing rule can only be observed in its positive form — which `generated-placeholders.scope.selector-reads-raw-input-while-template-reads-generated-value` and the two range/level cases do cover."
+    },
+    {
+      "what": "A large-but-legal expansion sitting just under the cumulative budget, which would bound the budget from BELOW and pin its exact position the way the depth pair pins 32.",
+      "why": "Genuinely costly rather than merely inconvenient, and the arithmetic is worth recording for whoever activates it later. Only expansions at depth >= 1 are billed and each is at most as long as its parent, so with the nesting limit at 32 the billed total can never exceed 32x the root output; a render that bills close to 1,048,576 therefore necessarily produces a translation of at least 1,048,576/32 = 32,768 characters, and the oracle records translations verbatim. The cheapest exact boundary pair is a 32-link length-preserving chain ending in a 32,768-character literal (billed exactly 1,048,576, succeeds) against a 32,769-character literal (billed 1,048,608, fails) — roughly 96KB of fixture plus corpus for one proposition, against a `generated/behavioral-vectors.json` that is currently 17KB. What is lost is precise: a port whose budget is anything in [1, 1,048,578] still passes the authored over-limit case. Plan section 1.3 fixes the default at 1,048,576 for v1, so the risk is a port that under-reads the constant, not one that invents a limit."
+    },
+    {
+      "what": "Depth and expansion limits at any value other than the Java defaults (32 nested expansions, 1,048,576 cumulative expansion characters), and the 262,144-character interpolated-output cap as a limit in its own right.",
+      "why": "Runtime limit overrides are on the oracle's unsupported list, and plan section 1.3 fixes Java-compatible defaults for v1 anyway, so the only portable propositions are the ones at the defaults — which the depth pair covers from both sides. The interpolated-output cap belongs to the interpolation family rather than this clause; the expansion fixture is deliberately sized so that cap cannot fire first, which I confirmed by observing the actual failure frame (c5l16, cumulative-limit message) rather than inferring it."
+    }
+  ],
+  "cases": [
+    {
+      "id": "generated-placeholders.inheritance.branch-inherits-parent-definition",
+      "requirementIds": [],
+      "fixture": "generated-placeholders-inheritance",
+      "operation": "getResult",
+      "input": {
+        "key": "Inherited books",
+        "locale": "en",
+        "placeholders": {
+          "bookCount": 101
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The matched branch names {{books}} but defines no placeholders, so the only way it can render is by inheriting the parent definition through the effective binding map DefaultStrings threads into getInternal. A port that rebuilt bindings per node instead of layering them onto the inherited map would fail this key outright rather than merely choose the wrong word."
+    },
+    {
+      "id": "generated-placeholders.inheritance.parent-definition-serves-unbranched-path",
+      "requirementIds": [],
+      "fixture": "generated-placeholders-inheritance",
+      "operation": "getResult",
+      "input": {
+        "key": "Inherited books",
+        "locale": "en",
+        "placeholders": {
+          "bookCount": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Control for the inheritance case: the same key with no branch match, so the parent's own definition renders at the parent's own template. Without it, a port that inherited nothing could still be scored as passing a suite that only ever exercised branches."
+    },
+    {
+      "id": "generated-placeholders.replacement.branch-definition-overrides-parent",
+      "requirementIds": [],
+      "fixture": "generated-placeholders-inheritance",
+      "operation": "getResult",
+      "input": {
+        "key": "Replaced books",
+        "locale": "en",
+        "placeholders": {
+          "bookCount": 200
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The branch redefines the same placeholder name with a different translation table, so the rendered noun proves whose definition won. A port that let the ancestor definition survive because it was installed first would emit the parent's noun here. Note that this case alone does NOT separate replacement from a per-form merge, because both tables define the same forms and a merge would also let the branch's values win; the partial-branch-table pair below is what settles that."
+    },
+    {
+      "id": "generated-placeholders.replacement.unbranched-path-keeps-parent-definition",
+      "requirementIds": [],
+      "fixture": "generated-placeholders-inheritance",
+      "operation": "getResult",
+      "input": {
+        "key": "Replaced books",
+        "locale": "en",
+        "placeholders": {
+          "bookCount": 2
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Control for whole-definition replacement: with no branch match the parent's table is the only one in scope. It pins that the replacement is scoped to the branch and does not leak upward into the parent's own render."
+    },
+    {
+      "id": "generated-placeholders.replacement.partial-branch-table-is-not-merged-with-parent",
+      "requirementIds": [],
+      "fixture": "generated-placeholders-inheritance",
+      "operation": "getResult",
+      "input": {
+        "key": "Partial replacement",
+        "locale": "en",
+        "placeholders": {
+          "mode": 1,
+          "bookCount": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The branch's replacement table defines only CARDINALITY_OTHER while the parent defines ONE and OTHER, and the value selects ONE. Replacement is whole-definition, so the form is simply absent and resolution fails with 'Missing Cardinality translation for ONE' against a definition declared at 'Partial replacement -> alternative[mode == 1]'. This is the only case in the family that separates replacement from a per-form MERGE: a port that layered the branch table over the parent's would find the parent's 'book' and render successfully."
+    },
+    {
+      "id": "generated-placeholders.replacement.partial-branch-table-serves-its-own-form",
+      "requirementIds": [],
+      "fixture": "generated-placeholders-inheritance",
+      "operation": "getResult",
+      "input": {
+        "key": "Partial replacement",
+        "locale": "en",
+        "placeholders": {
+          "mode": 1,
+          "bookCount": 3
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The live half of the partial-replacement pair: the same branch renders normally for the one form its table does define. Without it the previous case could be passed by a port that rejects the branch outright, or that rejects any table missing a form the locale supports."
+    },
+    {
+      "id": "generated-placeholders.crosskind.language-form-replaced-by-fragment-default",
+      "requirementIds": [],
+      "fixture": "generated-placeholders-inheritance",
+      "operation": "getResult",
+      "input": {
+        "key": "Cross kind books",
+        "locale": "en",
+        "placeholders": {
+          "bookCount": 150
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The parent defines this placeholder as a language-form translation and the branch replaces it with an expression-fragment translation, so resolution must dispatch on the branch's KIND, not the parent's. A port that cached a per-name resolver kind from the parent would try to read a cardinality here and fail."
+    },
+    {
+      "id": "generated-placeholders.crosskind.replacement-fragment-alternative-selected",
+      "requirementIds": [],
+      "fixture": "generated-placeholders-inheritance",
+      "operation": "getResult",
+      "input": {
+        "key": "Cross kind books",
+        "locale": "en",
+        "placeholders": {
+          "bookCount": 5000
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Same cross-kind replacement, but deep enough to select the replacement fragment's own alternative rather than its default. Without it a port could hard-code the fragment default and still pass the previous case."
+    },
+    {
+      "id": "generated-placeholders.crosskind.parent-language-form-serves-unbranched-path",
+      "requirementIds": [],
+      "fixture": "generated-placeholders-inheritance",
+      "operation": "getResult",
+      "input": {
+        "key": "Cross kind books",
+        "locale": "en",
+        "placeholders": {
+          "bookCount": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Control proving the parent's definition really is a language-form translation, which is what makes the previous two cases cross-KIND rather than merely cross-value."
+    },
+    {
+      "id": "generated-placeholders.crosskind.fragment-replaced-by-language-form",
+      "requirementIds": [],
+      "fixture": "generated-placeholders-inheritance",
+      "operation": "getResult",
+      "input": {
+        "key": "Reverse cross kind",
+        "locale": "en",
+        "placeholders": {
+          "itemCount": 2
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The reverse direction: an expression fragment in the parent replaced by a language-form translation in the branch. Ports commonly implement one direction of the kind switch and not the other, and this is the direction where the replacement suddenly needs a plural rule and a selector input."
+    },
+    {
+      "id": "generated-placeholders.crosskind.parent-fragment-alternative-serves-unbranched-path",
+      "requirementIds": [],
+      "fixture": "generated-placeholders-inheritance",
+      "operation": "getResult",
+      "input": {
+        "key": "Reverse cross kind",
+        "locale": "en",
+        "placeholders": {
+          "itemCount": 0
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Control for the reverse cross-kind case: no branch matches, so the parent's fragment alternative renders and proves the parent definition is expression-kind."
+    },
+    {
+      "id": "generated-placeholders.inheritance.grandchild-inherits-nearest-ancestor-definition",
+      "requirementIds": [],
+      "fixture": "generated-placeholders-inheritance",
+      "operation": "getResult",
+      "input": {
+        "key": "Three level inheritance",
+        "locale": "en",
+        "placeholders": {
+          "level": 2
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Two nested branches: the middle replaces the placeholder and the deepest defines nothing. The rendered tag says which ancestor won. A port that inherited only from the root, or that re-derived bindings from the root at each level, would emit the root's tag instead of the middle one's."
+    },
+    {
+      "id": "generated-placeholders.inheritance.root-definition-when-no-branch-matches",
+      "requirementIds": [],
+      "fixture": "generated-placeholders-inheritance",
+      "operation": "getResult",
+      "input": {
+        "key": "Three level inheritance",
+        "locale": "en",
+        "placeholders": {
+          "level": 0
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Control for the three-level case, pinning the root's own definition so the previous case's result is attributable to the middle branch's replacement rather than to the root."
+    },
+    {
+      "id": "generated-placeholders.scope.language-form-selector-cannot-read-generated-value",
+      "requirementIds": [],
+      "fixture": "generated-placeholders-scope",
+      "operation": "getResult",
+      "input": {
+        "key": "Selector ignores generated values",
+        "locale": "en",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A language-form placeholder whose selector names a SIBLING generated placeholder. The sibling is referenced first in the template, so it is resolved to the text \"5\" before the language form is reached; Java still resolves selectors against the caller's immutable context only, finds nothing, and fails with 'Missing value for placeholder level'. A port that fed generated values back into selectors would find \"5\" waiting and render successfully."
+    },
+    {
+      "id": "generated-placeholders.scope.language-form-selector-reads-raw-input-not-sibling-generated-value",
+      "requirementIds": [],
+      "fixture": "generated-placeholders-scope",
+      "operation": "getResult",
+      "input": {
+        "key": "Selector ignores generated values",
+        "locale": "en",
+        "placeholders": {
+          "level": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The sharp form of the selector-scope rule, on the same key. A generated placeholder named level produces the text \"5\" while the caller supplies level = 1, and a sibling language form selects on that name. Java reads the caller's 1 (CARDINALITY_ONE) for selection and the generated \"5\" for interpolation, so all three plausible ports render visibly different strings: reading generated values at selection yields the OTHER form, and preferring raw input at interpolation prints \"1\" in the leading position."
+    },
+    {
+      "id": "generated-placeholders.scope.selector-reads-raw-input-while-template-reads-generated-value",
+      "requirementIds": [],
+      "fixture": "generated-placeholders-scope",
+      "operation": "getResult",
+      "input": {
+        "key": "Same name both scopes",
+        "locale": "en",
+        "placeholders": {
+          "count": 4
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "One name in both scopes: the selector reads the caller's numeric value while the template interpolates the generated word the selector produced. It pins both halves of the scope rule at once — a port that let raw input win at interpolation would render the number, and a port that shadowed it during selection would fail to resolve at all."
+    },
+    {
+      "id": "generated-placeholders.scope.selector-reads-raw-input-singular-form",
+      "requirementIds": [],
+      "fixture": "generated-placeholders-scope",
+      "operation": "getResult",
+      "input": {
+        "key": "Same name both scopes",
+        "locale": "en",
+        "placeholders": {
+          "count": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The other form of the same-name-both-scopes key. Paired with the plural case it shows the selector really consumes the caller's NUMBER rather than a fixed value, which a port that shadowed the raw input with the generated string could not reproduce for either input."
+    },
+    {
+      "id": "generated-placeholders.scope.fragment-alternative-cannot-read-generated-value",
+      "requirementIds": [],
+      "fixture": "generated-placeholders-scope",
+      "operation": "getResult",
+      "input": {
+        "key": "Fragment selector scope",
+        "locale": "en",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The expression alternative of a generated fragment references a sibling generated placeholder whose text would satisfy the comparison, and that sibling is resolved first because the template names it first. Java evaluates fragment alternatives against the caller's context only, so the operand is absent and evaluation throws ExpressionEvaluationException 'No value was provided for placeholder size'. A port that evaluated fragment expressions against the generated context would select the alternative and render a match Java never produces."
+    },
+    {
+      "id": "generated-placeholders.scope.fragment-alternative-reads-raw-input-not-sibling-generated-value",
+      "requirementIds": [],
+      "fixture": "generated-placeholders-scope",
+      "operation": "getResult",
+      "input": {
+        "key": "Fragment selector scope",
+        "locale": "en",
+        "placeholders": {
+          "size": 3
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Same sharpening for a generated fragment's alternative expression: the generated size is \"10\" and the caller's size is 3, and the alternative tests size == 10. Java evaluates against the caller's 3, so the alternative does not fire, while the template still interpolates the generated \"10\". A port evaluating fragment expressions against the generated context selects the alternative and renders a different, successful string."
+    },
+    {
+      "id": "generated-placeholders.scope.range-selector-cannot-read-generated-value",
+      "requirementIds": [],
+      "fixture": "generated-placeholders-scope",
+      "operation": "getResult",
+      "input": {
+        "key": "Range selector scope",
+        "locale": "en",
+        "placeholders": {
+          "maxHours": 5
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The range form of a language-form placeholder. Both endpoints are read from the caller's context; the caller supplies only the end, so resolution fails with 'Missing range start placeholder minHours' even though a generated placeholder named minHours exists AND has already been resolved to the numeric text \"2\" because the template references it first. That last part is what makes the case decisive: a port that read range endpoints out of the generated context would find \"2\" waiting for it and render a translation Java never produces."
+    },
+    {
+      "id": "generated-placeholders.scope.range-endpoints-read-raw-input-while-template-reads-generated-value",
+      "requirementIds": [],
+      "fixture": "generated-placeholders-scope",
+      "operation": "getResult",
+      "input": {
+        "key": "Range selector scope",
+        "locale": "en",
+        "placeholders": {
+          "minHours": 1,
+          "maxHours": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Both range endpoints supplied by the caller as 1, against a generated minHours of \"2\". Java's range therefore classifies ONE-to-ONE while the template still renders the generated \"2\". A port that read the generated \"2\" as the range start would classify the range differently, and a port that preferred raw input at interpolation would print \"1\". It also pins that BOTH endpoints are read from the caller, not just the start."
+    },
+    {
+      "id": "generated-placeholders.scope.expanded-fragment-interpolates-raw-input",
+      "requirementIds": [],
+      "fixture": "generated-placeholders-scope",
+      "operation": "getResult",
+      "input": {
+        "key": "Generated template uses raw input",
+        "locale": "en",
+        "placeholders": {
+          "userName": "Ada",
+          "vip": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The positive half of the scope rule: inside an already-expanded generated fragment, a name that is NOT file-defined still resolves from the caller's raw input. A port that treated the nested expansion as a closed scope would report a missing placeholder here."
+    },
+    {
+      "id": "generated-placeholders.late-binding.selected-fragment-pulls-in-its-dependency",
+      "requirementIds": [],
+      "fixture": "generated-placeholders-late-binding",
+      "operation": "getResult",
+      "input": {
+        "key": "Late bound fragment dependency",
+        "locale": "en",
+        "placeholders": {
+          "jobCount": 3
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The dependency appears nowhere in the key's own translation — it becomes reachable only after the fragment's alternative is selected and its text is rescanned. A port that computed the generated-placeholder set once from the root template would leave this placeholder unresolved."
+    },
+    {
+      "id": "generated-placeholders.late-binding.default-fragment-has-no-dependency",
+      "requirementIds": [],
+      "fixture": "generated-placeholders-late-binding",
+      "operation": "getResult",
+      "input": {
+        "key": "Late bound fragment dependency",
+        "locale": "en",
+        "placeholders": {
+          "jobCount": 0
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Same key on the fragment's default branch, where the selected text carries no late dependency. Paired with the previous case it shows the rescan is driven by the text that was selected. It is a weak control on its own — an eagerly resolving port also renders 'Status: idle' here — which is why the unselected-dependency pair below carries the eager-resolution proposition."
+    },
+    {
+      "id": "generated-placeholders.late-binding.unselected-fragment-dependency-never-resolves",
+      "requirementIds": [],
+      "fixture": "generated-placeholders-late-binding",
+      "operation": "getResult",
+      "input": {
+        "key": "Unselected dependency stays unresolved",
+        "locale": "en",
+        "placeholders": {
+          "finished": 0
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The unselected branch of the fragment references a placeholder whose selector input the caller never supplies, and that placeholder is reachable from no selected text. Java never resolves it, so the render succeeds. A port that eagerly resolved every defined placeholder would fail this key — this is the case that catches eager resolution, and it also pins that an unreferenced definition is never resolved on its own."
+    },
+    {
+      "id": "generated-placeholders.late-binding.selected-fragment-dependency-resolution-failure-surfaces",
+      "requirementIds": [],
+      "fixture": "generated-placeholders-late-binding",
+      "operation": "getResult",
+      "input": {
+        "key": "Unselected dependency stays unresolved",
+        "locale": "en",
+        "placeholders": {
+          "finished": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same catalog with the other branch selected, which does pull the unsatisfiable dependency into resolution and fails. Without this half, a port could pass the previous case by never resolving late dependencies at all."
+    },
+    {
+      "id": "generated-placeholders.late-binding.language-form-selected-text-pulls-in-its-dependency",
+      "requirementIds": [],
+      "fixture": "generated-placeholders-late-binding",
+      "operation": "getResult",
+      "input": {
+        "key": "Cardinality selected text carries a dependency",
+        "locale": "en",
+        "placeholders": {
+          "bookCount": 1,
+          "authorId": 7
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Late binding through the OTHER placeholder kind: the chosen cardinality's text itself contains a generated placeholder, which Java enqueues after the language form is selected. A port that rescanned only expression fragments and not language-form results would leave the nested name unresolved."
+    },
+    {
+      "id": "generated-placeholders.late-binding.other-form-text-pulls-in-different-dependency-and-raw-input",
+      "requirementIds": [],
+      "fixture": "generated-placeholders-late-binding",
+      "operation": "getResult",
+      "input": {
+        "key": "Cardinality selected text carries a dependency",
+        "locale": "en",
+        "placeholders": {
+          "bookCount": 4,
+          "authorId": 0
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The other cardinality of the same key, whose text carries both the late-bound generated name and a raw caller value. It pins that a different selected form produces a different rescan and that raw input survives inside language-form text."
+    },
+    {
+      "id": "generated-placeholders.cycles.self-referential-fragment-is-rejected",
+      "requirementIds": [],
+      "fixture": "generated-placeholders-cycles",
+      "operation": "getResult",
+      "input": {
+        "key": "Self referential fragment",
+        "locale": "en",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A fragment that references itself. Java's resolution pass terminates on its resolved-name set, so the cycle is caught later, during expansion, by the active-path check. A port without a path check would recurse until the stack or the output limit stopped it, producing a different failure or a hang."
+    },
+    {
+      "id": "generated-placeholders.cycles.two-node-cycle-is-rejected",
+      "requirementIds": [],
+      "fixture": "generated-placeholders-cycles",
+      "operation": "getResult",
+      "input": {
+        "key": "Mutual fragments",
+        "locale": "en",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A two-node cycle, which a self-reference check alone would miss. This is the minimal case that forces the port to track the active expansion path rather than just compare a name against itself."
+    },
+    {
+      "id": "generated-placeholders.cycles.branch-replacement-introduces-cycle",
+      "requirementIds": [],
+      "fixture": "generated-placeholders-cycles",
+      "operation": "getResult",
+      "input": {
+        "key": "Branch introduces a cycle",
+        "locale": "en",
+        "placeholders": {
+          "mode": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The cycle exists only after a branch replaces one of the two definitions, so cycle detection has to run against the effective post-inheritance bindings; Java reports the path 'alpha -> beta -> alpha'. A port that analyzed the catalog statically at load time would either miss this or reject the acyclic sibling path."
+    },
+    {
+      "id": "generated-placeholders.cycles.same-definitions-without-replacement-resolve",
+      "requirementIds": [],
+      "fixture": "generated-placeholders-cycles",
+      "operation": "getResult",
+      "input": {
+        "key": "Branch introduces a cycle",
+        "locale": "en",
+        "placeholders": {
+          "mode": 0
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The acyclic sibling of the previous case, from the same key. It is the half that catches a port which rejects the whole key because some branch somewhere could form a cycle."
+    },
+    {
+      "id": "generated-placeholders.cycles.cycle-in-unselected-fragment-branch-is-not-a-cycle",
+      "requirementIds": [],
+      "fixture": "generated-placeholders-cycles",
+      "operation": "getResult",
+      "input": {
+        "key": "Cycle only in unselected fragment",
+        "locale": "en",
+        "placeholders": {
+          "safe": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A second, independent route to a conditional cycle: here no branch replaces anything, and the ring closes only through a fragment's DEFAULT text while its selected alternative breaks it. Cycle detection therefore has to run on the text actually selected, not on the definition source. A port that scanned definition text statically — at load time, or before fragment selection — would reject this legal catalog even though its bindings are identical for every input."
+    },
+    {
+      "id": "generated-placeholders.cycles.unselected-branch-default-completes-the-cycle",
+      "requirementIds": [],
+      "fixture": "generated-placeholders-cycles",
+      "operation": "getResult",
+      "input": {
+        "key": "Cycle only in unselected fragment",
+        "locale": "en",
+        "placeholders": {
+          "safe": 0
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The other input to the same key, where the cyclic default is what gets selected and Java reports 'ring -> link -> ring'. Paired with the previous case it pins that one unchanged catalog is legal or illegal purely as a function of the caller's input."
+    },
+    {
+      "id": "generated-placeholders.cycles.shared-fragment-reused-twice-is-not-a-cycle",
+      "requirementIds": [],
+      "fixture": "generated-placeholders-cycles",
+      "operation": "getResult",
+      "input": {
+        "key": "Diamond reuse",
+        "locale": "en",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A diamond: two fragments both expand the same third fragment. Java memoizes the first expansion and pops the active path when a branch completes, so the reuse is legal. A port that pushed names onto a path without popping them, or that treated any repeat visit as a cycle, would reject this valid catalog. (Memoization itself is not separately observable here — re-expanding would produce the same text — it is only observable through the cumulative expansion budget.)"
+    },
+    {
+      "id": "generated-placeholders.limits.depth-32-chain-resolves",
+      "requirementIds": [],
+      "fixture": "generated-placeholders-depth-limit",
+      "operation": "getResult",
+      "input": {
+        "key": "Depth 32 chain",
+        "locale": "en",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A chain that puts the deepest expansion exactly on the default nesting limit of 32. Entering placeholder p_k's template happens at recursion depth k and the check is 'depth > 32', so a 32-link chain sits exactly on the boundary. It is the boundary a port with an off-by-one depth check fails while still passing every shallow case."
+    },
+    {
+      "id": "generated-placeholders.limits.depth-33-chain-exceeds-maximum",
+      "requirementIds": [],
+      "fixture": "generated-placeholders-depth-limit",
+      "operation": "getResult",
+      "input": {
+        "key": "Depth 33 chain",
+        "locale": "en",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "One link past the boundary; Java reports the full 33-name path q1..q33. A port with no nesting limit renders this happily; a port whose limit is off by one rejects the previous case instead. The pair is what fixes the limit's exact position."
+    },
+    {
+      "id": "generated-placeholders.limits.cumulative-expansion-exceeds-character-budget",
+      "requirementIds": [],
+      "fixture": "generated-placeholders-expansion-limit",
+      "operation": "getResult",
+      "input": {
+        "key": "Expansion budget",
+        "locale": "en",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Six independent doubling chains whose expansions total 1,572,858 characters while no single expansion exceeds 131,072 — half the 262,144-character interpolated-output cap. It isolates the CUMULATIVE expansion budget: a port that only bounded individual output sizes, or that bounded depth alone, would proceed. Verified against the real library with a throwing failure handler: the render dies inside the FIFTH chain (innermost frame c5l16) with 'exceeds the cumulative limit of 1048576 characters', so the budget, not the interpolation cap, is what stops it. This case bounds the budget from above only; see the skipped entry for why the matching under-limit case is not authored."
+    }
+  ]
+}

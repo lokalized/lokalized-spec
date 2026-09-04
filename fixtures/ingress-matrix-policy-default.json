@@ -1,0 +1,29 @@
+{
+  "id": "ingress-matrix-policy-default",
+  "description": "Fallback-policy ingress matrix, instance leg UNSET so the library default applies (DefaultStrings.java:473 installs fallbackOnMissingTranslationOrNoMatchingAlternative). A ru request against fallback en gives exactly two candidates, so the policy is genuinely consulted (:731 skips the call at the last candidate). Two distinct failure reasons in one catalog separate all three policy values: Items.Sparse declares only ONE/OTHER, so itemCount 5 selects Russian MANY and raises the 'Missing Cardinality translation for MANY' IllegalStateException = RESOLUTION_FAILURE; Items.EnOnly is simply absent from ru = MISSING_TRANSLATION. Verified by execution that the sparse placeholder LOADS (LocalizedStringValidator does not require complete cardinality coverage) and fails only at resolution.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "ru": {
+      "Locale.Marker": "ru",
+      "Items.Sparse": {
+        "commentary": "Only ONE and OTHER declared, though Russian also selects FEW and MANY. Reaching MANY throws inside getInternal, which getResult classifies as RESOLUTION_FAILURE.",
+        "translation": "{{noun}}",
+        "placeholders": {
+          "noun": {
+            "value": "itemCount",
+            "translations": {
+              "CARDINALITY_ONE": "ru:ONE",
+              "CARDINALITY_OTHER": "ru:OTHER"
+            }
+          }
+        }
+      }
+    },
+    "en": {
+      "Locale.Marker": "en",
+      "Items.Sparse": "en:fallback-resolved",
+      "Items.EnOnly": "en:only-here"
+    }
+  }
+}

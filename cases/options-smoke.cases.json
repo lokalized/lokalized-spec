@@ -1,0 +1,221 @@
+{
+  "formatVersion": 1,
+  "family": "options-smoke",
+  "description": "Plan v7 section 8.3 fixture family 'options-smoke'. Inputs only; the oracle emits expected.",
+  "cases": [
+    {
+      "id": "options-smoke.policy.default-halts-on-resolution-failure",
+      "requirementIds": [],
+      "fixture": "options-smoke-policy",
+      "operation": "getResult",
+      "input": {
+        "key": "Items",
+        "locale": "en",
+        "placeholders": {
+          "count": 5
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Library default halts the walk on RESOLUTION_FAILURE, so the fr fallback is never reached."
+    },
+    {
+      "id": "options-smoke.policy.any-failure-walks-to-fallback",
+      "requirementIds": [],
+      "fixture": "options-smoke-policy",
+      "operation": "getResult",
+      "input": {
+        "key": "Items",
+        "locale": "en",
+        "placeholders": {
+          "count": 5
+        },
+        "translationFallbackPolicy": "any-failure"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Same inputs, permissive policy: the walk continues and fr serves the key. This is the discriminating pair."
+    },
+    {
+      "id": "options-smoke.policy.never-stops-after-first-candidate",
+      "requirementIds": [],
+      "fixture": "options-smoke-policy",
+      "operation": "getResult",
+      "input": {
+        "key": "Items",
+        "locale": "en",
+        "placeholders": {
+          "count": 5
+        },
+        "translationFallbackPolicy": "never"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "neverFallback stops after the first candidate regardless of reason."
+    },
+    {
+      "id": "options-smoke.policy.control-succeeds-without-fallback",
+      "requirementIds": [],
+      "fixture": "options-smoke-policy",
+      "operation": "getResult",
+      "input": {
+        "key": "Items",
+        "locale": "en",
+        "placeholders": {
+          "count": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Control: count 1 selects the one branch en does declare, so no policy is consulted."
+    },
+    {
+      "id": "options-smoke.handler.get-with-throw-handler-raises",
+      "requirementIds": [],
+      "fixture": "options-smoke-policy",
+      "operation": "get",
+      "input": {
+        "key": "Items",
+        "locale": "en",
+        "placeholders": {
+          "count": 5
+        },
+        "translationFailureHandler": {
+          "behavior": "throw"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "get applies the handler response, so a throw handler surfaces as a thrown case where getResult would have returned the key."
+    },
+    {
+      "id": "options-smoke.handler.get-with-return-string-substitutes",
+      "requirementIds": [],
+      "fixture": "options-smoke-policy",
+      "operation": "get",
+      "input": {
+        "key": "Items",
+        "locale": "en",
+        "placeholders": {
+          "count": 5
+        },
+        "translationFailureHandler": {
+          "behavior": "return-string",
+          "text": "SUBSTITUTED"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Pins that a return-string handler replaces the key entirely rather than augmenting it."
+    },
+    {
+      "id": "options-smoke.handler.getresult-with-throwing-callback",
+      "requirementIds": [],
+      "fixture": "options-smoke-policy",
+      "operation": "getResult",
+      "input": {
+        "key": "Items",
+        "locale": "en",
+        "placeholders": {
+          "count": 5
+        },
+        "translationFailureHandler": {
+          "behavior": "throw-in-handler",
+          "message": "callback exploded"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Section 8.3 callback exceptions: the handler itself raises. Records where that surfaces on the getResult path."
+    },
+    {
+      "id": "options-smoke.handler.get-with-throwing-callback",
+      "requirementIds": [],
+      "fixture": "options-smoke-policy",
+      "operation": "get",
+      "input": {
+        "key": "Items",
+        "locale": "en",
+        "placeholders": {
+          "count": 5
+        },
+        "translationFailureHandler": {
+          "behavior": "throw-in-handler",
+          "message": "callback exploded"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Same callback exception on the get path, so the two ingresses are pinned separately."
+    },
+    {
+      "id": "options-smoke.bidi.rtl-locales-isolates-arabic-request",
+      "requirementIds": [],
+      "fixture": "options-smoke-bidi",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting",
+        "locale": "ar",
+        "placeholders": {
+          "name": "Bob"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Default RTL_LOCALES mode with an RTL evaluation locale: the interpolated Latin value should be isolated."
+    },
+    {
+      "id": "options-smoke.bidi.rtl-locales-does-not-isolate-english-request",
+      "requirementIds": [],
+      "fixture": "options-smoke-bidi",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting",
+        "locale": "en",
+        "placeholders": {
+          "name": "أحمد"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Same mode, LTR evaluation locale: no isolation even though the VALUE is RTL. Pins that the mode keys off the locale, not the value."
+    },
+    {
+      "id": "options-smoke.bidi.always-isolates-english-request",
+      "requirementIds": [],
+      "fixture": "options-smoke-bidi",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting",
+        "locale": "en",
+        "placeholders": {
+          "name": "أحمد"
+        },
+        "bidiIsolation": "ALWAYS"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ALWAYS overrides the locale test."
+    },
+    {
+      "id": "options-smoke.bidi.none-suppresses-arabic-request",
+      "requirementIds": [],
+      "fixture": "options-smoke-bidi",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting",
+        "locale": "ar",
+        "placeholders": {
+          "name": "Bob"
+        },
+        "bidiIsolation": "NONE"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "NONE suppresses isolation that RTL_LOCALES would have applied. With the first bidi case this is the discriminating pair."
+    },
+    {
+      "id": "options-smoke.bidi.arabic-request-served-by-english-donor",
+      "requirementIds": [],
+      "fixture": "options-smoke-bidi",
+      "operation": "getResult",
+      "input": {
+        "key": "OnlyEnglish",
+        "locale": "ar",
+        "placeholders": {
+          "name": "Bob"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "THE SHARP CASE: an RTL request served by an LTR donor catalog. shouldApplyBidiIsolation takes the evaluation locale, which the donor rule makes the SUPPLYING locale, so this should NOT isolate despite the request being Arabic."
+    }
+  ]
+}

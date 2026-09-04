@@ -1,0 +1,13 @@
+{
+  "id": "owed-bidi-repeated-placeholder",
+  "description": "BidiIsolation.ALWAYS with a template naming the SAME placeholder twice. StringInterpolator looks the value up per occurrence, so one BoundedIsolatedValue's render() is called twice -- the memoized second call on BidiUtils$BoundedIsolatedValue.render line 209, which no corpus template reaches because no isolated template repeats a placeholder. maximumInterpolatedOutputCharacters is left at its default so the second render succeeds.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "bidiIsolation": "ALWAYS",
+  "files": {
+    "en": {
+      "Locale.Marker": "en",
+      "Twice.Value": "{{v}}{{v}}"
+    }
+  }
+}

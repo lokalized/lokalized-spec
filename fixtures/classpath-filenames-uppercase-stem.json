@@ -1,0 +1,15 @@
+{
+  "id": "classpath-filenames-uppercase-stem",
+  "description": "A valid en catalog plus an extensionless file named 'DE'. isLanguageTag (LocalizedStringLoader.java:1649) runs the stem through LANGUAGE_TAG_PATTERN, Locale.Builder and CldrLocaleData.isKnownLanguageTag, all of which accept it case-insensitively; the emitted key is then Locale.forLanguageTag's canonical form. MEASURED: loads as 'de'.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "rawFiles": {
+    "DE": "{\"Key.DE\":\"DE\"}"
+  }
+}

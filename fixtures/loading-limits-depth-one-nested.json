@@ -1,0 +1,17 @@
+{
+  "id": "loading-limits-depth-one-nested",
+  "description": "A catalog whose single entry is an object, so the file reaches container depth 2, loaded with maximumJsonNestingDepth at 1.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumJsonNestingDepth": 1
+  },
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": {
+        "translation": "a"
+      }
+    }
+  }
+}

@@ -1,0 +1,169 @@
+{
+  "id": "generated-placeholders-inheritance",
+  "description": "Plan v7 section 8.3 generated-placeholder clause: one English catalog whose keys exercise branch inheritance of a parent placeholder definition, whole-definition replacement inside a branch, replacement that changes the placeholder KIND in both directions, and three-level inheritance where the nearest ancestor's definition wins. The 'Partial replacement' key, whose branch table omits a form the parent supplies, is what pins that the replacement is whole-definition rather than a per-form merge.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Inherited books": {
+        "translation": "You have {{bookCount}} {{books}}.",
+        "placeholders": {
+          "books": {
+            "value": "bookCount",
+            "translations": {
+              "CARDINALITY_ONE": "book",
+              "CARDINALITY_OTHER": "books"
+            }
+          }
+        },
+        "alternatives": [
+          {
+            "bookCount > 100": {
+              "translation": "You have over one hundred {{books}}!"
+            }
+          }
+        ]
+      },
+      "Replaced books": {
+        "translation": "You have {{bookCount}} {{books}}.",
+        "placeholders": {
+          "books": {
+            "value": "bookCount",
+            "translations": {
+              "CARDINALITY_ONE": "book",
+              "CARDINALITY_OTHER": "books"
+            }
+          }
+        },
+        "alternatives": [
+          {
+            "bookCount > 100": {
+              "translation": "You have {{bookCount}} {{books}} on the shelf.",
+              "placeholders": {
+                "books": {
+                  "value": "bookCount",
+                  "translations": {
+                    "CARDINALITY_ONE": "volume",
+                    "CARDINALITY_OTHER": "volumes"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "Partial replacement": {
+        "translation": "You have {{bookCount}} {{books}}.",
+        "placeholders": {
+          "books": {
+            "value": "bookCount",
+            "translations": {
+              "CARDINALITY_ONE": "book",
+              "CARDINALITY_OTHER": "books"
+            }
+          }
+        },
+        "alternatives": [
+          {
+            "mode == 1": {
+              "translation": "Shelf has {{bookCount}} {{books}}.",
+              "placeholders": {
+                "books": {
+                  "value": "bookCount",
+                  "translations": {
+                    "CARDINALITY_OTHER": "volumes"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "Cross kind books": {
+        "translation": "Shelf: {{books}}.",
+        "placeholders": {
+          "books": {
+            "value": "bookCount",
+            "translations": {
+              "CARDINALITY_ONE": "one book",
+              "CARDINALITY_OTHER": "many books"
+            }
+          }
+        },
+        "alternatives": [
+          {
+            "bookCount > 100": {
+              "translation": "Shelf: {{books}}.",
+              "placeholders": {
+                "books": {
+                  "translation": "a large library",
+                  "alternatives": [
+                    {
+                      "bookCount > 1000": "an enormous library"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      },
+      "Reverse cross kind": {
+        "translation": "Cart: {{summary}}.",
+        "placeholders": {
+          "summary": {
+            "translation": "several items",
+            "alternatives": [
+              {
+                "itemCount == 0": "nothing"
+              }
+            ]
+          }
+        },
+        "alternatives": [
+          {
+            "itemCount > 0 && itemCount < 3": {
+              "translation": "Cart: {{summary}}.",
+              "placeholders": {
+                "summary": {
+                  "value": "itemCount",
+                  "translations": {
+                    "CARDINALITY_ONE": "one item",
+                    "CARDINALITY_OTHER": "two items"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "Three level inheritance": {
+        "translation": "Level0 {{tag}}",
+        "placeholders": {
+          "tag": {
+            "translation": "root-tag"
+          }
+        },
+        "alternatives": [
+          {
+            "level >= 1": {
+              "translation": "Level1 {{tag}}",
+              "placeholders": {
+                "tag": {
+                  "translation": "middle-tag"
+                }
+              },
+              "alternatives": [
+                {
+                  "level >= 2": {
+                    "translation": "Level2 {{tag}}"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

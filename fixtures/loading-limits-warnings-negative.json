@@ -1,0 +1,15 @@
+{
+  "id": "loading-limits-warnings-negative",
+  "description": "A warning-free Russian catalog whose loading options request maximumWarnings -1. The builder refuses it as not nonnegative, which is what makes 0 a legitimate value rather than an accident.",
+  "fallbackLocale": "ru",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumWarnings": -1
+  },
+  "loadOnly": true,
+  "files": {
+    "ru": {
+      "Key.A": "a"
+    }
+  }
+}

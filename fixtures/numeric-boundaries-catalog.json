@@ -1,0 +1,84 @@
+{
+  "id": "numeric-boundaries-catalog",
+  "description": "Plan v7 section 8.3: safe-integer boundaries, compact exponents, and trailing zeros carried through the translation path. `Order {{orderId}}` alternatives compare against exact 16- and 21-digit literals; `{{position}} place` exposes the English ordinal categories that separate 2^53 from 2^53+1; `{{itemCount}} counted` selects a category-tagged generated placeholder in en, ru, and fr. No two loaded locales share a primary language code, so tiebreakers are absent.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Order {{orderId}}": {
+        "translation": "order-default",
+        "commentary": "Exact-equality alternatives on integers an IEEE-754 binary64 cannot represent.",
+        "alternatives": [
+          {
+            "orderId == 9007199254740993": {
+              "translation": "order-two-to-the-53-plus-one"
+            }
+          },
+          {
+            "orderId == 100000000000000000001": {
+              "translation": "order-ten-to-the-20-plus-one"
+            }
+          }
+        ]
+      },
+      "{{itemCount}} counted": {
+        "translation": "{{items}}",
+        "placeholders": {
+          "items": {
+            "value": "itemCount",
+            "translations": {
+              "CARDINALITY_ONE": "en-one",
+              "CARDINALITY_OTHER": "en-other"
+            }
+          }
+        }
+      },
+      "{{position}} place": {
+        "translation": "{{suffix}}",
+        "commentary": "English ordinals separate the three safe-integer boundary values by their last digit, so this key exposes 2^53 and 2^53+1 as different translations.",
+        "placeholders": {
+          "suffix": {
+            "value": "position",
+            "translations": {
+              "ORDINALITY_ONE": "en-ordinal-one",
+              "ORDINALITY_TWO": "en-ordinal-two",
+              "ORDINALITY_FEW": "en-ordinal-few",
+              "ORDINALITY_OTHER": "en-ordinal-other"
+            }
+          }
+        }
+      }
+    },
+    "ru": {
+      "{{itemCount}} counted": {
+        "translation": "{{items}}",
+        "placeholders": {
+          "items": {
+            "value": "itemCount",
+            "translations": {
+              "CARDINALITY_ONE": "ru-one",
+              "CARDINALITY_FEW": "ru-few",
+              "CARDINALITY_MANY": "ru-many",
+              "CARDINALITY_OTHER": "ru-other"
+            }
+          }
+        }
+      }
+    },
+    "fr": {
+      "{{itemCount}} counted": {
+        "translation": "{{items}}",
+        "placeholders": {
+          "items": {
+            "value": "itemCount",
+            "translations": {
+              "CARDINALITY_ONE": "fr-one",
+              "CARDINALITY_MANY": "fr-many",
+              "CARDINALITY_OTHER": "fr-other"
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "loading-limits-total-bytes-one",
+  "description": "A two-byte empty-object file loaded with maximumTotalInputBytes at 1. The aggregate is charged as bytes are read, so it trips before the per-resource size comparison and reports the aggregate message.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumTotalInputBytes": 1
+  },
+  "loadOnly": true,
+  "files": {},
+  "rawFiles": {
+    "en": "{}"
+  }
+}

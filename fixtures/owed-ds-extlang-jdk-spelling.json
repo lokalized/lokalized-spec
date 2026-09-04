@@ -1,0 +1,14 @@
+{
+  "id": "owed-ds-extlang-jdk-spelling",
+  "description": "A 'nyn' (Nyankole) catalog beside English. The range 'no-nyn' has the exact extlang SHAPE the lossless-extlang fallback accepts -- two alphabetic subtags of length 2 and 3 -- and its collapsed candidate 'nyn' IS a known CLDR language tag, so only the second half of DefaultStrings:2124 refuses it: the JDK materializes 'no-nyn' as the grandfathered 'nn', not as 'nyn'. A port that checked only 'is the collapsed tag known' derives a bogus nyn identity and serves the Nyankole catalog for a Norwegian request.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Checkout.Title": "en"
+    },
+    "nyn": {
+      "Checkout.Title": "nyn"
+    }
+  }
+}

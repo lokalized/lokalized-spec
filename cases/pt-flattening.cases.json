@@ -1,0 +1,482 @@
+{
+  "formatVersion": 1,
+  "family": "pt-flattening",
+  "description": "Plan v7 section 8.3 fixture family 'pt-flattening'. Inputs only; the oracle emits expected.",
+  "skipped": [
+    {
+      "what": "supportedCardinalitiesForLocale for pt and for pt-PT",
+      "why": "Verified non-discriminating and therefore deliberately excluded: it would look like coverage without being coverage. GeneratedCldrPluralData.java:794 and :799 give both locales exactly {one, many, other}, and I confirmed by execution that supportedCardinalitiesForLocale returns the identical three-element list for both, so an implementation that flattened pt-PT into pt passes it. The three-category set is already load-bearing implicitly, since both fixture catalogs enumerate all three branches and a missing branch would be a resolution failure. (supportedOrdinalitiesForLocale for pt-PT was also probed -- it returns {other} by inheritance -- but it is dominated by pt-flattening.ordinal.pt-pt-inherits-pt-at-integer-one, which catches the same port bugs, so it is not authored either.)"
+    },
+    {
+      "what": "Asserting a cardinal-rule DIVERGENCE between pt and pt-PT on the ordinal or cardinal-range axes",
+      "why": "No such divergence exists in the pinned data, so a divergence case would be fabricated: GeneratedCldrPluralData contains exactly one LocaleRules(\"pt-PT\") -- the cardinal one at :799 -- and zero LocaleRanges(\"pt-PT\"), while the ordinal table carries pt only. Note that the original submission skipped these axes ENTIRELY on this reasoning; that conflated 'no divergence exists' with 'no case can be written'. The INHERITANCE direction is both real and discriminating, so four cases (pt-flattening.ordinal.* and pt-flattening.range.*) were moved out of skipped and authored during this review. Only the divergence claim remains skipped."
+    },
+    {
+      "what": "Exercising the CARDINALITY_MANY branch of either catalog (e.g. pt or pt-PT at 1000000)",
+      "why": "Probed and confirmed executable (pt at integer 1000000 emits 'pt|1000000|pt-MANY'), but pt and pt-PT carry byte-identical 'many' rules, so it discriminates nothing for the flattening clause, and its real content -- the `e = 0 ... or e != 0..5` compact-exponent operand -- belongs to section 8.3's separate compact-exponent clause. MANY is nonetheless present in both catalogs so that no case in this family can trip a missing-branch resolution failure by accident. Recorded here so a later reader does not mistake the unexercised branch for an oversight."
+    },
+    {
+      "what": "A case where the cardinality selected for pt-PT has no translation in the pt-PT catalog, observing the resulting RESOLUTION_FAILURE and whether resolution then continues to pt",
+      "why": "Requires a translation fallback policy and/or a translation failure handler to observe deterministically, and the oracle supports neither (VectorOracle builds every Strings with default policy and handler and exposes no override). Section 8.3's 'default and permissive fallback policies, final failure precedence, and callback exceptions' is a later milestone."
+    },
+    {
+      "what": "A case proving pt and pt-PT catalogs stay separate when loaded through a manifest or a deliberately partial load",
+      "why": "Manifest loading and loader options are outside what the oracle supports -- it always calls LocalizedStringLoader.loadFromFilesystem on a materialized directory. The catalog-separation property is instead asserted through that filesystem loader, which the oracle does exercise: every getResult case pins resolvedLocale and a locale-tagged translation prefix, and pt-flattening.getresult.*-integer-two asserts separation at a value where the two locales agree on the category."
+    }
+  ],
+  "cases": [
+    {
+      "id": "pt-flattening.getresult.pt-catalog-serves-integer-zero",
+      "requirementIds": [],
+      "fixture": "pt-flattening-cardinal-catalogs",
+      "operation": "getResult",
+      "input": {
+        "key": "I have {{itemCount}} items",
+        "locale": "pt",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The pt half of the 0 divergence at the translation level: pt's `i = 0..1` covers zero, so the ONE branch of the pt catalog is selected. Paired with its pt-PT sibling this is the first of the clause's three values. A port that resolved every pt-family locale through one shared rule table would produce the same category on both sides and the flattening bug would ship green."
+    },
+    {
+      "id": "pt-flattening.getresult.pt-pt-catalog-serves-integer-zero",
+      "requirementIds": [],
+      "fixture": "pt-flattening-cardinal-catalogs",
+      "operation": "getResult",
+      "input": {
+        "key": "I have {{itemCount}} items",
+        "locale": "pt-PT",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The pt-PT half of 0. pt-PT's `i = 1 and v = 0` excludes zero, so this must land on a different branch than the pt sibling. It also pins that the pt-PT CATALOG served the string (translation prefixed 'ptPT|', resolvedLocale pt-PT, isFallback false), so a port that merged same-language catalogs at load time fails here even if its plural rules were right."
+    },
+    {
+      "id": "pt-flattening.getresult.pt-catalog-serves-decimal-zero-point-zero",
+      "requirementIds": [],
+      "fixture": "pt-flattening-cardinal-catalogs",
+      "operation": "getResult",
+      "input": {
+        "key": "I have {{itemCount}} items",
+        "locale": "pt",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "decimal",
+            "value": "0.0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "0.0 rather than 0: v = 1 and f = 0 while i is still 0. pt's rule reads only i, so pt must treat 0.0 exactly as 0. The translation interpolates the raw value through String.valueOf, so this case additionally locks that a BigDecimal-equivalent 0.0 RENDERS with its trailing zero intact rather than being normalized to '0' by a JS number round-trip -- that rendering, not the category, is what 0.0 adds over 0 on the pt side."
+    },
+    {
+      "id": "pt-flattening.getresult.pt-pt-catalog-serves-decimal-zero-point-zero",
+      "requirementIds": [],
+      "fixture": "pt-flattening-cardinal-catalogs",
+      "operation": "getResult",
+      "input": {
+        "key": "I have {{itemCount}} items",
+        "locale": "pt-PT",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "decimal",
+            "value": "0.0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The pt-PT half of 0.0, the second of the clause's three values. CLDR lists \"0.0\" as a decimal sample of pt's `one` and of pt-PT's `other`, so this pair is a discriminator CLDR itself publishes. Like its pt sibling it also pins trailing-zero rendering in the interpolated output."
+    },
+    {
+      "id": "pt-flattening.getresult.pt-catalog-serves-decimal-one-point-five",
+      "requirementIds": [],
+      "fixture": "pt-flattening-cardinal-catalogs",
+      "operation": "getResult",
+      "input": {
+        "key": "I have {{itemCount}} items",
+        "locale": "pt",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "decimal",
+            "value": "1.5"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "1.5 is where pt is most counter-intuitive to a developer used to English: i = 1, so `i = 0..1` holds even though n is not 1. A port that reimplemented pt's rule as `n = 0..1` or `n = 1`, or that computed i by rounding rather than truncating, would pass 0 and 0.0 and fail only here."
+    },
+    {
+      "id": "pt-flattening.getresult.pt-pt-catalog-serves-decimal-one-point-five",
+      "requirementIds": [],
+      "fixture": "pt-flattening-cardinal-catalogs",
+      "operation": "getResult",
+      "input": {
+        "key": "I have {{itemCount}} items",
+        "locale": "pt-PT",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "decimal",
+            "value": "1.5"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The pt-PT half of 1.5, the third of the clause's three values: v = 1 defeats pt-PT's `i = 1 and v = 0`. Proves the v operand is computed from the decimal's scale rather than from its numeric magnitude, on the pt-PT side."
+    },
+    {
+      "id": "pt-flattening.getresult.pt-pt-catalog-serves-integer-one",
+      "requirementIds": [],
+      "fixture": "pt-flattening-cardinal-catalogs",
+      "operation": "getResult",
+      "input": {
+        "key": "I have {{itemCount}} items",
+        "locale": "pt-PT",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "1"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED IN REVIEW. Positive branch control at the TRANSLATION level. Integer 1 is the only shape where pt-PT's `one` rule can fire, so this is the single pt-PT getResult case that does not land on the OTHER branch. Without it every pt-PT translation assertion in this family is a negative one and a port that always selected the OTHER translation for pt-PT would pass all of them."
+    },
+    {
+      "id": "pt-flattening.getresult.pt-catalog-serves-integer-two",
+      "requirementIds": [],
+      "fixture": "pt-flattening-cardinal-catalogs",
+      "operation": "getResult",
+      "input": {
+        "key": "I have {{itemCount}} items",
+        "locale": "pt",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED IN REVIEW. Paired with its pt-PT sibling at the same value. At 2 the two locales AGREE on the category, so the only thing that can differ between the two results is which catalog supplied the entry. This is the case that actually exercises catalog separation independently of rule divergence, and it is also the only pt getResult case that does not land on the ONE branch, so a port that always selected ONE for pt fails here."
+    },
+    {
+      "id": "pt-flattening.getresult.pt-pt-catalog-serves-integer-two",
+      "requirementIds": [],
+      "fixture": "pt-flattening-cardinal-catalogs",
+      "operation": "getResult",
+      "input": {
+        "key": "I have {{itemCount}} items",
+        "locale": "pt-PT",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED IN REVIEW. The pt-PT half of the agreeing-category pair. Same category as the pt sibling, different catalog: the emitted translation must carry the 'ptPT|' prefix and resolvedLocale must be pt-PT. A port that merged the two same-language catalogs and served pt's entry would be invisible to every divergence case in this family but is caught here."
+    },
+    {
+      "id": "pt-flattening.classifier.pt-integer-zero",
+      "requirementIds": [],
+      "fixture": "pt-flattening-cardinal-catalogs",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "integer",
+          "value": "0"
+        },
+        "locale": "pt"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Locks the 0 divergence at the public classifier level as well as the translation level. Without the classifier pair, a failure in the getResult pair would not say whether the bug is in rule selection or in catalog merging."
+    },
+    {
+      "id": "pt-flattening.classifier.pt-pt-integer-zero",
+      "requirementIds": [],
+      "fixture": "pt-flattening-cardinal-catalogs",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "integer",
+          "value": "0"
+        },
+        "locale": "pt-PT"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Proves the classifier's locale-candidate ladder finds pt-PT's OWN rule entry rather than falling through to pt. CldrPluralRules.localeCandidates builds [pt-PT, pt] for this tag; a port that keyed rules by primary language only would return pt's answer here."
+    },
+    {
+      "id": "pt-flattening.classifier.pt-decimal-zero-point-zero",
+      "requirementIds": [],
+      "fixture": "pt-flattening-cardinal-catalogs",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "decimal",
+          "value": "0.0"
+        },
+        "locale": "pt"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "NOTE CORRECTED IN REVIEW. The classifier-level 0.0 for pt, the second value the clause enumerates. Honest scope: pt reads only i, so this returns what integer 0 returns and it is confirmatory rather than an independent discriminator on the pt side -- the scale sensitivity of the operands is proven by the 1.0-versus-1 controls, and the trailing-zero rendering by the getResult sibling. It is carried as a tagged decimal, not a JSON number, because a JSON number cannot represent scale at all."
+    },
+    {
+      "id": "pt-flattening.classifier.pt-pt-decimal-zero-point-zero",
+      "requirementIds": [],
+      "fixture": "pt-flattening-cardinal-catalogs",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "decimal",
+          "value": "0.0"
+        },
+        "locale": "pt-PT"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "NOTE CORRECTED IN REVIEW. The pt-PT half of the classifier-level 0.0. The discriminating content of this case is the DIFFERENCE from its pt sibling at the same value: a port that routed pt-PT through pt's rules produces one answer for both."
+    },
+    {
+      "id": "pt-flattening.classifier.pt-decimal-one-point-five",
+      "requirementIds": [],
+      "fixture": "pt-flattening-cardinal-catalogs",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "decimal",
+          "value": "1.5"
+        },
+        "locale": "pt"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "pt at 1.5 exercises `i = 0..1` on a non-integral value: the integer-digit operand i must be the truncated integer part, not the rounded value. A port that computed i by rounding would get 2 here and pick the wrong category, and 1.5 is the only value in this family that catches it."
+    },
+    {
+      "id": "pt-flattening.classifier.pt-pt-decimal-one-point-five",
+      "requirementIds": [],
+      "fixture": "pt-flattening-cardinal-catalogs",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "decimal",
+          "value": "1.5"
+        },
+        "locale": "pt-PT"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "pt-PT at 1.5, completing the 3 values x 2 locales grid at the classifier level."
+    },
+    {
+      "id": "pt-flattening.classifier.pt-pt-integer-one",
+      "requirementIds": [],
+      "fixture": "pt-flattening-cardinal-catalogs",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "integer",
+          "value": "1"
+        },
+        "locale": "pt-PT"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The one value where pt-PT's `one` rule can fire at all. Without a positive case every pt-PT classifier assertion in this family is a negative one and a port that returned a constant category for pt-PT would pass all of them. This is the control that makes the negatives meaningful."
+    },
+    {
+      "id": "pt-flattening.classifier.pt-pt-decimal-one-point-zero",
+      "requirementIds": [],
+      "fixture": "pt-flattening-cardinal-catalogs",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "decimal",
+          "value": "1.0"
+        },
+        "locale": "pt-PT"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Paired with the integer-one control: same numeric value, scale 1 instead of 0, so `v = 0` fails. This isolates the v operand INSIDE pt-PT alone, proving the divergence from pt is not an artifact of how the two catalogs were loaded, and it is the case that genuinely proves a tagged decimal's scale survives the wire."
+    },
+    {
+      "id": "pt-flattening.classifier.pt-decimal-one-point-zero",
+      "requirementIds": [],
+      "fixture": "pt-flattening-cardinal-catalogs",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "decimal",
+          "value": "1.0"
+        },
+        "locale": "pt"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The mirror of the pt-PT 1.0 case: pt's rule never reads v, so 1.0 must classify like 1. A port that added a blanket 'a non-zero scale forces OTHER' shortcut -- a plausible optimization after seeing pt-PT -- breaks pt here."
+    },
+    {
+      "id": "pt-flattening.classifier.pt-br-decimal-one-point-five",
+      "requirementIds": [],
+      "fixture": "pt-flattening-cardinal-catalogs",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "decimal",
+          "value": "1.5"
+        },
+        "locale": "pt-BR"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The inverse flattening error. pt-BR has no rule entry of its own, so its candidate ladder [pt-BR, pt] must land on pt -- never on its loaded SIBLING pt-PT. The fixture deliberately has pt-PT loaded, so a port that let the set of loaded catalogs influence which rule table a tag gets, or that indexed regional rules loosely, hands pt-BR the pt-PT rules and fails here."
+    },
+    {
+      "id": "pt-flattening.classifier.pt-latn-pt-decimal-one-point-five",
+      "requirementIds": [],
+      "fixture": "pt-flattening-cardinal-catalogs",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "decimal",
+          "value": "1.5"
+        },
+        "locale": "pt-Latn-PT"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A tag carrying both a script and a region must still reach pt-PT: CldrPluralRules.localeCandidates emits [pt-Latn-PT, pt-Latn, pt-PT, pt] in that order. A port that stopped at language-plus-script, or that dropped the region once a script was present, would collapse this onto pt -- flattening by a different route than the other cases cover."
+    },
+    {
+      "id": "pt-flattening.supplying-locale.pt-pt-lookup-served-by-pt-uses-pt-rules-at-integer-zero",
+      "requirementIds": [],
+      "fixture": "pt-flattening-supplying-locale",
+      "operation": "getResult",
+      "input": {
+        "key": "I have {{itemCount}} items",
+        "locale": "pt-PT",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED IN REVIEW. The boundary of the prohibition, at the first of the clause's three values. pt-PT is loaded but lacks the key, so pt supplies it and DefaultStrings.getResult passes candidateLocale into getInternal: the entry is evaluated under pt, the SUPPLYING locale, not under the pt-PT lookup locale. Pins lookupLocale pt-PT, resolvedLocale pt, attemptedLocales [pt-PT, pt] and isFallback true alongside the chosen category."
+    },
+    {
+      "id": "pt-flattening.supplying-locale.pt-pt-lookup-served-by-pt-uses-pt-rules-at-decimal-zero-point-zero",
+      "requirementIds": [],
+      "fixture": "pt-flattening-supplying-locale",
+      "operation": "getResult",
+      "input": {
+        "key": "I have {{itemCount}} items",
+        "locale": "pt-PT",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "decimal",
+            "value": "0.0"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same boundary at the second of the clause's three values. Three values rather than one so the supplying-locale rule cannot be satisfied by coincidence at a single point, and so the trailing-zero rendering is pinned on the fallback path too."
+    },
+    {
+      "id": "pt-flattening.supplying-locale.pt-pt-lookup-served-by-pt-uses-pt-rules-at-decimal-one-point-five",
+      "requirementIds": [],
+      "fixture": "pt-flattening-supplying-locale",
+      "operation": "getResult",
+      "input": {
+        "key": "I have {{itemCount}} items",
+        "locale": "pt-PT",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "decimal",
+            "value": "1.5"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same boundary at the third of the clause's three values. Without this trio a port could over-correct the anti-flattening rule into 'always evaluate under the requested locale' and silently change every fallback translation in the library; that over-correction flips the category at all three of these values, so it cannot hide."
+    },
+    {
+      "id": "pt-flattening.ordinal.pt-at-integer-one",
+      "requirementIds": [],
+      "fixture": "pt-flattening-cardinal-catalogs",
+      "operation": "ordinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "integer",
+          "value": "1"
+        },
+        "locale": "pt"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED IN REVIEW (was skipped). The pt baseline for the ordinal axis, so the pt-PT sibling asserts an EQUALITY rather than a bare value. GeneratedCldrPluralData carries an ordinal LocaleRules(\"pt\") and no ordinal entry for pt-PT."
+    },
+    {
+      "id": "pt-flattening.ordinal.pt-pt-inherits-pt-at-integer-one",
+      "requirementIds": [],
+      "fixture": "pt-flattening-cardinal-catalogs",
+      "operation": "ordinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "integer",
+          "value": "1"
+        },
+        "locale": "pt-PT"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED IN REVIEW (was skipped). The prohibition is CARDINAL-ONLY, and this case says so. pt-PT has exactly one LocaleRules(\"pt-PT\") in the whole generated table -- the cardinal one -- so the ordinal ladder [pt-PT, pt] must legitimately fall through to pt. A port that special-cased pt-PT across all axes, or that built one per-locale rule bundle from the cardinal table and then looked ordinals up in it, throws or diverges here. Authoring this as a case rather than a skip costs nothing because the oracle emits the value; nothing is fabricated."
+    },
+    {
+      "id": "pt-flattening.range.pt-one-to-one",
+      "requirementIds": [],
+      "fixture": "pt-flattening-cardinal-catalogs",
+      "operation": "cardinalityForRange",
+      "input": {
+        "start": {
+          "$lokalized": "language-form",
+          "axis": "cardinality",
+          "name": "CARDINALITY_ONE"
+        },
+        "end": {
+          "$lokalized": "language-form",
+          "axis": "cardinality",
+          "name": "CARDINALITY_ONE"
+        },
+        "locale": "pt"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED IN REVIEW (was skipped). The pt baseline for the cardinal-range axis. (one, one) is chosen over (one, other) deliberately: pt's range table maps it to ONE, so a port that returned a constant OTHER for every range would fail, which the (one, other) row would not catch."
+    },
+    {
+      "id": "pt-flattening.range.pt-pt-inherits-pt-one-to-one",
+      "requirementIds": [],
+      "fixture": "pt-flattening-cardinal-catalogs",
+      "operation": "cardinalityForRange",
+      "input": {
+        "start": {
+          "$lokalized": "language-form",
+          "axis": "cardinality",
+          "name": "CARDINALITY_ONE"
+        },
+        "end": {
+          "$lokalized": "language-form",
+          "axis": "cardinality",
+          "name": "CARDINALITY_ONE"
+        },
+        "locale": "pt-PT"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED IN REVIEW (was skipped). The second half of the cardinal-only boundary. GeneratedCldrPluralData contains zero LocaleRanges(\"pt-PT\"), so pt-PT's range ladder must reach LocaleRanges(\"pt\"). A port that keyed ranges by exact locale and refused to fall through for a tag it knew had its own cardinal table would throw here."
+    }
+  ]
+}

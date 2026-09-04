@@ -1,0 +1,13 @@
+{
+  "id": "owed-construct-base",
+  "description": "Control for the construction-refusal family: an ordinary fixture that MUST construct, so a refusal row is read against an accepting one rather than in isolation.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Greeting": {
+        "translation": "Hello"
+      }
+    }
+  }
+}

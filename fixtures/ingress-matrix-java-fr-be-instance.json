@@ -1,0 +1,20 @@
+{
+  "id": "ingress-matrix-java-fr-be-instance",
+  "description": "Seed row 2 catalog with the request tag fr-BE as the INSTANCE locale. As with every -instance fixture here, the harness realizes an instance locale as a constant localeSupplier, so this and ingress-matrix-java-fr-be-locale-supplier-constant drive the same DefaultStrings branch; the pair records that equivalence rather than testing a distinct Java code path.",
+  "fallbackLocale": "fr-FR",
+  "instanceLocale": "fr-BE",
+  "tiebreakers": {
+    "fr": [
+      "fr-FR",
+      "fr-CA"
+    ]
+  },
+  "files": {
+    "fr-FR": {
+      "Checkout.Title": "Paiement (FR)"
+    },
+    "fr-CA": {
+      "Checkout.Title": "Paiement (CA)"
+    }
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "id": "resolver-locale-own-catalog",
+  "description": "The control fixture for the family. en and fr each own a complete Article; de is loaded but carries only a marker, so a de request is served by the en fallback. The by-locale resolver maps every loaded locale to a DISTINCT phonetic and both Article catalogs carry every branch, so the rendered text names the locale the callback was handed instead of throwing on a missing branch. Three loaded locales with three distinct primary language codes, so tiebreakers are not required.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "phoneticResolver": {
+    "behavior": "by-locale",
+    "mapping": {
+      "en": "PHONETIC_VOWEL",
+      "fr": "PHONETIC_CONSONANT",
+      "de": "PHONETIC_H_SILENT"
+    },
+    "default": "PHONETIC_OTHER"
+  },
+  "files": {
+    "en": {
+      "Locale.Marker": "en",
+      "Article": {
+        "translation": "{{article}}",
+        "placeholders": {
+          "article": {
+            "value": "nounTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "got:en",
+              "PHONETIC_CONSONANT": "got:fr",
+              "PHONETIC_H_SILENT": "got:de",
+              "PHONETIC_OTHER": "got:unmapped"
+            }
+          }
+        }
+      }
+    },
+    "fr": {
+      "Locale.Marker": "fr",
+      "Article": {
+        "translation": "{{article}}",
+        "placeholders": {
+          "article": {
+            "value": "nounTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "got:en",
+              "PHONETIC_CONSONANT": "got:fr",
+              "PHONETIC_H_SILENT": "got:de",
+              "PHONETIC_OTHER": "got:unmapped"
+            }
+          }
+        }
+      }
+    },
+    "de": {
+      "Locale.Marker": "de"
+    }
+  }
+}

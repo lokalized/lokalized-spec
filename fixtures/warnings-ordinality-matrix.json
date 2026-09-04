@@ -1,0 +1,22 @@
+{
+  "id": "warnings-ordinality-matrix",
+  "description": "One catalog whose only ordinality-driven placeholder supplies ORDINALITY_ONE and ORDINALITY_OTHER. Parsed under many locales; a language's ordinal category set differs from its cardinal one, so this separates the two CLDR tables.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Finish": {
+        "translation": "You came in {{place}}",
+        "placeholders": {
+          "place": {
+            "value": "position",
+            "translations": {
+              "ORDINALITY_ONE": "1st",
+              "ORDINALITY_OTHER": "th"
+            }
+          }
+        }
+      }
+    }
+  }
+}

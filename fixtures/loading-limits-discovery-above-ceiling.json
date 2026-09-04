@@ -1,0 +1,15 @@
+{
+  "id": "loading-limits-discovery-above-ceiling",
+  "description": "A single-file directory whose loading options request maximumDiscoveryEntries 1000001, one above the documented ceiling.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumDiscoveryEntries": 1000001
+  },
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  }
+}

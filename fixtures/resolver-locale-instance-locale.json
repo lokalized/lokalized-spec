@@ -1,0 +1,55 @@
+{
+  "id": "resolver-locale-instance-locale",
+  "description": "The same rule reached through the AMBIENT locale ingress instead of a per-call one. The instance locale is de, which is loaded but carries no Article, so a call that passes no locale at all is still served by the en fallback and the resolver must be handed en. fr owns a complete Article so a per-call locale on the same instance can be contrasted against the ambient one. Three distinct primary language codes, so tiebreakers are not required.",
+  "fallbackLocale": "en",
+  "instanceLocale": "de",
+  "tiebreakers": null,
+  "phoneticResolver": {
+    "behavior": "by-locale",
+    "mapping": {
+      "en": "PHONETIC_VOWEL",
+      "fr": "PHONETIC_CONSONANT",
+      "de": "PHONETIC_H_SILENT"
+    },
+    "default": "PHONETIC_OTHER"
+  },
+  "files": {
+    "en": {
+      "Locale.Marker": "en",
+      "Article": {
+        "translation": "{{article}}",
+        "placeholders": {
+          "article": {
+            "value": "nounTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "got:en",
+              "PHONETIC_CONSONANT": "got:fr",
+              "PHONETIC_H_SILENT": "got:de",
+              "PHONETIC_OTHER": "got:unmapped"
+            }
+          }
+        }
+      }
+    },
+    "fr": {
+      "Locale.Marker": "fr",
+      "Article": {
+        "translation": "{{article}}",
+        "placeholders": {
+          "article": {
+            "value": "nounTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "got:en",
+              "PHONETIC_CONSONANT": "got:fr",
+              "PHONETIC_H_SILENT": "got:de",
+              "PHONETIC_OTHER": "got:unmapped"
+            }
+          }
+        }
+      }
+    },
+    "de": {
+      "Locale.Marker": "de"
+    }
+  }
+}

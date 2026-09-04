@@ -1,0 +1,15 @@
+{
+  "id": "options-smoke-bidi",
+  "description": "Parallel Arabic and English templates interpolating a caller value, so bidi isolation is observable as added directional isolates. shouldApplyBidiIsolation takes the EVALUATION locale, which the donor rule makes the supplying locale.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "ar": {
+      "Greeting": "مرحبا {{name}}"
+    },
+    "en": {
+      "Greeting": "Hello {{name}}",
+      "OnlyEnglish": "English only: {{name}}"
+    }
+  }
+}

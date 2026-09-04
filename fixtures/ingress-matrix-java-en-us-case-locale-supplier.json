@@ -1,0 +1,15 @@
+{
+  "id": "ingress-matrix-java-en-us-case-locale-supplier",
+  "description": "Seed row 5's lone loaded en with EN-us returned by a constant localeSupplier.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "localeSupplier": {
+    "behavior": "constant",
+    "locale": "EN-us"
+  },
+  "files": {
+    "en": {
+      "Checkout.Title": "Checkout"
+    }
+  }
+}

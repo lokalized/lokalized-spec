@@ -1,0 +1,12 @@
+{
+  "id": "classpath-resources-alt",
+  "description": "A second, separate classpath package holding one file with its own marker key Only.Alt. Exists so a case anchored on classpath-resources-catalog can name a resource in a DIFFERENT package, proving explicit resource paths resolve from the classpath root rather than relative to the package under test. Verified loadable on its own (single en locale), so it is safe as a non-loadOnly fixture even though no case uses it as its own subject.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Common.Greeting": "Hi",
+      "Only.Alt": "alt"
+    }
+  }
+}

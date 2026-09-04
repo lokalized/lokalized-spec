@@ -1,0 +1,53 @@
+{
+  "id": "callback-interaction-null-resolver",
+  "description": "A resolver that returns null rather than throwing, so the failing exception is manufactured by the library on the callback's behalf at DefaultStrings.java:1169-1171. Both en catalogs use a phonetic placeholder over the same caller value but under DIFFERENT generated-placeholder names, so the two candidates fail with the same exception TYPE and the same inner message, and differ only in their contextualized wrapper -- which makes first-cause retention answerable by message alone. Two loaded locales share 'en', so tiebreakers is mandatory.",
+  "fallbackLocale": "fr",
+  "tiebreakers": {
+    "en": [
+      "en-US",
+      "en"
+    ]
+  },
+  "translationFallbackPolicy": "any-failure",
+  "phoneticResolver": {
+    "behavior": "return-null"
+  },
+  "files": {
+    "en-US": {
+      "Locale.Marker": "en-US",
+      "Article": {
+        "translation": "{{article}}",
+        "placeholders": {
+          "article": {
+            "value": "nounTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "an (en-US)",
+              "PHONETIC_CONSONANT": "a (en-US)"
+            }
+          }
+        }
+      }
+    },
+    "en": {
+      "Locale.Marker": "en",
+      "Article": {
+        "translation": "{{determiner}}",
+        "placeholders": {
+          "determiner": {
+            "value": "nounTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "an (en)",
+              "PHONETIC_CONSONANT": "a (en)"
+            }
+          }
+        }
+      }
+    },
+    "fr": {
+      "Locale.Marker": "fr",
+      "Unrelated": "fr unrelated"
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

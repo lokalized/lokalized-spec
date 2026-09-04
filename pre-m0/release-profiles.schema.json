@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lokalized.org/schemas/pre-m0/release-profiles.schema.json",
+  "title": "Lokalized JS release-profile registry",
+  "description": "Structural schema only; pre-m0/validate-artifacts.mjs enforces plan bindings, claim uniqueness, and approval-state invariants.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["formatVersion", "status", "profiles"],
+  "properties": {
+    "formatVersion": { "const": 1 },
+    "status": { "enum": ["draft-unapproved", "approved"] },
+    "profiles": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/profile" }
+    }
+  },
+  "$defs": {
+    "name": { "type": "string", "minLength": 1, "pattern": ".*\\S.*" },
+    "hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "sourceAnchor", "statement"],
+      "properties": {
+        "id": { "$ref": "#/$defs/name" },
+        "sourceAnchor": { "$ref": "#/$defs/name" },
+        "statement": { "$ref": "#/$defs/name" }
+      }
+    },
+    "profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "status", "sourcePlanSha256", "claims", "incompleteReasons"],
+      "properties": {
+        "id": { "$ref": "#/$defs/name" },
+        "status": { "enum": ["incomplete", "approved"] },
+        "sourcePlanSha256": { "$ref": "#/$defs/hash" },
+        "claims": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/claim" }
+        },
+        "incompleteReasons": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/name" }
+        }
+      }
+    }
+  }
+}

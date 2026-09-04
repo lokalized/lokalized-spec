@@ -1,0 +1,184 @@
+{
+  "id": "malformed-structure-language-form-translations",
+  "description": "Violations inside a language-form placeholder definition: missing value/range, missing translations, wrongly typed translations, non-language-form translation keys, non-string translation values, mixed axes, explicit nulls for two different members, value plus range, a range with non-cardinality forms, an empty translations table, and a value that is mistyped or is not a valid identifier.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": {
+        "translation": "I read {{books}}",
+        "placeholders": {
+          "books": {
+            "translations": {
+              "CARDINALITY_ONE": "book",
+              "CARDINALITY_OTHER": "books"
+            }
+          }
+        }
+      }
+    },
+    "fr": {
+      "Key.A": {
+        "translation": "I read {{books}}",
+        "placeholders": {
+          "books": {
+            "value": "count"
+          }
+        }
+      }
+    },
+    "de": {
+      "Key.A": {
+        "translation": "I read {{books}}",
+        "placeholders": {
+          "books": {
+            "value": "count",
+            "translations": "book"
+          }
+        }
+      }
+    },
+    "es": {
+      "Key.A": {
+        "translation": "I read {{books}}",
+        "placeholders": {
+          "books": {
+            "value": "count",
+            "translations": {
+              "ONE": "book",
+              "OTHER": "books"
+            }
+          }
+        }
+      }
+    },
+    "it": {
+      "Key.A": {
+        "translation": "I read {{books}}",
+        "placeholders": {
+          "books": {
+            "value": "count",
+            "translations": {
+              "CARDINALITY_ONE": 1,
+              "CARDINALITY_OTHER": "books"
+            }
+          }
+        }
+      }
+    },
+    "nl": {
+      "Key.A": {
+        "translation": "I read {{books}}",
+        "placeholders": {
+          "books": {
+            "value": "count",
+            "translations": {
+              "CARDINALITY_ONE": "book",
+              "GENDER_MASCULINE": "livre"
+            }
+          }
+        }
+      }
+    },
+    "pt": {
+      "Key.A": {
+        "translation": "I read {{books}}",
+        "placeholders": {
+          "books": {
+            "value": "count",
+            "translations": null
+          }
+        }
+      }
+    },
+    "cs": {
+      "Key.A": {
+        "translation": "I read {{books}}",
+        "placeholders": {
+          "books": {
+            "value": null,
+            "translations": {
+              "CARDINALITY_ONE": "book",
+              "CARDINALITY_OTHER": "books"
+            }
+          }
+        }
+      }
+    },
+    "ru": {
+      "Key.A": {
+        "translation": "I read {{books}}",
+        "placeholders": {
+          "books": {
+            "value": "count",
+            "range": {
+              "start": "lo",
+              "end": "hi"
+            },
+            "translations": {
+              "CARDINALITY_OTHER": "books"
+            }
+          }
+        }
+      }
+    },
+    "pl": {
+      "Key.A": {
+        "translation": "I read {{books}}",
+        "placeholders": {
+          "books": {
+            "range": {
+              "start": "lo",
+              "end": "hi"
+            },
+            "translations": {
+              "GENDER_MASCULINE": "livres"
+            }
+          }
+        }
+      }
+    },
+    "sv": {
+      "Key.A": {
+        "translation": "I read {{books}}",
+        "placeholders": {
+          "books": {
+            "value": "count",
+            "translations": {}
+          }
+        }
+      }
+    },
+    "da": {
+      "Key.A": {
+        "translation": "I read {{books}}",
+        "placeholders": {
+          "books": {
+            "value": 42,
+            "translations": {
+              "CARDINALITY_ONE": "book",
+              "CARDINALITY_OTHER": "books"
+            }
+          }
+        }
+      }
+    },
+    "fi": {
+      "Key.A": {
+        "translation": "I read {{books}}",
+        "placeholders": {
+          "books": {
+            "value": "1count",
+            "translations": {
+              "CARDINALITY_ONE": "book",
+              "CARDINALITY_OTHER": "books"
+            }
+          }
+        }
+      }
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

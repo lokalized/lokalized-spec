@@ -1,0 +1,24 @@
+{
+  "id": "dedup-and-candidates-equivalent-su-first",
+  "description": "Byte-identical files to dedup-and-candidates-equivalent-am-first with the tiebreaker list REVERSED to hy-SU before hy-AM. Everything a port could accidentally key on - file contents, load order, tag alphabetical order, canonical form - is unchanged, so any difference in the two fixtures' observations is attributable to the tiebreaker list alone. The tiebreakers govern lookupMatchByLikelySubtag (DefaultStrings.java:2586) and the tiebreaker candidates appended at DefaultStrings.java:2482-2488, so both the selected catalog and the deduped attempted order flip.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "hy": [
+      "hy-SU",
+      "hy-AM"
+    ]
+  },
+  "files": {
+    "hy-AM": {
+      "Pair.OnlyInAm": "hy-AM: only here",
+      "Pair.InBoth": "hy-AM: in both"
+    },
+    "hy-SU": {
+      "Pair.OnlyInSu": "hy-SU: only here",
+      "Pair.InBoth": "hy-SU: in both"
+    },
+    "en": {
+      "Pair.OnlyInEn": "en: only here"
+    }
+  }
+}

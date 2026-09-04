@@ -1,0 +1,46 @@
+{
+  "id": "phonetic-resolver-expression",
+  "description": "The OTHER phonetic dispatch: ExpressionEvaluator#phoneticFromOperand, reached from alternative expressions rather than from a language-form placeholder. Two alternatives compare the same variable against two different PHONETIC_* constants, and a second key compares two variables, so which operands reach the resolver and how often is observable. The mapping includes an entry for the empty string so an empty operand answers a constant that matches neither alternative.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "phoneticResolver": {
+    "behavior": "by-term",
+    "mapping": {
+      "apple": "PHONETIC_VOWEL",
+      "book": "PHONETIC_CONSONANT",
+      "": "PHONETIC_SOLAR"
+    },
+    "default": "PHONETIC_OTHER"
+  },
+  "files": {
+    "en": {
+      "Expr.Two": {
+        "translation": "no-alternative",
+        "alternatives": [
+          {
+            "noun == PHONETIC_VOWEL": {
+              "translation": "alt-vowel"
+            }
+          },
+          {
+            "noun == PHONETIC_CONSONANT": {
+              "translation": "alt-consonant"
+            }
+          }
+        ]
+      },
+      "Expr.Pair": {
+        "translation": "no-alternative",
+        "alternatives": [
+          {
+            "left == right": {
+              "translation": "operands-agree"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

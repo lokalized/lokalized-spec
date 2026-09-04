@@ -1,0 +1,22 @@
+{
+  "id": "owed-ds-likely-subtag-tiebreakerless-first",
+  "description": "The partner of owed-ds-likely-subtag-tiebreakerless-fallback with the fallback locale outside the likely-subtag candidate set, so the same request must resolve to the first candidate.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "nan": [
+      "nan-CN",
+      "nan-MY"
+    ]
+  },
+  "files": {
+    "en": {
+      "Checkout.Title": "en"
+    },
+    "nan-CN": {
+      "Checkout.Title": "nan-CN"
+    },
+    "nan-MY": {
+      "Checkout.Title": "nan-MY"
+    }
+  }
+}

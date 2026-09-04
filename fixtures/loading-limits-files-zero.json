@@ -1,0 +1,15 @@
+{
+  "id": "loading-limits-files-zero",
+  "description": "A single-file directory whose loading options request maximumLocalizedStringsFiles 0. Also the fixture behind the parse-path zero-rejection case.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumLocalizedStringsFiles": 0
+  },
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  }
+}

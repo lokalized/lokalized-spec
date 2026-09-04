@@ -1,0 +1,15 @@
+{
+  "id": "classpath-filenames-dot-inside-stem",
+  "description": "A valid en catalog plus a file named 'en.GB' — a dot used where a hyphen belongs, with no extension at all. LANGUAGE_TAG_PATTERN (LocalizedStringLoader.java:189) admits only hyphen-separated alphanumeric subtags, so the dot is fatal to recognition but not to the load.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "rawFiles": {
+    "en.GB": "{\"Key.enGB\":\"enGB\"}"
+  }
+}

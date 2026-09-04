@@ -1,0 +1,1611 @@
+{
+  "formatVersion": 1,
+  "family": "phonetic-resolver",
+  "description": "Plan v7 section 8.3 fixture family 'phonetic-resolver'. Inputs only; the oracle emits expected.",
+  "skipped": [
+    {
+      "what": "localeSupplier / localeMatchSupplier / localeMatchResolver as the ingress for a phonetic lookup (for example, proving the resolver is handed the locale a supplier chose rather than one passed per call).",
+      "why": "Negotiation ingress is unsupported by the vector format and the oracle: VectorOracle.buildStrings installs a fixed localeSupplier returning the fixture's instanceLocale, and there is no case-level hook for a supplier or match resolver. The locale-argument clause is covered instead through the donor rule, which is expressible: phonetic-resolver.locale.region-request-served-by-language-catalog and phonetic-resolver.expression.donor-locale."
+    },
+    {
+      "what": "Classpath loading of a phonetic strings file (LocalizedStringLoader.loadFromClasspath).",
+      "why": "The oracle only materializes fixtures on the filesystem and calls loadFromFilesystem/parse; classpath discovery, including its INVALID_CLASSPATH_LOCALE_FILENAME warning, is out of scope for the corpus as built."
+    },
+    {
+      "what": "JS-side delivery of phonetic resolution: SSR rendering, Fetch planning for a catalog whose entries are phonetic, and digest capability over resolver-bearing instances.",
+      "why": "These are port-side concerns with no Java oracle to record; plan v7 lists them as unsupported for behavioral vectors."
+    },
+    {
+      "what": "A per-call phoneticResolver override, parallel to the per-call translationFallbackPolicy and translationFailureHandler.",
+      "why": "No such API exists. Verified in TranslationOptions and in VectorOracle.optionsFrom, which accepts only locale, translationFailureHandler, translationFallbackPolicy and bidiIsolation (DefaultStrings.java:683-685): the resolver is instance-level only, so every locale-sensitivity case in this family varies the SUPPLYING locale rather than the callback."
+    },
+    {
+      "what": "A CharSequence value that is not a String (StringBuilder, CharBuffer), which the dispatch accepts via `value instanceof CharSequence` and converts with CharSequenceUtils.toString.",
+      "why": "The vector format has no tagged record for a mutable or non-String CharSequence; VectorOracle.decodeValue produces String, Boolean, the numeric types, PluralOperands or a language-form enum. The CharSequence arm is still exercised through Strings, and the length-limit cases pin the conversion step that only exists because the arm is CharSequence-typed rather than String-typed."
+    },
+    {
+      "what": "Concurrent invocation of one resolver from several threads, which PhoneticResolver's @ThreadSafe contract requires implementations to tolerate.",
+      "why": "The oracle runs cases sequentially and clears the PHONETIC_CALLS channel between them, so a concurrency observation would be neither recordable nor reproducible."
+    },
+    {
+      "what": "A runtime case for the DefaultStrings guard 'Phonetic translations cannot use ranges' (DefaultStrings.java:1150-1151).",
+      "why": "Unreachable, and doubly so. The loader rejects a range placeholder that lacks cardinality branches first ('range-based translations only support Cardinality'), and even if it did not, the axis-agnostic runtime guard at DefaultStrings.java:928-930 ('Range-based translations are only supported for Cardinality') fires before the phonetic block is entered. Executed and confirmed. What the library actually does is authored instead, as phonetic-resolver.range.load-is-rejected and .range.parse-is-rejected."
+    },
+    {
+      "what": "A case for the ExpressionEvaluator branch 'No PhoneticResolver was provided to resolve placeholder' (ExpressionEvaluator.java:1744-1746).",
+      "why": "Unreachable through Strings: DefaultStrings always installs DEFAULT_PHONETIC_RESOLVER, so the evaluator's field is never null and the fail-fast default's 'No PhoneticResolver was configured' message surfaces instead. Executed and confirmed; pinned by phonetic-resolver.absent-resolver.expression-raw-term."
+    },
+    {
+      "what": "An incomplete-translation warning for a phonetic placeholder, analogous to INCOMPLETE_CARDINALITY_TRANSLATIONS.",
+      "why": "No such warning type exists. LocalizedStringWarning.Type is limited to INCOMPLETE_CARDINALITY_TRANSLATIONS, INCOMPLETE_ORDINALITY_TRANSLATIONS and INVALID_CLASSPATH_LOCALE_FILENAME, so a phonetic definition declaring only some of the sixteen constants loads silently -- which is exactly why the missing-branch cases have to observe the RUNTIME IllegalStateException instead."
+    },
+    {
+      "what": "Two raw CharSequence operands compared on the phonetic axis in an expression (ExpressionEvaluator.java:641-658).",
+      "why": "Owned by the expressions family, which already authors the raw-string non-equality rule for both '==' and '!=' against fixture expressions-operand-typing. Re-authoring it here would duplicate that pair rather than say anything new about the resolver; phonetic-resolver.expression.raw-then-tagged-operands states the positive complement (a raw side compares only against a resolved or tagged one)."
+    },
+    {
+      "what": "The (axis, name, renderName) tuple table for the sixteen Phonetic constants via the languageForms operation.",
+      "why": "Owned by the language-forms family, which emits the whole 61-row table in one case. This family covers the same sixteen constants behaviorally instead -- each one reaching its own branch as a resolver answer, with the JAVA enum name visible in resolverCalls.returned."
+    },
+    {
+      "what": "Bidi isolation applied to text a phonetic branch selected, and phonetic resolution inside an RTL donor catalog.",
+      "why": "Owned by the bidi-isolation family, which already varies donor direction; adding it here would duplicate that matrix rather than discriminate anything about the resolver."
+    },
+    {
+      "what": "A plain raw-term control and a plain tagged-value control on an instance with a resolver installed (the cases originally authored as phonetic-resolver.input.raw-string and phonetic-resolver.input.tagged-phonetic).",
+      "why": "DROPPED as exact duplicates of callback-smoke.resolver.raw-term-is-resolved and callback-smoke.resolver.tagged-consonant-bypasses-resolver, which use the same first-letter-vowel resolver, the same 'apple' term and the same two-branch definition. Every remaining case in phonetic-resolver-input-types carries its own distinct diagnostic or channel, so the fixture needs no in-family baseline."
+    }
+  ],
+  "cases": [
+    {
+      "id": "phonetic-resolver.constants.vowel",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-sixteen-onsets",
+      "operation": "getResult",
+      "input": {
+        "key": "Onset",
+        "locale": "en",
+        "placeholders": {
+          "term": "termvowel"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "PHONETIC_VOWEL as a resolver return value reaching its own branch. All sixteen branch texts are distinct, so a port that collapsed rarer constants onto a default, or that mapped the file-format name onto the wrong Java constant, renders a different string. Executed: '[vowel]', resolverCalls returned=VOWEL."
+    },
+    {
+      "id": "phonetic-resolver.constants.consonant",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-sixteen-onsets",
+      "operation": "getResult",
+      "input": {
+        "key": "Onset",
+        "locale": "en",
+        "placeholders": {
+          "term": "termconsonant"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "PHONETIC_CONSONANT reaching its own branch out of sixteen. Executed: '[consonant]', returned=CONSONANT."
+    },
+    {
+      "id": "phonetic-resolver.constants.h-silent",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-sixteen-onsets",
+      "operation": "getResult",
+      "input": {
+        "key": "Onset",
+        "locale": "en",
+        "placeholders": {
+          "term": "termhsilent"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "PHONETIC_H_SILENT reaching its own branch. The underscore-bearing names are where a port deriving Java names from file-format names by prefix-stripping is most likely to slip; executed resolverCalls records returned=H_SILENT, not PHONETIC_H_SILENT."
+    },
+    {
+      "id": "phonetic-resolver.constants.h-aspirated",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-sixteen-onsets",
+      "operation": "getResult",
+      "input": {
+        "key": "Onset",
+        "locale": "en",
+        "placeholders": {
+          "term": "termhaspirated"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "PHONETIC_H_ASPIRATED reaching its own branch, and the near-twin of H_SILENT so the two cannot be conflated. Executed: '[h-aspirated]', returned=H_ASPIRATED."
+    },
+    {
+      "id": "phonetic-resolver.constants.s-impure",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-sixteen-onsets",
+      "operation": "getResult",
+      "input": {
+        "key": "Onset",
+        "locale": "en",
+        "placeholders": {
+          "term": "termsimpure"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "PHONETIC_S_IMPURE reaching its own branch. The file-format name carries an underscore inside the word (PHONETIC_S_IMPURE for Java S_IMPURE), exactly the shape that breaks naive prefix arithmetic. Executed: returned=S_IMPURE."
+    },
+    {
+      "id": "phonetic-resolver.constants.z",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-sixteen-onsets",
+      "operation": "getResult",
+      "input": {
+        "key": "Onset",
+        "locale": "en",
+        "placeholders": {
+          "term": "termz"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "PHONETIC_Z, the single-letter constant, reaching its own branch. Executed: '[z]', returned=Z."
+    },
+    {
+      "id": "phonetic-resolver.constants.gn",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-sixteen-onsets",
+      "operation": "getResult",
+      "input": {
+        "key": "Onset",
+        "locale": "en",
+        "placeholders": {
+          "term": "termgn"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "PHONETIC_GN reaching its own branch. Executed: '[gn]', returned=GN."
+    },
+    {
+      "id": "phonetic-resolver.constants.ps",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-sixteen-onsets",
+      "operation": "getResult",
+      "input": {
+        "key": "Onset",
+        "locale": "en",
+        "placeholders": {
+          "term": "termps"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "PHONETIC_PS reaching its own branch; distinguished from PN by branch text alone. Executed: '[ps]', returned=PS."
+    },
+    {
+      "id": "phonetic-resolver.constants.pn",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-sixteen-onsets",
+      "operation": "getResult",
+      "input": {
+        "key": "Onset",
+        "locale": "en",
+        "placeholders": {
+          "term": "termpn"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "PHONETIC_PN reaching its own branch; the twin of PS. Executed: '[pn]', returned=PN."
+    },
+    {
+      "id": "phonetic-resolver.constants.x",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-sixteen-onsets",
+      "operation": "getResult",
+      "input": {
+        "key": "Onset",
+        "locale": "en",
+        "placeholders": {
+          "term": "termx"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "PHONETIC_X reaching its own branch, the other single-letter constant. Executed: '[x]', returned=X."
+    },
+    {
+      "id": "phonetic-resolver.constants.glide-y",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-sixteen-onsets",
+      "operation": "getResult",
+      "input": {
+        "key": "Onset",
+        "locale": "en",
+        "placeholders": {
+          "term": "termglidey"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "PHONETIC_GLIDE_Y reaching its own branch. Executed: '[glide-y]', returned=GLIDE_Y."
+    },
+    {
+      "id": "phonetic-resolver.constants.glide-w",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-sixteen-onsets",
+      "operation": "getResult",
+      "input": {
+        "key": "Onset",
+        "locale": "en",
+        "placeholders": {
+          "term": "termglidew"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "PHONETIC_GLIDE_W reaching its own branch; the twin of GLIDE_Y. Executed: '[glide-w]', returned=GLIDE_W."
+    },
+    {
+      "id": "phonetic-resolver.constants.stressed-a",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-sixteen-onsets",
+      "operation": "getResult",
+      "input": {
+        "key": "Onset",
+        "locale": "en",
+        "placeholders": {
+          "term": "termstresseda"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "PHONETIC_STRESSED_A reaching its own branch. Executed: '[stressed-a]', returned=STRESSED_A."
+    },
+    {
+      "id": "phonetic-resolver.constants.solar",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-sixteen-onsets",
+      "operation": "getResult",
+      "input": {
+        "key": "Onset",
+        "locale": "en",
+        "placeholders": {
+          "term": "termsolar"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "PHONETIC_SOLAR reaching its own branch. Executed: '[solar]', returned=SOLAR."
+    },
+    {
+      "id": "phonetic-resolver.constants.lunar",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-sixteen-onsets",
+      "operation": "getResult",
+      "input": {
+        "key": "Onset",
+        "locale": "en",
+        "placeholders": {
+          "term": "termlunar"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "PHONETIC_LUNAR reaching its own branch; the twin of SOLAR. Executed: '[lunar]', returned=LUNAR."
+    },
+    {
+      "id": "phonetic-resolver.constants.other",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-sixteen-onsets",
+      "operation": "getResult",
+      "input": {
+        "key": "Onset",
+        "locale": "en",
+        "placeholders": {
+          "term": "termother"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "PHONETIC_OTHER reaching its own branch as a RESOLVER ANSWER rather than as a fallback: nothing in the library treats OTHER specially on this axis, unlike CARDINALITY_OTHER, and this case is what pins that. Executed: '[other]', returned=OTHER."
+    },
+    {
+      "id": "phonetic-resolver.constants.unmapped-term-returns-null",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-sixteen-onsets",
+      "operation": "getResult",
+      "input": {
+        "key": "Onset",
+        "locale": "en",
+        "placeholders": {
+          "term": "notinthemapping"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "This by-term resolver has NO default, so an unmapped term makes it return null. Executed: IllegalArgumentException \"PhoneticResolver returned null for placeholder 'term' in key 'Onset'\" as the RESOLUTION_FAILURE cause, and resolverCalls records the call with returned=null. A port that treated a null answer as 'no selection' and fell through would translate instead of failing."
+    },
+    {
+      "id": "phonetic-resolver.by-term.exact-hit",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-by-term-default",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "term": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The control for the default-bearing resolver: a term present in the mapping takes its mapped constant, not the default. Executed: '[vowel]'."
+    },
+    {
+      "id": "phonetic-resolver.by-term.case-differs-from-mapping-key",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-by-term-default",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "term": "Apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The mapping holds 'apple'; the term passed is 'Apple'. Lookup is exact, so the DEFAULT is reached and the text differs from the exact-hit case. Executed: '[other]'. A port whose resolver-side map folded case or trimmed would render the vowel branch."
+    },
+    {
+      "id": "phonetic-resolver.by-term.non-ascii-mapping-key",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-by-term-default",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "term": "Ärger"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A non-ASCII mapping key hit exactly. The term is the PRECOMPOSED form U+00C4 R G E R, matching the fixture key byte for byte. Executed: '[stressed-a]'. A port that lowercased or transliterated on the way to the callback would miss the entry."
+    },
+    {
+      "id": "phonetic-resolver.by-term.non-ascii-decomposed-misses",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-by-term-default",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "term": "Ärger"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "NEW, and the normalization trap on the MAPPING-KEY side. The same word written DECOMPOSED as U+0041 U+0308 R G E R against a fixture key spelled with precomposed U+00C4: the lookup misses and the default is reached. Executed: '[other]' here versus '[stressed-a]' for the precomposed twin. A port that NFC-normalized placeholder text before handing it to the resolver renders the same string for both and fails exactly one."
+    },
+    {
+      "id": "phonetic-resolver.by-term.unmapped-reaches-default",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-by-term-default",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "term": "zzz"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same absent-term situation as constants.unmapped-term-returns-null but WITH a default configured, so the null return never happens and the lookup succeeds. The pair separates 'resolver answered the default' from 'resolver answered nothing'."
+    },
+    {
+      "id": "phonetic-resolver.missing-branch.raw-term",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-missing-branch",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "term": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The resolver answers a constant the definition does not declare. Executed: IllegalStateException \"Missing Phonetic translation for S_IMPURE\" -- distinct from the null-return IllegalArgumentException, and spelled with the JAVA enum name S_IMPURE rather than the file-format PHONETIC_S_IMPURE. A port that echoed its own constant identifiers produces the wrong text."
+    },
+    {
+      "id": "phonetic-resolver.missing-branch.raw-term-through-get",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-missing-branch",
+      "operation": "get",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "term": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same failure through get(), which applies the failure handler's response instead of returning a result. Executed: translation 'Article' with the same single resolverCalls entry, so the resolver ran identically on both entry points and the default handler returned the key."
+    },
+    {
+      "id": "phonetic-resolver.missing-branch.tagged-value",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-missing-branch",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "term": {
+            "$lokalized": "language-form",
+            "axis": "phonetic",
+            "name": "PHONETIC_LUNAR"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A tagged constant with no branch fails the same way -- and the ABSENCE of resolverCalls is the assertion. Executed: \"Missing Phonetic translation for LUNAR\" with NO resolverCalls, while the installed constant resolver would have said S_IMPURE; the two messages differ, so the bypass is visible in the message as well as in the channel."
+    },
+    {
+      "id": "phonetic-resolver.input.tagged-gender",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-input-types",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "term": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_FEMININE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A tagged value from ANOTHER axis reaching a phonetic definition falls to the else arm. Executed: \"Placeholder 'term' in key 'Article' must be a Phonetic or CharSequence but was Gender\". A port that accepted any language-form value, or that named Phonetic as the received type, diverges."
+    },
+    {
+      "id": "phonetic-resolver.input.tagged-cardinality",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-input-types",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "term": {
+            "$lokalized": "language-form",
+            "axis": "cardinality",
+            "name": "CARDINALITY_ONE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The cross-axis rejection again with a cardinality constant, so the diagnostic is shown to name the ACTUAL received type ('Cardinality') rather than a fixed phrase."
+    },
+    {
+      "id": "phonetic-resolver.input.integer",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-input-types",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "term": 5
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A bare JSON number reaches Java as Integer. Numbers are not CharSequences, so the phonetic axis rejects them outright -- unlike cardinality, which converts them. Executed: '...but was Integer', no resolverCalls. A port that stringified values before dispatch would call the resolver with '5' and translate where Java fails."
+    },
+    {
+      "id": "phonetic-resolver.input.double",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-input-types",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "term": {
+            "$lokalized": "double",
+            "value": "1.5"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same rejection for a floating-point type, pinning that the diagnostic reports the concrete Java class (Double) rather than a generic 'Number'."
+    },
+    {
+      "id": "phonetic-resolver.input.decimal",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-input-types",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "term": {
+            "$lokalized": "decimal",
+            "value": "1.50"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "BigDecimal on the phonetic axis: a third distinct type name in the same diagnostic slot, which is what forces a port to report the received type instead of a constant string."
+    },
+    {
+      "id": "phonetic-resolver.input.boolean",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-input-types",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "term": true
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A JSON boolean, rejected like any non-CharSequence ('...but was Boolean'). In JS a boolean is especially easy to coerce to text on the way in, which would turn this failure into a translation."
+    },
+    {
+      "id": "phonetic-resolver.input.plural-operands",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-input-types",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "term": {
+            "$lokalized": "plural-operands",
+            "value": "1.2",
+            "visibleDecimalPlaces": 1
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "PluralOperands is accepted by the cardinality axis and rejected by the phonetic one ('...but was PluralOperands'), pinning that the phonetic dispatch does not share the numeric axes' value coercion."
+    },
+    {
+      "id": "phonetic-resolver.input.explicit-null",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-input-types",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "term": null
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "An explicit null binding is caught by the null guard that PRECEDES the type dispatch, producing \"Missing value for placeholder 'term' in key 'Article'\" rather than a type complaint, and no resolver call. Executed failures.placeholderNames == ['term'], which is what separates this case from absent-binding."
+    },
+    {
+      "id": "phonetic-resolver.input.absent-binding",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-input-types",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "unrelated": "x"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A placeholder map that simply lacks the binding takes the same null path as an explicit null: same message, same cause type. Executed: the ONLY difference from explicit-null is failures.placeholderNames == ['unrelated'], so the corpus pins both that the diagnostics are identical and that the handler still sees what the caller actually passed."
+    },
+    {
+      "id": "phonetic-resolver.input.no-placeholder-map",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-input-types",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "No placeholder map at all -- the oracle passes Java null here rather than an empty map, a distinct path through DefaultStrings. The phonetic definition still fails on the missing value rather than on a null map; executed failures.placeholderNames == [], completing the three-way distinction with explicit-null and absent-binding."
+    },
+    {
+      "id": "phonetic-resolver.input.string-spelling-a-constant",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-input-types",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "term": "PHONETIC_VOWEL"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "THE SHARP CASE for raw-versus-tagged on this axis, in the direction the raw-vs-tagged family explicitly deferred to this one because it had no resolver installed. The string 'PHONETIC_VOWEL' is handed to the resolver as an opaque TERM; first-letter-vowel classifies it by its 'P' and the CONSONANT branch renders. Executed: '[a]' with resolverCalls term='PHONETIC_VOWEL', returned=CONSONANT. A port that recognized constant text would render '[an]' and make no call at all."
+    },
+    {
+      "id": "phonetic-resolver.input.string-spelling-a-render-name",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-input-types",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "term": "VOWEL"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same trap using the Java-side render name rather than the file-format name, closing the other spelling a port might special-case. Executed: resolverCalls term='VOWEL', returned=CONSONANT -- the term recorded in the channel is what distinguishes this case from its sibling."
+    },
+    {
+      "id": "phonetic-resolver.input.non-phonetic-key-never-calls",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-input-types",
+      "operation": "getResult",
+      "input": {
+        "key": "Plain",
+        "locale": "en",
+        "placeholders": {
+          "term": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A key with no placeholder definition at all, given a placeholder map that would classify. Executed: renders the plain text with NO resolverCalls. Absence asserts the resolver is driven by the DEFINITION, not by the presence of a bindable value."
+    },
+    {
+      "id": "phonetic-resolver.input.other-axis-definition-never-calls",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-input-types",
+      "operation": "getResult",
+      "input": {
+        "key": "Gendered",
+        "locale": "en",
+        "placeholders": {
+          "term": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "NEW, and sharper than the no-placeholder case: a GENDER definition handed the very raw string the phonetic definition in the same file would have resolved. Executed: \"Placeholder 'term' in key 'Gendered' must be a Gender but was String\" with NO resolverCalls. A port that routed every raw CharSequence through its phonetic resolver before checking the axis would call it here and produce a different diagnostic."
+    },
+    {
+      "id": "phonetic-resolver.first-letter.empty-string",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-first-letter-edges",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "term": ""
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "An empty term. Executed: the resolver still runs and receives the empty string (resolverCalls term=''), answering CONSONANT. A port that skipped the call for a falsy value, or treated '' as a missing binding, would produce the 'Missing value' failure instead."
+    },
+    {
+      "id": "phonetic-resolver.first-letter.whitespace-only",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-first-letter-edges",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "term": " "
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A single space: not empty, not a letter, classified by its first character like any other term. Pairs with empty-string so a port that trims cannot pass both."
+    },
+    {
+      "id": "phonetic-resolver.first-letter.leading-space",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-first-letter-edges",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "term": " apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A leading space before a vowel. Nothing trims the term, so this classifies as a consonant ('[a]') while 'apple' gives '[an]'; a port that trimmed inputs flips the branch."
+    },
+    {
+      "id": "phonetic-resolver.first-letter.digit-first",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-first-letter-edges",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "term": "7up"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A digit-first term reaching the resolver as TEXT, not as a number: resolverCalls records term='7up'. A port that coerced numeric-looking strings would hit the non-CharSequence rejection instead."
+    },
+    {
+      "id": "phonetic-resolver.first-letter.punctuation-first",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-first-letter-edges",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "term": "'apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "An apostrophe before a vowel -- the elision shape phonetic logic exists for -- classified by the apostrophe, since the library imposes no linguistic preprocessing of its own."
+    },
+    {
+      "id": "phonetic-resolver.first-letter.uppercase-vowel",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-first-letter-edges",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "term": "Apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "An uppercase ASCII vowel: this resolver's alphabet includes both cases, so '[an]' renders. Establishes that the consonant answers elsewhere in this fixture are about the character, not about case handling."
+    },
+    {
+      "id": "phonetic-resolver.first-letter.accented-uppercase",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-first-letter-edges",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "term": "École"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A precomposed uppercase accented vowel (U+00C9) is not in the resolver's ASCII alphabet, so it classifies as consonant. Pins that no locale-aware folding happens between the caller and the callback."
+    },
+    {
+      "id": "phonetic-resolver.first-letter.accented-lowercase",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-first-letter-edges",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "term": "éclair"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The lowercase twin of accented-uppercase (U+00E9), so the consonant answer cannot be explained away by case."
+    },
+    {
+      "id": "phonetic-resolver.first-letter.precomposed-accent",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-first-letter-edges",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "term": "ápple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "U+00E1 as a SINGLE code point followed by 'pple': consonant, because the first character is not an ASCII vowel. Executed: '[a]'."
+    },
+    {
+      "id": "phonetic-resolver.first-letter.decomposed-accent",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-first-letter-edges",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "term": "ápple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "THE PAIR THAT CATCHES NORMALIZATION. The same word as precomposed-accent, written U+0061 U+0301 P P L E, classifies as a VOWEL because charAt(0) is a plain 'a'. Executed: '[an]' here versus '[a]' for the precomposed twin, both verified against the real oracle. A port that normalized the term to NFC before dispatch renders the same string for both and fails exactly one."
+    },
+    {
+      "id": "phonetic-resolver.first-letter.byte-order-mark-first",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-first-letter-edges",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "term": "﻿apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A zero-width U+FEFF before a vowel: invisible in any diff, and it changes the branch to '[a]'. A port that stripped format characters from placeholder text diverges."
+    },
+    {
+      "id": "phonetic-resolver.first-letter.newline-first",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-first-letter-edges",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "term": "\napple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A control character first (U+000A). Confirms the resolver sees the raw string with no whitespace handling of any kind."
+    },
+    {
+      "id": "phonetic-resolver.first-letter.astral-first",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-first-letter-edges",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "term": "🍎pple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "An astral emoji (U+1F34E) first. Java's charAt(0) sees the leading surrogate; the term must still arrive intact at the resolver and classify as a consonant. resolverCalls records the full term, so a port that mangled the surrogate pair in transit is visible even though the branch would be the same."
+    },
+    {
+      "id": "phonetic-resolver.locale.region-request-served-by-language-catalog",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-locale-argument",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en-US",
+        "placeholders": {
+          "term": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "An en-US request served by the en catalog. Executed: resolverCalls locale='en' -- the SUPPLYING locale -- and 'en:[handed-en]' renders; the resolver mapping names en-US explicitly, so a port passing the requested tag renders 'handed-en-US' instead. Also executed: attemptedLocales ['en-US','en'] and one MISSING_TRANSLATION policy call at en-US, which is what separates this case from locale.exact-request. Complements the callback-smoke donor case, which crossed languages rather than dropping a region."
+    },
+    {
+      "id": "phonetic-resolver.locale.exact-request",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-locale-argument",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "term": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The control for the region case. Executed: the same rendered text, but attemptedLocales ['en'] and NO policyCalls, versus ['en-US','en'] plus one MISSING_TRANSLATION consultation for the region request. The pair therefore discriminates in the result and policy channels even though the resolver answer coincides."
+    },
+    {
+      "id": "phonetic-resolver.locale.unmapped-locale-reaches-resolver-default",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-locale-argument",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "fr-CA",
+        "placeholders": {
+          "term": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A locale the resolver's own mapping does not name reaches its default. Executed: 'frca:[handed-neither]' with resolverCalls locale='fr-CA'. Shows the locale argument is the exact loaded tag rather than a normalized or primary-language form -- a port that passed 'fr' would still hit the default, but the recorded tag would differ."
+    },
+    {
+      "id": "phonetic-resolver.fallback.any-failure-retries-with-donor-locale",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-two-candidates",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "term": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A phonetic RESOLUTION_FAILURE under any-failure. Executed: the resolver is invoked ONCE PER CANDIDATE -- resolverCalls [(apple,en),(apple,fr)] -- with one policy call between them, and 'fr:[cf]' renders. The two-entry channel is the assertion: a port that resolved phonetics once and reused the answer across candidates produces one entry while rendering the same string."
+    },
+    {
+      "id": "phonetic-resolver.fallback.per-call-never-stops-at-first-candidate",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-two-candidates",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "term": "apple"
+        },
+        "translationFallbackPolicy": "never"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The per-call policy override replaces the instance's any-failure, so fr is never attempted and the resolver runs exactly once. Executed: policyCalls records the consultation with decision=false -- the policy IS asked and answers no."
+    },
+    {
+      "id": "phonetic-resolver.fallback.per-call-library-default-does-not-continue",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-two-candidates",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "term": "apple"
+        },
+        "translationFallbackPolicy": "missing-or-no-match"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The library default policy does not continue on RESOLUTION_FAILURE, so a phonetic failure is terminal under stock configuration. Executed: decision=false with causeType java.lang.IllegalStateException. This is the case that tells a port which reason codes the default treats as continuable."
+    },
+    {
+      "id": "phonetic-resolver.fallback.per-call-continue-for-resolution-failure",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-two-candidates",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "term": "apple"
+        },
+        "translationFallbackPolicy": {
+          "behavior": "continue-for-reasons",
+          "reasons": [
+            "NO_MATCHING_ALTERNATIVE",
+            "RESOLUTION_FAILURE"
+          ]
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A caller policy keyed on the reason code, naming two reasons of which only one can apply. Continuing here confirms the phonetic failure is classified RESOLUTION_FAILURE and not NO_MATCHING_ALTERNATIVE; the stop-group siblings show the policy is genuinely consulted rather than ignored."
+    },
+    {
+      "id": "phonetic-resolver.fallback.per-call-continue-for-failing-locale",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-two-candidates",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "term": "apple"
+        },
+        "translationFallbackPolicy": {
+          "behavior": "continue-for-locales",
+          "locales": [
+            "en"
+          ]
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A caller policy keyed on the locale. Continuing for 'en' proves the policy is handed the FAILING candidate's locale -- the same locale the resolver was handed on that attempt -- rather than the requested one or the one that eventually serves. Executed: policyCalls locale='en', decision=true."
+    },
+    {
+      "id": "phonetic-resolver.fallback.per-call-continue-for-other-locale",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-two-candidates",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "term": "apple"
+        },
+        "translationFallbackPolicy": {
+          "behavior": "continue-for-locales",
+          "locales": [
+            "de"
+          ]
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The negative twin: naming a locale that is not the failing one stops the walk, so the previous case cannot be passed by a policy that always continues. Executed: decision=false, one resolver call."
+    },
+    {
+      "id": "phonetic-resolver.throwing.invoked-once-per-candidate",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-throwing-two-candidates",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "term": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A throwing resolver with both catalogs COMPLETE, so the throw -- not a missing branch -- is what fails each candidate, and it repeats on the second with the second locale. Executed: resolverCalls [(apple,en,threw),(apple,fr,threw)] with threw=java.lang.IllegalStateException on both, one policy call, and the key returned. That second, ultimately-discarded invocation is visible nowhere else."
+    },
+    {
+      "id": "phonetic-resolver.throwing.tagged-value-never-reaches-resolver",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-throwing-two-candidates",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "term": {
+            "$lokalized": "language-form",
+            "axis": "phonetic",
+            "name": "PHONETIC_CONSONANT"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same fixture driven with a tagged value. Executed: 'en:[a]' on the first candidate with no policy consultation and no resolverCalls. Because the resolver would have THROWN, this absence assertion is falsifiable by exception, not merely by an empty channel: a port that consulted its resolver 'just to normalize' a tagged value explodes here."
+    },
+    {
+      "id": "phonetic-resolver.order.two-placeholders-two-sources",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-structure",
+      "operation": "getResult",
+      "input": {
+        "key": "TwoSources",
+        "locale": "en",
+        "placeholders": {
+          "t1": "apple",
+          "t2": "book"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Two phonetic placeholders over two sources, with template order and definition order agreeing. The control for template-order-beats-definition-order. Executed: 'xv/yc' with resolverCalls [apple, book]."
+    },
+    {
+      "id": "phonetic-resolver.order.template-order-beats-definition-order",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-structure",
+      "operation": "getResult",
+      "input": {
+        "key": "ReversedOrder",
+        "locale": "en",
+        "placeholders": {
+          "t1": "apple",
+          "t2": "book"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "REWRITTEN: the earlier version had both placeholders read the SAME caller value, which made the two resolverCalls entries byte-identical and left invocation ORDER unobservable -- the rendered string follows template order regardless of resolution order, so it proved nothing. Here x reads t1 and y reads t2 while the template says '{{y}}-{{x}}'. Executed: resolverCalls [book, apple] -- template order -- rendering 'yc-xv'. A port that iterated its placeholder-definition map records [apple, book] instead."
+    },
+    {
+      "id": "phonetic-resolver.order.same-source-twice-is-not-memoized",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-structure",
+      "operation": "getResult",
+      "input": {
+        "key": "SameSourceTwice",
+        "locale": "en",
+        "placeholders": {
+          "t1": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Two differently-named placeholders reading ONE caller value. Executed: two identical resolverCalls entries and 'xv+yv'. There is no per-term memoization; a port that cached by term records one entry while rendering the same string. Split out from the old ReversedOrder case, which was trying to assert this and call order at once."
+    },
+    {
+      "id": "phonetic-resolver.order.repeated-reference-resolves-once",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-structure",
+      "operation": "getResult",
+      "input": {
+        "key": "RepeatedReference",
+        "locale": "en",
+        "placeholders": {
+          "t1": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "NEW, and the exact complement of same-source-twice: ONE placeholder referenced TWICE in the template. Executed: exactly one resolverCalls entry, rendered 'xv xv'. Resolution is deduplicated by placeholder NAME within a lookup but not by term, and only the two cases together pin which."
+    },
+    {
+      "id": "phonetic-resolver.order.definition-never-referenced",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-structure",
+      "operation": "getResult",
+      "input": {
+        "key": "Unreferenced",
+        "locale": "en",
+        "placeholders": {
+          "t1": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A phonetic definition the translation never interpolates is never evaluated: resolution is driven by template references, not by the definition table. Executed: no resolverCalls. The absent-resolver twin makes the same point with a hard failure rather than an empty channel."
+    },
+    {
+      "id": "phonetic-resolver.order.alternative-shadows-top-level",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-structure",
+      "operation": "getResult",
+      "input": {
+        "key": "Alt",
+        "locale": "en",
+        "placeholders": {
+          "n": 1,
+          "t1": "apple",
+          "t2": "book"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The alternative matches, so only ITS phonetic placeholder resolves; the inherited top-level definition is never reached even though its binding is present. Executed: 'alt:yc' with exactly one resolverCalls entry, term='book'."
+    },
+    {
+      "id": "phonetic-resolver.order.alternative-not-taken",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-structure",
+      "operation": "getResult",
+      "input": {
+        "key": "Alt",
+        "locale": "en",
+        "placeholders": {
+          "n": 2,
+          "t1": "apple",
+          "t2": "book"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The mirror: the alternative's expression is false, the top-level translation renders, and only the top-level term reaches the resolver. Executed: 'main:xv', one entry with term='apple'. Together the two cases show phonetic resolution happens strictly on the chosen translation."
+    },
+    {
+      "id": "phonetic-resolver.order.chained-placeholder-vowel-branch",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-structure",
+      "operation": "getResult",
+      "input": {
+        "key": "Chain",
+        "locale": "en",
+        "placeholders": {
+          "t1": "apple",
+          "t2": "book",
+          "t3": "strange"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The selected phonetic branch's TEXT names a second phonetic placeholder, which is then enqueued and resolved. Executed: 'V<ic>' with resolverCalls [apple, book] -- two calls, and the second happens only because the first answered VOWEL. t3 is bound but never touched."
+    },
+    {
+      "id": "phonetic-resolver.order.chained-placeholder-consonant-branch",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-structure",
+      "operation": "getResult",
+      "input": {
+        "key": "Chain",
+        "locale": "en",
+        "placeholders": {
+          "t1": "book",
+          "t2": "apple",
+          "t3": "strange"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The other branch of the same chain pulls in a DIFFERENT second placeholder. Executed: 'C<os>' with resolverCalls [book, strange] -- the identity of the second call is determined by the first call's answer. A port that eagerly resolved every phonetic placeholder shows three calls in both chain cases."
+    },
+    {
+      "id": "phonetic-resolver.order.first-failure-stops-the-rest",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-structure",
+      "operation": "getResult",
+      "input": {
+        "key": "FirstFails",
+        "locale": "en",
+        "placeholders": {
+          "t1": "strange",
+          "t2": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The first placeholder's answered constant (S_IMPURE) has no branch, so resolution fails there and the second placeholder is never resolved. Executed: exactly one resolverCalls entry despite two phonetic placeholders in the template."
+    },
+    {
+      "id": "phonetic-resolver.order.mixed-tagged-then-raw",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-structure",
+      "operation": "getResult",
+      "input": {
+        "key": "Mixed",
+        "locale": "en",
+        "placeholders": {
+          "t1": {
+            "$lokalized": "language-form",
+            "axis": "phonetic",
+            "name": "PHONETIC_PN"
+          },
+          "t2": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "One tagged value and one raw term in the same definition. Executed: 'xpn|yv' with exactly one resolver call, for the raw one. Both branches rendered, so the single call cannot be explained by a placeholder having been skipped."
+    },
+    {
+      "id": "phonetic-resolver.order.mixed-raw-then-tagged",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-structure",
+      "operation": "getResult",
+      "input": {
+        "key": "Mixed",
+        "locale": "en",
+        "placeholders": {
+          "t1": "apple",
+          "t2": {
+            "$lokalized": "language-form",
+            "axis": "phonetic",
+            "name": "PHONETIC_PN"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same mix in the opposite arrangement -- executed 'xv|ypn', still one call -- so the single call is shown to follow the VALUE's type rather than the placeholder's position in the template."
+    },
+    {
+      "id": "phonetic-resolver.limit.term-at-the-limit",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-output-limit",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "term": "aaaaaaaa"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A term of exactly maximumInterpolatedOutputCharacters (8) characters is accepted and reaches the resolver. Executed: renders 'an', resolverCalls term='aaaaaaaa'. The boundary partner of limit.term-over-the-limit; an off-by-one port fails one of the two."
+    },
+    {
+      "id": "phonetic-resolver.limit.term-over-the-limit",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-output-limit",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "term": "aaaaaaaaa"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "One character over. Executed: \"Phonetic input for placeholder 'term' in key 'Article' exceeds the maximum of 8 characters\" and NO resolverCalls -- the CharSequence conversion runs BEFORE the resolver. A port that length-checked after resolving would record a call."
+    },
+    {
+      "id": "phonetic-resolver.expression.first-alternative-matches",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-expression",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Two",
+        "locale": "en",
+        "placeholders": {
+          "noun": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A phonetic comparison inside an alternative expression routes the raw term through the resolver -- the affirmative half of the expression clause that the expressions family could only author as a failure, having no resolver installed. Executed: 'alt-vowel' with exactly ONE call, because the first alternative matches."
+    },
+    {
+      "id": "phonetic-resolver.expression.second-alternative-matches",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-expression",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Two",
+        "locale": "en",
+        "placeholders": {
+          "noun": "book"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "THE COUNTING CASE: the first alternative's expression resolves the term, fails to match, and the second alternative resolves the SAME term again. Executed: two identical resolverCalls entries, 'alt-consonant'. A port that memoized per lookup, or that evaluated alternatives in another order, produces a different channel while rendering the same string."
+    },
+    {
+      "id": "phonetic-resolver.expression.no-alternative-matches",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-expression",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Two",
+        "locale": "en",
+        "placeholders": {
+          "noun": "zzz"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Neither expression matches and both still consulted the resolver. Executed: two calls returning OTHER, then the base translation. Proves the calls are made per evaluated expression rather than per selected translation."
+    },
+    {
+      "id": "phonetic-resolver.expression.tagged-value-bypasses",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-expression",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Two",
+        "locale": "en",
+        "placeholders": {
+          "noun": {
+            "$lokalized": "language-form",
+            "axis": "phonetic",
+            "name": "PHONETIC_CONSONANT"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A tagged Phonetic operand returns directly from phoneticFromOperand. Executed: both alternatives evaluated, 'alt-consonant' renders, and the channel is absent. A port that ran a tagged value through this by-term resolver would get the OTHER default and render 'no-alternative'."
+    },
+    {
+      "id": "phonetic-resolver.expression.raw-then-tagged-operands",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-expression",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Pair",
+        "locale": "en",
+        "placeholders": {
+          "left": "apple",
+          "right": {
+            "$lokalized": "language-form",
+            "axis": "phonetic",
+            "name": "PHONETIC_VOWEL"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Variable-versus-variable where one side is raw and the other tagged. Executed: only the raw side reaches the resolver and the comparison then succeeds on the resolved category ('operands-agree') -- the only way two operands legitimately compare on this axis, since two raw CharSequences are refused outright by the raw-raw guard at ExpressionEvaluator:641."
+    },
+    {
+      "id": "phonetic-resolver.expression.tagged-then-raw-operands",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-expression",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Pair",
+        "locale": "en",
+        "placeholders": {
+          "left": {
+            "$lokalized": "language-form",
+            "axis": "phonetic",
+            "name": "PHONETIC_VOWEL"
+          },
+          "right": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same pair with the sides swapped. Executed: the observation is identical to its twin, which IS the assertion -- the single call depends on operand TYPE, not operand position, so a port that only handled raw-on-the-left fails here while passing the twin."
+    },
+    {
+      "id": "phonetic-resolver.expression.operands-disagree",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-expression",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Pair",
+        "locale": "en",
+        "placeholders": {
+          "left": "book",
+          "right": {
+            "$lokalized": "language-form",
+            "axis": "phonetic",
+            "name": "PHONETIC_VOWEL"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "NEW, and the negative control the raw/tagged operand pair was missing: without it, a port whose phonetic comparison always returned true would pass both positive cases. Executed: 'no-alternative' with one resolver call returning CONSONANT against a tagged VOWEL."
+    },
+    {
+      "id": "phonetic-resolver.expression.empty-term-operand",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-expression",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.Two",
+        "locale": "en",
+        "placeholders": {
+          "noun": ""
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "An empty-string operand is a term like any other: this resolver's mapping has an entry for it and answers SOLAR, matching neither alternative. Executed: two calls with term='', 'no-alternative'. Pins that the expression path does not treat an empty CharSequence as missing -- operandType would otherwise raise \"Placeholder 'noun' resolved to null\"."
+    },
+    {
+      "id": "phonetic-resolver.expression.null-return-diagnostic",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-expression-null",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.One",
+        "locale": "en",
+        "placeholders": {
+          "noun": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A null return on the EXPRESSION path. Executed: ExpressionEvaluationException \"PhoneticResolver returned null for placeholder 'noun'\", naming only the placeholder, where the placeholder path raises IllegalArgumentException naming placeholder AND key. Two distinct diagnostics for the same resolver misbehavior; a port with one shared message fails one of them."
+    },
+    {
+      "id": "phonetic-resolver.expression.resolver-exception-propagates-unwrapped",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-expression-throws",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.One",
+        "locale": "en",
+        "placeholders": {
+          "noun": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The resolver's own exception escapes the evaluator UNWRAPPED. Executed: the failure cause is java.lang.IllegalStateException with message 'resolver refuses in expression' and no cause of its own -- NOT an ExpressionEvaluationException. Contrast expression.output-limit on the same path, where an IllegalArgumentException IS caught and wrapped; a port that uniformly wraps callback failures diverges on one of the pair."
+    },
+    {
+      "id": "phonetic-resolver.expression.output-limit",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-expression-limit",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.One",
+        "locale": "en",
+        "placeholders": {
+          "noun": "aaaaaaaaaaaa"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The length guard on the expression path. Executed: com.lokalized.ExpressionEvaluationException wrapping java.lang.IllegalArgumentException, message \"Phonetic input for placeholder 'noun' exceeds the maximum of 8 characters\" -- the key is omitted, unlike the placeholder path. No resolver call happens, so the absent channel pairs with limit.term-over-the-limit."
+    },
+    {
+      "id": "phonetic-resolver.expression.donor-locale",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-expression-donor",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.One",
+        "locale": "en",
+        "placeholders": {
+          "noun": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The donor rule for the EXPRESSION dispatch: an en request served by the fr entry hands the resolver 'fr'. Executed: resolverCalls locale='fr' and the matching alternative renders 'fr-handed-fr'; the mapping also names 'en', so passing the requested tag would render 'fr-handed-en'. callback-smoke established this for the placeholder path; the evaluator receives its locale by a different route, so a port can get one right and the other wrong."
+    },
+    {
+      "id": "phonetic-resolver.absent-resolver.expression-raw-term",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-absent-expression",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.One",
+        "locale": "en",
+        "placeholders": {
+          "noun": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "With no resolver configured the expression path fails on the fail-fast default DefaultStrings installs. Executed: IllegalStateException \"No PhoneticResolver was configured. Provide one via Strings.Builder#phoneticResolver(...)\" -- and NOT the evaluator's own \"No PhoneticResolver was provided to resolve placeholder 'noun'\" branch (ExpressionEvaluator.java:1744-1746), which is unreachable because the field is never null. Pins which of the two messages a port must produce."
+    },
+    {
+      "id": "phonetic-resolver.absent-resolver.unreferenced-definition-never-fails",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-absent-unreferenced",
+      "operation": "getResult",
+      "input": {
+        "key": "Unreferenced",
+        "locale": "en",
+        "placeholders": {
+          "t1": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "NEW. A phonetic definition the template never interpolates, on an instance with NO resolver -- so the fail-fast default would throw the instant anything reached it. Executed: renders 'no placeholder here' successfully. This upgrades order.definition-never-referenced from a channel-only absence assertion to a hard behavioral one: an eager port throws here instead of merely logging an extra call."
+    },
+    {
+      "id": "phonetic-resolver.absent-resolver.expression-tagged-value",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-absent-expression",
+      "operation": "getResult",
+      "input": {
+        "key": "Expr.One",
+        "locale": "en",
+        "placeholders": {
+          "noun": {
+            "$lokalized": "language-form",
+            "axis": "phonetic",
+            "name": "PHONETIC_VOWEL"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same resolver-less instance succeeds when the operand is tagged ('alt-vowel'), so the failure above is attributable to the raw-term route and not to the fixture being unusable. Extends the smoke family's equivalent pair from the placeholder path to the expression path."
+    },
+    {
+      "id": "phonetic-resolver.handler.throwing-handler-on-get-result",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-handler-throws",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "term": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A throwing failure handler over a phonetic failure: getResult THROWS rather than returning a result, and the raised exception carries the contextualized placeholder message (\"Unable to resolve generated placeholder 'a' ... Missing Phonetic translation for Z\"). Executed: resolverCalls is present on a thrown case, since the oracle attaches the callback channels in its catch."
+    },
+    {
+      "id": "phonetic-resolver.handler.throwing-handler-on-get",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-handler-throws",
+      "operation": "get",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "term": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same through get(). Executed: byte-identical observation to the getResult case -- which is the point. The two entry points must not diverge, and a port that made get() a separate path (double-invoking the handler, or swallowing what getResult raises) fails exactly one of the pair."
+    },
+    {
+      "id": "phonetic-resolver.policy.not-consulted-on-final-candidate",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-policy-throws-final-candidate",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "term": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "PROOF BY ABSENCE. The policy would throw if consulted, and the phonetic failure happens on the only candidate. Executed: a normal RETURNED_KEY result with reason RESOLUTION_FAILURE and NO policyCalls at all. A port that consults its policy after the last candidate turns this case into a thrown exception."
+    },
+    {
+      "id": "phonetic-resolver.policy.exception-escapes-the-lookup",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-policy-throws-two-candidates",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en",
+        "placeholders": {
+          "term": "apple"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same throwing policy where a SECOND candidate exists: the phonetic failure does consult it and the policy's IllegalStateException escapes getResult rather than becoming a failure cause. Executed: thrown 'policy refuses'; the first candidate's resolver call is still recorded, but no policyCalls entry is, because the recorder only completes an entry when the policy returns."
+    },
+    {
+      "id": "phonetic-resolver.range.load-is-rejected",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-range-rejected",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "FINDING, pinned. A range placeholder carrying phonetic branches is rejected AT LOAD. Executed: LocalizedStringLoadingException \"<fixtures>/phonetic-resolver-range-rejected/en: range-based translations only support Cardinality. Placeholder is 'a' for key 'Ranged'\" -- not the phonetic-specific \"Phonetic translations cannot use ranges\" guard at DefaultStrings:1150, and not the runtime \"Range-based translations are only supported for Cardinality\" at DefaultStrings:929 either, both of which the loader makes unreachable. A port that implemented only a runtime guard would accept the file and produce a different message, or none."
+    },
+    {
+      "id": "phonetic-resolver.range.parse-is-rejected",
+      "requirementIds": [],
+      "fixture": "phonetic-resolver-range-rejected",
+      "operation": "parse",
+      "input": {
+        "file": "en",
+        "locale": "en",
+        "source": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same rejection through the single-file parse entry point, catching a port that validates only in the directory loader. Executed: the message is prefixed with the supplied source name ('en: range-based translations only support Cardinality...') rather than a filesystem path, which is what distinguishes it from the load case."
+    }
+  ]
+}

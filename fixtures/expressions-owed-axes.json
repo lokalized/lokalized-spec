@@ -1,0 +1,352 @@
+{
+  "id": "expressions-owed-axes",
+  "description": "M3b owed-case catalog for ExpressionEvaluator. One key per expression SHAPE, deliberately generic ('value', 'left', 'right', 'count') so a single compiled expression can be driven with every runtime operand type from the case file. Covers the four axes no corpus expression ever mentioned (definiteness, classifier, clusivity, animacy), '!=' on every language-form axis, '<=' (which appeared in no expression at all), constant-on-the-left equality, and the constant-pair forms that are the only things able to execute canBeEqualExpressionValue's same-type and NUMBER/CARDINALITY-NUMBER/ORDINALITY rules. 'ja' carries only the constant-pair numeric keys, so the LOCALE-driven classification of a numeric LITERAL is pinned against 'en' (1 is 'one' in en and 'other' in ja).",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Owed.Eq.GenderConst": {
+        "translation": "Owed.Eq.GenderConst-default",
+        "alternatives": [
+          {
+            "value == GENDER_FEMININE": {
+              "translation": "Owed.Eq.GenderConst-matched"
+            }
+          }
+        ]
+      },
+      "Owed.Neq.GenderConst": {
+        "translation": "Owed.Neq.GenderConst-default",
+        "alternatives": [
+          {
+            "value != GENDER_FEMININE": {
+              "translation": "Owed.Neq.GenderConst-matched"
+            }
+          }
+        ]
+      },
+      "Owed.Eq.CaseConst": {
+        "translation": "Owed.Eq.CaseConst-default",
+        "alternatives": [
+          {
+            "value == CASE_GENITIVE": {
+              "translation": "Owed.Eq.CaseConst-matched"
+            }
+          }
+        ]
+      },
+      "Owed.Neq.CaseConst": {
+        "translation": "Owed.Neq.CaseConst-default",
+        "alternatives": [
+          {
+            "value != CASE_GENITIVE": {
+              "translation": "Owed.Neq.CaseConst-matched"
+            }
+          }
+        ]
+      },
+      "Owed.Eq.DefinitenessConst": {
+        "translation": "Owed.Eq.DefinitenessConst-default",
+        "alternatives": [
+          {
+            "value == DEFINITENESS_DEFINITE": {
+              "translation": "Owed.Eq.DefinitenessConst-matched"
+            }
+          }
+        ]
+      },
+      "Owed.Neq.DefinitenessConst": {
+        "translation": "Owed.Neq.DefinitenessConst-default",
+        "alternatives": [
+          {
+            "value != DEFINITENESS_DEFINITE": {
+              "translation": "Owed.Neq.DefinitenessConst-matched"
+            }
+          }
+        ]
+      },
+      "Owed.Eq.ClassifierConst": {
+        "translation": "Owed.Eq.ClassifierConst-default",
+        "alternatives": [
+          {
+            "value == CLASSIFIER_PERSON": {
+              "translation": "Owed.Eq.ClassifierConst-matched"
+            }
+          }
+        ]
+      },
+      "Owed.Neq.ClassifierConst": {
+        "translation": "Owed.Neq.ClassifierConst-default",
+        "alternatives": [
+          {
+            "value != CLASSIFIER_PERSON": {
+              "translation": "Owed.Neq.ClassifierConst-matched"
+            }
+          }
+        ]
+      },
+      "Owed.Eq.FormalityConst": {
+        "translation": "Owed.Eq.FormalityConst-default",
+        "alternatives": [
+          {
+            "value == FORMALITY_HONORIFIC": {
+              "translation": "Owed.Eq.FormalityConst-matched"
+            }
+          }
+        ]
+      },
+      "Owed.Neq.FormalityConst": {
+        "translation": "Owed.Neq.FormalityConst-default",
+        "alternatives": [
+          {
+            "value != FORMALITY_HONORIFIC": {
+              "translation": "Owed.Neq.FormalityConst-matched"
+            }
+          }
+        ]
+      },
+      "Owed.Eq.ClusivityConst": {
+        "translation": "Owed.Eq.ClusivityConst-default",
+        "alternatives": [
+          {
+            "value == CLUSIVITY_INCLUSIVE": {
+              "translation": "Owed.Eq.ClusivityConst-matched"
+            }
+          }
+        ]
+      },
+      "Owed.Neq.ClusivityConst": {
+        "translation": "Owed.Neq.ClusivityConst-default",
+        "alternatives": [
+          {
+            "value != CLUSIVITY_INCLUSIVE": {
+              "translation": "Owed.Neq.ClusivityConst-matched"
+            }
+          }
+        ]
+      },
+      "Owed.Eq.AnimacyConst": {
+        "translation": "Owed.Eq.AnimacyConst-default",
+        "alternatives": [
+          {
+            "value == ANIMACY_ANIMATE": {
+              "translation": "Owed.Eq.AnimacyConst-matched"
+            }
+          }
+        ]
+      },
+      "Owed.Neq.AnimacyConst": {
+        "translation": "Owed.Neq.AnimacyConst-default",
+        "alternatives": [
+          {
+            "value != ANIMACY_ANIMATE": {
+              "translation": "Owed.Neq.AnimacyConst-matched"
+            }
+          }
+        ]
+      },
+      "Owed.Neq.CardinalityConst": {
+        "translation": "Owed.Neq.CardinalityConst-default",
+        "alternatives": [
+          {
+            "value != CARDINALITY_ONE": {
+              "translation": "Owed.Neq.CardinalityConst-matched"
+            }
+          }
+        ]
+      },
+      "Owed.Eq.OrdinalityConst": {
+        "translation": "Owed.Eq.OrdinalityConst-default",
+        "alternatives": [
+          {
+            "value == ORDINALITY_TWO": {
+              "translation": "Owed.Eq.OrdinalityConst-matched"
+            }
+          }
+        ]
+      },
+      "Owed.Neq.OrdinalityConst": {
+        "translation": "Owed.Neq.OrdinalityConst-default",
+        "alternatives": [
+          {
+            "value != ORDINALITY_TWO": {
+              "translation": "Owed.Neq.OrdinalityConst-matched"
+            }
+          }
+        ]
+      },
+      "Owed.Eq.PhoneticConst": {
+        "translation": "Owed.Eq.PhoneticConst-default",
+        "alternatives": [
+          {
+            "value == PHONETIC_VOWEL": {
+              "translation": "Owed.Eq.PhoneticConst-matched"
+            }
+          }
+        ]
+      },
+      "Owed.Neq.PhoneticConst": {
+        "translation": "Owed.Neq.PhoneticConst-default",
+        "alternatives": [
+          {
+            "value != PHONETIC_VOWEL": {
+              "translation": "Owed.Neq.PhoneticConst-matched"
+            }
+          }
+        ]
+      },
+      "Owed.Eq.NumberLiteral": {
+        "translation": "Owed.Eq.NumberLiteral-default",
+        "alternatives": [
+          {
+            "value == 1": {
+              "translation": "Owed.Eq.NumberLiteral-matched"
+            }
+          }
+        ]
+      },
+      "Owed.Order.Pair": {
+        "translation": "Owed.Order.Pair-default",
+        "alternatives": [
+          {
+            "left > right": {
+              "translation": "Owed.Order.Pair-matched"
+            }
+          }
+        ]
+      },
+      "Owed.Eq.Pair": {
+        "translation": "Owed.Eq.Pair-default",
+        "alternatives": [
+          {
+            "left == right": {
+              "translation": "Owed.Eq.Pair-matched"
+            }
+          }
+        ]
+      },
+      "Owed.Lt.Five": {
+        "translation": "Owed.Lt.Five-default",
+        "alternatives": [
+          {
+            "count < 5": {
+              "translation": "Owed.Lt.Five-matched"
+            }
+          }
+        ]
+      },
+      "Owed.Lte.Five": {
+        "translation": "Owed.Lte.Five-default",
+        "alternatives": [
+          {
+            "count <= 5": {
+              "translation": "Owed.Lte.Five-matched"
+            }
+          }
+        ]
+      },
+      "Owed.Const.GenderEqGender": {
+        "translation": "Owed.Const.GenderEqGender-default",
+        "alternatives": [
+          {
+            "GENDER_MASCULINE == GENDER_FEMININE": {
+              "translation": "Owed.Const.GenderEqGender-matched"
+            }
+          }
+        ]
+      },
+      "Owed.Const.GenderEqVariable": {
+        "translation": "Owed.Const.GenderEqVariable-default",
+        "alternatives": [
+          {
+            "GENDER_MASCULINE == who": {
+              "translation": "Owed.Const.GenderEqVariable-matched"
+            }
+          }
+        ]
+      },
+      "Owed.Const.NumberEqCardinality": {
+        "translation": "Owed.Const.NumberEqCardinality-default",
+        "alternatives": [
+          {
+            "1 == CARDINALITY_ONE": {
+              "translation": "Owed.Const.NumberEqCardinality-matched"
+            }
+          }
+        ]
+      },
+      "Owed.Const.CardinalityEqNumber": {
+        "translation": "Owed.Const.CardinalityEqNumber-default",
+        "alternatives": [
+          {
+            "CARDINALITY_ONE == 1": {
+              "translation": "Owed.Const.CardinalityEqNumber-matched"
+            }
+          }
+        ]
+      },
+      "Owed.Const.NumberEqOrdinality": {
+        "translation": "Owed.Const.NumberEqOrdinality-default",
+        "alternatives": [
+          {
+            "2 == ORDINALITY_TWO": {
+              "translation": "Owed.Const.NumberEqOrdinality-matched"
+            }
+          }
+        ]
+      },
+      "Owed.Const.OrdinalityEqNumber": {
+        "translation": "Owed.Const.OrdinalityEqNumber-default",
+        "alternatives": [
+          {
+            "ORDINALITY_TWO == 2": {
+              "translation": "Owed.Const.OrdinalityEqNumber-matched"
+            }
+          }
+        ]
+      }
+    },
+    "ja": {
+      "Owed.Const.NumberEqCardinality": {
+        "translation": "Owed.Const.NumberEqCardinality-default",
+        "alternatives": [
+          {
+            "1 == CARDINALITY_ONE": {
+              "translation": "Owed.Const.NumberEqCardinality-matched"
+            }
+          }
+        ]
+      },
+      "Owed.Const.CardinalityEqNumber": {
+        "translation": "Owed.Const.CardinalityEqNumber-default",
+        "alternatives": [
+          {
+            "CARDINALITY_ONE == 1": {
+              "translation": "Owed.Const.CardinalityEqNumber-matched"
+            }
+          }
+        ]
+      },
+      "Owed.Const.NumberEqOrdinality": {
+        "translation": "Owed.Const.NumberEqOrdinality-default",
+        "alternatives": [
+          {
+            "2 == ORDINALITY_TWO": {
+              "translation": "Owed.Const.NumberEqOrdinality-matched"
+            }
+          }
+        ]
+      },
+      "Owed.Const.OrdinalityEqNumber": {
+        "translation": "Owed.Const.OrdinalityEqNumber-default",
+        "alternatives": [
+          {
+            "ORDINALITY_TWO == 2": {
+              "translation": "Owed.Const.OrdinalityEqNumber-matched"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "id": "ingress-matrix-java-case-match-supplier",
+  "description": "Case arm with ZH-hant through the supplied-match ingress, single-locale kernel.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "zh": [
+      "zh",
+      "zh-Hant"
+    ]
+  },
+  "localeMatchSupplier": {
+    "behavior": "match-locale",
+    "locale": "ZH-hant"
+  },
+  "files": {
+    "zh": {
+      "Checkout.Title": "zh"
+    },
+    "zh-Hant": {
+      "Checkout.Title": "zh-Hant"
+    },
+    "en": {
+      "Checkout.Title": "en"
+    }
+  }
+}

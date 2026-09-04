@@ -1,0 +1,15 @@
+{
+  "id": "runtime-limits-interpolated-output-eight-isolating",
+  "description": "Companion to runtime-limits-interpolated-output-eight, identical except that the INSTANCE declares bidiIsolation ALWAYS. It exists because a per-call NONE on a default-configured instance is undetectable: DefaultStrings.DEFAULT_BIDI_ISOLATION is RTL_LOCALES (DefaultStrings.java:80) and en is LTR, so NONE and the default agree. Against an ALWAYS instance the same 'Bobby' at a limit of 8 fails unisolated-length-8-plus-two-markers, and each per-call override that turns isolation off makes it render — which is the only arrangement in which the override changes an observable.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "runtimeLimits": {
+    "maximumInterpolatedOutputCharacters": 8
+  },
+  "bidiIsolation": "ALWAYS",
+  "files": {
+    "en": {
+      "Greeting": "Hi {{name}}"
+    }
+  }
+}

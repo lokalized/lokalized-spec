@@ -1,0 +1,358 @@
+{
+  "formatVersion": 1,
+  "family": "m3b-form-diagnostics",
+  "description": "Plan v7 section 8.3 fixture family 'm3b-form-diagnostics'. Inputs only; the oracle emits expected.",
+  "cases": [
+    {
+      "id": "m3b-form-diagnostics.range.end-missing",
+      "requirementIds": [],
+      "fixture": "m3b-form-diagnostics-sparse",
+      "operation": "getResult",
+      "input": {
+        "key": "Range.Books",
+        "placeholders": {
+          "low": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings.getInternal:944, the missing-range-END guard. Its twin at 940 (missing start) is already covered; the corpus supplies both endpoints or neither, never start-without-end. A port that validated only the start endpoint produces a different diagnostic (or an interpolation error) here, and the failureCause message names 'high' and the key, so the two arms are distinguishable in the recorded output rather than merely both failing."
+    },
+    {
+      "id": "m3b-form-diagnostics.range.start-supplied-end-supplied-control",
+      "requirementIds": [],
+      "fixture": "m3b-form-diagnostics-sparse",
+      "operation": "getResult",
+      "input": {
+        "key": "Range.Books",
+        "placeholders": {
+          "low": 1,
+          "high": 5
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The positive control for the row above: the same key with BOTH endpoints resolves normally. Without it, a port that failed every Range.Books lookup for an unrelated reason would satisfy the missing-end case."
+    },
+    {
+      "id": "m3b-form-diagnostics.range.computed-form-absent",
+      "requirementIds": [],
+      "fixture": "m3b-form-diagnostics-sparse",
+      "operation": "getResult",
+      "input": {
+        "key": "Range.SparseResult",
+        "placeholders": {
+          "low": 1,
+          "high": 5
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings.getInternal:956. Cardinality.forRange(ONE, OTHER) is OTHER for en, and this key's map carries only CARDINALITY_ONE, so the range-shaped sparse-catalog diagnostic fires. The non-range twin at 974 is already covered. The message embeds the range cardinality AND both endpoint cardinalities, so a port that reported the start form, or that fell back to the sole CARDINALITY_ONE entry because the start was ONE, differs visibly."
+    },
+    {
+      "id": "m3b-form-diagnostics.ordinal.value-missing",
+      "requirementIds": [],
+      "fixture": "m3b-form-diagnostics-sparse",
+      "operation": "getResult",
+      "input": {
+        "key": "Ordinal.Finish",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings.getInternal:985, the ordinal missing-value guard. The cardinal twin at 966 is covered and this one is not, so a port that guarded only the cardinal path answers with an unresolved-placeholder error instead of 'Missing value for placeholder'."
+    },
+    {
+      "id": "m3b-form-diagnostics.ordinal.form-absent",
+      "requirementIds": [],
+      "fixture": "m3b-form-diagnostics-sparse",
+      "operation": "getResult",
+      "input": {
+        "key": "Ordinal.Finish",
+        "placeholders": {
+          "rank": 4
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings.getInternal:993. 4 is ORDINALITY_OTHER in en and the map covers only ONE and TWO, so the sparse-ordinal diagnostic fires and names OTHER. Paired with the rank=1 row below, which must succeed: together they show the map is consulted rather than the failure being unconditional."
+    },
+    {
+      "id": "m3b-form-diagnostics.ordinal.form-present-control",
+      "requirementIds": [],
+      "fixture": "m3b-form-diagnostics-sparse",
+      "operation": "getResult",
+      "input": {
+        "key": "Ordinal.Finish",
+        "placeholders": {
+          "rank": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The positive control for the sparse-ordinal row."
+    },
+    {
+      "id": "m3b-form-diagnostics.ordinal.plural-operands-value",
+      "requirementIds": [],
+      "fixture": "m3b-form-diagnostics-sparse",
+      "operation": "getResult",
+      "input": {
+        "key": "Ordinal.Finish",
+        "placeholders": {
+          "rank": {
+            "$lokalized": "plural-operands",
+            "value": "2"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings.ordinalityForValue:1478 - an explicit PluralOperands handed to an ORDINAL placeholder. The cardinality twin at 1450 is covered; the ordinal one is not, so a port that accepted operands only for cardinals would throw 'must be a Number, PluralOperands, or Ordinality' here. Operands for 2 select ORDINALITY_TWO in en, which is present, so the discriminating observable is the successful '2nd' rather than a failure."
+    },
+    {
+      "id": "m3b-form-diagnostics.ordinal.plural-operands-compact-exponent-over-ceiling",
+      "requirementIds": [],
+      "fixture": "m3b-form-diagnostics-lowered-compact-exponent",
+      "operation": "getResult",
+      "input": {
+        "key": "Ordinal.Finish",
+        "placeholders": {
+          "rank": {
+            "$lokalized": "plural-operands",
+            "value": "1",
+            "compactExponent": 10
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The validatePluralOperands half of ordinalityForValue:1478. The operands record is well-formed against PluralOperands' own default ceiling of 64, so it is BUILT successfully and only DefaultStrings' instance runtime limit (lowered to 3 here) can refuse it -- which is exactly the check the ordinal path is owed. A port that ran validatePluralOperands only on the cardinal path renders '1st' here instead of failing, and a port that enforced PluralOperands' construction ceiling instead of the instance limit also renders '1st'."
+    },
+    {
+      "id": "m3b-form-diagnostics.grammatical-case.value-missing",
+      "requirementIds": [],
+      "fixture": "m3b-form-diagnostics-sparse",
+      "operation": "getResult",
+      "input": {
+        "key": "Case.Gift",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings.getInternal:1024. Of the ten language-form families only Gender and the plural families have their missing-value diagnostic exercised; grammatical case does not."
+    },
+    {
+      "id": "m3b-form-diagnostics.grammatical-case.form-absent",
+      "requirementIds": [],
+      "fixture": "m3b-form-diagnostics-sparse",
+      "operation": "getResult",
+      "input": {
+        "key": "Case.Gift",
+        "placeholders": {
+          "recipient": {
+            "$lokalized": "language-form",
+            "axis": "grammatical-case",
+            "name": "CASE_GENITIVE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings.getInternal:1035, the sparse grammatical-case map. GENITIVE is a valid GrammaticalCase absent from this key's translations, so the message must name GENITIVE; a port that fell through to the nominative entry returns 'Ivan'."
+    },
+    {
+      "id": "m3b-form-diagnostics.grammatical-case.form-present-control",
+      "requirementIds": [],
+      "fixture": "m3b-form-diagnostics-sparse",
+      "operation": "getResult",
+      "input": {
+        "key": "Case.Gift",
+        "placeholders": {
+          "recipient": {
+            "$lokalized": "language-form",
+            "axis": "grammatical-case",
+            "name": "CASE_DATIVE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The positive control: DATIVE is present and renders 'Ivanu'."
+    },
+    {
+      "id": "m3b-form-diagnostics.definiteness.value-missing",
+      "requirementIds": [],
+      "fixture": "m3b-form-diagnostics-sparse",
+      "operation": "getResult",
+      "input": {
+        "key": "Definite.Open",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings.getInternal:1045."
+    },
+    {
+      "id": "m3b-form-diagnostics.definiteness.form-absent",
+      "requirementIds": [],
+      "fixture": "m3b-form-diagnostics-sparse",
+      "operation": "getResult",
+      "input": {
+        "key": "Definite.Open",
+        "placeholders": {
+          "target": {
+            "$lokalized": "language-form",
+            "axis": "definiteness",
+            "name": "DEFINITENESS_CONSTRUCT"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings.getInternal:1056, the sparse definiteness map: CONSTRUCT is the one Definiteness constant this key omits."
+    },
+    {
+      "id": "m3b-form-diagnostics.classifier.value-missing",
+      "requirementIds": [],
+      "fixture": "m3b-form-diagnostics-sparse",
+      "operation": "getResult",
+      "input": {
+        "key": "Classifier.Bought",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings.getInternal:1066."
+    },
+    {
+      "id": "m3b-form-diagnostics.classifier.wrong-value-type",
+      "requirementIds": [],
+      "fixture": "m3b-form-diagnostics-sparse",
+      "operation": "getResult",
+      "input": {
+        "key": "Classifier.Bought",
+        "placeholders": {
+          "kind": "CLASSIFIER_GENERAL"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings.getInternal:1070, the classifier type-mismatch diagnostic. The value is the STRING spelling of a valid Classifier, which is the input a port most likely accepts by accident; Java refuses it and the message embeds the runtime type name, so 'must be a Classifier but was String' is the discriminating text."
+    },
+    {
+      "id": "m3b-form-diagnostics.classifier.form-absent",
+      "requirementIds": [],
+      "fixture": "m3b-form-diagnostics-sparse",
+      "operation": "getResult",
+      "input": {
+        "key": "Classifier.Bought",
+        "placeholders": {
+          "kind": {
+            "$lokalized": "language-form",
+            "axis": "classifier",
+            "name": "CLASSIFIER_VEHICLE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The absent-form partner of the type-mismatch row, so the two classifier diagnostics are told apart rather than collapsed into 'classifier failed'."
+    },
+    {
+      "id": "m3b-form-diagnostics.formality.value-missing",
+      "requirementIds": [],
+      "fixture": "m3b-form-diagnostics-sparse",
+      "operation": "getResult",
+      "input": {
+        "key": "Formality.Greet",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings.getInternal:1087."
+    },
+    {
+      "id": "m3b-form-diagnostics.formality.form-absent",
+      "requirementIds": [],
+      "fixture": "m3b-form-diagnostics-sparse",
+      "operation": "getResult",
+      "input": {
+        "key": "Formality.Greet",
+        "placeholders": {
+          "register": {
+            "$lokalized": "language-form",
+            "axis": "formality",
+            "name": "FORMALITY_HONORIFIC"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings.getInternal:1098, the sparse formality map: HONORIFIC is absent while CASUAL and FORMAL are present."
+    },
+    {
+      "id": "m3b-form-diagnostics.clusivity.value-missing",
+      "requirementIds": [],
+      "fixture": "m3b-form-diagnostics-sparse",
+      "operation": "getResult",
+      "input": {
+        "key": "Clusivity.Meet",
+        "placeholders": {}
+      },
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings.getInternal:1108."
+    },
+    {
+      "id": "m3b-form-diagnostics.clusivity.wrong-value-type",
+      "requirementIds": [],
+      "fixture": "m3b-form-diagnostics-sparse",
+      "operation": "getResult",
+      "input": {
+        "key": "Clusivity.Meet",
+        "placeholders": {
+          "party": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings.getInternal:1112. A number is supplied where a Clusivity is required; unlike the plural axes, the nominal axes have NO numeric fallback, so a port that reused its cardinality coercion here returns a translation instead of refusing."
+    },
+    {
+      "id": "m3b-form-diagnostics.clusivity.form-absent",
+      "requirementIds": [],
+      "fixture": "m3b-form-diagnostics-sparse",
+      "operation": "getResult",
+      "input": {
+        "key": "Clusivity.Meet",
+        "placeholders": {
+          "party": {
+            "$lokalized": "language-form",
+            "axis": "clusivity",
+            "name": "CLUSIVITY_EXCLUSIVE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings.getInternal:1119. Clusivity has exactly two constants and this key carries only INCLUSIVE, so EXCLUSIVE is the absent form."
+    },
+    {
+      "id": "m3b-form-diagnostics.animacy.wrong-value-type",
+      "requirementIds": [],
+      "fixture": "m3b-form-diagnostics-sparse",
+      "operation": "getResult",
+      "input": {
+        "key": "Animacy.See",
+        "placeholders": {
+          "subject": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_MASCULINE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings.getInternal:1133. A tagged language form of the WRONG AXIS, which is the sharper half of the type test: a port that accepted any enum-shaped value, or that matched on the constant's string spelling, resolves this instead of reporting 'must be an Animacy but was Gender'."
+    },
+    {
+      "id": "m3b-form-diagnostics.animacy.form-absent",
+      "requirementIds": [],
+      "fixture": "m3b-form-diagnostics-sparse",
+      "operation": "getResult",
+      "input": {
+        "key": "Animacy.See",
+        "placeholders": {
+          "subject": {
+            "$lokalized": "language-form",
+            "axis": "animacy",
+            "name": "ANIMACY_INANIMATE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings.getInternal:1140. Animacy has exactly two constants and this key carries only ANIMATE."
+    }
+  ]
+}

@@ -1,0 +1,303 @@
+{
+  "id": "alternatives-structure-depth-41",
+  "description": "Alternatives nested 41 levels deep. JSON container depth of the entry is 124. Generated, not hand-authored.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumJsonNestingDepth": 128
+  },
+  "files": {
+    "en": {
+      "Nested.Alternatives": {
+        "translation": "depth-1",
+        "alternatives": [
+          {
+            "count == 1": {
+              "translation": "depth-2",
+              "alternatives": [
+                {
+                  "count == 1": {
+                    "translation": "depth-3",
+                    "alternatives": [
+                      {
+                        "count == 1": {
+                          "translation": "depth-4",
+                          "alternatives": [
+                            {
+                              "count == 1": {
+                                "translation": "depth-5",
+                                "alternatives": [
+                                  {
+                                    "count == 1": {
+                                      "translation": "depth-6",
+                                      "alternatives": [
+                                        {
+                                          "count == 1": {
+                                            "translation": "depth-7",
+                                            "alternatives": [
+                                              {
+                                                "count == 1": {
+                                                  "translation": "depth-8",
+                                                  "alternatives": [
+                                                    {
+                                                      "count == 1": {
+                                                        "translation": "depth-9",
+                                                        "alternatives": [
+                                                          {
+                                                            "count == 1": {
+                                                              "translation": "depth-10",
+                                                              "alternatives": [
+                                                                {
+                                                                  "count == 1": {
+                                                                    "translation": "depth-11",
+                                                                    "alternatives": [
+                                                                      {
+                                                                        "count == 1": {
+                                                                          "translation": "depth-12",
+                                                                          "alternatives": [
+                                                                            {
+                                                                              "count == 1": {
+                                                                                "translation": "depth-13",
+                                                                                "alternatives": [
+                                                                                  {
+                                                                                    "count == 1": {
+                                                                                      "translation": "depth-14",
+                                                                                      "alternatives": [
+                                                                                        {
+                                                                                          "count == 1": {
+                                                                                            "translation": "depth-15",
+                                                                                            "alternatives": [
+                                                                                              {
+                                                                                                "count == 1": {
+                                                                                                  "translation": "depth-16",
+                                                                                                  "alternatives": [
+                                                                                                    {
+                                                                                                      "count == 1": {
+                                                                                                        "translation": "depth-17",
+                                                                                                        "alternatives": [
+                                                                                                          {
+                                                                                                            "count == 1": {
+                                                                                                              "translation": "depth-18",
+                                                                                                              "alternatives": [
+                                                                                                                {
+                                                                                                                  "count == 1": {
+                                                                                                                    "translation": "depth-19",
+                                                                                                                    "alternatives": [
+                                                                                                                      {
+                                                                                                                        "count == 1": {
+                                                                                                                          "translation": "depth-20",
+                                                                                                                          "alternatives": [
+                                                                                                                            {
+                                                                                                                              "count == 1": {
+                                                                                                                                "translation": "depth-21",
+                                                                                                                                "alternatives": [
+                                                                                                                                  {
+                                                                                                                                    "count == 1": {
+                                                                                                                                      "translation": "depth-22",
+                                                                                                                                      "alternatives": [
+                                                                                                                                        {
+                                                                                                                                          "count == 1": {
+                                                                                                                                            "translation": "depth-23",
+                                                                                                                                            "alternatives": [
+                                                                                                                                              {
+                                                                                                                                                "count == 1": {
+                                                                                                                                                  "translation": "depth-24",
+                                                                                                                                                  "alternatives": [
+                                                                                                                                                    {
+                                                                                                                                                      "count == 1": {
+                                                                                                                                                        "translation": "depth-25",
+                                                                                                                                                        "alternatives": [
+                                                                                                                                                          {
+                                                                                                                                                            "count == 1": {
+                                                                                                                                                              "translation": "depth-26",
+                                                                                                                                                              "alternatives": [
+                                                                                                                                                                {
+                                                                                                                                                                  "count == 1": {
+                                                                                                                                                                    "translation": "depth-27",
+                                                                                                                                                                    "alternatives": [
+                                                                                                                                                                      {
+                                                                                                                                                                        "count == 1": {
+                                                                                                                                                                          "translation": "depth-28",
+                                                                                                                                                                          "alternatives": [
+                                                                                                                                                                            {
+                                                                                                                                                                              "count == 1": {
+                                                                                                                                                                                "translation": "depth-29",
+                                                                                                                                                                                "alternatives": [
+                                                                                                                                                                                  {
+                                                                                                                                                                                    "count == 1": {
+                                                                                                                                                                                      "translation": "depth-30",
+                                                                                                                                                                                      "alternatives": [
+                                                                                                                                                                                        {
+                                                                                                                                                                                          "count == 1": {
+                                                                                                                                                                                            "translation": "depth-31",
+                                                                                                                                                                                            "alternatives": [
+                                                                                                                                                                                              {
+                                                                                                                                                                                                "count == 1": {
+                                                                                                                                                                                                  "translation": "depth-32",
+                                                                                                                                                                                                  "alternatives": [
+                                                                                                                                                                                                    {
+                                                                                                                                                                                                      "count == 1": {
+                                                                                                                                                                                                        "translation": "depth-33",
+                                                                                                                                                                                                        "alternatives": [
+                                                                                                                                                                                                          {
+                                                                                                                                                                                                            "count == 1": {
+                                                                                                                                                                                                              "translation": "depth-34",
+                                                                                                                                                                                                              "alternatives": [
+                                                                                                                                                                                                                {
+                                                                                                                                                                                                                  "count == 1": {
+                                                                                                                                                                                                                    "translation": "depth-35",
+                                                                                                                                                                                                                    "alternatives": [
+                                                                                                                                                                                                                      {
+                                                                                                                                                                                                                        "count == 1": {
+                                                                                                                                                                                                                          "translation": "depth-36",
+                                                                                                                                                                                                                          "alternatives": [
+                                                                                                                                                                                                                            {
+                                                                                                                                                                                                                              "count == 1": {
+                                                                                                                                                                                                                                "translation": "depth-37",
+                                                                                                                                                                                                                                "alternatives": [
+                                                                                                                                                                                                                                  {
+                                                                                                                                                                                                                                    "count == 1": {
+                                                                                                                                                                                                                                      "translation": "depth-38",
+                                                                                                                                                                                                                                      "alternatives": [
+                                                                                                                                                                                                                                        {
+                                                                                                                                                                                                                                          "count == 1": {
+                                                                                                                                                                                                                                            "translation": "depth-39",
+                                                                                                                                                                                                                                            "alternatives": [
+                                                                                                                                                                                                                                              {
+                                                                                                                                                                                                                                                "count == 1": {
+                                                                                                                                                                                                                                                  "translation": "depth-40",
+                                                                                                                                                                                                                                                  "alternatives": [
+                                                                                                                                                                                                                                                    {
+                                                                                                                                                                                                                                                      "count == 1": {
+                                                                                                                                                                                                                                                        "translation": "depth-41",
+                                                                                                                                                                                                                                                        "alternatives": [
+                                                                                                                                                                                                                                                          {
+                                                                                                                                                                                                                                                            "count == 1": {
+                                                                                                                                                                                                                                                              "translation": "leaf"
+                                                                                                                                                                                                                                                            }
+                                                                                                                                                                                                                                                          }
+                                                                                                                                                                                                                                                        ]
+                                                                                                                                                                                                                                                      }
+                                                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                                                  ]
+                                                                                                                                                                                                                                                }
+                                                                                                                                                                                                                                              }
+                                                                                                                                                                                                                                            ]
+                                                                                                                                                                                                                                          }
+                                                                                                                                                                                                                                        }
+                                                                                                                                                                                                                                      ]
+                                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                                  }
+                                                                                                                                                                                                                                ]
+                                                                                                                                                                                                                              }
+                                                                                                                                                                                                                            }
+                                                                                                                                                                                                                          ]
+                                                                                                                                                                                                                        }
+                                                                                                                                                                                                                      }
+                                                                                                                                                                                                                    ]
+                                                                                                                                                                                                                  }
+                                                                                                                                                                                                                }
+                                                                                                                                                                                                              ]
+                                                                                                                                                                                                            }
+                                                                                                                                                                                                          }
+                                                                                                                                                                                                        ]
+                                                                                                                                                                                                      }
+                                                                                                                                                                                                    }
+                                                                                                                                                                                                  ]
+                                                                                                                                                                                                }
+                                                                                                                                                                                              }
+                                                                                                                                                                                            ]
+                                                                                                                                                                                          }
+                                                                                                                                                                                        }
+                                                                                                                                                                                      ]
+                                                                                                                                                                                    }
+                                                                                                                                                                                  }
+                                                                                                                                                                                ]
+                                                                                                                                                                              }
+                                                                                                                                                                            }
+                                                                                                                                                                          ]
+                                                                                                                                                                        }
+                                                                                                                                                                      }
+                                                                                                                                                                    ]
+                                                                                                                                                                  }
+                                                                                                                                                                }
+                                                                                                                                                              ]
+                                                                                                                                                            }
+                                                                                                                                                          }
+                                                                                                                                                        ]
+                                                                                                                                                      }
+                                                                                                                                                    }
+                                                                                                                                                  ]
+                                                                                                                                                }
+                                                                                                                                              }
+                                                                                                                                            ]
+                                                                                                                                          }
+                                                                                                                                        }
+                                                                                                                                      ]
+                                                                                                                                    }
+                                                                                                                                  }
+                                                                                                                                ]
+                                                                                                                              }
+                                                                                                                            }
+                                                                                                                          ]
+                                                                                                                        }
+                                                                                                                      }
+                                                                                                                    ]
+                                                                                                                  }
+                                                                                                                }
+                                                                                                              ]
+                                                                                                            }
+                                                                                                          }
+                                                                                                        ]
+                                                                                                      }
+                                                                                                    }
+                                                                                                  ]
+                                                                                                }
+                                                                                              }
+                                                                                            ]
+                                                                                          }
+                                                                                        }
+                                                                                      ]
+                                                                                    }
+                                                                                  }
+                                                                                ]
+                                                                              }
+                                                                            }
+                                                                          ]
+                                                                        }
+                                                                      }
+                                                                    ]
+                                                                  }
+                                                                }
+                                                              ]
+                                                            }
+                                                          }
+                                                        ]
+                                                      }
+                                                    }
+                                                  ]
+                                                }
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "id": "ingress-matrix-java-en-us-case-match-supplier",
+  "description": "Seed row 5's lone loaded en with EN-us through the supplied-match ingress. The supplied match's locale is en, so the lookup collapses to en and the en-US candidate never appears in the attempted chain.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "localeMatchSupplier": {
+    "behavior": "match-locale",
+    "locale": "EN-us"
+  },
+  "files": {
+    "en": {
+      "Checkout.Title": "Checkout"
+    }
+  }
+}

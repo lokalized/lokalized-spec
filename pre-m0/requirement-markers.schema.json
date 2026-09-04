@@ -1,0 +1,203 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lokalized.org/schemas/pre-m0/requirement-markers.schema.json",
+  "title": "Lokalized JS frozen-plan disposition-marker overlay",
+  "description": "Structural schema for the immutable-plan sidecar. The bound linter authoritatively proves whole-plan inventory coverage and registry correspondence.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "formatVersion",
+    "status",
+    "sourcePlanSha256",
+    "selectedProfileId",
+    "sourceInventories",
+    "entries"
+  ],
+  "properties": {
+    "formatVersion": { "const": 1 },
+    "status": { "enum": ["candidate", "approved"] },
+    "sourcePlanSha256": {
+      "const": "4ace5e349bedd45b16cd87182aed3306d33fae92b034ed01ddb93bc733c5f62d"
+    },
+    "selectedProfileId": { "$ref": "#/$defs/name" },
+    "sourceInventories": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/artifactBinding" }
+    },
+    "entries": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/entry" }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "status": { "const": "approved" } },
+        "required": ["status"]
+      },
+      "then": {
+        "properties": {
+          "entries": {
+            "items": {
+              "if": {
+                "properties": { "markerClass": { "const": "registered" } },
+                "required": ["markerClass"]
+              },
+              "then": {
+                "properties": {
+                  "requirementId": {
+                    "type": "string",
+                    "pattern": "^LJ-[A-Z][A-Z0-9-]*-[0-9]{3}$"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": ".*\\S.*"
+    },
+    "artifactBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": { "$ref": "#/$defs/name" },
+        "sha256": { "$ref": "#/$defs/hash" }
+      }
+    },
+    "milestone": {
+      "enum": [
+        "M0",
+        "M1",
+        "M2",
+        "M3a",
+        "M3b",
+        "M4",
+        "M5a",
+        "M5b",
+        "M6",
+        "M7",
+        "M8",
+        "M9",
+        "M-D",
+        "M-R",
+        "M-E",
+        "M-X"
+      ]
+    },
+    "inventoryId": {
+      "type": "string",
+      "pattern": "^INV-[0-9]+-[0-9]+-[0-9]{3}$"
+    },
+    "sourceBlockSha256": {
+      "description": "SHA-256 of the UTF-8 frozen-plan inventory-block lines joined by LF with no added trailing LF.",
+      "$ref": "#/$defs/hash"
+    },
+    "registeredEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "markerClass",
+        "requirementId",
+        "inventoryId",
+        "sourceBlockSha256",
+        "sourceLineStart",
+        "sourceLineEnd",
+        "sourceAnchor",
+        "statementSha256"
+      ],
+      "properties": {
+        "markerClass": { "const": "registered" },
+        "requirementId": {
+          "description": "Candidate overlays may use BOOT IDs; approved overlays are restricted to LJ IDs by the top-level conditional.",
+          "type": "string",
+          "pattern": "^(?:BOOT-M0-(?!0000)[0-9]{4}|LJ-[A-Z][A-Z0-9-]*-[0-9]{3})$"
+        },
+        "inventoryId": { "$ref": "#/$defs/inventoryId" },
+        "sourceBlockSha256": { "$ref": "#/$defs/sourceBlockSha256" },
+        "sourceLineStart": { "type": "integer", "minimum": 1 },
+        "sourceLineEnd": { "type": "integer", "minimum": 1 },
+        "sourceAnchor": { "$ref": "#/$defs/name" },
+        "statementSha256": {
+          "description": "SHA-256 of the UTF-8 JCS encoding of the corresponding registry statement string.",
+          "$ref": "#/$defs/hash"
+        }
+      }
+    },
+    "deferredEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "markerClass",
+        "inventoryId",
+        "sourceBlockSha256",
+        "sourceLineStart",
+        "sourceLineEnd",
+        "sourceAnchor",
+        "registrationBefore",
+        "reviewedBy",
+        "rationale"
+      ],
+      "properties": {
+        "markerClass": { "const": "deferred" },
+        "inventoryId": { "$ref": "#/$defs/inventoryId" },
+        "sourceBlockSha256": { "$ref": "#/$defs/sourceBlockSha256" },
+        "sourceLineStart": { "type": "integer", "minimum": 1 },
+        "sourceLineEnd": { "type": "integer", "minimum": 1 },
+        "sourceAnchor": { "$ref": "#/$defs/name" },
+        "registrationBefore": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/milestone" }
+        },
+        "reviewedBy": { "$ref": "#/$defs/name" },
+        "rationale": { "$ref": "#/$defs/name" }
+      }
+    },
+    "nonnormativeEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "markerClass",
+        "inventoryId",
+        "sourceBlockSha256",
+        "sourceLineStart",
+        "sourceLineEnd",
+        "sourceAnchor",
+        "reviewedBy",
+        "rationale"
+      ],
+      "properties": {
+        "markerClass": { "const": "nonnormative" },
+        "inventoryId": { "$ref": "#/$defs/inventoryId" },
+        "sourceBlockSha256": { "$ref": "#/$defs/sourceBlockSha256" },
+        "sourceLineStart": { "type": "integer", "minimum": 1 },
+        "sourceLineEnd": { "type": "integer", "minimum": 1 },
+        "sourceAnchor": { "$ref": "#/$defs/name" },
+        "reviewedBy": { "$ref": "#/$defs/name" },
+        "rationale": { "$ref": "#/$defs/name" }
+      }
+    },
+    "entry": {
+      "oneOf": [
+        { "$ref": "#/$defs/registeredEntry" },
+        { "$ref": "#/$defs/deferredEntry" },
+        { "$ref": "#/$defs/nonnormativeEntry" }
+      ]
+    }
+  }
+}

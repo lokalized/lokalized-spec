@@ -1,0 +1,22 @@
+{
+  "id": "dedup-and-candidates-equivalent-fallback-am-first",
+  "description": "The tiebreaker-resolved FALLBACK locale, the third branch of DefaultStrings.java:446-469, which no other fixture in the corpus reaches. Loads the same two canonically-equivalent catalogs, hy-AM and hy-SU, but configures fallbackLocale arm-SU - a tag that is loaded nowhere and is canonically equivalent to BOTH of them (canonicalLanguageTag('arm-SU') is 'hy-AM', verified), so neither the exact-hit branch at 446 nor the single-equivalent branch at 448 can settle it. Construction therefore walks the tiebreaker list and adopts its first entry that is canonically equivalent to the configured tag: hy-AM here. Paired with dedup-and-candidates-equivalent-fallback-su-first, whose only difference is the reversed list.",
+  "fallbackLocale": "arm-SU",
+  "instanceLocale": "hy-AM",
+  "tiebreakers": {
+    "hy": [
+      "hy-AM",
+      "hy-SU"
+    ]
+  },
+  "files": {
+    "hy-AM": {
+      "Pair.InBoth": "hy-AM: in both",
+      "Pair.OnlyInAm": "hy-AM: only here"
+    },
+    "hy-SU": {
+      "Pair.InBoth": "hy-SU: in both",
+      "Pair.OnlyInSu": "hy-SU: only here"
+    }
+  }
+}

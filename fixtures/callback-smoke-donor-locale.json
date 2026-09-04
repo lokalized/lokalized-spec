@@ -1,0 +1,33 @@
+{
+  "id": "callback-smoke-donor-locale",
+  "description": "THE SHARP CASE. The key exists only in the fr fallback, so an en request is served by the fr catalog. The resolver returns VOWEL when handed fr and CONSONANT when handed en, so the rendered article reveals WHICH locale the callback received — the donor rule applied to callbacks.",
+  "fallbackLocale": "fr",
+  "tiebreakers": null,
+  "phoneticResolver": {
+    "behavior": "by-locale",
+    "mapping": {
+      "fr": "PHONETIC_VOWEL",
+      "en": "PHONETIC_CONSONANT"
+    },
+    "default": "PHONETIC_OTHER"
+  },
+  "files": {
+    "en": {
+      "Unrelated": "unrelated"
+    },
+    "fr": {
+      "Article": {
+        "translation": "{{article}}",
+        "placeholders": {
+          "article": {
+            "value": "nounTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "fr-served-with-fr-locale",
+              "PHONETIC_CONSONANT": "fr-served-with-en-locale"
+            }
+          }
+        }
+      }
+    }
+  }
+}

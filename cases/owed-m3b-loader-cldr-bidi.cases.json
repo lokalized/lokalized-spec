@@ -1,0 +1,635 @@
+{
+  "formatVersion": 1,
+  "family": "owed-m3b-loader-cldr-bidi",
+  "description": "Plan v7 section 8.3 fixture family 'owed-m3b-loader-cldr-bidi'. Inputs only; the oracle emits expected.",
+  "cases": [
+    {
+      "id": "owed.m3b.cldr.ordinality-for-rules-less-locale-throws",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "ordinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "integer",
+          "value": "1"
+        },
+        "locale": "zxx"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "CldrPluralRules.ordinalityForOperands:97 and ordinalRulesForLocale:204. `zxx` (no linguistic content) is well-formed and carries NEITHER cardinal nor ordinal CLDR rules in the pinned 48.2 data, so ordinalRulesForLocale falls through both the ordinal lookup and the cardinal-presence test and returns empty. Discriminating because a port with a too-eager root fallback answers ORDINALITY_OTHER instead of refusing."
+    },
+    {
+      "id": "owed.m3b.cldr.cardinality-for-rules-less-locale-throws",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "integer",
+          "value": "1"
+        },
+        "locale": "zxx"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The cardinal twin of the ordinality case above: the same rules-less locale rejected on the cardinal surface, so the two surfaces are shown to agree."
+    },
+    {
+      "id": "owed.m3b.cldr.range-for-rules-less-locale-throws",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForRange",
+      "input": {
+        "start": {
+          "$lokalized": "language-form",
+          "axis": "cardinality",
+          "name": "CARDINALITY_ONE"
+        },
+        "end": {
+          "$lokalized": "language-form",
+          "axis": "cardinality",
+          "name": "CARDINALITY_OTHER"
+        },
+        "locale": "zxx"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "CldrPluralRules.cardinalityForRange:109 -- the cardinal-rules presence guard on the RANGE surface. Third of the trio; a port that only guarded forNumber would silently answer OTHER here."
+    },
+    {
+      "id": "owed.m3b.cldr.range-for-range-less-locale-returns-end",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForRange",
+      "input": {
+        "start": {
+          "$lokalized": "language-form",
+          "axis": "cardinality",
+          "name": "CARDINALITY_ONE"
+        },
+        "end": {
+          "$lokalized": "language-form",
+          "axis": "cardinality",
+          "name": "CARDINALITY_OTHER"
+        },
+        "locale": "ckb"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "CldrPluralRules.cardinalityRangesForLocale:173 and localeRangesForLocale:214. `ckb` HAS cardinal rules but no entry in CARDINAL_RANGES, so localeRangesForLocale exhausts its candidate list and cardinalityForRange falls back to the END cardinality. (bn/gu/si, named in the original disposition, are all present in the ranges table and would not reach this arm.)"
+    },
+    {
+      "id": "owed.m3b.cldr.range-for-second-range-less-locale-returns-end",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForRange",
+      "input": {
+        "start": {
+          "$lokalized": "language-form",
+          "axis": "cardinality",
+          "name": "CARDINALITY_ONE"
+        },
+        "end": {
+          "$lokalized": "language-form",
+          "axis": "cardinality",
+          "name": "CARDINALITY_FEW"
+        },
+        "locale": "pap"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The second corpus locale with cardinal rules and no ranges entry, with a different END cardinality so the 'returns the end' rule is pinned by two distinct answers rather than by OTHER twice."
+    },
+    {
+      "id": "owed.m3b.cldr.range-for-range-bearing-locale-differs",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForRange",
+      "input": {
+        "start": {
+          "$lokalized": "language-form",
+          "axis": "cardinality",
+          "name": "CARDINALITY_ONE"
+        },
+        "end": {
+          "$lokalized": "language-form",
+          "axis": "cardinality",
+          "name": "CARDINALITY_FEW"
+        },
+        "locale": "ar"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The contrast partner: a locale WITH a ranges table, same start/end pair as the pap case, so the range table's answer and the bare end-cardinality fallback sit side by side."
+    },
+    {
+      "id": "owed.m3b.cldr.ordinality-for-cardinal-only-locale-uses-root-ordinals",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "ordinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "integer",
+          "value": "1"
+        },
+        "locale": "ckb"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "CldrPluralRules.ordinalRulesForLocale:204 TRUE arm -- a locale that HAS cardinal rules but no ordinal rules, which silently borrows the ROOT ordinal rules instead of refusing. Read against the zxx case above, which has neither and DOES refuse: the two answers (ORDINALITY_OTHER versus UnsupportedLocaleException) are what separate 'no ordinal rules' from 'no rules at all', and no corpus case distinguished them."
+    },
+    {
+      "id": "owed.m3b.cldr.cardinality-for-undetermined-locale-uses-root",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "integer",
+          "value": "1"
+        },
+        "locale": "und"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "CldrPluralRules.localeCandidates:247/248 and LocaleUtils.languageForCanonicalTag:113. `und` has no primary language, so localeCandidates short-circuits to the single candidate `root` and the ROOT rules answer CARDINALITY_OTHER for 1 -- not ONE, and not an exception. Nothing in the corpus pinned this substitution."
+    },
+    {
+      "id": "owed.m3b.cldr.cardinality-for-undetermined-with-script-uses-root",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "integer",
+          "value": "2"
+        },
+        "locale": "und-Latn"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same root substitution with a script subtag present, proving the script is not consulted once the language is undetermined."
+    },
+    {
+      "id": "owed.m3b.cldr.cardinality-for-private-use-locale-uses-root",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "integer",
+          "value": "1"
+        },
+        "locale": "x-private"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "LocaleUtils.languageForCanonicalTag:105 -- the `x-` private-use prefix test, whose TRUE arm the corpus never took on this path. languageForCanonicalTag returns empty, hasUndeterminedLanguage is true because TagParts gives a private-use tag an empty language, so the answer is the ROOT rules' CARDINALITY_OTHER rather than an UnsupportedLocaleException. A genuinely surprising result."
+    },
+    {
+      "id": "owed.m3b.cldr.cardinality-zh-hant-script-only",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "integer",
+          "value": "1"
+        },
+        "locale": "zh-Hant"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "CldrPluralRules.localeCandidates:256 -- the script-present branch of the candidate ladder."
+    },
+    {
+      "id": "owed.m3b.cldr.cardinality-zh-hant-mo-script-and-region",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "integer",
+          "value": "1"
+        },
+        "locale": "zh-Hant-MO"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "CldrPluralRules.localeCandidates:256 -- the only shape that builds the three-part `language-script-region` candidate. With pt-PT (region, no script) already in the corpus and zh-Hant above, all three candidate shapes are now represented."
+    },
+    {
+      "id": "owed.m3b.cldr.danish-decimal-zero-point-one-reads-t",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "decimal",
+          "value": "0.1"
+        },
+        "locale": "da"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "CldrPluralRules.valueFor:604 -- the T operand arm. Danish `one` is `n = 1 or (t != 0 and i = 0,1)`; for 0.1 t=1 and i=0, so the answer is ONE. Only da and is read `t` in the whole pinned CLDR 48.2 rule set."
+    },
+    {
+      "id": "owed.m3b.cldr.icelandic-decimal-two-point-one-zero-separates-t-from-f",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "decimal",
+          "value": "2.10"
+        },
+        "locale": "is"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "THE case that separates t from f. AUDIT CORRECTION to the disposition's owed text, which named da 2.10: Danish reads t only as `t != 0`, and `t != 0` is equivalent to `f != 0` for every value, so NO Danish input can tell the two operands apart -- and 2.10 in Danish answers OTHER anyway, because i = 2 fails `i = 0,1`. Icelandic reads `t % 10 = 1 and t % 100 != 11`, and 2.10 has t = 1 but f = 10, so Java answers ONE while a port reading f answers OTHER."
+    },
+    {
+      "id": "owed.m3b.cldr.icelandic-eleven-point-one-reads-t-modulo",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForNumber",
+      "input": {
+        "value": {
+          "$lokalized": "decimal",
+          "value": "11.1"
+        },
+        "locale": "is"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The second t-reading locale, whose rule is `t % 10 = 1 and t % 100 != 11` -- so the operand is used under a modulus rather than a bare inequality."
+    },
+    {
+      "id": "owed.m3b.operands.negative-visible-decimal-places-refused",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForOperands",
+      "input": {
+        "value": {
+          "$lokalized": "plural-operands",
+          "value": "1",
+          "visibleDecimalPlaces": -1
+        },
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "PluralOperands.Builder.build:401. The compact-exponent guard on line 394 is already covered; this is its visible-decimal-places twin, and the two report different messages ('Visible decimal places must be non-negative, but was -1')."
+    },
+    {
+      "id": "owed.m3b.bidi.private-use-locale-is-not-rtl",
+      "requirementIds": [],
+      "fixture": "owed-bidi-private-use-locale",
+      "operation": "getResult",
+      "input": {
+        "key": "Wrap.Value",
+        "locale": "x-private",
+        "placeholders": {
+          "value": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "BidiUtils.localeUsesRightToLeftScript:59 FALSE arm. Every RTL/LTR case in the corpus uses a locale that maximizes; x-private does not, so `script` stays empty. DIFFERENTIAL CHECK (as the milestone requires): tools/interpolate-diff DOES drive localeUsesRightToLeftScript over 39 tags -- but every one of them, `und` and `root` included, has a non-empty language and therefore maximizes. No private-use tag appears in that list, so the differential does not discriminate this arm either. A port that returned true, or threw, on an unmaximizable tag is indistinguishable from Java today."
+    },
+    {
+      "id": "owed.m3b.bidi.arabic-locale-is-rtl",
+      "requirementIds": [],
+      "fixture": "owed-bidi-private-use-locale",
+      "operation": "getResult",
+      "input": {
+        "key": "Wrap.Value",
+        "locale": "ar",
+        "placeholders": {
+          "value": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The isolating partner, so the private-use answer is read against a locale that DOES maximize to an RTL script under the same fixture."
+    },
+    {
+      "id": "owed.m3b.bidi.english-locale-is-not-rtl",
+      "requirementIds": [],
+      "fixture": "owed-bidi-private-use-locale",
+      "operation": "getResult",
+      "input": {
+        "key": "Wrap.Value",
+        "locale": "en",
+        "placeholders": {
+          "value": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The LTR partner that maximizes. Together the three pin that 'no likely subtag' behaves like LTR rather than like RTL or like a failure."
+    },
+    {
+      "id": "owed.m3b.bidi.single-character-value-is-wrapped",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-value-shapes",
+      "operation": "getResult",
+      "input": {
+        "key": "Wrap.Value",
+        "placeholders": {
+          "value": "a"
+        },
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "BidiUtils.isIsolated:151 `valueLength < 2` TRUE -- the only length the corpus never used (0 returns earlier). Expect FSI + a + PDI. DIFFERENTIAL CHECK (as the milestone requires): lokalized-js tools/interpolate-diff DOES already compare Java and JS on the bare value \"a\", so the algorithm is discriminated there. It does so through BidiUtils.isolate(String) -- the one-argument overload, which has NO caller in the library's own code -- so it exercises neither the BOUNDED render path a translation actually takes nor the surrounding template. That is what this case adds; it is not a duplicate of the differential, but it is not the sole check either."
+    },
+    {
+      "id": "owed.m3b.bidi.single-isolate-initiator-value-is-balanced-then-wrapped",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-value-shapes",
+      "operation": "getResult",
+      "input": {
+        "key": "Wrap.Value",
+        "placeholders": {
+          "value": "⁨"
+        },
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The sharp half of the one-character pair: a lone FIRST STRONG ISOLATE. isIsolated returns false on the length guard, so isolate() wraps AND balances the unclosed initiator -- FSI + U+2068 + PDI + PDI."
+    },
+    {
+      "id": "owed.m3b.bidi.nested-isolate-run-is-already-isolated",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-value-shapes",
+      "operation": "getResult",
+      "input": {
+        "key": "Wrap.Value",
+        "placeholders": {
+          "value": "⁨⁨a⁩⁩"
+        },
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "BidiUtils.isIsolated:167 `isolateDepth == 0` FALSE arm. AUDIT CORRECTION to the disposition's owed text: the value it named (U+2068 a U+2069 b) is ALREADY in the corpus as bidi-isolation.value-shapes.isolate-closing-before-end-is-rewrapped, and it takes both TRUE arms. The unexercised arm is a PDI met at depth >= 2, which only a NESTED isolate run produces. Expect the value echoed back unchanged, versus a port that mishandles depth and re-wraps it. DIFFERENTIAL CHECK: tools/interpolate-diff already carries the nested shapes (FSI FSI b PDI PDI and friends) through the unbounded isolate(String); this case carries one through the bounded render path and the template, which the differential does not reach."
+    },
+    {
+      "id": "owed.m3b.bidi.repeated-placeholder-renders-identically-twice",
+      "requirementIds": [],
+      "fixture": "owed-bidi-repeated-placeholder",
+      "operation": "getResult",
+      "input": {
+        "key": "Twice.Value",
+        "placeholders": {
+          "v": "abcd"
+        },
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "BidiUtils$BoundedIsolatedValue.render:209 `renderedValue != null` TRUE. The whole repeat path -- memoization, synchronized re-entry, and the second budget check -- is unexercised by the corpus. Expect both occurrences byte-identical."
+    },
+    {
+      "id": "owed.m3b.bidi.repeated-placeholder-second-occurrence-overruns",
+      "requirementIds": [],
+      "fixture": "owed-bidi-repeated-placeholder-tight-limit",
+      "operation": "getResult",
+      "input": {
+        "key": "Twice.Value",
+        "placeholders": {
+          "v": "abcd"
+        },
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "BidiUtils$BoundedIsolatedValue.render:210. Pins BOTH that the failure happens on the second occurrence and that the reported maximum is 11 (the full limit) rather than 5 (the remaining budget) -- a port that reported the budget it was handed would produce a different message."
+    },
+    {
+      "id": "owed.m3b.bidi.value-longer-than-remaining-budget-rejected-before-scanning",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-output-limit",
+      "operation": "getResult",
+      "input": {
+        "key": "Wrap.Value",
+        "placeholders": {
+          "value": "0123456789"
+        },
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "BidiUtils.isolate:98 `valueLength > maximumCharacters` TRUE -- the PRE-SCAN rejection. Every output-limit case in the corpus overruns during the copy instead: at limit 10 the template's leading '[' leaves 9 characters of budget, and the existing values are 6 and 7 characters long. A 10-character value is rejected before the isolate scan starts, which is the work-limit ordering this pins."
+    },
+    {
+      "id": "owed.m3b.bidi.pre-isolated-value-longer-than-budget-rejected-before-early-return",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-output-limit",
+      "operation": "getResult",
+      "input": {
+        "key": "Wrap.Value",
+        "placeholders": {
+          "value": "⁨abcdefgh⁩"
+        },
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The pre-isolated variant of the same overrun. A value that is already isolated returns early at isolate line 106, so ONLY the line-98 pre-check can reject it -- a port that moved the length test after the isolated-value fast path would return this value unchecked."
+    },
+    {
+      "id": "owed.m3b.loader.duplicate-rendered-language-tag-refused",
+      "requirementIds": [],
+      "fixture": "owed-loader-duplicate-language-tag",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "LocalizedStringLoader.unmodifiableLocaleMapInLanguageTagOrder:1573. The corpus has never loaded two files whose locales collide only AFTER rendering, so a port that keyed its catalog map by language tag from the start would silently keep one file and drop the other -- and pass everything. Asserts the LocalizedStringLoadingException and its 'Duplicate locale key rendering as language tag' text. (The check folds case, so en-abcdefgh / en-ABCDEFGH would collide too; that pair is unusable as a fixture because the fixture directory is materialized on a case-insensitive filesystem.)"
+    },
+    {
+      "id": "owed.m3b.loader.range-without-start-member-refused",
+      "requirementIds": [],
+      "fixture": "owed-loader-range-endpoints",
+      "operation": "parse",
+      "input": {
+        "file": "en",
+        "locale": "en",
+        "source": "range-end-only"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "parseSingleAxisLanguageFormTranslation:2586 `rangeValueStartJsonValue == null` TRUE. The corpus only had `{\"start\": null, \"end\": \"hi\"}`, which takes the isNull arm. A port whose range parser reads members positionally, or that treats an absent member as a type error, reports something else here."
+    },
+    {
+      "id": "owed.m3b.loader.range-with-explicitly-null-end-refused",
+      "requirementIds": [],
+      "fixture": "owed-loader-range-endpoints",
+      "operation": "parse",
+      "input": {
+        "file": "fr",
+        "locale": "fr",
+        "source": "range-null-end"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "parseSingleAxisLanguageFormTranslation:2589 `rangeValueEndJsonValue.isNull()` TRUE. The corpus only had the MISSING end. Asserts the 'range end is required' wording rather than a type error."
+    },
+    {
+      "id": "owed.m3b.loader.bom-prefixed-file-loads-identically",
+      "requirementIds": [],
+      "fixture": "owed-loader-bom-prefixed",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "normalizeLocalizedStringsFileContents:2711 -- the `charAt(0) == UTF_8_BOM` TRUE arm, which no corpus file reached. Both locales must arrive with the same key set."
+    },
+    {
+      "id": "owed.m3b.loader.bom-prefixed-file-parses",
+      "requirementIds": [],
+      "fixture": "owed-loader-bom-prefixed",
+      "operation": "parse",
+      "input": {
+        "file": "en",
+        "locale": "en",
+        "source": "bom-prefixed"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The single-file half of the same fact, so the BOM strip is pinned on the parse entry point as well as the directory load."
+    },
+    {
+      "id": "owed.m3b.loader.bom-prefixed-catalog-resolves",
+      "requirementIds": [],
+      "fixture": "owed-loader-bom-prefixed",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting",
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The end-to-end partner: the BOM-prefixed catalog is not merely loadable but resolvable, so a port that kept the BOM as part of the first KEY would be caught here rather than only at load."
+    },
+    {
+      "id": "owed.m3b.loader.diagnostic-path-saturates-with-single-ellipsis",
+      "requirementIds": [],
+      "fixture": "owed-loader-bounded-diagnostics",
+      "operation": "parse",
+      "input": {
+        "file": "en",
+        "locale": "en",
+        "source": "bounded-path-exact-room"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "boundedJsonPath:2821 (parent already at the 4096 cap, so the child path is the parent verbatim), appendBoundedPathPart:2839 (nothing left to append) and 2847 FALSE (exactly one character of room, so the part is dropped and only the ellipsis is written). Nothing in the corpus produced a diagnostic path anywhere near 4096 characters, so a port with no path bound at all -- or one that truncated at a different offset -- reports a different message and passes today."
+    },
+    {
+      "id": "owed.m3b.loader.diagnostic-path-and-member-name-truncated",
+      "requirementIds": [],
+      "fixture": "owed-loader-bounded-diagnostics",
+      "operation": "parse",
+      "input": {
+        "file": "fr",
+        "locale": "fr",
+        "source": "bounded-path-and-member"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "appendBoundedPathPart:2847 TRUE (a component longer than the remaining room, truncated to remaining-1 plus U+2026) and boundedDiagnosticValue:2857 (a duplicate member name over 256 UTF-16 units, cut to a 255-character prefix plus U+2026). The two bounds are different sizes and different rules; a port that reused one for the other is caught by this case."
+    },
+    {
+      "id": "owed.m3b.tokenizer.unexpected-code-point-without-equals-hint",
+      "requirementIds": [],
+      "fixture": "owed-loader-unexpected-code-point",
+      "operation": "parse",
+      "input": {
+        "file": "en",
+        "locale": "en",
+        "source": "unexpected-question-mark"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ExpressionTokenizer.unexpectedContent:194 FALSE arm. Every tokenizer rejection the corpus has ever seen fails on '=' and gets the \"Did you mean '=='?\" hint; the JS repo's diff:tokenizer adhesion list is the same shape. A port that appended the hint unconditionally, or that reported the wrong code point or index, passes both the corpus and the differential today."
+    },
+    {
+      "id": "owed.m3b.tokenizer.non-ascii-whitespace-is-unexpected-content",
+      "requirementIds": [],
+      "fixture": "owed-loader-unexpected-code-point",
+      "operation": "parse",
+      "input": {
+        "file": "fr",
+        "locale": "fr",
+        "source": "no-break-space"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The second non-'=' rejection, and the one a port using a Unicode-aware \\s is most likely to accept silently: U+00A0 is whitespace to JavaScript's \\s but not to the tokenizer's [ \\t\\r\\n\\f] class. Pins the U+00A0 code point and its index."
+    },
+    {
+      "id": "owed.m3b.suppliedmatch.unmatched-with-range-refused",
+      "requirementIds": [],
+      "fixture": "owed-supplied-match-unmatched-with-range",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Hello"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "LocaleMatchResult.<init>:103 `languageRange != null` TRUE. Asserts the 'An unmatched locale result must use NONE and omit range and weight' refusal."
+    },
+    {
+      "id": "owed.m3b.suppliedmatch.matched-without-range-refused",
+      "requirementIds": [],
+      "fixture": "owed-supplied-match-matched-without-range",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Hello"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "LocaleMatchResult.<init>:106 `languageRange == null` TRUE. Asserts 'A matched locale result requires a range, weight, and non-NONE match type' -- and, because the range clause is checked BEFORE the containment clause on line 108, that this message wins over the range-membership one."
+    },
+    {
+      "id": "owed.m3b.suppliedmatch.matched-without-weight-refused",
+      "requirementIds": [],
+      "fixture": "owed-supplied-match-matched-without-weight",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Hello"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "LocaleMatchResult.<init>:106 `effectiveWeight == null` TRUE. Distinct from supplied-match-weight-zero, which supplies a weight that fails the RANGE check on line 111 instead."
+    },
+    {
+      "id": "owed.m3b.suppliedmatch.selected-locale-absent-from-considered-refused",
+      "requirementIds": [],
+      "fixture": "owed-supplied-match-selected-locale-not-considered",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Hello"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "LocaleMatchResult.<init>:131 `!consideredLocaleCopy.contains(locale)` TRUE. Asserts 'The selected locale must be present in considered locales' rather than the fallback-containment message, which a port that checked only one membership rule would emit."
+    },
+    {
+      "id": "owed.m3b.options.policy-only-options-take-effect",
+      "requirementIds": [],
+      "fixture": "owed-options-instance-en",
+      "operation": "getResult",
+      "input": {
+        "key": "Items",
+        "placeholders": {
+          "count": 5
+        },
+        "translationFallbackPolicy": "any-failure"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "TranslationOptions.Builder.build:385. Every options case in the corpus also sets a locale, so the all-null short-circuit chain is only ever evaluated as far as the locale clause. This one sets ONLY the fallback policy, leaving locale, ranges, bidi and handler null, so the chain is walked to its last clause. REVIEW REWRITE: this case originally used options-smoke-policy, whose fallbackLocale IS fr, so a lookup with no locale option resolved straight to fr and succeeded -- the policy changed nothing and the case would have produced byte-identical output if build() had wrongly collapsed to TranslationOptions.none(). It now runs against an instanceLocale of en, where the en entry declares only CARDINALITY_ONE: with the any-failure policy the lookup walks on to fr, and without it (the none() arm) it fails."
+    },
+    {
+      "id": "owed.m3b.options.handler-only-options-take-effect",
+      "requirementIds": [],
+      "fixture": "owed-options-instance-en",
+      "operation": "get",
+      "input": {
+        "key": "Items",
+        "placeholders": {
+          "count": 5
+        },
+        "translationFailureHandler": {
+          "behavior": "return-string",
+          "text": "SUBSTITUTED"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The handler-only partner: locale, ranges and bidi null, handler non-null. Together with the policy-only case the two remaining clause outcomes on line 385 are separated. REVIEW REWRITE, same defect as its partner: under options-smoke-policy the lookup succeeded in fr and the handler was never invoked, so the case could not tell a built options object from TranslationOptions.none(). Against an instanceLocale of en the lookup fails, the handler substitutes its string, and the none() arm would raise MissingTranslationException instead."
+    },
+    {
+      "id": "owed.m3b.options.bidi-only-options-take-effect",
+      "requirementIds": [],
+      "fixture": "options-smoke-bidi",
+      "operation": "getResult",
+      "input": {
+        "key": "OnlyEnglish",
+        "placeholders": {
+          "name": "Sarah"
+        },
+        "bidiIsolation": "ALWAYS"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The bidi-only partner, so each of the four non-locale option fields is shown to reach the built options on its own."
+    }
+  ]
+}

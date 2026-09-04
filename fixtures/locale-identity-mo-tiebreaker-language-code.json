@@ -1,0 +1,25 @@
+{
+  "id": "locale-identity-mo-tiebreaker-language-code",
+  "description": "Loaded mo and ro are two catalogs whose CANONICAL primary language is the same (mo aliases to ro), so DefaultStrings groups them under language code 'ro'. The fixture supplies the tiebreaker under the deprecated key 'mo' on purpose: normalizedTiebreakerLanguageCode (DefaultStrings.java:2649, called from line 325) canonicalizes the supplied key before the exact-permutation check at line 404, so a port that compares raw keys cannot even construct this instance. The list itself is the exact permutation of the LOADED spellings, not of the canonical one.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "mo": [
+      "mo",
+      "ro"
+    ]
+  },
+  "files": {
+    "ro": {
+      "Greeting": "salut",
+      "Only.Ro": "ro only"
+    },
+    "mo": {
+      "Greeting": "salut mo"
+    },
+    "en": {
+      "Greeting": "hello"
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

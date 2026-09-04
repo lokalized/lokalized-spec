@@ -1,0 +1,15 @@
+{
+  "id": "failure-handler-instance-throws",
+  "description": "Identical catalog to failure-handler-missing-template-key with exactly one difference: the INSTANCE failure handler is TranslationFailureHandler.throwException(). Serves 'callback exceptions' by pinning where the throw surfaces (DefaultStrings.java:761-763 puts the THROW_EXCEPTION arm inside getResult, and get() is only getResult(...).getTranslation() at DefaultStrings.java:643), and pairs with per-call overrides that must replace it wholesale rather than compose with it.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "translationFailureHandler": {
+    "behavior": "throw"
+  },
+  "files": {
+    "en": {
+      "Locale.Marker": "en",
+      "Greeting.Present": "Hello there."
+    }
+  }
+}

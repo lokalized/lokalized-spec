@@ -1,0 +1,12 @@
+{
+  "formatVersion": 1,
+  "description": "The direct-locale seed table AS PUBLISHED in plan v7 section 8.3, transcribed verbatim. The oracle build checks its own output against these. A disagreement means either the oracle is wrong or the plan's table is wrong; both are worth knowing, so the build reports rather than silently trusting either side.",
+  "source": "IMPLEMENTATION-PLAN-v7.md section 8.3, 'The direct-locale seed rows lock the two-channel behavior'",
+  "rows": [
+    { "seedRow": 1, "request": "und-Latn", "diagnosticSelection": null, "diagnosticType": "NONE", "resolvedLocale": "fr", "attemptedLocales": ["und-Latn", "und", "fr"] },
+    { "seedRow": 2, "request": "fr-BE", "diagnosticSelection": "fr-FR", "diagnosticType": "LIKELY_SUBTAG", "resolvedLocale": "fr-FR", "attemptedLocales": ["fr-BE", "fr", "fr-FR"] },
+    { "seedRow": 3, "request": "en-AU", "diagnosticSelection": "en-001", "diagnosticType": "CLDR_FALLBACK", "resolvedLocale": "en-001", "attemptedLocales": ["en-AU", "en-001"] },
+    { "seedRow": 4, "request": "zh-TW", "diagnosticSelection": "zh-Hant", "diagnosticType": "LIKELY_SUBTAG", "resolvedLocale": "en", "attemptedLocales": ["zh-TW", "zh-Hant", "en"] },
+    { "seedRow": 5, "request": "en-US", "diagnosticSelection": "en", "diagnosticType": "CLDR_FALLBACK", "resolvedLocale": "en", "attemptedLocales": ["en-US", "en"] }
+  ]
+}

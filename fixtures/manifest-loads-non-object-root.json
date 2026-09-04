@@ -1,0 +1,15 @@
+{
+  "id": "manifest-loads-non-object-root",
+  "description": "Added by review: a German file that is perfectly valid JSON but whose root is an ARRAY, not an object. Verified to fail with a distinct diagnostic ('a localized strings file must be comprised of a single JSON object') carrying no line:column, unlike the syntax-error path. Isolates one cause, and one bad file only, so the message is iteration-order independent. loadOnly.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Greeting": "Hello"
+    }
+  },
+  "rawFiles": {
+    "de": "[{\"Greeting\":\"Hallo\"}]"
+  }
+}

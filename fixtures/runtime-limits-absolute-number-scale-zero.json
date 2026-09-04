@@ -1,0 +1,25 @@
+{
+  "id": "runtime-limits-absolute-number-scale-zero",
+  "description": "Plan v7 section 8.3 zero-boundary clause: maximumAbsoluteNumberScale is non-negative and zero builds, admitting only integer-scaled values. PluralOperands.validateNumericValue compares Math.abs((long) number.scale()), so both a positive scale (1.5, scale 1) and a negative scale (1E+1, scale -1) must be rejected while 15 (scale 0) resolves.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "runtimeLimits": {
+    "maximumAbsoluteNumberScale": 0
+  },
+  "files": {
+    "en": {
+      "Counted": {
+        "translation": "{{label}}",
+        "placeholders": {
+          "label": {
+            "value": "n",
+            "translations": {
+              "CARDINALITY_ONE": "one",
+              "CARDINALITY_OTHER": "other"
+            }
+          }
+        }
+      }
+    }
+  }
+}

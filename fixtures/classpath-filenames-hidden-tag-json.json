@@ -1,0 +1,15 @@
+{
+  "id": "classpath-filenames-hidden-tag-json",
+  "description": "A valid en catalog plus a file named '.de.json'. Were the .json rule consulted first, the residual stem '.de' would make tag parsing throw exactly as 'de..json' does; the hidden-name check at :1257/:1313 runs first, so nothing is even attempted. The sharpest ordering assertion in the family.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "rawFiles": {
+    ".de.json": "{\"Key.hiddendejson\":\"hiddendejson\"}"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "id": "bidi-isolation-generated-placeholder",
+  "description": "BidiIsolation.ALWAYS with a template that mixes a file-defined (generated) placeholder with two caller-supplied ones. In interpolateTemplate only the immutableContext else-branch consults shouldApplyBidiIsolation (DefaultStrings.java:1365-1371); the placeholderBindings branch that expands generated values never does. So one resolved string carries isolated caller values and a bare generated value, which is the only shape that catches a port isolating every interpolated slot.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "bidiIsolation": "ALWAYS",
+  "files": {
+    "en": {
+      "Locale.Marker": "en",
+      "Greeting.Titled": {
+        "translation": "{{title}} {{name}} — {{city}}",
+        "commentary": "title is file-defined and must not be isolated; name and city are caller-supplied and must be",
+        "placeholders": {
+          "title": {
+            "value": "gender",
+            "translations": {
+              "GENDER_MASCULINE": "Mr.",
+              "GENDER_FEMININE": "Ms."
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "id": "evaluation-locale-alternative-passthrough",
+  "description": "Two donors in one lookup, each evaluated under its own locale. Chain.Alt exists in BOTH pl and en. The pl entry has no `translation` and a single alternative gated on `itemCount == CARDINALITY_FEW`, so when Polish rules do not say FEW the entry yields Optional.empty -- NO_MATCHING_ALTERNATIVE, which the default policy DOES continue past. The en entry is then evaluated under English rules, and its alternative is gated on `itemCount == CARDINALITY_OTHER`. A count therefore has to be classified twice, under two different locales, inside one getResult call. LocalizedStringLoader accepts a bare string as an alternative's value (parseLocalizedString's isString branch), so no nested {\"translation\": ...} wrapper is needed.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "pl": {
+      "Locale.Marker": "pl",
+      "Chain.Alt": {
+        "commentary": "No default translation on purpose: an unmatched alternative here yields Optional.empty, which getResult records as NO_MATCHING_ALTERNATIVE -- the one failure reason the default fallback policy continues past.",
+        "alternatives": [
+          {
+            "itemCount == CARDINALITY_FEW": "pl:FEW-branch"
+          }
+        ]
+      }
+    },
+    "en": {
+      "Locale.Marker": "en",
+      "Chain.Alt": {
+        "translation": "en:default",
+        "alternatives": [
+          {
+            "itemCount == CARDINALITY_OTHER": "en:OTHER-branch"
+          }
+        ]
+      }
+    }
+  }
+}

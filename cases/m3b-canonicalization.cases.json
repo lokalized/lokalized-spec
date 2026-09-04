@@ -1,0 +1,333 @@
+{
+  "formatVersion": 1,
+  "family": "m3b-canonicalization",
+  "description": "Plan v7 section 8.3 fixture family 'm3b-canonicalization'. Inputs only; the oracle emits expected.",
+  "cases": [
+    {
+      "id": "m3b-canonicalization.script-alias-qaai",
+      "requirementIds": [],
+      "fixture": "m3b-canonicalization-aliases",
+      "operation": "matchFor",
+      "input": {
+        "locale": "en-Qaai"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "CldrLocaleData.isKnownLanguageTag:222/223 and aliasLanguageTagOnce:307, plus TagParts.withScript:669 which has no other call site. Qaai is the pinned SCRIPT_ALIASES table's only entry (Qaai -> Zinh) and is NOT a registered script, so the tag is accepted only because the alias table rescues it and it then REWRITES to en-Zinh. The catalog set contains both en and en-Zinh with tiebreakers ordered [en, en-Zinh], so a port that dropped the alias fallback answers NONE, and a port that accepted the tag without rewriting it answers en -- three distinguishable outcomes for one input."
+    },
+    {
+      "id": "m3b-canonicalization.script-alias-qaai-lowercase",
+      "requirementIds": [],
+      "fixture": "m3b-canonicalization-aliases",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "en-qaai",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same alias through the range solver in lowercase. aliasLanguageTagOnce re-parses the replacement through TagParts.forLanguageTag('und-' + alias) precisely to re-canonicalize its casing, which a port can easily skip; the selected catalog is the title-cased en-Zinh either way, so what this row adds over the row above is that the LOOKUP is case-insensitive while the OUTPUT is not a raw copy of the table value."
+    },
+    {
+      "id": "m3b-canonicalization.unregistered-script-rejected",
+      "requirementIds": [],
+      "fixture": "m3b-canonicalization-aliases",
+      "operation": "matchFor",
+      "input": {
+        "locale": "en-Qaaa"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The negative control for the Qaai ALIAS rewrite. Qaaa and Qaai are both present in the pinned CLDR script-validity table, so neither is rejected as an unknown script; the ONLY thing that separates them is that SCRIPT_ALIASES carries Qaai -> Zinh and nothing for Qaaa. en-Qaaa must therefore stay en-Qaaa and match nothing, while en-Qaai becomes en-Zinh. Without this row a port that rewrote every unassigned 'private-use script' code to Zinh, or that dropped unrecognized scripts altogether and matched bare en, would satisfy the Qaai case."
+    },
+    {
+      "id": "m3b-canonicalization.unassigned-region-rejected",
+      "requirementIds": [],
+      "fixture": "m3b-canonicalization-aliases",
+      "operation": "matchFor",
+      "input": {
+        "locale": "en-QO"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "isKnownLanguageTag:227's REGION_ALIASES arm evaluated on a region that is valid and NOT aliased. QO (Outlying Oceania) is a real CLDR macro-region with no catalog here, so it degrades to en by CLDR fallback rather than being rejected -- the contrast partner of the m3b-tag-validity family's en-ZX row, where an unassigned region makes the whole tag unknown. Keeping both means 'unknown region' is separated from 'known region with no catalog', which the corpus's deprecated-region rows never distinguish."
+    },
+    {
+      "id": "m3b-canonicalization.unknown-variant-rejected",
+      "requirementIds": [],
+      "fixture": "m3b-canonicalization-aliases",
+      "operation": "matchFor",
+      "input": {
+        "locale": "en-zzzzzzzz"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "isKnownLanguageTag:231, the arm where a variant is neither registered nor aliased. Contrast the two rows below: de-1901 is a REGISTERED variant and el-polytoni an ALIASED one, so the trio separates the two variant tables from the rejection."
+    },
+    {
+      "id": "m3b-canonicalization.registered-variant-de-1901",
+      "requirementIds": [],
+      "fixture": "m3b-canonicalization-aliases",
+      "operation": "matchFor",
+      "input": {
+        "locale": "de-1901"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "isKnownLanguageTag:231 (registered variant) and TagParts.isScriptSubtag:707 / isAlphabetic:721. '1901' is four characters, which is the script SLOT's length test, and it is rejected only by the alphabetic test -- on its very first character. Mis-slotting it as a script makes the tag an unknown-script tag, which the en-Qaaa row above shows produces NONE; here it must produce an EXACT match on the de-1901 catalog."
+    },
+    {
+      "id": "m3b-canonicalization.four-char-alnum-subtag-is-variant",
+      "requirementIds": [],
+      "fixture": "m3b-canonicalization-aliases",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "en-ab12",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "TagParts.isAlphabetic:721 again, but rejecting at index 2 rather than index 0, so the pair with de-1901 pins that the scan rejects at ANY index instead of only at the first. The discriminating observable is the same as de-1901's: en-Qaaa (a genuine four-letter script) answers NONE while en-ab12 must degrade to en, so a port that stopped scanning after the first character reclassifies this as a script and loses the match."
+    },
+    {
+      "id": "m3b-canonicalization.script-slot-de-latn",
+      "requirementIds": [],
+      "fixture": "m3b-canonicalization-aliases",
+      "operation": "matchFor",
+      "input": {
+        "locale": "de-Latn"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The positive half of isScriptSubtag:707: four alphabetic characters DO take the script slot. Paired with de-1901 on the same catalog set, the two rows show the slot decision changing the match type (EXACT for the variant, LIKELY_SUBTAG for the script) rather than merely both matching."
+    },
+    {
+      "id": "m3b-canonicalization.variant-alias-polytoni",
+      "requirementIds": [],
+      "fixture": "m3b-canonicalization-aliases",
+      "operation": "matchFor",
+      "input": {
+        "locale": "el-polytoni"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "aliasLanguageTagOnce:323, the VARIANT alias substitution. polytoni -> polyton is one of only two entries and no corpus tag carries a variant at all, so the rewrite has never run. The catalog is loaded as el-polyton, so a port that passed the variant through unchanged finds nothing."
+    },
+    {
+      "id": "m3b-canonicalization.language-alias-contributes-script",
+      "requirementIds": [],
+      "fixture": "m3b-canonicalization-aliases",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "sh-ba",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "aliasLanguageTagOnce:294-295 and TagParts.withScript:669: sh -> sr-Latn is one of only two language aliases that contribute a SCRIPT, and the corpus's single sh case matches the alias table on the whole tag and returns before reaching this code. Three sr catalogs are loaded with tiebreakers ordered [sr-Cyrl, ...], so a port that dropped the alias's script canonicalizes to sr-BA, fails to find it, and falls to sr-Cyrl -- a different catalog's translation with no error, which is exactly the M5b defect-2 shape."
+    },
+    {
+      "id": "m3b-canonicalization.explicit-script-outranks-alias-script",
+      "requirementIds": [],
+      "fixture": "m3b-canonicalization-aliases",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "hbs-cyrl",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The arm that proves the script contribution at 294 is CONDITIONAL and not an unconditional overwrite: hbs also aliases to sr-Latn, but this request carries an explicit Cyrl, which must survive. Selecting sr-Cyrl rather than sr-Latn-BA is the whole assertion."
+    },
+    {
+      "id": "m3b-canonicalization.alias-script-preserves-existing-variant",
+      "requirementIds": [],
+      "fixture": "m3b-canonicalization-aliases",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "sh-fonipa",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "aliasLanguageTagOnce:300's live conjunct: a tag reaching the alias path that ALREADY carries a variant must keep it. sh contributes the Latn script while fonipa survives, so the answer is sr-Latn-fonipa; a port that replaced the variant list wholesale, or that dropped variants during aliasing, lands on sr-Cyrl (the tiebreaker's first entry) instead."
+    },
+    {
+      "id": "m3b-canonicalization.language-alias-contributes-region",
+      "requirementIds": [],
+      "fixture": "m3b-canonicalization-aliases",
+      "operation": "matchFor",
+      "input": {
+        "locale": "prs-Arab"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "aliasLanguageTagOnce:297, the arm where a language alias contributes a REGION. prs -> fa-AF, and because this request carries a script but no region the alias's AF is adopted, giving fa-Arab-AF. A bare 'prs' would NOT exercise this: it matches the alias table on the whole tag and returns earlier."
+    },
+    {
+      "id": "m3b-canonicalization.explicit-region-outranks-alias-region",
+      "requirementIds": [],
+      "fixture": "m3b-canonicalization-aliases",
+      "operation": "matchFor",
+      "input": {
+        "locale": "prs-IR"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The false arm of 297 and the discriminating partner of the row above: the same alias, but an explicit region that must win over the alias's AF. The two rows select DIFFERENT catalogs (fa-Arab-AF versus fa-IR) from the same alias, so a port that adopted the alias's region unconditionally fails exactly one of them."
+    },
+    {
+      "id": "m3b-canonicalization.compound-alias-longest-first",
+      "requirementIds": [],
+      "fixture": "m3b-canonicalization-aliases",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "zh-min-nan-hant",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "compoundLanguageAliasFor:337/342 and aliasLanguageTagOnce:280. COMPOUND_LANGUAGE_ALIAS_KEYS is sorted longest-first precisely so zh-min-nan is tried before zh-min; zh-min-nan -> nan gives nan-Hant, while zh-min -> nan-x-ZH-min would give something that matches nothing here. This is the single input that separates longest-first ordering from any other order, and the corpus enters this loop successfully in no case at all."
+    },
+    {
+      "id": "m3b-canonicalization.compound-alias-shorter-key-control",
+      "requirementIds": [],
+      "fixture": "m3b-canonicalization-aliases",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "zh-min-hant",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The control for the row above. zh-min IS an alias key, so this range does enter the compound loop and does rewrite -- to nan-x-zh-min, which matches no loaded catalog and answers NONE. Together the two rows show the loop matching, and matching the RIGHT key."
+    },
+    {
+      "id": "m3b-canonicalization.compound-alias-no-bok",
+      "requirementIds": [],
+      "fixture": "m3b-canonicalization-aliases",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "no-bok-no",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A second compound-alias family (no-bok -> nb) so the mechanism is not pinned by a single table entry. Note this must go through the range solver: java.util.Locale.forLanguageTag('no-bok-NO') yields bok-NO, which would never reach the alias at all."
+    },
+    {
+      "id": "m3b-canonicalization.compound-alias-remainder-splice",
+      "requirementIds": [],
+      "fixture": "m3b-canonicalization-aliases",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "zh-guoyu-tw",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "compoundLanguageAliasFor:342-343, the splice itself: the replacement is concatenated with languageTag.substring(aliasKey.length()), slicing the ORIGINAL tag by the LOWERCASED key's length. zh-guoyu -> zh plus the '-tw' remainder gives zh-TW. A port that dropped the remainder answers with no zh-TW match; one that mis-sliced by an off-by-one produces a malformed tag."
+    },
+    {
+      "id": "m3b-canonicalization.unknown-script-placeholder-dropped",
+      "requirementIds": [],
+      "fixture": "m3b-canonicalization-aliases",
+      "operation": "matchFor",
+      "input": {
+        "locale": "en-Zzzz"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "TagParts.<init>:577 -- the constructor DROPS an explicit Zzzz script. No corpus tag uses the placeholder, so a port that carried it through would treat en-Zzzz as its own canonical form, build a different likely-subtag candidate list, and cut the fallback chain at a fabricated script boundary. Here it must behave as bare 'en': a CANONICAL match on the en catalog, not the NONE that the en-Qaaa row shows an unknown script produces."
+    },
+    {
+      "id": "m3b-canonicalization.unknown-script-placeholder-with-region",
+      "requirementIds": [],
+      "fixture": "m3b-canonicalization-aliases",
+      "operation": "matchFor",
+      "input": {
+        "locale": "en-Zzzz-US"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same drop surviving a region subtag, so the placeholder removal is shown not to depend on Zzzz being the last subtag."
+    },
+    {
+      "id": "m3b-canonicalization.unknown-region-placeholder-dropped",
+      "requirementIds": [],
+      "fixture": "m3b-canonicalization-aliases",
+      "operation": "matchFor",
+      "input": {
+        "locale": "en-ZZ"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "TagParts.<init>:578, the region twin of the Zzzz drop. The corpus is dense in deprecated and numeric regions but never uses the unknown-region placeholder. Contrast with the en-QO row above, which is a well-formed unassigned region and degrades by CLDR fallback: ZZ must be ERASED, giving the same CANONICAL match on en that bare 'en' gives."
+    },
+    {
+      "id": "m3b-canonicalization.unknown-script-placeholder-zh",
+      "requirementIds": [],
+      "fixture": "m3b-canonicalization-aliases",
+      "operation": "matchFor",
+      "input": {
+        "locale": "zh-Zzzz-TW"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The Zzzz drop on a second language, where erasing it leaves zh-TW and therefore a CANONICAL match on the zh-TW catalog."
+    },
+    {
+      "id": "m3b-canonicalization.private-use-not-maximized",
+      "requirementIds": [],
+      "fixture": "m3b-canonicalization-aliases",
+      "operation": "matchFor",
+      "input": {
+        "locale": "x-private"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "CldrLocaleData.likelySubtagFor:185's private-use bail-out, DefaultStrings.matchFor:1819 (a range that is BOTH undetermined and private-use falls through to private-use handling rather than being skipped as undetermined), languageRangeSpecificityFor:2035 and MemberStatics.<init>:3051. A private-use tag has no language semantics to maximize; it may still select an exactly matching catalog, which is what this asserts."
+    },
+    {
+      "id": "m3b-canonicalization.private-use-fallback-chain",
+      "requirementIds": [],
+      "fixture": "m3b-canonicalization-aliases",
+      "operation": "getResult",
+      "input": {
+        "key": "Absent.Key",
+        "locale": "x-private"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same tag through resolution, so the FALLBACK CHAIN is observable: attemptedLocales must be [x-private, und, fr] -- the tag itself, the undetermined root, and the configured fallback, with nothing maximized in between. A port that ran x-private through likely-subtag maximization would fabricate a script and a longer chain, which is invisible to matchFor but visible here."
+    },
+    {
+      "id": "m3b-canonicalization.multi-valued-region-alias-second-candidate",
+      "requirementIds": [],
+      "fixture": "m3b-canonicalization-aliases",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "cal-cyrl-582",
+            "weight": 1
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "preferredRegionAlias:360's continue arm. 582 is a multi-valued deprecated region alias [FM, MH, MP, PW]; the first likely-subtag candidate for cal-Cyrl is absent from the table, so the loop must SKIP it and consult the next candidate ('cal', whose likely subtag is cal-Latn-MP) to choose MP. A port that consulted only the first candidate, or that stopped at the first miss, returns the list's first entry FM and finds no catalog. Every multi-valued region case in the corpus resolves on its first candidate, so the skip has never run."
+    }
+  ]
+}

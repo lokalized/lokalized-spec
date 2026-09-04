@@ -1,0 +1,17 @@
+{
+  "id": "ingress-matrix-bidi-always",
+  "description": "Bidi ingress matrix, instance leg pinned to ALWAYS. Same catalog as ingress-matrix-bidi-default. ALWAYS differs from both NONE and the RTL_LOCALES default precisely at an LTR request, so every case on this fixture probes en.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "bidiIsolation": "ALWAYS",
+  "files": {
+    "en": {
+      "Locale.Marker": "en",
+      "Greeting.Named": "en:Hello, {{name}}"
+    },
+    "ar": {
+      "Locale.Marker": "ar",
+      "Greeting.Named": "ar:Hello, {{name}}"
+    }
+  }
+}

@@ -1,0 +1,1212 @@
+{
+  "formatVersion": 1,
+  "family": "failure-handler",
+  "description": "Plan v7 section 8.3 fixture family 'failure-handler'. Inputs only; the oracle emits expected.",
+  "skipped": [
+    {
+      "what": "TranslationFailureHandler.returnKey(Consumer<TranslationFailure> observer) -- the observer overload, including an observer that throws.",
+      "why": "VectorOracle.handlerFrom has no named behavior id for it, and section 8.2 forbids embedding executable callback code in a case. The 'throw-in-handler' behavior covers the observable half (a callback raising inside handle), but the documented guarantee that the observer runs BEFORE the returnKey response is produced -- and that its exception propagates in place of the key -- cannot be distinguished from a plain throwing handler with the ids that exist. Adding a 'return-key-with-throwing-observer' behavior to VectorOracle.handlerFrom would make it authorable."
+    },
+    {
+      "what": "A handler that returns null, exercising the requireNonNull at DefaultStrings.java:749-750 and its '<handler> returned null' message.",
+      "why": "No named behavior emits a null TranslationFailureResponse, and the schema's failureHandler enum is closed over the four existing behaviors. This is a real fail-fast path (a NullPointerException with a library-authored message) that no case in the corpus reaches."
+    },
+    {
+      "what": "A TranslationFallbackPolicy implementation that returns null, exercising the requireNonNull at DefaultStrings.java:734-735 ('translationFallbackPolicy returned null').",
+      "why": "ADDED in this review pass. The policy is the second user-supplied callback in the resolution loop and it has the same null contract as the handler, but VectorOracle.policyFrom only maps three named library policies, so there is no way to install a misbehaving one. Symmetrical with the null-handler gap above and reachable by the same oracle extension."
+    },
+    {
+      "what": "TranslationFailure.getLocaleMatchResult() being EMPTY, and the identity of the match object when no negotiation occurred.",
+      "why": "DefaultStrings always constructs DefaultTranslationFailure with the LocaleMatchResult that localeLookupFor produced (DefaultStrings.java:747), so the empty-Optional branch of the interface default method is unreachable from any authored case through the direct-locale ingress. Reaching it needs localeMatchSupplier / language-range negotiation, which the oracle explicitly does not drive."
+    },
+    {
+      "what": "The accessor surface of MissingTranslationException (getKey, getPlaceholders, getLookupLocale, getReason, getAttemptedLocales) that throwExceptionFor populates at DefaultStrings.java:3211-3213.",
+      "why": "The oracle's thrown record captures only type, message, and causeType. A case can assert that a MissingTranslationException was thrown and how its message was contextualized, but not that the exception carries the same attempted-locale list and placeholder map the handler saw. Extending the thrown record with a MissingTranslationException-specific sibling of describeObservedFailures would close this."
+    },
+    {
+      "what": "The LocalizedStringWarning set (notably INCOMPLETE_CARDINALITY_TRANSLATIONS) raised at load time by the deliberately under-translated catalogs in failure-handler-resolution-failure-cause and failure-handler-final-reason-precedence.",
+      "why": "Warning-set capture is unsupported: VectorOracle.buildStrings calls LocalizedStringLoader.loadFromFilesystem without a LocalizedStringWarningHandler. These fixtures provoke load-time warnings as a side effect of provoking runtime resolution failures; a port could emit the wrong warnings, or none, and no case here would notice. (Confirmed against LocalizedStringValidator that these are warnings only and never load errors, so the fixtures do build.)"
+    },
+    {
+      "what": "Concurrent invocation of a shared TranslationFailureHandler, which both TranslationFailureHandler and TranslationFallbackPolicy document as a thread-safety requirement.",
+      "why": "The oracle executes cases sequentially and its OBSERVED_FAILURES recording wrapper is explicitly single-threaded by construction, so no authored case can observe concurrent handler entry."
+    },
+    {
+      "what": "A per-call failure handler supplied alongside no per-call locale, distinguishing TranslationOptions.none() from a builder-built options object carrying only a handler.",
+      "why": "Authorable in principle, but VectorOracle.optionsFrom already collapses the no-locale-plus-handler case into a builder-built TranslationOptions without a locale, which is the same object shape a port would see; there is no observable difference to discriminate, so a case would not earn its place."
+    },
+    {
+      "what": "Phonetic resolver callbacks reached from the failure path, and loader manifest/discovery driving for a fixture whose catalogs are chosen dynamically.",
+      "why": "Both are listed as unsupported by the current oracle: there is no named behavior for a PhoneticResolver and buildStrings always loads a fixed directory written by the Node driver."
+    }
+  ],
+  "cases": [
+    {
+      "id": "failure-handler.return-key.template-key.placeholder-supplied-is-interpolated",
+      "requirementIds": [],
+      "fixture": "failure-handler-missing-template-key",
+      "operation": "getResult",
+      "input": {
+        "key": "Hello {{name}}",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The baseline for the whole family: a key that is itself a template, absent from every catalog, under the library-default returnKey handler. DefaultStrings.java:753-756 does not return the key verbatim -- it runs interpolateFailureKey over it first. A port that returns the raw key on failure produces 'Hello {{name}}' here instead of the interpolated form, and every other returned-key case in this family is measured against this one."
+    },
+    {
+      "id": "failure-handler.return-key.template-key.placeholder-absent-stays-literal",
+      "requirementIds": [],
+      "fixture": "failure-handler-missing-template-key",
+      "operation": "getResult",
+      "input": {
+        "key": "Hello {{name}}",
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same missing template key with NO placeholder map at all (the input omits the field, so DefaultStrings receives null and substitutes Collections.emptyMap at line 676). StringInterpolator re-emits '{{name}}' when the value is null rather than emptying it, so this case separates 'no value supplied' from 'empty string supplied' -- a port that renders unresolved placeholders as blanks or drops them silently diverges, and the failure record's placeholderNames list must be empty here while it is non-empty in the sibling case."
+    },
+    {
+      "id": "failure-handler.return-key.template-key.placeholder-explicitly-null-stays-literal",
+      "requirementIds": [],
+      "fixture": "failure-handler-missing-template-key",
+      "operation": "getResult",
+      "input": {
+        "key": "Hello {{name}}",
+        "locale": "en",
+        "placeholders": {
+          "name": null
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Distinguishes an explicitly null placeholder value from an absent one. Both leave the token literal in the output, but the TranslationFailure's placeholder map carries the name in this case and not in the previous one -- DefaultStrings snapshots the caller's map as given (line 688) and only rejects a null NAME. A port that prunes null values from the snapshot, or that treats a null value as an absent entry, is caught by the failure channel even though the translation is identical."
+    },
+    {
+      "id": "failure-handler.return-key.template-key.partial-supply-leaves-unsupplied-token",
+      "requirementIds": [],
+      "fixture": "failure-handler-missing-template-key",
+      "operation": "getResult",
+      "input": {
+        "key": "{{greeting}}, {{name}}!",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A missing key with two placeholders where only one is supplied. Fixes the mixed case: interpolateFailureKey iterates the names found IN THE KEY via placeholderNamesInLeniently, not the names supplied by the caller, so the supplied one is substituted and the unsupplied one survives as a literal token in the same string. A port that aborts the whole interpolation when any name is unresolved -- or that appends unmatched values -- diverges here while passing both single-placeholder cases."
+    },
+    {
+      "id": "failure-handler.return-key.template-key.repeated-placeholder-substituted-at-every-occurrence",
+      "requirementIds": [],
+      "fixture": "failure-handler-missing-template-key",
+      "operation": "getResult",
+      "input": {
+        "key": "Hello {{name}}, goodbye {{name}}",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED in review. interpolateFailureKey builds its context from a SET of names (placeholderNamesInLeniently returns a LinkedHashSet) and then interpolates positionally, so one binding must serve every occurrence. A port that consumes bindings as it walks -- or that iterates the context map once per entry rather than scanning the string -- substitutes the first occurrence and leaves the second as a literal token. No other case in the family has a repeated name, so nothing else would notice."
+    },
+    {
+      "id": "failure-handler.return-key.template-key.get-matches-getresult-translation",
+      "requirementIds": [],
+      "fixture": "failure-handler-missing-template-key",
+      "operation": "get",
+      "input": {
+        "key": "Hello {{name}}",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The get() half of the first case. Under the default returnKey handler get() must yield exactly the string that getResult().getTranslation() yields (DefaultStrings.java:643 is literally that delegation), so the pair asserts that a port has not given its convenience accessor a different failure story than its result object. It also pins that get() does NOT throw under the default handler."
+    },
+    {
+      "id": "failure-handler.return-key.plain-key.returned-verbatim",
+      "requirementIds": [],
+      "fixture": "failure-handler-missing-template-key",
+      "operation": "getResult",
+      "input": {
+        "key": "Plain.Missing.Key",
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Control for the whole returned-key family: a missing key with no placeholder syntax at all. Its output must be byte-identical to the key. Without it, a port could pass every template case with an interpolation routine that also mangles ordinary keys (for example by stripping braces or trimming), and nothing else in the family would notice."
+    },
+    {
+      "id": "failure-handler.return-key.fail-soft.unclosed-tail-after-resolved-placeholder",
+      "requirementIds": [],
+      "fixture": "failure-handler-missing-template-key",
+      "operation": "getResult",
+      "input": {
+        "key": "Hi {{name}} and {{other",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "REWRITTEN in review; the original form of this case ('Unclosed {{name') did not discriminate at all. interpolateFailureKey uses the LENIENT interpolator, which appends the tail of an unclosed placeholder instead of raising the IllegalArgumentException the strict path raises at StringInterpolator line 160 -- but interpolateFailureKey also CATCHES every RuntimeException and returns the raw key, so a key whose only content is an unclosed placeholder yields the identical string either way and proves nothing. Putting a resolvable placeholder BEFORE the unclosed tail separates them: the lenient path yields 'Hi Sarah and {{other', while a port that reuses its strict interpolator here throws, is caught, and yields the raw key 'Hi {{name}} and {{other'. Two different strings, so the case now actually tests lenience."
+    },
+    {
+      "id": "failure-handler.return-key.fail-soft.malformed-placeholder-name-left-literal",
+      "requirementIds": [],
+      "fixture": "failure-handler-missing-template-key",
+      "operation": "getResult",
+      "input": {
+        "key": "Malformed {{2name}} for {{name}}",
+        "locale": "en",
+        "placeholders": {
+          "2name": "Digits",
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "STRENGTHENED in review by adding a well-formed sibling placeholder. '2name' fails LocalizedStringUtils.isValidLocalizedStringIdentifier (the pattern is [\\p{L}_][\\p{L}\\p{N}\\p{M}_-]*, so a leading digit is rejected), so the lenient path copies the whole '{{2name}}' run through untouched and never consults the context -- the caller's value under that exact name is deliberately NOT substituted. The valid '{{name}}' in the same string still resolves, which is what makes the case discriminate three ways: the correct output substitutes only the second, a port that skips the identifier check substitutes both, and a port that bails out on a malformed name substitutes neither. The one-placeholder version of this case echoed the key verbatim and could not tell the third port from correct behavior."
+    },
+    {
+      "id": "failure-handler.return-key.fail-soft.escaped-placeholder-not-interpolated",
+      "requirementIds": [],
+      "fixture": "failure-handler-missing-template-key",
+      "operation": "getResult",
+      "input": {
+        "key": "Escaped \\{{name}}",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "An escaped placeholder inside a missing key. placeholderNamesInLeniently reports no names for this key, so nothing is bound, and StringInterpolator's escape branch (lines 113-127) consumes the backslash while appending '{{name}}' literally -- the escape is honoured on the failure-key path exactly as it is inside a real translation. Three-way discriminating: correct is 'Escaped {{name}}', a port ignoring the escape emits 'Escaped Sarah', a port that never unescapes emits 'Escaped \\{{name}}'."
+    },
+    {
+      "id": "failure-handler.throw.per-call.getresult-on-missing-translation-throws",
+      "requirementIds": [],
+      "fixture": "failure-handler-missing-template-key",
+      "operation": "getResult",
+      "input": {
+        "key": "Hello {{name}}",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        },
+        "translationFailureHandler": {
+          "behavior": "throw"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A per-call throwException handler over a fixture whose instance handler is the default returnKey, so this case alone proves DefaultStrings.java:684 replaces rather than merges. It is also the case that settles where the throw surfaces: the THROW_EXCEPTION arm sits inside getResult (DefaultStrings.java:761-763), so getResult is NOT a throw-free accessor when the handler asks for a throw. A port that models getResult as always returning a result object -- reporting the failure only through status/failureReason -- diverges here, and the divergence is invisible if only get() is tested."
+    },
+    {
+      "id": "failure-handler.throw.per-call.get-on-missing-translation-throws",
+      "requirementIds": [],
+      "fixture": "failure-handler-missing-template-key",
+      "operation": "get",
+      "input": {
+        "key": "Hello {{name}}",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        },
+        "translationFailureHandler": {
+          "behavior": "throw"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The get() half of the throw pair. Since the reason here is MISSING_TRANSLATION with no cause, throwExceptionFor (DefaultStrings.java:3196-3213) falls past both instanceof branches and constructs a MissingTranslationException, whose message is the contextualized 'No match for ... was found for locale ...' built at line 741. Paired with the resolution-failure throw cases, this is what shows the thrown type is chosen by the PRESENCE OF A CAUSE and not fixed per handler."
+    },
+    {
+      "id": "failure-handler.return-string.per-call.getresult-returns-text-without-interpolation",
+      "requirementIds": [],
+      "fixture": "failure-handler-missing-template-key",
+      "operation": "getResult",
+      "input": {
+        "key": "Hello {{name}}",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        },
+        "translationFailureHandler": {
+          "behavior": "return-string",
+          "text": "Translation unavailable for {{name}}."
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The returnString response with a text that deliberately contains the same placeholder the caller supplied. DefaultStrings.java:758-760 hands the string straight to the TranslationResult without touching interpolateFailureKey, so the token must survive verbatim. A port that runs the handler's replacement through its interpolator -- an easy 'consistency' mistake -- renders 'Sarah' here. NOTE FOR INGEST: this case emits TranslationResultStatus.RETURNED_STRING, which the current schema's translationResult.status enum does not list; see the summary."
+    },
+    {
+      "id": "failure-handler.return-string.per-call.get-returns-text-without-interpolation",
+      "requirementIds": [],
+      "fixture": "failure-handler-missing-template-key",
+      "operation": "get",
+      "input": {
+        "key": "Hello {{name}}",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        },
+        "translationFailureHandler": {
+          "behavior": "return-string",
+          "text": "Translation unavailable for {{name}}."
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The get() half of the returnString pair, so the corpus records that this response reaches both accessors identically and, unlike the throw response, leaves get() non-throwing. Emits only a plain translation string, so it is unaffected by the RETURNED_STRING schema gap."
+    },
+    {
+      "id": "failure-handler.throw-in-handler.per-call.getresult-propagates-handler-exception",
+      "requirementIds": [],
+      "fixture": "failure-handler-missing-template-key",
+      "operation": "getResult",
+      "input": {
+        "key": "Hello {{name}}",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        },
+        "translationFailureHandler": {
+          "behavior": "throw-in-handler",
+          "message": "observer blew up"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Section 8.3's callback exception in its purest form on the result path: the callback raises at DefaultStrings.java:749-750, before any response exists to switch on, so no TranslationResult is ever constructed and the returned-key path never runs. The exception is the handler's own IllegalStateException, not a library type, and it is not wrapped -- its causeType is null. A port that catches exceptions from user callbacks and degrades to the key would silently swallow application bugs; this case forbids that."
+    },
+    {
+      "id": "failure-handler.throw-in-handler.per-call.get-propagates-handler-exception",
+      "requirementIds": [],
+      "fixture": "failure-handler-missing-template-key",
+      "operation": "get",
+      "input": {
+        "key": "Hello {{name}}",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        },
+        "translationFailureHandler": {
+          "behavior": "throw-in-handler",
+          "message": "observer blew up"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The get() half of the callback-exception pair. The clause asks specifically where a handler's own exception surfaces; the answer must be the same on both accessors because get() is a thin delegation. The failure the handler was called FOR is still recorded on the observation channel even though the lookup ended in a throw, which is what distinguishes 'the handler ran and then failed' from 'the handler was never reached'."
+    },
+    {
+      "id": "failure-handler.control.present-key-never-reaches-handler",
+      "requirementIds": [],
+      "fixture": "failure-handler-missing-template-key",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Present",
+        "locale": "en",
+        "translationFailureHandler": {
+          "behavior": "throw-in-handler",
+          "message": "handler must not be called"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The negative control the family needs: a key that RESOLVES, with a handler that would explode if consulted. The lookup must return the translation and the observation channel must stay empty. Without this case, a port that invokes the failure handler on every lookup (or that consults it before checking the catalog) would pass every failing case in this family and still be badly wrong in production."
+    },
+    {
+      "id": "failure-handler.control.get-on-present-key-returns-translation",
+      "requirementIds": [],
+      "fixture": "failure-handler-missing-template-key",
+      "operation": "get",
+      "input": {
+        "key": "Greeting.Present",
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The get() success control. Only a handful of get() cases exist in the corpus at all, so pinning the non-failing shape of get() is what lets the throwing get() cases mean 'this failed' rather than 'get() is broken here'."
+    },
+    {
+      "id": "failure-handler.throw.instance.get-throws-missing-translation-exception",
+      "requirementIds": [],
+      "fixture": "failure-handler-instance-throws",
+      "operation": "get",
+      "input": {
+        "key": "Hello {{name}}",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The throwException handler configured at INSTANCE level with no per-call option at all, which is the configuration most applications actually use. Its recorded throw identity must match the per-call variant exactly; if a port's builder-level handler and its call-level handler take different code paths, this pair is what exposes it."
+    },
+    {
+      "id": "failure-handler.throw.instance.getresult-throws-too",
+      "requirementIds": [],
+      "fixture": "failure-handler-instance-throws",
+      "operation": "getResult",
+      "input": {
+        "key": "Hello {{name}}",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The instance-level counterpart to the per-call getResult throw. Stated separately because the natural reading of the API ('getResult returns a result even for a failure') is wrong for this handler, and the mistake is systematic: a port that documents getResult as non-throwing will fail exactly here and nowhere else in a returnKey-only test suite."
+    },
+    {
+      "id": "failure-handler.per-call.return-key-replaces-instance-throw",
+      "requirementIds": [],
+      "fixture": "failure-handler-instance-throws",
+      "operation": "getResult",
+      "input": {
+        "key": "Hello {{name}}",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        },
+        "translationFailureHandler": {
+          "behavior": "return-key"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The sharpest per-call-versus-instance case in the family: the instance says throw, the call says return the key, and the call wins outright (options.getTranslationFailureHandler().orElse(instance) at DefaultStrings.java:684). A port that treats per-call options as additive, or that consults the instance handler first and then the override, throws here instead of returning the interpolated key -- a difference between an exception and a string, not a subtle one."
+    },
+    {
+      "id": "failure-handler.per-call.return-string-replaces-instance-throw",
+      "requirementIds": [],
+      "fixture": "failure-handler-instance-throws",
+      "operation": "get",
+      "input": {
+        "key": "Hello {{name}}",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        },
+        "translationFailureHandler": {
+          "behavior": "return-string",
+          "text": "[unavailable]"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Second replacement direction, through get(): a throwing instance handler must not leak any throw when the call supplies a returnString handler. Together with the return-key replacement this shows the override is total for every response kind rather than only for the one that happens to be the library default."
+    },
+    {
+      "id": "failure-handler.per-call.throw-in-handler-replaces-instance-throw",
+      "requirementIds": [],
+      "fixture": "failure-handler-instance-throws",
+      "operation": "get",
+      "input": {
+        "key": "Hello {{name}}",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        },
+        "translationFailureHandler": {
+          "behavior": "throw-in-handler",
+          "message": "per-call handler blew up"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Both handlers throw, but with different identities: the instance handler would produce a MissingTranslationException from the library, while the per-call callback raises its own IllegalStateException before any response is chosen. Because both outcomes are throws, only the recorded type and message can tell them apart -- which is precisely why this case is worth having: it proves the override took effect even when both settings 'fail'."
+    },
+    {
+      "id": "failure-handler.return-string.instance.get-returns-configured-text",
+      "requirementIds": [],
+      "fixture": "failure-handler-instance-return-string",
+      "operation": "get",
+      "input": {
+        "key": "Hello {{name}}",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Instance-level returnString with a text containing the very placeholder the caller supplied. Same non-interpolation guarantee as the per-call variant, asserted through the builder path so a port cannot satisfy one and not the other."
+    },
+    {
+      "id": "failure-handler.return-string.instance.getresult-status-and-null-resolved-locale",
+      "requirementIds": [],
+      "fixture": "failure-handler-instance-return-string",
+      "operation": "getResult",
+      "input": {
+        "key": "Hello {{name}}",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Pins the RESULT SHAPE of the returnString response, which no other case in the corpus reaches: DefaultStrings.java:758-760 builds a TranslationResult with status RETURNED_STRING (a third TranslationResultStatus constant, distinct from both TRANSLATED and RETURNED_KEY), a null resolved locale, and a failureReason that is still MISSING_TRANSLATION. A port that reuses its returned-key status for returned strings loses the ability for callers to tell a substituted string from an echoed key. NOTE FOR INGEST: this is the case that most clearly exposes the schema's missing RETURNED_STRING enum value; see the summary."
+    },
+    {
+      "id": "failure-handler.return-string.instance.per-call-return-key-replaces-it",
+      "requirementIds": [],
+      "fixture": "failure-handler-instance-return-string",
+      "operation": "getResult",
+      "input": {
+        "key": "Hello {{name}}",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        },
+        "translationFailureHandler": {
+          "behavior": "return-key"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Third replacement direction, and the one where the two outputs are both ordinary strings: instance returnString yields its configured text, the per-call returnKey override yields the interpolated key. Both look like successful translations to a naive caller, so only comparing the two outputs distinguishes an implementation that honours the override from one that ignores it. This case's own status is RETURNED_KEY, so it is unaffected by the schema gap."
+    },
+    {
+      "id": "failure-handler.throw-in-handler.instance.get-propagates",
+      "requirementIds": [],
+      "fixture": "failure-handler-instance-throws-in-handler",
+      "operation": "get",
+      "input": {
+        "key": "Hello {{name}}",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Instance-level callback exception through get(). The configured message is distinct from the per-call fixture's message, so the corpus records which handler actually ran rather than merely that something threw."
+    },
+    {
+      "id": "failure-handler.throw-in-handler.instance.getresult-propagates",
+      "requirementIds": [],
+      "fixture": "failure-handler-instance-throws-in-handler",
+      "operation": "getResult",
+      "input": {
+        "key": "Hello {{name}}",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Instance-level callback exception through getResult(). Completes the four-way grid the clause asks for (instance/per-call crossed with get/getResult) for the one handler behaviour whose surfacing point is genuinely ambiguous in the API contract."
+    },
+    {
+      "id": "failure-handler.throw-in-handler.instance.per-call-return-key-avoids-the-throw",
+      "requirementIds": [],
+      "fixture": "failure-handler-instance-throws-in-handler",
+      "operation": "getResult",
+      "input": {
+        "key": "Hello {{name}}",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        },
+        "translationFailureHandler": {
+          "behavior": "return-key"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Proves the exploding instance callback is not merely superseded in its RESPONSE but never invoked at all: DefaultStrings resolves exactly one handler at line 684 and calls handle exactly once at line 749. If a port called both handlers (say, treating the instance handler as an observer and the per-call one as the decision-maker), the instance handler's exception would escape and this case would throw instead of returning the interpolated key."
+    },
+    {
+      "id": "failure-handler.resolution-failure.default-policy.getresult-records-cause-identity",
+      "requirementIds": [],
+      "fixture": "failure-handler-resolution-failure-cause",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Sparse",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The third failure reason, and the only one that carries a throwable. Count 2 selects Russian FEW (i%10 in 2..4 and i%100 not in 12..14), which the under-translated donor does not define, so DefaultStrings.java:974-976 raises IllegalStateException and lines 722-726 record RESOLUTION_FAILURE with a cause; the default policy then refuses to try English (MISSING_OR_NO_MATCH returns reason != RESOLUTION_FAILURE) even though English holds a perfectly good Items.Sparse. This case pins the cause's TYPE and MESSAGE on both the result and the handler channel, so a failing port has to fail for the same reason, not merely fail."
+    },
+    {
+      "id": "failure-handler.resolution-failure.default-policy.cause-message-names-the-many-branch",
+      "requirementIds": [],
+      "fixture": "failure-handler-resolution-failure-cause",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Sparse",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "5"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same broken entry reached through a different missing branch: count 5 is Russian MANY, not FEW. The two cases differ only in the branch named inside the cause message ('Missing Cardinality translation for CARDINALITY_MANY' versus ..._FEW), which is what forces a port to propagate the specific diagnostic rather than a generic 'resolution failed' string. Without the pair, one hard-coded message would satisfy both."
+    },
+    {
+      "id": "failure-handler.resolution-failure.throw.getresult-rethrows-original-cause",
+      "requirementIds": [],
+      "fixture": "failure-handler-resolution-failure-cause",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Sparse",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        },
+        "translationFailureHandler": {
+          "behavior": "throw"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The most easily-missed rule in TranslationFailureHandler.throwException: when a cause is present, throwExceptionFor RETHROWS that original RuntimeException (DefaultStrings.java:3200-3204) instead of constructing a MissingTranslationException. So the same handler throws two different types depending on whether a cause exists. A port that always wraps in its own missing-translation error loses the original diagnostic and diverges here while passing the MISSING_TRANSLATION throw cases."
+    },
+    {
+      "id": "failure-handler.resolution-failure.throw.get-rethrows-original-cause",
+      "requirementIds": [],
+      "fixture": "failure-handler-resolution-failure-cause",
+      "operation": "get",
+      "input": {
+        "key": "Items.Sparse",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        },
+        "translationFailureHandler": {
+          "behavior": "throw"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The get() half of the rethrow pair, and the direct contrast with failure-handler.throw.per-call.get-on-missing-translation-throws: identical handler, identical accessor, different failure reason, different thrown type. That contrast is the assertion."
+    },
+    {
+      "id": "failure-handler.resolution-failure.any-failure-policy.english-donor-resolves-and-handler-not-called",
+      "requirementIds": [],
+      "fixture": "failure-handler-resolution-failure-cause",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Sparse",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        },
+        "translationFallbackPolicy": "any-failure"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The permissive policy turns the previous case's failure into a success: the Russian raise no longer halts the walk, English supplies a resolvable Items.Sparse, and the failure handler is never invoked at all (the observation channel must be empty). This is the case that makes the fixture's default-policy cases mean something -- it shows the failure was a POLICY decision, not an absence of alternatives -- and a port whose two policies behave identically fails exactly one of the pair."
+    },
+    {
+      "id": "failure-handler.resolution-failure.return-string.per-call.replaces-broken-translation",
+      "requirementIds": [],
+      "fixture": "failure-handler-resolution-failure-cause",
+      "operation": "get",
+      "input": {
+        "key": "Items.Sparse",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        },
+        "translationFailureHandler": {
+          "behavior": "return-string",
+          "text": "Item count unavailable."
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "returnString applied to a RESOLUTION_FAILURE rather than a missing key. The response arm is chosen by the handler and is indifferent to the reason, so the cause is discarded and no throw occurs even though a throwable exists. A port that special-cases resolution failures as 'always fatal' -- a plausible safety reading of the docs -- throws here instead of returning the text."
+    },
+    {
+      "id": "failure-handler.resolution-failure.throw-in-handler.handler-exception-masks-original-cause",
+      "requirementIds": [],
+      "fixture": "failure-handler-resolution-failure-cause",
+      "operation": "get",
+      "input": {
+        "key": "Items.Sparse",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        },
+        "translationFailureHandler": {
+          "behavior": "throw-in-handler",
+          "message": "handler failed on top of a resolution failure"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Two exceptions in flight: the resolution cause the handler was called about, and the handler's own. The callback's exception escapes from line 749 and the library's cause is NOT set as its cause and NOT suppressed into it -- the oracle's recorded causeType for the throw must be null while the observation channel still carries the resolution cause. This case fixes which of the two an application actually sees, which a port could plausibly get backwards by wrapping the handler exception around the original."
+    },
+    {
+      "id": "failure-handler.resolution-failure.control.one-branch-present-resolves",
+      "requirementIds": [],
+      "fixture": "failure-handler-resolution-failure-cause",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.Sparse",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "1"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Control proving the sparse donor is broken only for the branches it omits: count 1 is Russian ONE, which is translated, so the lookup resolves in Russian and no failure is recorded. Without it, a port that failed unconditionally on this entry would pass every failure case in the fixture."
+    },
+    {
+      "id": "failure-handler.resolution-failure.first-cause-wins.any-failure-keeps-russian-cause",
+      "requirementIds": [],
+      "fixture": "failure-handler-resolution-failure-cause",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.BothSparse",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        },
+        "translationFallbackPolicy": "any-failure"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Both locales raise, with different missing branches: Russian misses FEW at count 2, English misses OTHER at the same count. The permissive policy walks both, and the guard at DefaultStrings.java:725-726 ('if (firstFallbackFailure == null)') keeps only the FIRST throwable, so the handler and the result must report the Russian FEW diagnostic. A port that reports the last failure encountered -- the more natural loop -- names OTHER here and is caught. Also pins that the attempted-locale list contains both locales even though every one of them failed."
+    },
+    {
+      "id": "failure-handler.resolution-failure.default-policy.stops-before-english-attempt",
+      "requirementIds": [],
+      "fixture": "failure-handler-resolution-failure-cause",
+      "operation": "getResult",
+      "input": {
+        "key": "Items.BothSparse",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The default-policy partner of the first-cause case. Same key, same count, same cause -- but the attempted-locale list must stop at Russian, because the walk halts before English is ever consulted. The observable difference between this case and its any-failure sibling is entirely in the attempted-locale list, which is why that list has to be part of the failure record rather than a debugging nicety."
+    },
+    {
+      "id": "failure-handler.no-matching-alternative.return-key.plain-key-returned",
+      "requirementIds": [],
+      "fixture": "failure-handler-no-matching-alternative",
+      "operation": "getResult",
+      "input": {
+        "key": "Guest.Welcome",
+        "locale": "en",
+        "placeholders": {
+          "guestGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_MASCULINE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The second causeless reason. The key EXISTS in the only loaded locale, so this is not a missing translation; the alternatives-only root simply matches nothing and has no default, which DefaultStrings.java:719-720 reports as NO_MATCHING_ALTERNATIVE with no throwable. A port that collapses the two causeless reasons into one produces the same translation but the wrong reason, and only the failure channel notices."
+    },
+    {
+      "id": "failure-handler.no-matching-alternative.control.matching-alternative-resolves",
+      "requirementIds": [],
+      "fixture": "failure-handler-no-matching-alternative",
+      "operation": "getResult",
+      "input": {
+        "key": "Guest.Welcome",
+        "locale": "en",
+        "placeholders": {
+          "guestGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_FEMININE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Control for the alternatives-only entry: the feminine branch matches and resolves normally with no handler involvement. Establishes that the sibling case's failure comes from the predicate not matching, not from the entry being unusable."
+    },
+    {
+      "id": "failure-handler.no-matching-alternative.return-key.template-key-is-interpolated",
+      "requirementIds": [],
+      "fixture": "failure-handler-no-matching-alternative",
+      "operation": "getResult",
+      "input": {
+        "key": "Hello {{name}}",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah",
+          "visitCount": {
+            "$lokalized": "integer",
+            "value": "1"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The clause's two halves crossed: a key that is itself a placeholder template AND is present in the catalog but matches no alternative. The returned-key interpolation runs exactly as it does for a missing key, so the translation is indistinguishable from the MISSING_TRANSLATION case with the same key in failure-handler-missing-template-key -- while the reason on the failure record differs. This is the case that forces a port to derive the reason from what actually happened rather than from 'the catalog had no entry'."
+    },
+    {
+      "id": "failure-handler.no-matching-alternative.throw.get-throws-missing-translation-exception",
+      "requirementIds": [],
+      "fixture": "failure-handler-no-matching-alternative",
+      "operation": "get",
+      "input": {
+        "key": "Guest.Welcome",
+        "locale": "en",
+        "placeholders": {
+          "guestGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_MASCULINE"
+          }
+        },
+        "translationFailureHandler": {
+          "behavior": "throw"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The throw response on a reason that carries NO cause: throwExceptionFor finds an empty Optional at line 3199 and constructs a MissingTranslationException, the same type it produces for a genuinely missing key even though the key exists here. Contrasts directly with the resolution-failure rethrow, completing the 'thrown type follows the presence of a cause, not the reason name' rule."
+    },
+    {
+      "id": "failure-handler.no-matching-alternative.throw.getresult-throws-too",
+      "requirementIds": [],
+      "fixture": "failure-handler-no-matching-alternative",
+      "operation": "getResult",
+      "input": {
+        "key": "Guest.Welcome",
+        "locale": "en",
+        "placeholders": {
+          "guestGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_MASCULINE"
+          }
+        },
+        "translationFailureHandler": {
+          "behavior": "throw"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The getResult half, so the family's 'getResult throws when the handler says throw' finding is pinned for all three failure reasons rather than only for missing translations."
+    },
+    {
+      "id": "failure-handler.no-matching-alternative.return-string.get-returns-text",
+      "requirementIds": [],
+      "fixture": "failure-handler-no-matching-alternative",
+      "operation": "get",
+      "input": {
+        "key": "Guest.Welcome",
+        "locale": "en",
+        "placeholders": {
+          "guestGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_MASCULINE"
+          }
+        },
+        "translationFailureHandler": {
+          "behavior": "return-string",
+          "text": "Welcome."
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "returnString over an unmatched alternative. Completes the handler-behaviour grid for this reason and confirms the substitution happens even though the catalog did contain the key -- a port that only routes 'key not found' to the failure handler never reaches the handler at all here."
+    },
+    {
+      "id": "failure-handler.no-matching-alternative.throw-in-handler.get-propagates-handler-exception",
+      "requirementIds": [],
+      "fixture": "failure-handler-no-matching-alternative",
+      "operation": "get",
+      "input": {
+        "key": "Guest.Welcome",
+        "locale": "en",
+        "placeholders": {
+          "guestGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_MASCULINE"
+          }
+        },
+        "translationFailureHandler": {
+          "behavior": "throw-in-handler",
+          "message": "handler blew up on an unmatched alternative"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Callback exception on the third reason, which has no cause of its own -- so unlike the resolution-failure variant there is nothing for a port to confuse the handler's exception with. Together the three throw-in-handler reasons show the callback's exception always wins regardless of what the library was about to do."
+    },
+    {
+      "id": "failure-handler.attempted-locales.multi-entry-chain-recorded",
+      "requirementIds": [],
+      "fixture": "failure-handler-multi-locale-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Hello {{name}}",
+        "locale": "es-MX",
+        "placeholders": {
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "RENAMED in review: the original id asserted a three-entry chain, but CldrLocaleData.fallbackLocalesFor(es-MX) also contributes the CLDR parent es-419, so the emitted list is longer than three and the id would have been a false claim about an oracle-emitted value. The proposition that matters is unchanged: requesting the unloaded es-MX walks its parent chain and then the fallback locale, and every candidate is appended at DefaultStrings.java:702 BEFORE it is attempted, so unloaded candidates appear in the list too. A port that records only the locales it actually had catalogs for, or only the final one, produces a shorter list while returning the identical translation."
+    },
+    {
+      "id": "failure-handler.attempted-locales.never-policy-truncates-to-first-candidate",
+      "requirementIds": [],
+      "fixture": "failure-handler-multi-locale-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Hello {{name}}",
+        "locale": "es-MX",
+        "placeholders": {
+          "name": "Sarah"
+        },
+        "translationFallbackPolicy": "never"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Same lookup with neverFallback, which returns false at the first policy consultation (DefaultStrings.java:734-739) and therefore truncates the attempted-locale list to the single first candidate. The translation is identical to the previous case, so this pair isolates the policy's effect on the failure record alone -- exactly the observation a port can silently get wrong while looking correct to callers."
+    },
+    {
+      "id": "failure-handler.attempted-locales.ambient-instance-locale-used-when-call-omits-one",
+      "requirementIds": [],
+      "fixture": "failure-handler-multi-locale-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Hello {{name}}",
+        "placeholders": {
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "No per-call locale and no per-call options at all, so localeLookupFor falls through to the localeSupplier (DefaultStrings.java:2457-2459) and the instance's ambient locale supplies the lookup locale -- and this fixture deliberately makes that locale (es) different from the fallback locale (en). A port that defaults an omitted locale to the FALLBACK locale rather than the ambient one reports the wrong lookupLocale and a shorter attempted chain here, while every case that passes an explicit locale hides the bug."
+    },
+    {
+      "id": "failure-handler.attempted-locales.throw-message-carries-lookup-locale",
+      "requirementIds": [],
+      "fixture": "failure-handler-multi-locale-chain",
+      "operation": "get",
+      "input": {
+        "key": "Hello {{name}}",
+        "locale": "es-MX",
+        "placeholders": {
+          "name": "Sarah"
+        },
+        "translationFailureHandler": {
+          "behavior": "throw"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The MissingTranslationException message is built at DefaultStrings.java:741 from the key and the LOOKUP locale, not from the locale that was last attempted or the fallback that was reached. With this fixture those are three different tags, so this case pins which one contextualizes the error a developer will actually read."
+    },
+    {
+      "id": "failure-handler.placeholder-map.multiple-names-recorded-on-failure",
+      "requirementIds": [],
+      "fixture": "failure-handler-multi-locale-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Plain.Missing.Key",
+        "locale": "es-MX",
+        "placeholders": {
+          "name": "Sarah",
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "3"
+          },
+          "guestGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_FEMININE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The placeholder-map half of what TranslationFailure exposes, deliberately decoupled from the output: the key contains NO placeholders, so none of the three supplied values can appear in the translation, yet all three names must reach the handler (DefaultStrings snapshots the whole caller map at line 688 and hands it to DefaultTranslationFailure at line 747). A port that hands the handler only the placeholders the key referenced -- or an empty map because nothing was interpolated -- diverges, and no case whose key happens to use its placeholders could tell."
+    },
+    {
+      "id": "failure-handler.fail-soft.value-within-limit-is-interpolated",
+      "requirementIds": [],
+      "fixture": "failure-handler-key-interpolation-limit",
+      "operation": "getResult",
+      "input": {
+        "key": "Hi {{name}}",
+        "locale": "en",
+        "placeholders": {
+          "name": "Wednesday"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Baseline for the fail-soft boundary, sitting exactly ON it: the literal 'Hi ' costs 3 of the fixture's 12-character budget and 'Wednesday' is 9, so appendChecked's guard (charactersToAppend > maximumOutputCharacters - target.length(), i.e. 9 > 9) is false and the key interpolates to a string of exactly 12 characters. Establishes that the tiny limit does not break the ordinary returned-key path, without which the overflow case could be satisfied by an implementation that simply never interpolates."
+    },
+    {
+      "id": "failure-handler.fail-soft.value-over-limit-returns-raw-key",
+      "requirementIds": [],
+      "fixture": "failure-handler-key-interpolation-limit",
+      "operation": "getResult",
+      "input": {
+        "key": "Hi {{name}}",
+        "locale": "en",
+        "placeholders": {
+          "name": "Wednesdays"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The clause's 'failure-key fail-soft behavior' proper. One character longer than the previous case makes the guard fire (10 > 9), StringInterpolator raises IllegalStateException 'Interpolated output exceeds the maximum of 12 characters', and interpolateFailureKey's catch-all (DefaultStrings.java:1414-1416) returns the RAW key rather than a truncated string or a propagated exception. Three plausible ports diverge here: one that throws, one that truncates at the limit, and one that emits a partially-interpolated prefix."
+    },
+    {
+      "id": "failure-handler.fail-soft.bidi-isolation-always-pushes-value-over-limit",
+      "requirementIds": [],
+      "fixture": "failure-handler-key-interpolation-limit",
+      "operation": "getResult",
+      "input": {
+        "key": "Hi {{name}}",
+        "locale": "en",
+        "placeholders": {
+          "name": "Wednesday"
+        },
+        "bidiIsolation": "ALWAYS"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same value that fit exactly in the baseline case, now wrapped by BidiUtils.isolatedValue because the per-call option forces isolation on a non-RTL locale. BoundedIsolatedValue.render is handed the 9 characters still available and BidiUtils.appendChecked refuses the closing PDI once the builder holds 9 (FSI plus eight letters), so the isolation setting ALONE flips the outcome from 'Hi Wednesday' to the raw key. A port that isolates after the length check, or that exempts the control characters from it, keeps the interpolated form."
+    },
+    {
+      "id": "failure-handler.fail-soft.bidi-isolation-always-emits-isolate-markers",
+      "requirementIds": [],
+      "fixture": "failure-handler-key-interpolation-limit",
+      "operation": "getResult",
+      "input": {
+        "key": "Hi {{name}}",
+        "locale": "en",
+        "placeholders": {
+          "name": "Tuesday"
+        },
+        "bidiIsolation": "ALWAYS"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED in review. The overflow case above proves isolation is CHARGED against the budget but, because its outcome is the raw key, it never shows that isolation markers actually reach the failure-key output. 'Tuesday' is seven characters, so FSI + value + PDI is nine and fits the nine remaining -- the emitted translation must carry U+2068 and U+2069 around the substituted value. Without this case a port could pass the whole fail-soft group by treating ALWAYS as 'add 2 to the cost and then not isolate'."
+    },
+    {
+      "id": "failure-handler.fail-soft.bidi-isolation-none-omits-isolate-markers",
+      "requirementIds": [],
+      "fixture": "failure-handler-key-interpolation-limit",
+      "operation": "getResult",
+      "input": {
+        "key": "Hi {{name}}",
+        "locale": "en",
+        "placeholders": {
+          "name": "Tuesday"
+        },
+        "bidiIsolation": "NONE"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "REPLACES a weaker case that paired NONE with a value whose isolated and unisolated outputs were both the raw key, making the pair prove nothing. Identical input to the ALWAYS case above with the single option flipped, so the two differ by exactly the two isolate control characters and nothing else can be blamed -- not the locale, not the value, not the limit."
+    },
+    {
+      "id": "failure-handler.fail-soft.throw-handler-unaffected-by-interpolation-limit",
+      "requirementIds": [],
+      "fixture": "failure-handler-key-interpolation-limit",
+      "operation": "get",
+      "input": {
+        "key": "Hi {{name}}",
+        "locale": "en",
+        "placeholders": {
+          "name": "Wednesdays"
+        },
+        "translationFailureHandler": {
+          "behavior": "throw"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Fail-soft is a property of the RETURN_KEY arm only. With a throwing handler the switch takes the THROW_EXCEPTION arm at DefaultStrings.java:761-763 and interpolateFailureKey is never called, so the over-budget value is irrelevant and the thrown message is the ordinary contextualized one from line 741. A port that interpolates the key eagerly before consulting the handler would either surface the interpolation error or hide it inside an unrelated code path."
+    },
+    {
+      "id": "failure-handler.fail-soft.return-string-longer-than-limit-is-returned-intact",
+      "requirementIds": [],
+      "fixture": "failure-handler-key-interpolation-limit",
+      "operation": "get",
+      "input": {
+        "key": "Hi {{name}}",
+        "locale": "en",
+        "placeholders": {
+          "name": "Wednesdays"
+        },
+        "translationFailureHandler": {
+          "behavior": "return-string",
+          "text": "This replacement text is far longer than the interpolation limit."
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The handler's own string is taken straight from the response at line 759 and is never measured against maximumInterpolatedOutputCharacters, so a text many times the budget comes back intact. A port that applies its output limit uniformly to every string leaving the failure path truncates or rejects this one -- a defensible-looking choice that would silently mutate application-supplied fallback copy."
+    },
+    {
+      "id": "failure-handler.fail-soft.get-and-getresult-agree-on-raw-key",
+      "requirementIds": [],
+      "fixture": "failure-handler-key-interpolation-limit",
+      "operation": "get",
+      "input": {
+        "key": "Hi {{name}}",
+        "locale": "en",
+        "placeholders": {
+          "name": "Wednesdays"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The get() half of the overflow case, so the fail-soft string is pinned on both accessors. If a port implemented get() as an independent shortcut rather than as getResult().getTranslation(), the interpolation-limit branch is exactly the sort of edge it would forget to reproduce."
+    },
+    {
+      "id": "failure-handler.final-reason.no-match-then-resolution-failure-reports-resolution-failure",
+      "requirementIds": [],
+      "fixture": "failure-handler-final-reason-precedence",
+      "operation": "getResult",
+      "input": {
+        "key": "Mixed.NoMatchThenFailure",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Final-failure precedence with the reasons in their least convenient order. Russian misses its alternatives (NO_MATCHING_ALTERNATIVE, which the default policy is happy to walk past), then English raises (RESOLUTION_FAILURE, since count 2 is English OTHER and only ONE is declared). The reported reason is computed after the loop and tests firstFallbackFailure FIRST (DefaultStrings.java:742-746), so the LATER, more severe reason wins over the earlier one. A port that reports the first attempt's reason -- or the last locale's -- says NO_MATCHING_ALTERNATIVE and loses the cause entirely."
+    },
+    {
+      "id": "failure-handler.final-reason.resolution-failure-then-no-match-keeps-first-cause",
+      "requirementIds": [],
+      "fixture": "failure-handler-final-reason-precedence",
+      "operation": "getResult",
+      "input": {
+        "key": "Mixed.FailureThenNoMatch",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        },
+        "translationFallbackPolicy": "any-failure"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The mirror ordering: Russian raises first (FEW at count 2), then English misses its alternatives. The permissive policy is required to reach English at all. The reported reason is still RESOLUTION_FAILURE and the cause is still the Russian one, which shows the precedence rule is not order-dependent and that a later no-match cannot downgrade or overwrite an earlier cause."
+    },
+    {
+      "id": "failure-handler.final-reason.default-policy-halts-at-the-resolution-failure",
+      "requirementIds": [],
+      "fixture": "failure-handler-final-reason-precedence",
+      "operation": "getResult",
+      "input": {
+        "key": "Mixed.FailureThenNoMatch",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Same key and count under the default policy, which stops at the Russian raise and never sees the English miss. The reason and cause match its any-failure sibling exactly; only the attempted-locale list differs. That makes the pair a clean assertion that the policy governs HOW FAR the walk goes and not WHAT is reported."
+    },
+    {
+      "id": "failure-handler.final-reason.missing-then-no-match-reports-no-matching-alternative",
+      "requirementIds": [],
+      "fixture": "failure-handler-final-reason-precedence",
+      "operation": "getResult",
+      "input": {
+        "key": "Mixed.MissingThenNoMatch",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The lower half of the precedence ladder, with no cause anywhere: the key is absent from Russian (MISSING_TRANSLATION) and present-but-unmatched in English. NO_MATCHING_ALTERNATIVE must win over MISSING_TRANSLATION even though the missing attempt came first, because noMatchingAlternativeEncountered is a sticky boolean set at line 720 rather than a per-attempt value. A port that reports whatever the last attempt produced happens to agree here; one that reports the first attempt does not."
+    },
+    {
+      "id": "failure-handler.final-reason.throw-after-mixed-chain-rethrows-cause-not-missing-translation",
+      "requirementIds": [],
+      "fixture": "failure-handler-final-reason-precedence",
+      "operation": "get",
+      "input": {
+        "key": "Mixed.NoMatchThenFailure",
+        "locale": "ru",
+        "placeholders": {
+          "itemCount": {
+            "$lokalized": "integer",
+            "value": "2"
+          }
+        },
+        "translationFailureHandler": {
+          "behavior": "throw"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Precedence and the throwing path composed: because the mixed chain ends up carrying a cause, the throwing handler rethrows that English resolution exception rather than constructing a MissingTranslationException -- even though the FIRST thing that went wrong was a causeless unmatched alternative. This is the case that shows the precedence computation and the thrown-type decision are wired to each other."
+    },
+    {
+      "id": "failure-handler.rtl-failure-key.default-rtl-locales-isolates-the-substituted-value",
+      "requirementIds": [],
+      "fixture": "failure-handler-rtl-failure-key",
+      "operation": "getResult",
+      "input": {
+        "key": "Hello {{name}}",
+        "locale": "ar",
+        "placeholders": {
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED in review to close a genuine gap: no case in the corpus exercised bidi isolation on the FAILURE-KEY path. interpolateFailureKey calls shouldApplyBidiIsolation with the LOOKUP locale (DefaultStrings.java:1405-1407) -- there is no resolved donor locale for a missing key -- so under the library default RTL_LOCALES an Arabic lookup wraps the Latin value in U+2068/U+2069 before it is interpolated into the echoed key. Every existing bidi case in the corpus isolates inside a SUCCESSFUL translation, so a port that forgot isolation only on the failure path would pass all of them."
+    },
+    {
+      "id": "failure-handler.rtl-failure-key.per-call-none-suppresses-isolation",
+      "requirementIds": [],
+      "fixture": "failure-handler-rtl-failure-key",
+      "operation": "getResult",
+      "input": {
+        "key": "Hello {{name}}",
+        "locale": "ar",
+        "placeholders": {
+          "name": "Sarah"
+        },
+        "bidiIsolation": "NONE"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED in review. Identical input to the previous case with only the per-call bidiIsolation flipped to NONE, so the pair differs by exactly the two isolate control characters. It also exercises the per-call bidi override (DefaultStrings.java:683) against an instance that never configured one, which no other case in this family does."
+    },
+    {
+      "id": "failure-handler.rtl-failure-key.ltr-lookup-locale-is-not-isolated",
+      "requirementIds": [],
+      "fixture": "failure-handler-rtl-failure-key",
+      "operation": "getResult",
+      "input": {
+        "key": "Hello {{name}}",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ADDED in review. The same fixture, same default RTL_LOCALES mode, same key and value, but an LTR lookup locale, so BidiUtils.localeUsesRightToLeftScript returns false and no isolation is applied. Completes the three-way set: a port that isolates unconditionally on the failure path fails this one, a port that never isolates fails the first one, and a port that ignores the per-call override fails the second."
+    }
+  ]
+}

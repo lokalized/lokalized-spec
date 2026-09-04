@@ -1,0 +1,23 @@
+{
+  "id": "warnings-mixed-axis-placeholder",
+  "description": "One Russian key whose single placeholder supplies CARDINALITY_ONE and ORDINALITY_ONE together. Deliberately unloadable: axis purity is enforced at parse time (LocalizedStringLoader.java:2647-2654), so no warning can ever span two axes for one placeholder and the load fails before any warning is raised.",
+  "fallbackLocale": "ru",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "ru": {
+      "Both": {
+        "translation": "{{p}}",
+        "placeholders": {
+          "p": {
+            "value": "n",
+            "translations": {
+              "CARDINALITY_ONE": "c",
+              "ORDINALITY_ONE": "o"
+            }
+          }
+        }
+      }
+    }
+  }
+}

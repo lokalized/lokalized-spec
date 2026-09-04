@@ -1,0 +1,11 @@
+{
+  "id": "ingress-matrix-java-en-us-baseline",
+  "description": "Seed row 5 catalog (a lone loaded en; fallback and instance locale en). No ambient supplier. MEASURED per-call locale en-US: CLDR_FALLBACK/en, lookupLocale en-US, attempted [en-US, en], isFallback true.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Checkout.Title": "Checkout"
+    }
+  }
+}

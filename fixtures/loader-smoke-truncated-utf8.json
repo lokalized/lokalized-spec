@@ -1,0 +1,11 @@
+{
+  "id": "loader-smoke-truncated-utf8",
+  "description": "A truncated multi-byte UTF-8 sequence at end of string.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {},
+  "rawFilesBase64": {
+    "en": "eyJLZXkuQSI6IuIifQ=="
+  }
+}

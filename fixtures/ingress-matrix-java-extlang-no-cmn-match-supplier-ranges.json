@@ -1,0 +1,18 @@
+{
+  "id": "ingress-matrix-java-extlang-no-cmn-match-supplier-ranges",
+  "description": "The zh-only catalog reached through a localeMatchSupplier negotiating the header 'zh-cmn', so the whole-list solver runs in the ambient ingress instead of per call.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "localeMatchSupplier": {
+    "behavior": "match-ranges",
+    "ranges": "zh-cmn"
+  },
+  "files": {
+    "zh": {
+      "Checkout.Title": "zh"
+    },
+    "en": {
+      "Checkout.Title": "en"
+    }
+  }
+}

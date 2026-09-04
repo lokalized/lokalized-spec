@@ -1,0 +1,112 @@
+{
+  "formatVersion": 1,
+  "family": "owed-m3b-review-additions",
+  "description": "Plan v7 section 8.3 fixture family 'owed-m3b-review-additions'. Inputs only; the oracle emits expected.",
+  "cases": [
+    {
+      "id": "owed.m3b.review.range-arabic-one-to-two-is-other",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForRange",
+      "input": {
+        "start": {
+          "$lokalized": "language-form",
+          "axis": "cardinality",
+          "name": "CARDINALITY_ONE"
+        },
+        "end": {
+          "$lokalized": "language-form",
+          "axis": "cardinality",
+          "name": "CARDINALITY_TWO"
+        },
+        "locale": "ar"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "REVIEW ADDITION. Until this case, NO corpus case distinguished a range-table hit from the `cardinality == null ? end : cardinality` fallback: every range case in the corpus -- fr one..other, pt one..one, pt-PT one..one, and the four owed.m3b.cldr range cases -- has a table entry whose result EQUALS the end cardinality, or no entry at all. An implementation that dropped CARDINAL_RANGES entirely and always returned `end` passed all of them. Arabic one..two maps to OTHER, not TWO, so the table lookup is finally observable."
+    },
+    {
+      "id": "owed.m3b.review.range-slovenian-one-to-one-is-few",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForRange",
+      "input": {
+        "start": {
+          "$lokalized": "language-form",
+          "axis": "cardinality",
+          "name": "CARDINALITY_ONE"
+        },
+        "end": {
+          "$lokalized": "language-form",
+          "axis": "cardinality",
+          "name": "CARDINALITY_ONE"
+        },
+        "locale": "sl"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "REVIEW ADDITION. The sharpest table entry in CLDR 48.2: Slovenian one..one answers FEW -- a form that appears in neither endpoint. A port that returned the end, the start, or any function of the two endpoints alone is caught here, and the existing pt one..one case (which answers ONE) would not catch it."
+    },
+    {
+      "id": "owed.m3b.review.range-georgian-one-to-other-is-one",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForRange",
+      "input": {
+        "start": {
+          "$lokalized": "language-form",
+          "axis": "cardinality",
+          "name": "CARDINALITY_ONE"
+        },
+        "end": {
+          "$lokalized": "language-form",
+          "axis": "cardinality",
+          "name": "CARDINALITY_OTHER"
+        },
+        "locale": "ka"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "REVIEW ADDITION. The one..other pair that answers the START rather than the end, read directly against classifier.cardinal.range-one-to-other-in-fr, which is the same pair in a locale with no ranges table and answers OTHER. A port that hard-coded the end fallback agrees with fr and disagrees here."
+    },
+    {
+      "id": "owed.m3b.review.range-english-other-to-one-is-other",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForRange",
+      "input": {
+        "start": {
+          "$lokalized": "language-form",
+          "axis": "cardinality",
+          "name": "CARDINALITY_OTHER"
+        },
+        "end": {
+          "$lokalized": "language-form",
+          "axis": "cardinality",
+          "name": "CARDINALITY_ONE"
+        },
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "REVIEW ADDITION. The same fact in the most-used locale: English other..one has a table entry whose result (OTHER) differs from the end (ONE), so a port that skipped the ranges table would answer ONE for the range every English application is most likely to ask for."
+    },
+    {
+      "id": "owed.m3b.review.range-georgian-other-to-one-is-other",
+      "requirementIds": [],
+      "fixture": "no-catalog",
+      "operation": "cardinalityForRange",
+      "input": {
+        "start": {
+          "$lokalized": "language-form",
+          "axis": "cardinality",
+          "name": "CARDINALITY_OTHER"
+        },
+        "end": {
+          "$lokalized": "language-form",
+          "axis": "cardinality",
+          "name": "CARDINALITY_ONE"
+        },
+        "locale": "ka"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "REVIEW ADDITION. The REVERSE of the Georgian pair above, and the only shape in CLDR 48.2 that pins the table key as ORDERED: ka one..other answers ONE while ka other..one answers OTHER. An implementation keying CARDINAL_RANGES on an unordered {start,end} set answers ONE for both and passes every other range case in the corpus."
+    }
+  ]
+}

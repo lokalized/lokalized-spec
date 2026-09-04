@@ -1,0 +1,17 @@
+{
+  "id": "owed-member-statics",
+  "description": "Three catalogs whose tags make the three MemberStatics flags separable: an ordinary regional catalog (en-US), an unrelated ordinary catalog (fr) and a PRIVATE-USE catalog (x-lokal-a) that a wildcard-free private-use range would reach if canonical statics were computed for it. Private-use tags carry no language code, so no tiebreakers are owed.",
+  "fallbackLocale": "fr",
+  "tiebreakers": null,
+  "files": {
+    "en-US": {
+      "Greeting": "Hello from en-US"
+    },
+    "fr": {
+      "Greeting": "Bonjour depuis fr"
+    },
+    "x-lokal-a": {
+      "Greeting": "Private-use catalog"
+    }
+  }
+}

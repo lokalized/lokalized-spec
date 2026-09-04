@@ -1,0 +1,215 @@
+{
+  "id": "generated-placeholders-depth-limit",
+  "description": "Plan v7 section 8.3 generated-placeholder clause: the generated-placeholder nesting limit at its default of 32. Entering placeholder p_k's template happens at recursion depth k and DefaultStrings.interpolateTemplate throws when depth > 32, so a 32-link chain sits exactly on the boundary and a 33-link chain is one past it.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Depth 32 chain": {
+        "translation": "{{p1}}",
+        "placeholders": {
+          "p1": {
+            "translation": "{{p2}}"
+          },
+          "p2": {
+            "translation": "{{p3}}"
+          },
+          "p3": {
+            "translation": "{{p4}}"
+          },
+          "p4": {
+            "translation": "{{p5}}"
+          },
+          "p5": {
+            "translation": "{{p6}}"
+          },
+          "p6": {
+            "translation": "{{p7}}"
+          },
+          "p7": {
+            "translation": "{{p8}}"
+          },
+          "p8": {
+            "translation": "{{p9}}"
+          },
+          "p9": {
+            "translation": "{{p10}}"
+          },
+          "p10": {
+            "translation": "{{p11}}"
+          },
+          "p11": {
+            "translation": "{{p12}}"
+          },
+          "p12": {
+            "translation": "{{p13}}"
+          },
+          "p13": {
+            "translation": "{{p14}}"
+          },
+          "p14": {
+            "translation": "{{p15}}"
+          },
+          "p15": {
+            "translation": "{{p16}}"
+          },
+          "p16": {
+            "translation": "{{p17}}"
+          },
+          "p17": {
+            "translation": "{{p18}}"
+          },
+          "p18": {
+            "translation": "{{p19}}"
+          },
+          "p19": {
+            "translation": "{{p20}}"
+          },
+          "p20": {
+            "translation": "{{p21}}"
+          },
+          "p21": {
+            "translation": "{{p22}}"
+          },
+          "p22": {
+            "translation": "{{p23}}"
+          },
+          "p23": {
+            "translation": "{{p24}}"
+          },
+          "p24": {
+            "translation": "{{p25}}"
+          },
+          "p25": {
+            "translation": "{{p26}}"
+          },
+          "p26": {
+            "translation": "{{p27}}"
+          },
+          "p27": {
+            "translation": "{{p28}}"
+          },
+          "p28": {
+            "translation": "{{p29}}"
+          },
+          "p29": {
+            "translation": "{{p30}}"
+          },
+          "p30": {
+            "translation": "{{p31}}"
+          },
+          "p31": {
+            "translation": "{{p32}}"
+          },
+          "p32": {
+            "translation": "done"
+          }
+        }
+      },
+      "Depth 33 chain": {
+        "translation": "{{q1}}",
+        "placeholders": {
+          "q1": {
+            "translation": "{{q2}}"
+          },
+          "q2": {
+            "translation": "{{q3}}"
+          },
+          "q3": {
+            "translation": "{{q4}}"
+          },
+          "q4": {
+            "translation": "{{q5}}"
+          },
+          "q5": {
+            "translation": "{{q6}}"
+          },
+          "q6": {
+            "translation": "{{q7}}"
+          },
+          "q7": {
+            "translation": "{{q8}}"
+          },
+          "q8": {
+            "translation": "{{q9}}"
+          },
+          "q9": {
+            "translation": "{{q10}}"
+          },
+          "q10": {
+            "translation": "{{q11}}"
+          },
+          "q11": {
+            "translation": "{{q12}}"
+          },
+          "q12": {
+            "translation": "{{q13}}"
+          },
+          "q13": {
+            "translation": "{{q14}}"
+          },
+          "q14": {
+            "translation": "{{q15}}"
+          },
+          "q15": {
+            "translation": "{{q16}}"
+          },
+          "q16": {
+            "translation": "{{q17}}"
+          },
+          "q17": {
+            "translation": "{{q18}}"
+          },
+          "q18": {
+            "translation": "{{q19}}"
+          },
+          "q19": {
+            "translation": "{{q20}}"
+          },
+          "q20": {
+            "translation": "{{q21}}"
+          },
+          "q21": {
+            "translation": "{{q22}}"
+          },
+          "q22": {
+            "translation": "{{q23}}"
+          },
+          "q23": {
+            "translation": "{{q24}}"
+          },
+          "q24": {
+            "translation": "{{q25}}"
+          },
+          "q25": {
+            "translation": "{{q26}}"
+          },
+          "q26": {
+            "translation": "{{q27}}"
+          },
+          "q27": {
+            "translation": "{{q28}}"
+          },
+          "q28": {
+            "translation": "{{q29}}"
+          },
+          "q29": {
+            "translation": "{{q30}}"
+          },
+          "q30": {
+            "translation": "{{q31}}"
+          },
+          "q31": {
+            "translation": "{{q32}}"
+          },
+          "q32": {
+            "translation": "{{q33}}"
+          },
+          "q33": {
+            "translation": "done"
+          }
+        }
+      }
+    }
+  }
+}

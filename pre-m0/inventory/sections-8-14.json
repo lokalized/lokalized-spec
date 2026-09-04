@@ -1,0 +1,3202 @@
+{
+  "formatVersion": 1,
+  "status": "pre-m0-inventory-draft",
+  "sourcePlanSha256": "4ace5e349bedd45b16cd87182aed3306d33fae92b034ed01ddb93bc733c5f62d",
+  "scope": [
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14"
+  ],
+  "blocks": [
+    {
+      "id": "INV-8-14-001",
+      "lineStart": 2452,
+      "lineEnd": 2454,
+      "sourceAnchor": "\u00a78.1 generated-corpus contract",
+      "synopsis": "Define the generated CLDR corpus as expanded cardinal, ordinal, and cardinal-range conformance data rather than display examples.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M1"
+      ],
+      "owner": "M1",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 4,
+      "reason": "M1 generates the data and M3a must seed the executable Java oracle before M2."
+    },
+    {
+      "id": "INV-8-14-002",
+      "lineStart": 2456,
+      "lineEnd": 2462,
+      "sourceAnchor": "\u00a78.1 generated-ID examples",
+      "synopsis": "Illustrate generated case-ID spelling.",
+      "disposition": "nonnormative",
+      "registrationBefore": [],
+      "owner": "none",
+      "parityClass": "informational-nonportable",
+      "anticipatedAtomicRecords": 0,
+      "reason": "The fenced values are examples; the following paragraph carries the ID rules."
+    },
+    {
+      "id": "INV-8-14-003",
+      "lineStart": 2464,
+      "lineEnd": 2468,
+      "sourceAnchor": "\u00a78.1 stable generated IDs",
+      "synopsis": "Require coordinate-derived sample and range IDs, full-hash locking, collision rejection, and requirement links.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M1"
+      ],
+      "owner": "M1",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 6,
+      "reason": "These rules define M3a corpus identity and traceability."
+    },
+    {
+      "id": "INV-8-14-004",
+      "lineStart": 2470,
+      "lineEnd": 2471,
+      "sourceAnchor": "\u00a78.1 derived totals",
+      "synopsis": "Derive acceptance totals from the corpus and forbid a hard-coded historical display-example count.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M1"
+      ],
+      "owner": "M1",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 2,
+      "reason": "M3a generation and gates need this count policy."
+    },
+    {
+      "id": "INV-8-14-005",
+      "lineStart": 2475,
+      "lineEnd": 2492,
+      "sourceAnchor": "\u00a78.2 behavioral-vector schema example",
+      "synopsis": "Establish the versioned behavioral-vector envelope and its stable ID, requirement-link, fixture, operation, input, and expected fields.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 10,
+      "reason": "M0 freezes the schema and M3a populates it."
+    },
+    {
+      "id": "INV-8-14-006",
+      "lineStart": 2494,
+      "lineEnd": 2496,
+      "sourceAnchor": "\u00a78.2 vector payload list item 1",
+      "synopsis": "Allow vectors to supply one or more named raw strings-file fixtures with locale tags.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 3,
+      "reason": "Fixture representation is needed by the initial behavioral corpus."
+    },
+    {
+      "id": "INV-8-14-007",
+      "lineStart": 2497,
+      "lineEnd": 2497,
+      "sourceAnchor": "\u00a78.2 vector payload list item 2",
+      "synopsis": "Allow tiebreakers, fallback locale, callback fixture IDs, and registered data modules.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 4,
+      "reason": "These are independent initial corpus inputs."
+    },
+    {
+      "id": "INV-8-14-008",
+      "lineStart": 2498,
+      "lineEnd": 2498,
+      "sourceAnchor": "\u00a78.2 vector payload list item 3",
+      "synopsis": "Allow lookup keys, locale or language ranges, typed placeholders, and per-call options.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 4,
+      "reason": "These are independent cross-language operation inputs."
+    },
+    {
+      "id": "INV-8-14-009",
+      "lineStart": 2499,
+      "lineEnd": 2499,
+      "sourceAnchor": "\u00a78.2 vector payload list item 4",
+      "synopsis": "Allow expected results, failure-handler inputs, warning sets, and thrown error or cause identity tokens.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 4,
+      "reason": "These independent outcomes must be expressible before M3a evidence."
+    },
+    {
+      "id": "INV-8-14-010",
+      "lineStart": 2501,
+      "lineEnd": 2501,
+      "sourceAnchor": "\u00a78.2 public wire shapes",
+      "synopsis": "Use the exact public tagged-record wire shapes for decimal, plural-operand, and language-form values.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 3,
+      "reason": "M0 fixes the portable wire shapes before M3a authors executable vectors."
+    },
+    {
+      "id": "INV-8-14-011",
+      "lineStart": 2504,
+      "lineEnd": 2510,
+      "sourceAnchor": "\u00a78.2 semantic ID partitions and activation",
+      "synopsis": "Give IDs proposition identity, partition portable, implementation, and informational cases, require exact set reporting, and derive activation from the registry.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 12,
+      "reason": "The schema and reporting rules must exist before M3a cases and milestone activation."
+    },
+    {
+      "id": "INV-8-14-012",
+      "lineStart": 2512,
+      "lineEnd": 2512,
+      "sourceAnchor": "\u00a78.2 development xfail metadata",
+      "synopsis": "Every development xfail records severity, owner, reason, and expiry.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M3b",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 4,
+      "reason": "The vector schema must carry complete xfail metadata before the first corpus work begins."
+    },
+    {
+      "id": "INV-8-14-013",
+      "lineStart": 2520,
+      "lineEnd": 2520,
+      "sourceAnchor": "\u00a78.3 fixture-set minimum",
+      "synopsis": "Require the first behavioral-vector version to include at least the listed high-risk families.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M3b",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 1,
+      "reason": "M3a must establish the corpus contract even though M3b completes most families."
+    },
+    {
+      "id": "INV-8-14-014",
+      "lineStart": 2522,
+      "lineEnd": 2523,
+      "sourceAnchor": "\u00a78.3 fixture 01 supplier-locale evaluation",
+      "synopsis": "Cover fallback entries evaluated under the supplying locale across the named language set.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M3b"
+      ],
+      "owner": "M3b",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 8,
+      "reason": "This is part of full core-semantic corpus growth after the M3a seed."
+    },
+    {
+      "id": "INV-8-14-015",
+      "lineStart": 2524,
+      "lineEnd": 2524,
+      "sourceAnchor": "\u00a78.3 fixture 02 Portuguese separation",
+      "synopsis": "Cover pt versus pt-PT at 0, 0.0, and 1.5 to prevent same-language flattening.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M3a",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 3,
+      "reason": "Fallback distinctions are explicit M3a seed behavior."
+    },
+    {
+      "id": "INV-8-14-016",
+      "lineStart": 2525,
+      "lineEnd": 2525,
+      "sourceAnchor": "\u00a78.3 fixture 03 alternatives-only",
+      "synopsis": "Cover alternatives-only children that both hit and miss.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M3b"
+      ],
+      "owner": "M3b",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 2,
+      "reason": "This belongs to completed behavioral coverage rather than the minimal M3a seed."
+    },
+    {
+      "id": "INV-8-14-017",
+      "lineStart": 2526,
+      "lineEnd": 2527,
+      "sourceAnchor": "\u00a78.3 fixture 04 expressions",
+      "synopsis": "Cover precedence, short-circuiting, invalid chained comparisons, raw-string non-equality, and missing, null, and cross-axis operands.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M3b",
+        "M6"
+      ],
+      "owner": "M6",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 7,
+      "reason": "M3b is the corpus-registration deadline; M6 remains the owning evidence/exit milestone for expression behavior."
+    },
+    {
+      "id": "INV-8-14-018",
+      "lineStart": 2528,
+      "lineEnd": 2529,
+      "sourceAnchor": "\u00a78.3 fixture 05 generated placeholders",
+      "synopsis": "Cover generated branch inheritance, replacement modes, raw-input selector scope, late binding, cycles, and expansion limits.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M3b",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 8,
+      "reason": "M2's required throwaway spike and M3a seed evidence exercise this family."
+    },
+    {
+      "id": "INV-8-14-019",
+      "lineStart": 2530,
+      "lineEnd": 2530,
+      "sourceAnchor": "\u00a78.3 fixture 06 fallback policy",
+      "synopsis": "Cover default and permissive fallback policy, final failure precedence, and callback exceptions.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M3b",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 4,
+      "reason": "M3a seeds fallback and failure behavior before the walking skeleton."
+    },
+    {
+      "id": "INV-8-14-020",
+      "lineStart": 2531,
+      "lineEnd": 2531,
+      "sourceAnchor": "\u00a78.3 fixture 07 fallback bidi",
+      "synopsis": "Cover RTL lookup served by a fallback-locale entry.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M3b",
+        "M5b"
+      ],
+      "owner": "M5b",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 1,
+      "reason": "M3b is the corpus-registration deadline; M5b remains the owning evidence/exit milestone for bidi and catalog integration."
+    },
+    {
+      "id": "INV-8-14-021",
+      "lineStart": 2532,
+      "lineEnd": 2532,
+      "sourceAnchor": "\u00a78.3 fixture 08 missing and failure keys",
+      "synopsis": "Cover missing keys containing placeholders and fail-soft handling of the failure key.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M3b",
+        "M5b"
+      ],
+      "owner": "M5b",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 2,
+      "reason": "M3b is the corpus-registration deadline; M5b remains the owning evidence/exit milestone for these catalog and interpolation cases."
+    },
+    {
+      "id": "INV-8-14-022",
+      "lineStart": 2533,
+      "lineEnd": 2533,
+      "sourceAnchor": "\u00a78.3 fixture 09 isFallback",
+      "synopsis": "Cover isFallback across all eight match types and failure results.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M3b"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 9,
+      "reason": "The complete result semantics close at M7."
+    },
+    {
+      "id": "INV-8-14-023",
+      "lineStart": 2534,
+      "lineEnd": 2534,
+      "sourceAnchor": "\u00a78.3 fixture 10 candidate/file-tag distinction",
+      "synopsis": "Cover candidate tags that differ from loaded file tags.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 1,
+      "reason": "Direct-locale diagnostics are seeded in M3a."
+    },
+    {
+      "id": "INV-8-14-024",
+      "lineStart": 2535,
+      "lineEnd": 2537,
+      "sourceAnchor": "\u00a78.3 fixture 11 unloaded direct lookup",
+      "synopsis": "Cover four unloaded direct lookups preserving requested tags and the en-US to en CLDR-fallback diagnostic.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 6,
+      "reason": "M3a explicitly seeds unloaded direct lookups and diagnostics."
+    },
+    {
+      "id": "INV-8-14-025",
+      "lineStart": 2538,
+      "lineEnd": 2540,
+      "sourceAnchor": "\u00a78.3 fixture 12 small browser chooser",
+      "synopsis": "Cover strict-kernel zh-TW selection and advancement past an unmatched browser preference.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M7"
+      ],
+      "owner": "M7",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 2,
+      "reason": "The non-parity browser chooser is budgeted and accepted with the final resolution core."
+    },
+    {
+      "id": "INV-8-14-026",
+      "lineStart": 2541,
+      "lineEnd": 2542,
+      "sourceAnchor": "\u00a78.3 fixture 13 attempted dedup",
+      "synopsis": "Cover post-resolution first-wins dedup, policy-truncated attempted lists, and no policy call after the final distinct candidate.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 3,
+      "reason": "Fallback and dedup are explicit M3a seed topics."
+    },
+    {
+      "id": "INV-8-14-027",
+      "lineStart": 2543,
+      "lineEnd": 2544,
+      "sourceAnchor": "\u00a78.3 fixture 14 distinct equivalent loaded tags",
+      "synopsis": "Keep distinct-but-equivalent loaded tags separate and resolve them through exact identity plus tiebreakers.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M3b"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 2,
+      "reason": "Full resolution corpus coverage completes after M2."
+    },
+    {
+      "id": "INV-8-14-028",
+      "lineStart": 2545,
+      "lineEnd": 2545,
+      "sourceAnchor": "\u00a78.3 fixture 15 manifest completeness",
+      "synopsis": "Cover complete and deliberately partial manifest loads.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 2,
+      "reason": "Manifest loading is an M8 delivery concern."
+    },
+    {
+      "id": "INV-8-14-029",
+      "lineStart": 2546,
+      "lineEnd": 2547,
+      "sourceAnchor": "\u00a78.3 fixture 16 partial failed language",
+      "synopsis": "Prove a fully failed nonfallback language is omitted from the resulting tiebreaker entry.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 1,
+      "reason": "This is partial-load lifecycle behavior owned by M8."
+    },
+    {
+      "id": "INV-8-14-030",
+      "lineStart": 2548,
+      "lineEnd": 2549,
+      "sourceAnchor": "\u00a78.3 fixture 17 canonicalization closure",
+      "synopsis": "Cover the named scripts, Norwegian and root cases, private use, legacy tags, all multivalued aliases, and three explicit former-region mappings.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 13,
+      "reason": "M3a seeds generated region witnesses and direct-IANA oracle behavior."
+    },
+    {
+      "id": "INV-8-14-031",
+      "lineStart": 2550,
+      "lineEnd": 2551,
+      "sourceAnchor": "\u00a78.3 fixture 18 numeric boundaries",
+      "synopsis": "Cover safe-integer boundaries, compact exponents, trailing zeros, and the Indic large-number family.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M4",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 9,
+      "reason": "Plural and numeric spikes are seeded in M3a before the M2 skeleton."
+    },
+    {
+      "id": "INV-8-14-032",
+      "lineStart": 2552,
+      "lineEnd": 2552,
+      "sourceAnchor": "\u00a78.3 fixture 19 raw text versus tagged values",
+      "synopsis": "Keep raw 1.0 and GENDER_FEMININE text while tagged forms dispatch.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M4",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 2,
+      "reason": "M3a requires typed-input discrimination cases."
+    },
+    {
+      "id": "INV-8-14-033",
+      "lineStart": 2553,
+      "lineEnd": 2554,
+      "sourceAnchor": "\u00a78.3 fixture 20 malformed portable input",
+      "synopsis": "Cover duplicate members, malformed UTF-8, unpaired surrogates, and portable parser-limit boundaries.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M5a"
+      ],
+      "owner": "M5a",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 5,
+      "reason": "These malformed-input and parser-limit cases are portable Java/JavaScript behavior owned by M5a."
+    },
+    {
+      "id": "INV-8-14-034",
+      "lineStart": 2555,
+      "lineEnd": 2558,
+      "sourceAnchor": "\u00a78.3 fixture 21 portable numeric limit boundaries",
+      "synopsis": "Cover portable zero/one limit boundaries and rejection of zero for positive-only limits.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M5a"
+      ],
+      "owner": "M5a",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 4,
+      "reason": "Portable limit boundaries belong to the bounded parser and model validation surface."
+    },
+    {
+      "id": "INV-8-14-035",
+      "lineStart": 2559,
+      "lineEnd": 2560,
+      "sourceAnchor": "\u00a78.3 fixture 22 interpolation escapes",
+      "synopsis": "Cover all listed escape and mixed-placeholder forms in strict and lenient modes.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M5b",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 8,
+      "reason": "Escape behavior is an explicit M3a seed family."
+    },
+    {
+      "id": "INV-8-14-036",
+      "lineStart": 2561,
+      "lineEnd": 2562,
+      "sourceAnchor": "\u00a78.3 fixture 23 alternative depth and DAG",
+      "synopsis": "Cover alternative depth 128/129, width over 128, cycles, and shallow-first/deep-second shared-DAG reuse.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M3b",
+        "M5b"
+      ],
+      "owner": "M5b",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 5,
+      "reason": "M3b is the corpus-registration deadline; M5b remains the owning evidence/exit milestone for full alternative-graph behavior."
+    },
+    {
+      "id": "INV-8-14-037",
+      "lineStart": 2563,
+      "lineEnd": 2564,
+      "sourceAnchor": "\u00a78.3 fixture 24 generated tuples and classifiers",
+      "synopsis": "Cover all 61 generated language-form tuples and the cardinal, ordinal, and range public classifiers.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M3b",
+        "M4"
+      ],
+      "owner": "M4",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 4,
+      "reason": "M3b is the corpus-registration deadline; M4 remains the owning evidence/exit milestone for the exact classifier APIs."
+    },
+    {
+      "id": "INV-8-14-038",
+      "lineStart": 2565,
+      "lineEnd": 2567,
+      "sourceAnchor": "\u00a78.3 fixture 25 error identity and causes",
+      "synopsis": "Cover generated and custom error contextualization, sentinel identity, cause retention, and final exact rethrow.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M3b"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 6,
+      "reason": "Complete error/failure semantics close with M7."
+    },
+    {
+      "id": "INV-8-14-039",
+      "lineStart": 2568,
+      "lineEnd": 2569,
+      "sourceAnchor": "\u00a78.3 fixture 26 exact-locale merges",
+      "synopsis": "Cover exact-locale shard merges, two-source conflicts, portable ASCII identifiers, and informational non-ASCII Java-only identifiers.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M3b",
+        "M5b"
+      ],
+      "owner": "M5b",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 5,
+      "reason": "M3b is the corpus-registration deadline; M5b remains the owning evidence/exit milestone for catalog merges, with one informational subcase."
+    },
+    {
+      "id": "INV-8-14-040",
+      "lineStart": 2570,
+      "lineEnd": 2570,
+      "sourceAnchor": "\u00a78.3 fixture 27 missing data resolvers",
+      "synopsis": "Cover missing phonetic resolution and missing or incompatible ordinal/range modules.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M3b",
+        "M4"
+      ],
+      "owner": "M4",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 3,
+      "reason": "M3b is the corpus-registration deadline; M4 remains the owning evidence/exit milestone for optional plural-module validation."
+    },
+    {
+      "id": "INV-8-14-041",
+      "lineStart": 2571,
+      "lineEnd": 2580,
+      "sourceAnchor": "\u00a78.3 fixture 28 JS delivery and SSR",
+      "synopsis": "Cover JS-specific SSR privacy and identity, subset rejection, fingerprints, cache keys, re-rendering, fabricated loads, Node discovery, digest capability, and preload reuse.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 18,
+      "reason": "These are JS delivery and lifecycle cases activated at M8."
+    },
+    {
+      "id": "INV-8-14-042",
+      "lineStart": 2581,
+      "lineEnd": 2584,
+      "sourceAnchor": "\u00a78.3 fixture 29 JS loader planning",
+      "synopsis": "Cover absent direct lookup planning/loading, lookup-coverage rejection, complete and partial manifest behavior, and pre-I/O scheme rejection.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 7,
+      "reason": "Loader planning and scheme enforcement are M8 behaviors."
+    },
+    {
+      "id": "INV-8-14-043",
+      "lineStart": 2585,
+      "lineEnd": 2586,
+      "sourceAnchor": "\u00a78.3 fixture 30 availability-scoped Java comparison",
+      "synopsis": "Compare full Java and exact JS loaded catalogs only under equal candidate availability and reject arbitrary subset equality claims.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M7"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 2,
+      "reason": "This constrains final core parity comparison."
+    },
+    {
+      "id": "INV-8-14-044",
+      "lineStart": 2588,
+      "lineEnd": 2588,
+      "sourceAnchor": "\u00a78.3 direct-locale table contract",
+      "synopsis": "Make direct-locale seed rows prove both diagnostic and translation channels.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 1,
+      "reason": "The two-channel direct-locale contract is a pre-M0/M3a priority."
+    },
+    {
+      "id": "INV-8-14-045",
+      "lineStart": 2590,
+      "lineEnd": 2592,
+      "sourceAnchor": "\u00a78.3 direct row und-Latn",
+      "synopsis": "Lock und-Latn with no diagnostic match, fr resolution, and the exact attempted sequence.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 4,
+      "reason": "Unloaded direct lookup diagnostics are seeded in M3a."
+    },
+    {
+      "id": "INV-8-14-046",
+      "lineStart": 2593,
+      "lineEnd": 2593,
+      "sourceAnchor": "\u00a78.3 direct row fr-BE",
+      "synopsis": "Lock fr-BE likely-subtag selection of fr-FR, resolution, and attempted sequence.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 4,
+      "reason": "This is a required direct-locale seed row."
+    },
+    {
+      "id": "INV-8-14-047",
+      "lineStart": 2594,
+      "lineEnd": 2594,
+      "sourceAnchor": "\u00a78.3 direct row en-AU",
+      "synopsis": "Lock en-AU CLDR fallback to en-001 and its attempted sequence.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 4,
+      "reason": "This is a required direct-locale seed row."
+    },
+    {
+      "id": "INV-8-14-048",
+      "lineStart": 2595,
+      "lineEnd": 2595,
+      "sourceAnchor": "\u00a78.3 direct row zh-TW",
+      "synopsis": "Lock zh-TW diagnostic selection of zh-Hant while translation resolves from fallback en because the discriminating key is absent.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 5,
+      "reason": "This corrected fixture is a high-risk two-channel seed."
+    },
+    {
+      "id": "INV-8-14-049",
+      "lineStart": 2596,
+      "lineEnd": 2596,
+      "sourceAnchor": "\u00a78.3 direct row en-US",
+      "synopsis": "Lock en-US CLDR-fallback diagnostics and resolution to loaded en.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 4,
+      "reason": "This is a required direct-locale seed row."
+    },
+    {
+      "id": "INV-8-14-050",
+      "lineStart": 2598,
+      "lineEnd": 2606,
+      "sourceAnchor": "\u00a78.3 direct-locale assertions and oracle",
+      "synopsis": "Extend direct rows across result paths and ingress spellings, preserve supplied-match intent, and differentially prove the generated direct matcher against core, negotiator, and Java.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M7",
+      "parityClass": "portable",
+      "anticipatedAtomicRecords": 12,
+      "reason": "M3a freezes the oracle and direct-locale seed semantics even though exhaustive completion is M7."
+    },
+    {
+      "id": "INV-8-14-051",
+      "lineStart": 2610,
+      "lineEnd": 2611,
+      "sourceAnchor": "\u00a78.4 CI item 1 Java corpus lanes",
+      "synopsis": "Run behavioral vectors against DefaultStrings and generated CLDR vectors against Java's exact selectors.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M3a",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 2,
+      "reason": "M3a requires the Java oracle lanes."
+    },
+    {
+      "id": "INV-8-14-052",
+      "lineStart": 2612,
+      "lineEnd": 2615,
+      "sourceAnchor": "\u00a78.4 CI item 2 reference runtime lock",
+      "synopsis": "Pin Temurin JDK 21 vendor/build/image identity, repeat it in artifacts, and retain Java release-9 consumer compatibility.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 8,
+      "reason": "M0 records the exact reference-runtime lock before M3a executes the oracle."
+    },
+    {
+      "id": "INV-8-14-053",
+      "lineStart": 2618,
+      "lineEnd": 2618,
+      "sourceAnchor": "\u00a78.4 CI item 3 JS corpus lane",
+      "synopsis": "Run JS CI against the same required ID sets and exact pinned Java/data reference.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M3a",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 2,
+      "reason": "Cross-implementation evidence starts with M3a."
+    },
+    {
+      "id": "INV-8-14-054",
+      "lineStart": 2619,
+      "lineEnd": 2620,
+      "sourceAnchor": "\u00a78.4 CI item 4 Java semantic drift",
+      "synopsis": "Require same-change vector/version updates for Java semantic changes or explicit Java-only informational classification.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M3a",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 3,
+      "reason": "This governs the pinned reference corpus from its first use."
+    },
+    {
+      "id": "INV-8-14-055",
+      "lineStart": 2621,
+      "lineEnd": 2622,
+      "sourceAnchor": "\u00a78.4 CI item 5 newest-Java lane",
+      "synopsis": "Run a scheduled newest-Java/default-reference lane separately and report pinned-reference staleness.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-R"
+      ],
+      "owner": "M-R",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 2,
+      "reason": "This release-maintenance lane is not required for the M3a seed."
+    },
+    {
+      "id": "INV-8-14-056",
+      "lineStart": 2623,
+      "lineEnd": 2623,
+      "sourceAnchor": "\u00a78.4 CI item 6 test-count policy",
+      "synopsis": "Treat test-method counts as informational and never as merge or parity gates.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M3a",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 2,
+      "reason": "The first corpus must not use a misleading test-count acceptance rule."
+    },
+    {
+      "id": "INV-8-14-057",
+      "lineStart": 2624,
+      "lineEnd": 2629,
+      "sourceAnchor": "\u00a78.4 CI item 7 branch disposition",
+      "synopsis": "Run the named corpus-only JaCoCo scope, disposition every reachable portable semantic branch, and forbid arbitrary percentages or report regression.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M3b"
+      ],
+      "owner": "M3b",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 7,
+      "reason": "M3b owns full branch-disposition coverage."
+    },
+    {
+      "id": "INV-8-14-058",
+      "lineStart": 2633,
+      "lineEnd": 2633,
+      "sourceAnchor": "\u00a78.5 parity-report creation",
+      "synopsis": "Generate lokalized-parity.json in release-candidate CI before publication.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-R"
+      ],
+      "owner": "M-R",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 1,
+      "reason": "This is a distribution gate."
+    },
+    {
+      "id": "INV-8-14-059",
+      "lineStart": 2635,
+      "lineEnd": 2635,
+      "sourceAnchor": "\u00a78.5 report field 1",
+      "synopsis": "Record implementation and package versions in the parity report.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-R"
+      ],
+      "owner": "M-R",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 2,
+      "reason": "The packed release report is produced at M-R."
+    },
+    {
+      "id": "INV-8-14-060",
+      "lineStart": 2636,
+      "lineEnd": 2636,
+      "sourceAnchor": "\u00a78.5 report field 2",
+      "synopsis": "Record implementation, Java, and data SHAs plus the porting-contract archive digest.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-R"
+      ],
+      "owner": "M-R",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 4,
+      "reason": "These are release attestation identities."
+    },
+    {
+      "id": "INV-8-14-061",
+      "lineStart": 2637,
+      "lineEnd": 2638,
+      "sourceAnchor": "\u00a78.5 report field 3",
+      "synopsis": "Record requirement/profile/selection hashes and active release requirement/evidence ID sets.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-R"
+      ],
+      "owner": "M-R",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 6,
+      "reason": "These fields close the release registry evidence."
+    },
+    {
+      "id": "INV-8-14-062",
+      "lineStart": 2639,
+      "lineEnd": 2639,
+      "sourceAnchor": "\u00a78.5 report field 4",
+      "synopsis": "Record CLDR, localized-CLDR, behavioral-vector, and data fingerprint versions.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-R"
+      ],
+      "owner": "M-R",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 4,
+      "reason": "These are packed data identities."
+    },
+    {
+      "id": "INV-8-14-063",
+      "lineStart": 2640,
+      "lineEnd": 2640,
+      "sourceAnchor": "\u00a78.5 report field 5",
+      "synopsis": "Record IANA registry/fingerprint and reference JDK identity.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-R"
+      ],
+      "owner": "M-R",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 4,
+      "reason": "These are release reference identities."
+    },
+    {
+      "id": "INV-8-14-064",
+      "lineStart": 2641,
+      "lineEnd": 2642,
+      "sourceAnchor": "\u00a78.5 report field 6",
+      "synopsis": "Record exact required, applicable, passed, failed, xfailed, and unsupported ID sets.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-R"
+      ],
+      "owner": "M-R",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 6,
+      "reason": "Release closure is set-based rather than count-based."
+    },
+    {
+      "id": "INV-8-14-065",
+      "lineStart": 2643,
+      "lineEnd": 2643,
+      "sourceAnchor": "\u00a78.5 report field 7",
+      "synopsis": "Record xfail metadata and a deterministic sourceDateEpoch from the release tag or commit.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-R"
+      ],
+      "owner": "M-R",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 2,
+      "reason": "These fields support deterministic release reporting."
+    },
+    {
+      "id": "INV-8-14-066",
+      "lineStart": 2645,
+      "lineEnd": 2648,
+      "sourceAnchor": "\u00a78.5 packed report gate",
+      "synopsis": "Embed and attach the identical report, require clean strict partitions, and defer the historical dashboard without making it a release dependency.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-R"
+      ],
+      "owner": "M-R",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 6,
+      "reason": "All obligations apply at the first parity-backed release."
+    },
+    {
+      "id": "INV-8-14-067",
+      "lineStart": 2650,
+      "lineEnd": 2651,
+      "sourceAnchor": "\u00a78.5 volatile timing metadata",
+      "synopsis": "Keep wall-clock run times outside the canonical packed report to preserve reproducibility.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-R"
+      ],
+      "owner": "M-R",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 1,
+      "reason": "This constrains release artifact construction."
+    },
+    {
+      "id": "INV-8-14-068",
+      "lineStart": 2653,
+      "lineEnd": 2653,
+      "sourceAnchor": "\u00a78.5 divergence generation",
+      "synopsis": "Generate DIVERGENCES.md from xfail and unsupported records.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-R"
+      ],
+      "owner": "M-R",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 1,
+      "reason": "This is release documentation generated from final evidence."
+    },
+    {
+      "id": "INV-8-14-069",
+      "lineStart": 2657,
+      "lineEnd": 2664,
+      "sourceAnchor": "\u00a78.6 staged registry lifecycle",
+      "synopsis": "Freeze the M0-frontier bootstrap before approval, fill the M1/M3a/M2 slice during M0, and require reviewed successor registration before later implementation or evidence counts.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 13,
+      "reason": "This is the governing pre-M0 bootstrap and staged-registration policy."
+    },
+    {
+      "id": "INV-8-14-070",
+      "lineStart": 2666,
+      "lineEnd": 2668,
+      "sourceAnchor": "\u00a78.6 requirement identity and atomicity",
+      "synopsis": "Use immutable LJ area IDs, retain retired tombstones, and keep each live record atomic and independently verifiable.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 5,
+      "reason": "The production registry schema and minting rules must exist before approval."
+    },
+    {
+      "id": "INV-8-14-071",
+      "lineStart": 2670,
+      "lineEnd": 2670,
+      "sourceAnchor": "\u00a78.6 record field 1",
+      "synopsis": "Store the normative statement, statement hash, and stable source anchor.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 3,
+      "reason": "These are mandatory bootstrap record fields."
+    },
+    {
+      "id": "INV-8-14-072",
+      "lineStart": 2671,
+      "lineEnd": 2671,
+      "sourceAnchor": "\u00a78.6 record field 2",
+      "synopsis": "Assign exactly one portable, implementation-required, or informational parity class.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 1,
+      "reason": "Parity classification is needed for bootstrap closure."
+    },
+    {
+      "id": "INV-8-14-073",
+      "lineStart": 2672,
+      "lineEnd": 2673,
+      "sourceAnchor": "\u00a78.6 record field 3",
+      "synopsis": "Assign one activation milestone, one owner milestone, and applicable release profiles.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 3,
+      "reason": "These fields determine activation and ownership."
+    },
+    {
+      "id": "INV-8-14-074",
+      "lineStart": 2674,
+      "lineEnd": 2676,
+      "sourceAnchor": "\u00a78.6 record field 4",
+      "synopsis": "Require a nonempty reduced registration frontier covering activation and evidence producers.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 4,
+      "reason": "Frontier correctness is central to the staged bootstrap."
+    },
+    {
+      "id": "INV-8-14-075",
+      "lineStart": 2677,
+      "lineEnd": 2679,
+      "sourceAnchor": "\u00a78.6 record field 5",
+      "synopsis": "Store a checked evidence expression, producer milestone, and concrete evidence IDs.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 3,
+      "reason": "Evidence closure fields must be frozen with the initial schema."
+    },
+    {
+      "id": "INV-8-14-076",
+      "lineStart": 2681,
+      "lineEnd": 2689,
+      "sourceAnchor": "\u00a78.6 statement hashes and plan markers",
+      "synopsis": "Hash exact JCS statement bytes, mark each atomic initial proposition, mark later blocks with checked deferred frontiers, replace markers before work, and forbid deferred scope at M-R.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 13,
+      "reason": "The marker grammar and staged source-to-registry linkage are preapproval controls."
+    },
+    {
+      "id": "INV-8-14-077",
+      "lineStart": 2691,
+      "lineEnd": 2696,
+      "sourceAnchor": "\u00a78.6 registry linter and review",
+      "synopsis": "Lint unique one-to-one records and timely markers while leaving semantic atomicity to reviewer attestation and requiring explicit NONNORMATIVE markers.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 9,
+      "reason": "An executable linter and review boundary are required by M0."
+    },
+    {
+      "id": "INV-8-14-078",
+      "lineStart": 2698,
+      "lineEnd": 2708,
+      "sourceAnchor": "\u00a78.6 evidence grammar and acceptance",
+      "synopsis": "Link all evidence to requirements, default to conjunction, tightly constrain anyOf, define machine acceptance by evidence kind, derive acceptance, and bar decision records from runtime proof.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 21,
+      "reason": "M0 freezes evidence schemas and closure semantics."
+    },
+    {
+      "id": "INV-8-14-079",
+      "lineStart": 2710,
+      "lineEnd": 2718,
+      "sourceAnchor": "\u00a78.6 evidence applicability and invalidation",
+      "synopsis": "Bind evidence to requirement/expression and subject projections, invalidate mismatches and migrations, permit only reviewed static non-impact proof, and retain immutable history.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 14,
+      "reason": "This is core evidence-closure behavior required by the M0 checker."
+    },
+    {
+      "id": "INV-8-14-080",
+      "lineStart": 2720,
+      "lineEnd": 2730,
+      "sourceAnchor": "\u00a78.6 profiles and selection attestations",
+      "synopsis": "Freeze profiles and initial selection before approval, bind applicable sets to exact registry hashes, issue successor attestations, and preserve history through claim-cut migrations.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 16,
+      "reason": "Profile selection is part of the pre-M0 bootstrap."
+    },
+    {
+      "id": "INV-8-14-081",
+      "lineStart": 2732,
+      "lineEnd": 2746,
+      "sourceAnchor": "\u00a78.6 activation, migration, and closure",
+      "synopsis": "Derive activation, enforce DAG ownership, require reviewed migrations for semantic identity changes, reject malformed registry/evidence states, recheck ancestor owners, and close all release requirements at M-R.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 34,
+      "reason": "These are the machine closure and migration rules M0 must implement."
+    },
+    {
+      "id": "INV-8-14-082",
+      "lineStart": 2754,
+      "lineEnd": 2756,
+      "sourceAnchor": "\u00a79.1 package rule 1",
+      "synopsis": "Publish ESM only and declare type module.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-R"
+      ],
+      "owner": "M-R",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 2,
+      "reason": "The package format is verified at distribution."
+    },
+    {
+      "id": "INV-8-14-083",
+      "lineStart": 2757,
+      "lineEnd": 2757,
+      "sourceAnchor": "\u00a79.1 package rule 2",
+      "synopsis": "Declare Node engines and a restrictive files list.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-R"
+      ],
+      "owner": "M-R",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 2,
+      "reason": "These are packed package constraints."
+    },
+    {
+      "id": "INV-8-14-084",
+      "lineStart": 2758,
+      "lineEnd": 2758,
+      "sourceAnchor": "\u00a79.1 package rule 3",
+      "synopsis": "Use an explicit export map with types and import targets.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-R"
+      ],
+      "owner": "M-R",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 3,
+      "reason": "The export surface is an M-R package gate."
+    },
+    {
+      "id": "INV-8-14-085",
+      "lineStart": 2759,
+      "lineEnd": 2759,
+      "sourceAnchor": "\u00a79.1 package rule 4",
+      "synopsis": "Use one implementation graph without module-instance identity dependence.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-R"
+      ],
+      "owner": "M-R",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 2,
+      "reason": "This is a final package/runtime invariant."
+    },
+    {
+      "id": "INV-8-14-086",
+      "lineStart": 2760,
+      "lineEnd": 2760,
+      "sourceAnchor": "\u00a79.1 package rule 5",
+      "synopsis": "Mark side effects accurately.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-R"
+      ],
+      "owner": "M-R",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 1,
+      "reason": "This is verified on the packed package."
+    },
+    {
+      "id": "INV-8-14-087",
+      "lineStart": 2761,
+      "lineEnd": 2761,
+      "sourceAnchor": "\u00a79.1 package rule 6",
+      "synopsis": "Keep Node built-ins behind lokalized/node.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-R"
+      ],
+      "owner": "M-R",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 1,
+      "reason": "Browser graph separation is a distribution requirement."
+    },
+    {
+      "id": "INV-8-14-088",
+      "lineStart": 2762,
+      "lineEnd": 2762,
+      "sourceAnchor": "\u00a79.1 package rule 7",
+      "synopsis": "Keep React out of root and declare it only as an optional peer if later added.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-R"
+      ],
+      "owner": "M-R",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 2,
+      "reason": "The first release package must remain React-free at root."
+    },
+    {
+      "id": "INV-8-14-089",
+      "lineStart": 2763,
+      "lineEnd": 2763,
+      "sourceAnchor": "\u00a79.1 package rule 8",
+      "synopsis": "Include Apache and Unicode notices in generated and packed artifacts.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-R"
+      ],
+      "owner": "M-R",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 2,
+      "reason": "Legal notices are distribution gates."
+    },
+    {
+      "id": "INV-8-14-090",
+      "lineStart": 2764,
+      "lineEnd": 2764,
+      "sourceAnchor": "\u00a79.1 package rule 9",
+      "synopsis": "Publish through CI using npm provenance and OIDC.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-R"
+      ],
+      "owner": "M-R",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 3,
+      "reason": "Publication occurs at M-R."
+    },
+    {
+      "id": "INV-8-14-091",
+      "lineStart": 2766,
+      "lineEnd": 2769,
+      "sourceAnchor": "\u00a79.1 packed-package verification",
+      "synopsis": "Verify documented imports, ESM/TypeScript/browser behavior, legal and file hygiene, reproducibility, and absence of Node/React browser leakage against npm pack.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-R"
+      ],
+      "owner": "M-R",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 10,
+      "reason": "These checks operate on the release candidate tarball."
+    },
+    {
+      "id": "INV-8-14-092",
+      "lineStart": 2773,
+      "lineEnd": 2774,
+      "sourceAnchor": "\u00a79.2 sidecar policy",
+      "synopsis": "Measure compressed temporary artifacts and publish gzip/Brotli sidecars only for a documented consumer hosting path.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-R"
+      ],
+      "owner": "M-R",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 3,
+      "reason": "Sidecar publication is a release packaging choice, not an early semantic gate."
+    },
+    {
+      "id": "INV-8-14-093",
+      "lineStart": 2776,
+      "lineEnd": 2778,
+      "sourceAnchor": "\u00a79.2 measurement dimensions and host truth",
+      "synopsis": "Record all static raw, generated, shipped, compressed, timing, memory, module, and graph dimensions under the M0/M2 measurement protocol.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M2",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 12,
+      "reason": "M0 freezes 0a methodology and M2 is the first measured economic gate."
+    },
+    {
+      "id": "INV-8-14-094",
+      "lineStart": 2782,
+      "lineEnd": 2785,
+      "sourceAnchor": "\u00a79.2 complete derivative rows",
+      "synopsis": "Measure the complete browser data derivative and keep rendering, validity/IANA, ordinal, range, and full-range-solver contributions as separate rows.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M1"
+      ],
+      "owner": "M2",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 7,
+      "reason": "M1 produces the derivative and M2 must price the complete browser graph."
+    },
+    {
+      "id": "INV-8-14-095",
+      "lineStart": 2787,
+      "lineEnd": 2797,
+      "sourceAnchor": "\u00a79.2 scenario and run manifest contract",
+      "synopsis": "Bind every scenario and run to profiles, ownership, frozen recipes, fixtures, tools, environments, methods, thresholds, network context, and immutable result identities; require reviewed revision for changes.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 36,
+      "reason": "The checked scenario grammar and 0a instance are M0 freeze artifacts."
+    },
+    {
+      "id": "INV-8-14-096",
+      "lineStart": 2799,
+      "lineEnd": 2802,
+      "sourceAnchor": "\u00a79.2 scenario freeze and applicability",
+      "synopsis": "Freeze M0-deadline scenarios, register later deadlines, forbid counting work before freeze, and derive applicability from the selected profile.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 6,
+      "reason": "This controls all scenario lifecycle from M0."
+    },
+    {
+      "id": "INV-8-14-097",
+      "lineStart": 2806,
+      "lineEnd": 2810,
+      "sourceAnchor": "\u00a79.2 scenario 0a",
+      "synopsis": "Freeze two packed static M2 variants with the complete M1 derivative and measure bytes, import/decode, construction, first render, and memory in Node and one floor browser without loaders.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M2",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 18,
+      "reason": "Scenario 0a freezes at M0 and is the M2 economic gate."
+    },
+    {
+      "id": "INV-8-14-098",
+      "lineStart": 2811,
+      "lineEnd": 2813,
+      "sourceAnchor": "\u00a79.2 scenario 0b",
+      "synopsis": "Measure production-host root plus loading with realistic catalogs for request, transfer, streaming, preload, render, and actual encoding behavior.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 9,
+      "reason": "The exact network-delivery scenario freezes immediately before M8."
+    },
+    {
+      "id": "INV-8-14-099",
+      "lineStart": 2814,
+      "lineEnd": 2815,
+      "sourceAnchor": "\u00a79.2 scenarios 1-3",
+      "synopsis": "Measure no-build root, bundler root, and parsed-core scenarios at M7, freezing at M2 exit and repeating at M-R.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M2"
+      ],
+      "owner": "M7",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 7,
+      "reason": "Their immutable scenario revisions must freeze at M2 exit."
+    },
+    {
+      "id": "INV-8-14-100",
+      "lineStart": 2816,
+      "lineEnd": 2817,
+      "sourceAnchor": "\u00a79.2 scenarios 4-5",
+      "synopsis": "Measure ordinal and range root scenarios when selected, freezing at M2 exit and repeating at M-R.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M2"
+      ],
+      "owner": "M7",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 5,
+      "reason": "Their potential M7 claims require M2-exit scenario freeze."
+    },
+    {
+      "id": "INV-8-14-101",
+      "lineStart": 2818,
+      "lineEnd": 2819,
+      "sourceAnchor": "\u00a79.2 scenario 6",
+      "synopsis": "Measure edge/server full-range negotiation over the shared validity/IANA closure.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M9"
+      ],
+      "owner": "M9",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 2,
+      "reason": "Negotiation delivery is activated at M9."
+    },
+    {
+      "id": "INV-8-14-102",
+      "lineStart": 2820,
+      "lineEnd": 2821,
+      "sourceAnchor": "\u00a79.2 scenario 7",
+      "synopsis": "Keep React and host-Intl measurements deferred and outside the first parity-backed release.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-E"
+      ],
+      "owner": "M-E",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 3,
+      "reason": "This catalog entry activates only under a later ecosystem profile."
+    },
+    {
+      "id": "INV-8-14-103",
+      "lineStart": 2823,
+      "lineEnd": 2828,
+      "sourceAnchor": "\u00a79.2 go/no-go and proxy policy",
+      "synopsis": "Make M2 a blocking gate, require all then-due scenarios to meet frozen tolerances, constrain misses to reviewed rebaseline or claim cuts, and freeze the named future-code proxy inventory.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M2"
+      ],
+      "owner": "M2",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 6,
+      "reason": "This is the M2 economic gate and proxy policy; the actual-host M8 gate is inventoried separately."
+    },
+    {
+      "id": "INV-8-14-104",
+      "lineStart": 2829,
+      "lineEnd": 2830,
+      "sourceAnchor": "\u00a79.2 release scenario rerun",
+      "synopsis": "Rerun or evaluate every selected-profile scenario at M-R regardless of earlier ownership.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-R"
+      ],
+      "owner": "M-R",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 1,
+      "reason": "This is the final distribution revalidation rule."
+    },
+    {
+      "id": "INV-8-14-105",
+      "lineStart": 2832,
+      "lineEnd": 2837,
+      "sourceAnchor": "\u00a79.2 evidence baseline and provisional ceilings",
+      "synopsis": "Exclude incomparable prior estimates, record reproducible candidate inputs/tools/results and separate provisional compressor ceilings at M0, and avoid pre-M0 hard-coded byte or catalog ratios.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 10,
+      "reason": "M0 must remeasure and freeze provisional criteria before M1 integration."
+    },
+    {
+      "id": "INV-8-14-106",
+      "lineStart": 2841,
+      "lineEnd": 2842,
+      "sourceAnchor": "\u00a79.3 realistic benchmark catalogs",
+      "synopsis": "Use checked 500-key and 2,000-key catalogs and forbid linear extrapolation from a 13-key fixture.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M7"
+      ],
+      "owner": "M7",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 3,
+      "reason": "The fixed M2 0a scenarios use small catalogs; these realistic catalogs belong to final M7 performance evidence."
+    },
+    {
+      "id": "INV-8-14-107",
+      "lineStart": 2846,
+      "lineEnd": 2846,
+      "sourceAnchor": "\u00a79.3 metric 1",
+      "synopsis": "Measure cold decode, parse, validate, and compile time.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M2"
+      ],
+      "owner": "M7",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 4,
+      "reason": "Cold import/decode and construction are part of the M2 gate."
+    },
+    {
+      "id": "INV-8-14-108",
+      "lineStart": 2847,
+      "lineEnd": 2847,
+      "sourceAnchor": "\u00a79.3 metric 2",
+      "synopsis": "Measure construction peak and retained memory.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M2"
+      ],
+      "owner": "M7",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 2,
+      "reason": "Memory is an explicit 0a measurement."
+    },
+    {
+      "id": "INV-8-14-109",
+      "lineStart": 2848,
+      "lineEnd": 2848,
+      "sourceAnchor": "\u00a79.3 metric 3",
+      "synopsis": "Measure warm get and getResult throughput.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M7"
+      ],
+      "owner": "M7",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 2,
+      "reason": "Warm runtime throughput is evaluated against the completed graph."
+    },
+    {
+      "id": "INV-8-14-110",
+      "lineStart": 2849,
+      "lineEnd": 2849,
+      "sourceAnchor": "\u00a79.3 metric 4",
+      "synopsis": "Measure fallback-chain and equivalence-cache behavior.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M7"
+      ],
+      "owner": "M7",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 2,
+      "reason": "These final core paths do not exist in the M2 skeleton."
+    },
+    {
+      "id": "INV-8-14-111",
+      "lineStart": 2850,
+      "lineEnd": 2850,
+      "sourceAnchor": "\u00a79.3 metric 5",
+      "synopsis": "Measure browser request graph and first usable render.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 2,
+      "reason": "Network request behavior is M8 delivery evidence."
+    },
+    {
+      "id": "INV-8-14-112",
+      "lineStart": 2851,
+      "lineEnd": 2851,
+      "sourceAnchor": "\u00a79.3 metric 6",
+      "synopsis": "Measure Node server concurrency with per-call locales.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 1,
+      "reason": "Concurrent lifecycle behavior closes at M8."
+    },
+    {
+      "id": "INV-8-14-113",
+      "lineStart": 2852,
+      "lineEnd": 2852,
+      "sourceAnchor": "\u00a79.3 metric 7",
+      "synopsis": "Measure cleanup after partial and failed loads.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 2,
+      "reason": "Load lifecycle cleanup is owned by M8."
+    },
+    {
+      "id": "INV-8-14-114",
+      "lineStart": 2854,
+      "lineEnd": 2855,
+      "sourceAnchor": "\u00a79.3 M0 and M2 0a threshold lifecycle",
+      "synopsis": "Freeze provisional 0a thresholds at M0 and require M2 to meet them or use the reviewed rebaseline or claim-cut path.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M2",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 6,
+      "reason": "This is the complete M0/M2 portion of the threshold lifecycle."
+    },
+    {
+      "id": "INV-8-14-115",
+      "lineStart": 2870,
+      "lineEnd": 2871,
+      "sourceAnchor": "\u00a710 bounded planning premise",
+      "synopsis": "Treat milestone sizes as relative, bind finite M0/provisional M2 time-and-effort envelopes, and forbid unbounded work starts.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 5,
+      "reason": "Capacity approval is a pre-M0 gate."
+    },
+    {
+      "id": "INV-8-14-116",
+      "lineStart": 2875,
+      "lineEnd": 2875,
+      "sourceAnchor": "\u00a710.1 stage 1 walking skeleton",
+      "synopsis": "Keep the M2 walking skeleton internal and unsupported.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M2",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 2,
+      "reason": "The M2 product claim is fixed before work begins."
+    },
+    {
+      "id": "INV-8-14-117",
+      "lineStart": 2876,
+      "lineEnd": 2877,
+      "sourceAnchor": "\u00a710.1 stage 2 parity-backed release",
+      "synopsis": "Define M-R 0.x as strict core, delivery, negotiation, documentation, and embedded parity declaration.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M-R",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 6,
+      "reason": "The selected release profile claim is a preapproval input."
+    },
+    {
+      "id": "INV-8-14-118",
+      "lineStart": 2878,
+      "lineEnd": 2881,
+      "sourceAnchor": "\u00a710.1 stage 3 cut negotiation",
+      "synopsis": "Keep any core preview internal without range/header claims and require a separate approved profile-bound path to publish it.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 6,
+      "reason": "This constrains permissible claim cuts from the outset."
+    },
+    {
+      "id": "INV-8-14-119",
+      "lineStart": 2882,
+      "lineEnd": 2882,
+      "sourceAnchor": "\u00a710.1 stage 4 ecosystem",
+      "synopsis": "Place React, linting, host-Intl, dashboard, and standalone tooling after MVP.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-E"
+      ],
+      "owner": "M-E",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 5,
+      "reason": "These claims activate only in deferred ecosystem work."
+    },
+    {
+      "id": "INV-8-14-120",
+      "lineStart": 2883,
+      "lineEnd": 2883,
+      "sourceAnchor": "\u00a710.1 stage 5 generator extraction",
+      "synopsis": "Keep generator extraction trigger-gated and outside the JS critical path.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-X"
+      ],
+      "owner": "M-X",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 2,
+      "reason": "This applies only when M-X is triggered."
+    },
+    {
+      "id": "INV-8-14-121",
+      "lineStart": 2887,
+      "lineEnd": 2899,
+      "sourceAnchor": "\u00a710.2 dependency DAG",
+      "synopsis": "Fix the complete milestone dependency graph and keep M-X trigger-only.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 15,
+      "reason": "Registry frontier reduction and legal milestone starts depend on this DAG."
+    },
+    {
+      "id": "INV-8-14-122",
+      "lineStart": 2901,
+      "lineEnd": 2908,
+      "sourceAnchor": "\u00a710.2 execution ordering and closure",
+      "synopsis": "Allow only capped M0 exploration, delay formal M1/M3a until semantic freeze, define permitted parallelism, and require ancestor requirement evidence at every milestone closure.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 13,
+      "reason": "These sequencing and closure constraints apply as soon as work is approved."
+    },
+    {
+      "id": "INV-8-14-123",
+      "lineStart": 2912,
+      "lineEnd": 2914,
+      "sourceAnchor": "\u00a710.3 milestone M0",
+      "synopsis": "Freeze the complete contract, initial registry/evidence machinery, reproducible encoding and size decisions, owners and capacity, then scaffold the package and CI.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 3,
+      "reason": "This is one closure/navigation record over the detailed M0 requirements inventoried in their canonical sections."
+    },
+    {
+      "id": "INV-8-14-124",
+      "lineStart": 2915,
+      "lineEnd": 2915,
+      "sourceAnchor": "\u00a710.3 milestone M1",
+      "synopsis": "Generate pinned full canonical CLDR/IANA artifacts, prove lossless production encoding and candidate measurements, and stage reproducible data archives.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M1"
+      ],
+      "owner": "M1",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 1,
+      "reason": "This is one M1 closure/navigation record; detailed semantic and data requirements are inventoried at their canonical clauses."
+    },
+    {
+      "id": "INV-8-14-125",
+      "lineStart": 2916,
+      "lineEnd": 2916,
+      "sourceAnchor": "\u00a710.3 milestone M3a",
+      "synopsis": "Populate minimal immutable behavior/oracle cases with exact reporting under the pinned JDK and require all M3a checks green.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M3a"
+      ],
+      "owner": "M3a",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 1,
+      "reason": "This is one M3a closure/navigation record over the canonical corpus and oracle requirements."
+    },
+    {
+      "id": "INV-8-14-126",
+      "lineStart": 2917,
+      "lineEnd": 2917,
+      "sourceAnchor": "\u00a710.3 milestone M2",
+      "synopsis": "Deliver the bounded end-to-end Node/browser skeleton, execute required generated-placeholder spikes and both 0a variants, and enforce economic/capacity go-no-go rules.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M2"
+      ],
+      "owner": "M2",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 1,
+      "reason": "This is one M2 closure/navigation record over the canonical walking-skeleton and economic-gate requirements."
+    },
+    {
+      "id": "INV-8-14-127",
+      "lineStart": 2918,
+      "lineEnd": 2918,
+      "sourceAnchor": "\u00a710.3 milestone M3b",
+      "synopsis": "Complete core semantic corpus families, reserve later IDs, control xfails, and disposition all reachable portable branches before M7.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M3b"
+      ],
+      "owner": "M3b",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 1,
+      "reason": "This is one M3b closure/navigation record; detailed corpus rules remain at their canonical clauses."
+    },
+    {
+      "id": "INV-8-14-128",
+      "lineStart": 2919,
+      "lineEnd": 2919,
+      "sourceAnchor": "\u00a710.3 milestone M4",
+      "synopsis": "Implement exact numeric/plural/range behavior from pinned data, pass all generated classifier cases, validate optional provenance, and exclude host Intl.PluralRules.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M4"
+      ],
+      "owner": "M4",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 1,
+      "reason": "This is one M4 closure/navigation record over the canonical plural-engine requirements."
+    },
+    {
+      "id": "INV-8-14-129",
+      "lineStart": 2920,
+      "lineEnd": 2920,
+      "sourceAnchor": "\u00a710.3 milestone M5a",
+      "synopsis": "Implement bounded duplicate-aware parsing with complete diagnostics and pre-materialization/pre-allocation limit enforcement, choosing parser strategy from evidence.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M5a"
+      ],
+      "owner": "M5a",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 1,
+      "reason": "This is one M5a closure/navigation record over the canonical parser requirements."
+    },
+    {
+      "id": "INV-8-14-130",
+      "lineStart": 2921,
+      "lineEnd": 2921,
+      "sourceAnchor": "\u00a710.3 milestone M5b",
+      "synopsis": "Implement catalog construction, exact merges, safe records, alternatives, interpolation, language forms, bidi, magic-key, and falsy-placeholder behavior.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M5b"
+      ],
+      "owner": "M5b",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 1,
+      "reason": "This is one M5b closure/navigation record over the canonical catalog-model requirements."
+    },
+    {
+      "id": "INV-8-14-131",
+      "lineStart": 2922,
+      "lineEnd": 2922,
+      "sourceAnchor": "\u00a710.3 milestone M6",
+      "synopsis": "Implement expression parsing/evaluation, exact axes and errors, fixed limits, no dynamic evaluation, and tagged-value distinctions.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M6"
+      ],
+      "owner": "M6",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 1,
+      "reason": "This is one M6 closure/navigation record over the canonical expression requirements."
+    },
+    {
+      "id": "INV-8-14-132",
+      "lineStart": 2923,
+      "lineEnd": 2923,
+      "sourceAnchor": "\u00a710.3 milestone M7",
+      "synopsis": "Complete locale resolution and diagnostics, prove any encoding projection against final consumers, revalidate omissions, and meet final core size/performance/memory budgets.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M7"
+      ],
+      "owner": "M7",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 1,
+      "reason": "This is one M7 closure/navigation record over the canonical core and budget requirements."
+    },
+    {
+      "id": "INV-8-14-133",
+      "lineStart": 2924,
+      "lineEnd": 2924,
+      "sourceAnchor": "\u00a710.3 milestone M8",
+      "synopsis": "Implement loading/lifecycle/SSR behavior, pass immutable production-host 0b or a reviewed claim change, preserve direct identity and isolation, and remove hidden onboarding decisions.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 1,
+      "reason": "This is one M8 closure/navigation record over the canonical delivery and lifecycle requirements."
+    },
+    {
+      "id": "INV-8-14-134",
+      "lineStart": 2925,
+      "lineEnd": 2925,
+      "sourceAnchor": "\u00a710.3 milestone M9",
+      "synopsis": "Implement pinned RFC negotiation, reuse or prove direct matching, require exhaustive Java/JDK expansion equality, and ship executed server/edge and browser examples.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M9"
+      ],
+      "owner": "M9",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 1,
+      "reason": "This is one M9 closure/navigation record over the canonical negotiation requirements."
+    },
+    {
+      "id": "INV-8-14-135",
+      "lineStart": 2926,
+      "lineEnd": 2926,
+      "sourceAnchor": "\u00a710.3 milestone M-D",
+      "synopsis": "Execute all quickstarts, document the named integration topics, and require an unfamiliar adopter to complete realistic use without hidden decisions.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-D"
+      ],
+      "owner": "M-D",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 1,
+      "reason": "This is one M-D closure/navigation record over the canonical documentation and adoption requirements."
+    },
+    {
+      "id": "INV-8-14-136",
+      "lineStart": 2927,
+      "lineEnd": 2927,
+      "sourceAnchor": "\u00a710.3 milestone M-R",
+      "synopsis": "Gate packed public surface, declarations, platform smokes, legal/reproducibility/budget artifacts, complete evidence closure, clean parity sets, and provenance publication.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-R"
+      ],
+      "owner": "M-R",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 1,
+      "reason": "This is one M-R closure/navigation record over the canonical distribution and evidence requirements."
+    },
+    {
+      "id": "INV-8-14-137",
+      "lineStart": 2928,
+      "lineEnd": 2928,
+      "sourceAnchor": "\u00a710.3 milestone M-E",
+      "synopsis": "Require separate approval for listed ecosystem work and exclude it from the first core release.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-E"
+      ],
+      "owner": "M-E",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 1,
+      "reason": "This is one M-E closure/navigation record over the separately approved ecosystem scope."
+    },
+    {
+      "id": "INV-8-14-138",
+      "lineStart": 2929,
+      "lineEnd": 2929,
+      "sourceAnchor": "\u00a710.3 milestone M-X",
+      "synopsis": "Start generator extraction only on trigger and preserve canonical generation, checks, hosting coordination, reproducibility, and notices without blocking M-R.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M-X"
+      ],
+      "owner": "M-X",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 1,
+      "reason": "This is one M-X closure/navigation record over the trigger-gated extraction requirements."
+    },
+    {
+      "id": "INV-8-14-139",
+      "lineStart": 2933,
+      "lineEnd": 2940,
+      "sourceAnchor": "\u00a710.4 production calibration procedure",
+      "synopsis": "Require the named production implementer, human reviewer, and decision owner to classify \u00a72.2, draft provisional records with all metadata, keep CAL IDs nonbinding, and divide bootstrap minting between preapproval and M0.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 19,
+      "reason": "This calibration is a preapproval input to the M0 human-attention cap."
+    },
+    {
+      "id": "INV-8-14-140",
+      "lineStart": 2942,
+      "lineEnd": 2955,
+      "sourceAnchor": "\u00a710.4 calibration artifact and allowance formula",
+      "synopsis": "Record immutable calibration identities and separate agent/human timing, compute a human-attention rate plus fixed decision/tooling work and contingency, keep agent throughput separate, and rerun after invalidating workflow changes.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 24,
+      "reason": "This block defines the formal cap calculation and directly addresses maintainer capacity risk."
+    },
+    {
+      "id": "INV-8-14-141",
+      "lineStart": 2957,
+      "lineEnd": 2962,
+      "sourceAnchor": "\u00a710.4 initial-slice inventory",
+      "synopsis": "Inventory every initial source block with frontier and reviewed record count, use its sum rather than word-density extrapolation, bind hashes at approval, and finish later initial-slice atomization during M0.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 10,
+      "reason": "This file implements that mandatory preapproval inventory step."
+    },
+    {
+      "id": "INV-8-14-142",
+      "lineStart": 2964,
+      "lineEnd": 2972,
+      "sourceAnchor": "\u00a710.4 named capacity envelopes",
+      "synopsis": "Name all human roles and commitments, freeze finite M0 and provisional M2 envelopes, start clocks at defined events, rebaseline explicitly, and charge the full critical-path effort including parallel work.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 16,
+      "reason": "The human capacity envelope is required before formal M0 starts."
+    },
+    {
+      "id": "INV-8-14-143",
+      "lineStart": 2974,
+      "lineEnd": 2983,
+      "sourceAnchor": "\u00a710.4 50-percent checkpoints",
+      "synopsis": "Require earlier-of-time-or-effort checkpoints with exact M0/M2 artifacts, pause on absence or review failure, constrain restart outcomes, and forbid unconstrained continuation.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 18,
+      "reason": "These binding checkpoint rules are part of the preapproved capacity record."
+    },
+    {
+      "id": "INV-8-14-144",
+      "lineStart": 2985,
+      "lineEnd": 2987,
+      "sourceAnchor": "\u00a710.4 100-percent stop",
+      "synopsis": "Stop incomplete gates at either cap and require a new envelope plus explicit cuts or funded capacity to continue.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 5,
+      "reason": "The terminal capacity trip-wire must be agreed before work."
+    },
+    {
+      "id": "INV-8-14-145",
+      "lineStart": 2989,
+      "lineEnd": 2994,
+      "sourceAnchor": "\u00a710.4 append-only capacity record",
+      "synopsis": "Version the capacity ledger append-only with complete identities and history, strictly constrain elapsed tolling, never toll effort, preserve usage on rebaseline, and make CI reject invalid records.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 16,
+      "reason": "This record is the enforceable form of the pre-M0 capacity decision."
+    },
+    {
+      "id": "INV-8-14-146",
+      "lineStart": 2998,
+      "lineEnd": 2998,
+      "sourceAnchor": "\u00a710.5 claim-cut invariant",
+      "synopsis": "Require capacity cuts to reduce product claims as well as work.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 1,
+      "reason": "Claim-cut policy is an approval criterion."
+    },
+    {
+      "id": "INV-8-14-147",
+      "lineStart": 3000,
+      "lineEnd": 3000,
+      "sourceAnchor": "\u00a710.5 cut 1",
+      "synopsis": "Do not publish at M2 and keep the skeleton internal.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M2",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 2,
+      "reason": "This is the first bounded response to lower capacity."
+    },
+    {
+      "id": "INV-8-14-148",
+      "lineStart": 3001,
+      "lineEnd": 3001,
+      "sourceAnchor": "\u00a710.5 cut 2",
+      "synopsis": "If M9 is deferred, keep any core preview internal and unpublished.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 2,
+      "reason": "This protects the release claim when negotiation is cut."
+    },
+    {
+      "id": "INV-8-14-149",
+      "lineStart": 3002,
+      "lineEnd": 3003,
+      "sourceAnchor": "\u00a710.5 cut 3",
+      "synopsis": "Defer edge/domain delivery and M-R together unless a separately approved profile-bound release plan exists.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 4,
+      "reason": "This prevents deleting release gates in place."
+    },
+    {
+      "id": "INV-8-14-150",
+      "lineStart": 3004,
+      "lineEnd": 3004,
+      "sourceAnchor": "\u00a710.5 cut 4",
+      "synopsis": "Defer all M-E work when capacity is lower.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 1,
+      "reason": "This is an approved scope-reduction order."
+    },
+    {
+      "id": "INV-8-14-151",
+      "lineStart": 3005,
+      "lineEnd": 3005,
+      "sourceAnchor": "\u00a710.5 cut 5",
+      "synopsis": "Leave M-X dormant until its trigger.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 1,
+      "reason": "This protects the critical path from untriggered generator extraction."
+    },
+    {
+      "id": "INV-8-14-152",
+      "lineStart": 3007,
+      "lineEnd": 3008,
+      "sourceAnchor": "\u00a710.5 non-cuttable parity core",
+      "synopsis": "Forbid cutting exact locale data, duplicate-aware parsing, typed placeholders, fallback semantics, or behavioral case IDs from a parity-backed release.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 5,
+      "reason": "These minimum claims constrain every capacity decision."
+    },
+    {
+      "id": "INV-8-14-153",
+      "lineStart": 3014,
+      "lineEnd": 3016,
+      "sourceAnchor": "\u00a711 approval timing",
+      "synopsis": "Record calibration, inventory, and M0/provisional M2 envelopes before approval, then close every remaining decision by M0 exit with explicit M2 confirmation or rebaseline.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 5,
+      "reason": "This is one timing/navigation assertion over canonical preapproval and M0-exit requirements."
+    },
+    {
+      "id": "INV-8-14-154",
+      "lineStart": 3020,
+      "lineEnd": 3020,
+      "sourceAnchor": "\u00a711 decision package name and scope",
+      "synopsis": "Recheck registry ownership at execution and decide npm scope for core and future bindings.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 2,
+      "reason": "Package scope must close by M0 exit."
+    },
+    {
+      "id": "INV-8-14-155",
+      "lineStart": 3021,
+      "lineEnd": 3021,
+      "sourceAnchor": "\u00a711 decision artifact owners",
+      "synopsis": "Name accountable CLDR, IANA, requirement/vector, and release metadata maintainers.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 4,
+      "reason": "Named ownership is an M0 decision and approval concern."
+    },
+    {
+      "id": "INV-8-14-156",
+      "lineStart": 3022,
+      "lineEnd": 3022,
+      "sourceAnchor": "\u00a711 decision registry-effort calibration",
+      "synopsis": "Complete and independently review the \u00a72.2 production calibration with all human roles, freeze separate timing, and derive allowances before approving the M0 cap.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 4,
+      "reason": "This decision-table row references the canonical \u00a710.4 calibration gate rather than minting its clauses again."
+    },
+    {
+      "id": "INV-8-14-157",
+      "lineStart": 3023,
+      "lineEnd": 3023,
+      "sourceAnchor": "\u00a711 decision M0/M2 capacity envelope",
+      "synopsis": "Name the three roles and commitments, record finite M0 human and separate agent allowances plus provisional M2 caps, and confirm or rebaseline M2 at M0 exit.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 6,
+      "reason": "This decision-table row references the canonical \u00a710.4 capacity gate rather than minting its clauses again."
+    },
+    {
+      "id": "INV-8-14-158",
+      "lineStart": 3024,
+      "lineEnd": 3024,
+      "sourceAnchor": "\u00a711 decision browser floors",
+      "synopsis": "Name maintained execution infrastructure for Safari 16.4, Chrome 111, and Firefox 111.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 4,
+      "reason": "Exact-floor infrastructure must close by M0 exit."
+    },
+    {
+      "id": "INV-8-14-159",
+      "lineStart": 3025,
+      "lineEnd": 3025,
+      "sourceAnchor": "\u00a711 decision reference runtime",
+      "synopsis": "Record exact Temurin JDK 21 build/image identity without changing Java's release-9 target.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 3,
+      "reason": "The pinned Java oracle requires this lock before M3a."
+    },
+    {
+      "id": "INV-8-14-160",
+      "lineStart": 3026,
+      "lineEnd": 3026,
+      "sourceAnchor": "\u00a711 decision IANA snapshot",
+      "synopsis": "Record IANA File-Date, source hash, closure schema, and update procedure.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 4,
+      "reason": "The direct-locale data contract needs a pinned IANA source."
+    },
+    {
+      "id": "INV-8-14-161",
+      "lineStart": 3027,
+      "lineEnd": 3027,
+      "sourceAnchor": "\u00a711 decision provisional hosting target",
+      "synopsis": "Name and verify the M0 planning CDN or origin family for q5 planning.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 3,
+      "reason": "The decision row references the canonical provisional-host selection; exact 0b freeze is separated to M8."
+    },
+    {
+      "id": "INV-8-14-162",
+      "lineStart": 3028,
+      "lineEnd": 3028,
+      "sourceAnchor": "\u00a711 decision design partner",
+      "synopsis": "Name a realistic Java and JS adopter or explicitly accept maintainer-only validation through M-D.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M-D",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 2,
+      "reason": "M0 must choose the adoption-validation path."
+    },
+    {
+      "id": "INV-8-14-163",
+      "lineStart": 3029,
+      "lineEnd": 3029,
+      "sourceAnchor": "\u00a711 decision production encoding",
+      "synopsis": "Reproduce all three lossless encoding families including validity/RTL membership, freeze criteria, and choose a provisional M0 production candidate for M1.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 6,
+      "reason": "This decision-table row references the canonical M0 encoding-candidate and provisional-choice requirements."
+    },
+    {
+      "id": "INV-8-14-164",
+      "lineStart": 3030,
+      "lineEnd": 3030,
+      "sourceAnchor": "\u00a711 decision preliminary ceilings",
+      "synopsis": "Set separate gzip-9, q11 laboratory, and q5 delivery-proxy go/no-go thresholds before M2.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 4,
+      "reason": "This decision-table row references the canonical M0/M2 provisional compressor gates; actual-host thresholds are separated to M8."
+    },
+    {
+      "id": "INV-8-14-165",
+      "lineStart": 3032,
+      "lineEnd": 3033,
+      "sourceAnchor": "\u00a711 non-blockers and non-goal",
+      "synopsis": "Keep the schema at its current path until M-X and exclude TMS/XLIFF from v1 scope.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 3,
+      "reason": "These scope decisions remove false M0 blockers and freeze a v1 non-goal."
+    },
+    {
+      "id": "INV-8-14-166",
+      "lineStart": 3041,
+      "lineEnd": 3041,
+      "sourceAnchor": "\u00a712 risk 1 maintainer capacity",
+      "synopsis": "Control single-maintainer stall risk with finite envelopes, checkpoints, hard stops/rebaseline, and a post-M0 scope freeze.",
+      "disposition": "nonnormative",
+      "registrationBefore": [],
+      "owner": "none",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 0,
+      "reason": "This risk-table row summarizes the canonical capacity rules; its unique post-M0 scope-freeze directive is inventoried separately."
+    },
+    {
+      "id": "INV-8-14-167",
+      "lineStart": 3042,
+      "lineEnd": 3042,
+      "sourceAnchor": "\u00a712 risk 2 browser graph size",
+      "synopsis": "Select a lossless encoding before projection, measure the full M1/M2 derivative, and revise the product claim if M7 budgets fail.",
+      "disposition": "nonnormative",
+      "registrationBefore": [],
+      "owner": "none",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 0,
+      "reason": "This risk response is a navigation summary of canonical encoding and budget requirements."
+    },
+    {
+      "id": "INV-8-14-168",
+      "lineStart": 3043,
+      "lineEnd": 3043,
+      "sourceAnchor": "\u00a712 risk 3 vector scope",
+      "synopsis": "Keep M3a minimal, grow M3b in parallel, enforce requirement/evidence ownership, and block milestones on registry and branch dispositions.",
+      "disposition": "nonnormative",
+      "registrationBefore": [],
+      "owner": "none",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 0,
+      "reason": "This risk response summarizes the canonical M3a/M3b corpus and registry rules."
+    },
+    {
+      "id": "INV-8-14-169",
+      "lineStart": 3044,
+      "lineEnd": 3044,
+      "sourceAnchor": "\u00a712 risk 4 bounded parser",
+      "synopsis": "Prototype the bounded parser in M5a, choose its strategy from size/simplicity evidence, and never weaken duplicate guarantees.",
+      "disposition": "nonnormative",
+      "registrationBefore": [],
+      "owner": "none",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 0,
+      "reason": "This risk response summarizes the canonical M5a parser strategy and duplicate guarantees."
+    },
+    {
+      "id": "INV-8-14-170",
+      "lineStart": 3045,
+      "lineEnd": 3045,
+      "sourceAnchor": "\u00a712 risk 5 browser execution",
+      "synopsis": "Name exact-floor browser infrastructure at M0 and block M-R without execution evidence.",
+      "disposition": "nonnormative",
+      "registrationBefore": [],
+      "owner": "none",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 0,
+      "reason": "This risk response summarizes the canonical exact-floor infrastructure and M-R evidence gates."
+    },
+    {
+      "id": "INV-8-14-171",
+      "lineStart": 3046,
+      "lineEnd": 3046,
+      "sourceAnchor": "\u00a712 risk 6 stale references",
+      "synopsis": "Maintain both a reproducible pinned lane and scheduled newest-Java lane with release metadata.",
+      "disposition": "nonnormative",
+      "registrationBefore": [],
+      "owner": "none",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 0,
+      "reason": "This risk response summarizes the canonical pinned and newest-reference CI lanes."
+    },
+    {
+      "id": "INV-8-14-172",
+      "lineStart": 3047,
+      "lineEnd": 3047,
+      "sourceAnchor": "\u00a712 risk 7 host JDK/IANA leakage",
+      "synopsis": "Use an exact JDK image and generated IANA closure, freeze direct-locale behavior in M1/M3a before M2, and close header expansion at M9.",
+      "disposition": "nonnormative",
+      "registrationBefore": [],
+      "owner": "none",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 0,
+      "reason": "This risk response summarizes the canonical JDK/IANA, direct-locale, and M9 negotiation gates."
+    },
+    {
+      "id": "INV-8-14-173",
+      "lineStart": 3048,
+      "lineEnd": 3048,
+      "sourceAnchor": "\u00a712 risk 8 no design partner",
+      "synopsis": "Require at least an unfamiliar maintainer walkthrough and forbid M-D completion without it.",
+      "disposition": "nonnormative",
+      "registrationBefore": [],
+      "owner": "none",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 0,
+      "reason": "This risk response summarizes the canonical M-D adoption-proof gate."
+    },
+    {
+      "id": "INV-8-14-174",
+      "lineStart": 3049,
+      "lineEnd": 3049,
+      "sourceAnchor": "\u00a712 risk 9 host Intl expectations",
+      "synopsis": "Separate host-Intl subpaths, emit diagnostics or stamps, document divergence, and forbid automatic host-data fallback.",
+      "disposition": "nonnormative",
+      "registrationBefore": [],
+      "owner": "none",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 0,
+      "reason": "This risk response summarizes the canonical deferred host-Intl adapter contract."
+    },
+    {
+      "id": "INV-8-14-175",
+      "lineStart": 3050,
+      "lineEnd": 3050,
+      "sourceAnchor": "\u00a712 risk 10 partial loading",
+      "synopsis": "Fail closed by default and require complete false to identify documented no-parity partial mode.",
+      "disposition": "nonnormative",
+      "registrationBefore": [],
+      "owner": "none",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 0,
+      "reason": "This risk response summarizes the canonical fail-closed and partial-loading requirements."
+    },
+    {
+      "id": "INV-8-14-176",
+      "lineStart": 3056,
+      "lineEnd": 3057,
+      "sourceAnchor": "\u00a713 unknown 1 strict graph sizes",
+      "synopsis": "Record strict-root compressed sizes as unresolved milestone measurements rather than settled experiment results.",
+      "disposition": "nonnormative",
+      "registrationBefore": [],
+      "owner": "none",
+      "parityClass": "informational-nonportable",
+      "anticipatedAtomicRecords": 0,
+      "reason": "This item states an unknown; the binding measurement requirements are inventoried in \u00a79."
+    },
+    {
+      "id": "INV-8-14-177",
+      "lineStart": 3058,
+      "lineEnd": 3058,
+      "sourceAnchor": "\u00a713 unknown 2 likely-subtag projection",
+      "synopsis": "Record projection viability as unproven.",
+      "disposition": "nonnormative",
+      "registrationBefore": [],
+      "owner": "none",
+      "parityClass": "informational-nonportable",
+      "anticipatedAtomicRecords": 0,
+      "reason": "This is a risk statement, not a separate acceptance proposition."
+    },
+    {
+      "id": "INV-8-14-178",
+      "lineStart": 3059,
+      "lineEnd": 3059,
+      "sourceAnchor": "\u00a713 unknown 3 parser cost",
+      "synopsis": "Record duplicate-aware parser size and cold-start cost as unproven.",
+      "disposition": "nonnormative",
+      "registrationBefore": [],
+      "owner": "none",
+      "parityClass": "informational-nonportable",
+      "anticipatedAtomicRecords": 0,
+      "reason": "The executable parser gates are stated elsewhere."
+    },
+    {
+      "id": "INV-8-14-179",
+      "lineStart": 3060,
+      "lineEnd": 3060,
+      "sourceAnchor": "\u00a713 unknown 4 catalogs",
+      "synopsis": "Record realistic catalog compression and fetch counts as unproven.",
+      "disposition": "nonnormative",
+      "registrationBefore": [],
+      "owner": "none",
+      "parityClass": "informational-nonportable",
+      "anticipatedAtomicRecords": 0,
+      "reason": "The scenario measurement contract is in \u00a79."
+    },
+    {
+      "id": "INV-8-14-180",
+      "lineStart": 3061,
+      "lineEnd": 3061,
+      "sourceAnchor": "\u00a713 unknown 5 engine budgets",
+      "synopsis": "Record final construction, lookup, and memory budgets as unproven.",
+      "disposition": "nonnormative",
+      "registrationBefore": [],
+      "owner": "none",
+      "parityClass": "informational-nonportable",
+      "anticipatedAtomicRecords": 0,
+      "reason": "This identifies a future measurement rather than prescribing new behavior."
+    },
+    {
+      "id": "INV-8-14-181",
+      "lineStart": 3062,
+      "lineEnd": 3062,
+      "sourceAnchor": "\u00a713 unknown 6 corpus effort",
+      "synopsis": "Record complete behavioral-corpus authoring effort as unproven.",
+      "disposition": "nonnormative",
+      "registrationBefore": [],
+      "owner": "none",
+      "parityClass": "informational-nonportable",
+      "anticipatedAtomicRecords": 0,
+      "reason": "This is an uncertainty statement."
+    },
+    {
+      "id": "INV-8-14-182",
+      "lineStart": 3063,
+      "lineEnd": 3064,
+      "sourceAnchor": "\u00a713 unknown 7 later registry rate",
+      "synopsis": "Use the preapproval \u00a72.2 calibration for the initial slice and require recalibration after a material workflow change while leaving later-slice rates unproven.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 3,
+      "reason": "The recalibration trigger and initial-rate source directly constrain the M0 cap."
+    },
+    {
+      "id": "INV-8-14-183",
+      "lineStart": 3065,
+      "lineEnd": 3065,
+      "sourceAnchor": "\u00a713 unknown 8 release calendar",
+      "synopsis": "Record any calendar beyond approved finite M0/M2 envelopes as unproven.",
+      "disposition": "nonnormative",
+      "registrationBefore": [],
+      "owner": "none",
+      "parityClass": "informational-nonportable",
+      "anticipatedAtomicRecords": 0,
+      "reason": "This is an explicit absence of schedule commitment."
+    },
+    {
+      "id": "INV-8-14-184",
+      "lineStart": 3066,
+      "lineEnd": 3066,
+      "sourceAnchor": "\u00a713 unknown 9 product fit",
+      "synopsis": "Record product fit without a design partner as unproven.",
+      "disposition": "nonnormative",
+      "registrationBefore": [],
+      "owner": "none",
+      "parityClass": "informational-nonportable",
+      "anticipatedAtomicRecords": 0,
+      "reason": "This is an uncertainty statement."
+    },
+    {
+      "id": "INV-8-14-185",
+      "lineStart": 3068,
+      "lineEnd": 3070,
+      "sourceAnchor": "\u00a713 binding interpretation",
+      "synopsis": "Treat unknowns as milestone measurements rather than optimistic estimates while keeping capacity clocks binding and M2/M7 as economic/final technical gates.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M7",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 4,
+      "reason": "This paragraph makes the approval-time capacity and go-no-go policy binding despite unknowns."
+    },
+    {
+      "id": "INV-8-14-186",
+      "lineStart": 3076,
+      "lineEnd": 3076,
+      "sourceAnchor": "\u00a714 approval precondition",
+      "synopsis": "Begin only M0 and bounded exploration, and only after every listed approval condition is true.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 1,
+      "reason": "This is one top-level approval assertion over the canonical pre-M0 requirements."
+    },
+    {
+      "id": "INV-8-14-187",
+      "lineStart": 3078,
+      "lineEnd": 3078,
+      "sourceAnchor": "\u00a714 approval item 1 API completeness",
+      "synopsis": "Require an independently implementable M0 API contract without unspecified Java overload consultation.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 1,
+      "reason": "This checklist item is one approval assertion referencing the canonical API contract."
+    },
+    {
+      "id": "INV-8-14-188",
+      "lineStart": 3079,
+      "lineEnd": 3080,
+      "sourceAnchor": "\u00a714 approval item 2 direct-locale contract",
+      "synopsis": "Accept requested-tag fallback and independently computed diagnostic matching as the two-channel direct-locale contract.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 2,
+      "reason": "This checklist item records approval of the canonical two-channel direct-locale contract."
+    },
+    {
+      "id": "INV-8-14-189",
+      "lineStart": 3081,
+      "lineEnd": 3081,
+      "sourceAnchor": "\u00a714 approval item 3 pinned data",
+      "synopsis": "Require strict parity to avoid unpinned host ICU, CLDR, or IANA data.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 1,
+      "reason": "This checklist item records pre-M0 approval of the canonical pinned-data requirements."
+    },
+    {
+      "id": "INV-8-14-190",
+      "lineStart": 3082,
+      "lineEnd": 3083,
+      "sourceAnchor": "\u00a714 approval item 4 semantic product decisions",
+      "synopsis": "Accept raw text, tagged values, locale-preserving merges, callbacks, and failure precedence as product decisions.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 5,
+      "reason": "This checklist item is one approval assertion over the canonical semantic product decisions."
+    },
+    {
+      "id": "INV-8-14-191",
+      "lineStart": 3084,
+      "lineEnd": 3085,
+      "sourceAnchor": "\u00a714 approval item 5 ownership",
+      "synopsis": "Accept CLDR, IANA, requirement/vector, and release-metadata roles as M0 assignments.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 4,
+      "reason": "This checklist item is one approval assertion over the canonical ownership assignments."
+    },
+    {
+      "id": "INV-8-14-192",
+      "lineStart": 3086,
+      "lineEnd": 3087,
+      "sourceAnchor": "\u00a714 approval item 6 lossless baseline",
+      "synopsis": "Accept lossless full triples as baseline and exhaustive projection proof as the only semantic-reduction gate.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 2,
+      "reason": "This checklist item records pre-M0 approval of the canonical lossless-baseline and projection rules."
+    },
+    {
+      "id": "INV-8-14-193",
+      "lineStart": 3088,
+      "lineEnd": 3088,
+      "sourceAnchor": "\u00a714 approval item 7 registry policy",
+      "synopsis": "Accept the requirement/evidence registry as the milestone-closure mechanism.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 1,
+      "reason": "Registry governance must be accepted before bootstrap approval."
+    },
+    {
+      "id": "INV-8-14-194",
+      "lineStart": 3089,
+      "lineEnd": 3090,
+      "sourceAnchor": "\u00a714 approval item 8 human calibration",
+      "synopsis": "Require the named production implementer, human reviewer, and decision owner to finish calibration and include its human initial-slice allowance in the M0 cap.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 2,
+      "reason": "This checklist item is one approval assertion over the canonical human calibration and allowance gate."
+    },
+    {
+      "id": "INV-8-14-195",
+      "lineStart": 3091,
+      "lineEnd": 3092,
+      "sourceAnchor": "\u00a714 approval item 9 bootstrap coverage",
+      "synopsis": "Require bootstrap registry and selection attestation coverage for every selected M0-frontier clause.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 2,
+      "reason": "This checklist item is one approval assertion over the canonical bootstrap-coverage gate."
+    },
+    {
+      "id": "INV-8-14-196",
+      "lineStart": 3093,
+      "lineEnd": 3094,
+      "sourceAnchor": "\u00a714 approval item 10 capacity record",
+      "synopsis": "Record owner, committed capacity, finite M0/provisional M2 envelopes, and 50/100-percent trip-wires before the clock starts.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 5,
+      "reason": "This checklist item is one approval assertion over the canonical bounded-capacity record."
+    },
+    {
+      "id": "INV-8-14-197",
+      "lineStart": 3095,
+      "lineEnd": 3095,
+      "sourceAnchor": "\u00a714 approval item 11 honest cuts",
+      "synopsis": "Require reviewers to agree that cuts explicitly reduce claims and never create silent divergences.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 1,
+      "reason": "This checklist item is one approval assertion over the canonical claim-cut invariant."
+    },
+    {
+      "id": "INV-8-14-198",
+      "lineStart": 3097,
+      "lineEnd": 3104,
+      "sourceAnchor": "\u00a714 M0 exit and post-exit starts",
+      "synopsis": "Require the full listed semantic, ownership, toolchain, data, encoding, budget, registry, checker, corpus, adoption, and capacity artifacts at M0 exit; then permit M1/M3a, sequence M2, and keep M-E/M-X inactive.",
+      "disposition": "nonnormative",
+      "registrationBefore": [],
+      "owner": "none",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 0,
+      "reason": "This closing paragraph is navigation over the canonical M0 exit row and dependency graph, so it must not mint duplicate requirements."
+    },
+    {
+      "id": "INV-8-14-199",
+      "lineStart": 2513,
+      "lineEnd": 2516,
+      "sourceAnchor": "\u00a78.2 strict release ID partitions",
+      "synopsis": "Strict portable and implementation partitions have the declared zero-failure pass rules, while informational IDs never enter either numerator.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M-R",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 8,
+      "reason": "The release partition schema freezes at M0 while final closure remains M-R-owned."
+    },
+    {
+      "id": "INV-8-14-200",
+      "lineStart": 2616,
+      "lineEnd": 2617,
+      "sourceAnchor": "\u00a78.4 tagged large-number vector rule",
+      "synopsis": "Values beyond the JavaScript safe-integer range use tagged decimal, bigint, or operand vectors rather than ambiguous bare JSON numbers.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M3a",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 2,
+      "reason": "The portable vector wire rule must be frozen before M3a authors the first executable corpus."
+    },
+    {
+      "id": "INV-8-14-201",
+      "lineStart": 2778,
+      "lineEnd": 2780,
+      "sourceAnchor": "\u00a79.2 actual-host transfer measurement",
+      "synopsis": "The production host's actual response encoding and transfer bytes are measured independently without assuming universal CDN compression quality.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 2,
+      "reason": "Actual-host truth is an M8 network-delivery concern, distinct from static M0/M2 measurements."
+    },
+    {
+      "id": "INV-8-14-202",
+      "lineStart": 2823,
+      "lineEnd": 2827,
+      "sourceAnchor": "\u00a79.2 M8 actual-host go-no-go",
+      "synopsis": "M8 is a blocking gate whose due scenarios meet frozen tolerances or receive a reviewed rebaseline or claim cut, and 0b uses actual-host transfer and latency thresholds.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 5,
+      "reason": "These clauses cannot be discharged by the earlier M2 proxy gate."
+    },
+    {
+      "id": "INV-8-14-203",
+      "lineStart": 2836,
+      "lineEnd": 2836,
+      "sourceAnchor": "\u00a79.2 M1 integrated production measurement",
+      "synopsis": "M1 records the integrated production encoding result under the reproducible M0 measurement baseline.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M1"
+      ],
+      "owner": "M1",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 1,
+      "reason": "The integrated result is M1 evidence and must not escape closure under the M0-only preparation record."
+    },
+    {
+      "id": "INV-8-14-204",
+      "lineStart": 2855,
+      "lineEnd": 2860,
+      "sourceAnchor": "\u00a79.3 M7 scenario revision and evaluation",
+      "synopsis": "At M2 exit the decision owner freezes one immutable M7 scenario revision before later evidence, and M7 evaluates the complete graph against it subject only to reviewed rebaseline or claim cuts.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M2"
+      ],
+      "owner": "M7",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 6,
+      "reason": "The M7 scenario must be registered and frozen at M2 exit, making it part of the initial slice."
+    },
+    {
+      "id": "INV-8-14-205",
+      "lineStart": 2860,
+      "lineEnd": 2864,
+      "sourceAnchor": "\u00a79.3 M8 0b freeze and evaluation",
+      "synopsis": "Before M8 evidence, freeze the exact 0b recipe, graph, host, cache, region, harness, thresholds, and statistical identity, then evaluate that immutable scenario.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 8,
+      "reason": "The actual-host scenario identity and evaluation activate immediately before M8."
+    },
+    {
+      "id": "INV-8-14-206",
+      "lineStart": 3027,
+      "lineEnd": 3027,
+      "sourceAnchor": "\u00a711 exact 0b hosting freeze cross-reference",
+      "synopsis": "The exact 0b host, headers, cache, region, recipe, and harness freeze before M8 starts.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 1,
+      "reason": "This decision-table cross-reference is one M8 approval assertion over the canonical 0b scenario."
+    },
+    {
+      "id": "INV-8-14-207",
+      "lineStart": 3030,
+      "lineEnd": 3030,
+      "sourceAnchor": "\u00a711 actual-host threshold cross-reference",
+      "synopsis": "Actual-host 0b thresholds freeze before M8 starts.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 1,
+      "reason": "This decision-table cross-reference is one M8 assertion over the canonical threshold lifecycle."
+    },
+    {
+      "id": "INV-8-14-208",
+      "lineStart": 2553,
+      "lineEnd": 2554,
+      "sourceAnchor": "\u00a78.3 fixture 20 JavaScript magic keys",
+      "synopsis": "Cover JavaScript magic object keys in hostile parsed input.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M5a"
+      ],
+      "owner": "M5a",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 2,
+      "reason": "Magic-key safety is JavaScript-specific and should not inflate portable parser parity."
+    },
+    {
+      "id": "INV-8-14-209",
+      "lineStart": 2556,
+      "lineEnd": 2558,
+      "sourceAnchor": "\u00a78.3 fixture 21 JavaScript loading-limit context",
+      "synopsis": "Propagate one relaxed JavaScript loading-limit context through every boundary and fail when it is omitted.",
+      "disposition": "deferred",
+      "registrationBefore": [
+        "M8"
+      ],
+      "owner": "M8",
+      "parityClass": "implementation-required",
+      "anticipatedAtomicRecords": 7,
+      "reason": "Manifest and loader context propagation is JavaScript delivery behavior owned by M8."
+    },
+    {
+      "id": "INV-8-14-210",
+      "lineStart": 3041,
+      "lineEnd": 3041,
+      "sourceAnchor": "\u00a712 post-M0 scope freeze",
+      "synopsis": "New scope freezes after M0 unless it follows the plan's explicit migration or rebaseline mechanisms.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 1,
+      "reason": "This is the risk table's one unique binding directive rather than a restatement of \u00a710.4."
+    },
+    {
+      "id": "INV-8-14-211",
+      "lineStart": 2502,
+      "lineEnd": 2502,
+      "sourceAnchor": "\u00a78.2 callback fixture IDs",
+      "synopsis": "Reference callbacks by versioned fixture ID rather than embedding executable code.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 2,
+      "reason": "M0 freezes the corpus representation rule before M3a authors callback fixtures."
+    },
+    {
+      "id": "INV-8-14-212",
+      "lineStart": 3110,
+      "lineEnd": 3133,
+      "sourceAnchor": "Appendix A revision-seven change summary",
+      "synopsis": "Summarize revision 7's already-canonical semantic, data, registry, measurement, and sequencing changes.",
+      "disposition": "nonnormative",
+      "registrationBefore": [],
+      "owner": "none",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 0,
+      "reason": "Revision history only; every proposition is registered at its canonical clause and must not mint duplicate requirements."
+    },
+    {
+      "id": "INV-8-14-213",
+      "lineStart": 3137,
+      "lineEnd": 3177,
+      "sourceAnchor": "Appendix B Java-public-type disposition crosswalk",
+      "synopsis": "Cross-index every Java 3.0.0 public type to its already-declared JavaScript surface or explicit deferral.",
+      "disposition": "nonnormative",
+      "registrationBefore": [],
+      "owner": "none",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 0,
+      "reason": "Audited duplicate crosswalk over canonical \u00a71 and \u00a73\u20136 records; the unique completeness audit is split to INV-8-14-215."
+    },
+    {
+      "id": "INV-8-14-214",
+      "lineStart": 3179,
+      "lineEnd": 3180,
+      "sourceAnchor": "Appendix B omitted-method disposition sentence",
+      "synopsis": "Restate the explicit display-example and runtime-limit-builder deferrals.",
+      "disposition": "nonnormative",
+      "registrationBefore": [],
+      "owner": "none",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 0,
+      "reason": "Duplicate of the deferrals registered by INV-1-4-026, INV-1-4-109, INV-1-4-200, and INV-5-7-130."
+    },
+    {
+      "id": "INV-8-14-215",
+      "lineStart": 3180,
+      "lineEnd": 3181,
+      "sourceAnchor": "Appendix B Java-public-surface audit sentence",
+      "synopsis": "Check the disposition table against Java 3.0.0's public surface and capture any newly discovered public member before API freeze.",
+      "disposition": "initial-registration",
+      "registrationBefore": [
+        "M0"
+      ],
+      "owner": "M0",
+      "parityClass": "process-only",
+      "anticipatedAtomicRecords": 3,
+      "reason": "This source-comparison and discovery-capture procedure is not fully stated by the general M0 closure row."
+    }
+  ]
+}

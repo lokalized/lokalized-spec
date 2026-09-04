@@ -1,0 +1,14 @@
+{
+  "id": "loading-limits-input-bytes-zero",
+  "description": "A two-byte empty-object file, written verbatim so its size is exact, whose loading options request maximumInputBytes 0.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumInputBytes": 0
+  },
+  "loadOnly": true,
+  "files": {},
+  "rawFiles": {
+    "en": "{}"
+  }
+}

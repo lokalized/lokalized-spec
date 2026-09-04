@@ -1,0 +1,27 @@
+{
+  "id": "ingress-matrix-java-alias-instance-iw",
+  "description": "Alias arm catalog (he, id, ro, sr, fil, en; fallback en) with the deprecated spelling iw as the INSTANCE locale.",
+  "fallbackLocale": "en",
+  "instanceLocale": "iw",
+  "tiebreakers": null,
+  "files": {
+    "he": {
+      "Checkout.Title": "he"
+    },
+    "id": {
+      "Checkout.Title": "id"
+    },
+    "ro": {
+      "Checkout.Title": "ro"
+    },
+    "sr": {
+      "Checkout.Title": "sr"
+    },
+    "fil": {
+      "Checkout.Title": "fil"
+    },
+    "en": {
+      "Checkout.Title": "en"
+    }
+  }
+}

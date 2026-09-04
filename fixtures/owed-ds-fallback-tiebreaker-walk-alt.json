@@ -1,0 +1,26 @@
+{
+  "id": "owed-ds-fallback-tiebreaker-walk-alt",
+  "description": "The same catalogs and the same unloaded fallback tag as owed-ds-fallback-tiebreaker-walk, with only the tiebreaker ORDER changed so that an equivalent spelling leads. The resolved fallback must move from sh to hbs; a port that ignored tiebreaker order entirely, or sorted the equivalent set, cannot satisfy both halves.",
+  "fallbackLocale": "sr-Latn",
+  "tiebreakers": {
+    "sr": [
+      "hbs",
+      "sr-Cyrl",
+      "sh"
+    ]
+  },
+  "files": {
+    "en": {
+      "Checkout.Title": "en"
+    },
+    "hbs": {
+      "Checkout.Title": "hbs"
+    },
+    "sh": {
+      "Checkout.Title": "sh"
+    },
+    "sr-Cyrl": {
+      "Checkout.Title": "sr-Cyrl"
+    }
+  }
+}

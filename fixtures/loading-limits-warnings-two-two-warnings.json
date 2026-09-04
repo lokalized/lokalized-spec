@@ -1,0 +1,35 @@
+{
+  "id": "loading-limits-warnings-two-two-warnings",
+  "description": "The same two-warning Russian catalog loaded with maximumWarnings at exactly 2: both warnings are delivered, in JSON document order (Items before Books), and the load succeeds.",
+  "fallbackLocale": "ru",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumWarnings": 2
+  },
+  "files": {
+    "ru": {
+      "Items": {
+        "translation": "{{noun}}",
+        "placeholders": {
+          "noun": {
+            "value": "count",
+            "translations": {
+              "CARDINALITY_ONE": "книга"
+            }
+          }
+        }
+      },
+      "Books": {
+        "translation": "{{noun}}",
+        "placeholders": {
+          "noun": {
+            "value": "count",
+            "translations": {
+              "CARDINALITY_ONE": "книга"
+            }
+          }
+        }
+      }
+    }
+  }
+}

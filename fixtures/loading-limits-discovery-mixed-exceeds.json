@@ -1,0 +1,19 @@
+{
+  "id": "loading-limits-discovery-mixed-exceeds",
+  "description": "The same three-child directory loaded with maximumDiscoveryEntries at 2.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumDiscoveryEntries": 2
+  },
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "rawFiles": {
+    ".DS_Store": "junk",
+    "readme.txt": "not a localized strings file"
+  }
+}

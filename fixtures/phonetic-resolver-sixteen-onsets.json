@@ -1,0 +1,59 @@
+{
+  "id": "phonetic-resolver-sixteen-onsets",
+  "description": "A by-term resolver mapping sixteen distinct terms onto the sixteen Phonetic constants, against one definition that declares a branch for every constant with a distinct text. Covers each constant as a resolver return value reaching its matching branch and, with NO 'default' configured, an unmapped term reaching the null-return rejection deliberately.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "phoneticResolver": {
+    "behavior": "by-term",
+    "mapping": {
+      "termvowel": "PHONETIC_VOWEL",
+      "termconsonant": "PHONETIC_CONSONANT",
+      "termhsilent": "PHONETIC_H_SILENT",
+      "termhaspirated": "PHONETIC_H_ASPIRATED",
+      "termsimpure": "PHONETIC_S_IMPURE",
+      "termz": "PHONETIC_Z",
+      "termgn": "PHONETIC_GN",
+      "termps": "PHONETIC_PS",
+      "termpn": "PHONETIC_PN",
+      "termx": "PHONETIC_X",
+      "termglidey": "PHONETIC_GLIDE_Y",
+      "termglidew": "PHONETIC_GLIDE_W",
+      "termstresseda": "PHONETIC_STRESSED_A",
+      "termsolar": "PHONETIC_SOLAR",
+      "termlunar": "PHONETIC_LUNAR",
+      "termother": "PHONETIC_OTHER"
+    }
+  },
+  "files": {
+    "en": {
+      "Onset": {
+        "translation": "[{{form}}]",
+        "placeholders": {
+          "form": {
+            "value": "term",
+            "translations": {
+              "PHONETIC_VOWEL": "vowel",
+              "PHONETIC_CONSONANT": "consonant",
+              "PHONETIC_H_SILENT": "h-silent",
+              "PHONETIC_H_ASPIRATED": "h-aspirated",
+              "PHONETIC_S_IMPURE": "s-impure",
+              "PHONETIC_Z": "z",
+              "PHONETIC_GN": "gn",
+              "PHONETIC_PS": "ps",
+              "PHONETIC_PN": "pn",
+              "PHONETIC_X": "x",
+              "PHONETIC_GLIDE_Y": "glide-y",
+              "PHONETIC_GLIDE_W": "glide-w",
+              "PHONETIC_STRESSED_A": "stressed-a",
+              "PHONETIC_SOLAR": "solar",
+              "PHONETIC_LUNAR": "lunar",
+              "PHONETIC_OTHER": "other"
+            }
+          }
+        }
+      }
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

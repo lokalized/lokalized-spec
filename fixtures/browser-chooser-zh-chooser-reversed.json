@@ -1,0 +1,27 @@
+{
+  "id": "browser-chooser-zh-chooser-reversed",
+  "description": "The section 8.3 chooser with the tiebreaker flipped to zh:[zh-Hant, zh] and nothing else changed. Reversing an ordering the implementation genuinely consults must move the answer; reversing one it does not consult must not. Both outcomes are measured in this family, which is why the pair exists rather than a single fixture.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "zh": [
+      "zh-Hant",
+      "zh"
+    ]
+  },
+  "files": {
+    "zh": {
+      "Checkout.Title": "结账"
+    },
+    "zh-Hant": {
+      "Checkout.Title": "結賬"
+    },
+    "en": {
+      "Checkout.Title": "Checkout"
+    },
+    "fr": {
+      "Checkout.Title": "Paiement"
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

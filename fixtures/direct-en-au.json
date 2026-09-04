@@ -1,0 +1,19 @@
+{
+  "id": "direct-en-au",
+  "description": "Plan v7 section 8.3 seed row 3: en-AU reaches en-001 through the CLDR parent chain rather than jumping straight to en. Tiebreakers are mandatory here because two loaded locales share the language code 'en'; they order a bare 'en' request and must not be what carries en-AU to en-001.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "en": [
+      "en",
+      "en-001"
+    ]
+  },
+  "files": {
+    "en-001": {
+      "Checkout.Title": "Checkout (world English)"
+    },
+    "en": {
+      "Checkout.Title": "Checkout"
+    }
+  }
+}

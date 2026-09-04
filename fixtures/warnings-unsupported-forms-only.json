@@ -1,0 +1,27 @@
+{
+  "id": "warnings-unsupported-forms-only",
+  "description": "A catalog supplying ONLY CARDINALITY_TWO and ONLY ORDINALITY_TWO, in two placeholders declared in that order. No real locale is satisfied by it, so it separates 'no warning because complete' from 'no warning because the locale has no CLDR forms at all'.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Pair": {
+        "translation": "{{c}} {{o}}",
+        "placeholders": {
+          "c": {
+            "value": "n",
+            "translations": {
+              "CARDINALITY_TWO": "two"
+            }
+          },
+          "o": {
+            "value": "n",
+            "translations": {
+              "ORDINALITY_TWO": "2nd"
+            }
+          }
+        }
+      }
+    }
+  }
+}

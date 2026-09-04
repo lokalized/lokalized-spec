@@ -1,0 +1,11 @@
+{
+  "id": "classpath-discovery-prefix-target",
+  "description": "A real package whose name has 'classpath-discovery-prefix' as a strict prefix. Paired cases load this package exactly and then ask for the prefix, which must NOT resolve — an implementation matching classpath entries by prefix rather than by exact package resolution would find this catalog.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Key.T": "t"
+    }
+  }
+}

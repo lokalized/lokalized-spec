@@ -1,0 +1,15 @@
+{
+  "id": "classpath-filenames-region-dot-json",
+  "description": "A valid en catalog plus a file named 'en.GB.json'. Stripping exactly one .json leaves 'en.GB', which the tag pattern rejects — so this is the throwing counterpart of the extensionless 'en.GB' fixture, and a port that split on the FIRST dot would derive 'en' and collide with the real en catalog instead.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "rawFiles": {
+    "en.GB.json": "{\"Key.enGBjson\":\"enGBjson\"}"
+  }
+}

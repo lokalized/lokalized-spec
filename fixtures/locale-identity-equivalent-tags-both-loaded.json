@@ -1,0 +1,26 @@
+{
+  "id": "locale-identity-equivalent-tags-both-loaded",
+  "description": "hy-SU and hy-AM are the same locale after canonicalization but are loaded as two separate catalogs. Tiebreakers are mandatory and must be an exact permutation of the LOADED spellings [hy-AM, hy-SU]; the canonical set {hy-AM} would be rejected as incomplete, which is the trap this fixture exists to document. The list order also decides which sibling an ambiguous canonical request lands on - see the deprecated-fallback pair for the controlled flip.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "hy": [
+      "hy-AM",
+      "hy-SU"
+    ]
+  },
+  "files": {
+    "hy-SU": {
+      "Greeting": "g hy-SU",
+      "Only.Su": "su file"
+    },
+    "hy-AM": {
+      "Greeting": "g hy-AM",
+      "Only.Am": "am file"
+    },
+    "en": {
+      "Greeting": "hello"
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

@@ -1,0 +1,17 @@
+{
+  "id": "ingress-matrix-bidi-rtl-locales",
+  "description": "Bidi ingress matrix, instance leg pinned EXPLICITLY to RTL_LOCALES. Same catalog as ingress-matrix-bidi-default; the pair of fixtures exists so the corpus records that an explicitly configured RTL_LOCALES and an unset instance option are the same thing, which is only checkable by comparing two fixtures.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "bidiIsolation": "RTL_LOCALES",
+  "files": {
+    "en": {
+      "Locale.Marker": "en",
+      "Greeting.Named": "en:Hello, {{name}}"
+    },
+    "ar": {
+      "Locale.Marker": "ar",
+      "Greeting.Named": "ar:Hello, {{name}}"
+    }
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "id": "expressions-owed-plural-operand-limits",
+  "description": "maximumCompactExponent and maximumVisibleDecimalPlaces lowered so ExpressionEvaluator.validatePluralOperands -- the evaluator's OWN copy of the plural-operand ceiling check, distinct from the placeholder-boundary one -- can be driven at its limit and one unit over it, on an expression operand. The corpus reaches this method only from the plural-form path, so a port enforcing these ceilings at the placeholder boundary and not on an expression operand passes everything today.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "runtimeLimits": {
+    "maximumCompactExponent": 1,
+    "maximumVisibleDecimalPlaces": 2
+  },
+  "files": {
+    "en": {
+      "Owed.Limits.CardinalityConst": {
+        "translation": "Owed.Limits.CardinalityConst-default",
+        "alternatives": [
+          {
+            "value == CARDINALITY_ONE": {
+              "translation": "Owed.Limits.CardinalityConst-matched"
+            }
+          }
+        ]
+      },
+      "Owed.Limits.OrdinalityConst": {
+        "translation": "Owed.Limits.OrdinalityConst-default",
+        "alternatives": [
+          {
+            "value == ORDINALITY_TWO": {
+              "translation": "Owed.Limits.OrdinalityConst-matched"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

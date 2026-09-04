@@ -1,0 +1,17 @@
+{
+  "id": "ingress-matrix-bidi-none",
+  "description": "Bidi ingress matrix, instance leg pinned to NONE. Same catalog as ingress-matrix-bidi-default so the only difference between the two fixtures' results is the instance option itself. NONE differs from the RTL_LOCALES default precisely at an RTL request, so template cases here probe ar; the returned-key cases probe en, where NONE differs from ALWAYS.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "bidiIsolation": "NONE",
+  "files": {
+    "en": {
+      "Locale.Marker": "en",
+      "Greeting.Named": "en:Hello, {{name}}"
+    },
+    "ar": {
+      "Locale.Marker": "ar",
+      "Greeting.Named": "ar:Hello, {{name}}"
+    }
+  }
+}

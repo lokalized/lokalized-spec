@@ -1,0 +1,17 @@
+{
+  "id": "owed-construct-duplicate-tag",
+  "description": "Construction refusal subject. DefaultStrings:280 -- two distinct Locale keys whose tags lowercase to the same BCP 47 tag. Its files load cleanly; the refusal is at Strings construction, which is what makes it invisible without the 'construct' operation.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "refusesConstruction": true,
+  "constructionOverrides": {
+    "catalogSource": "duplicateNormalizedTag"
+  },
+  "files": {
+    "en": {
+      "Greeting": {
+        "translation": "Hello"
+      }
+    }
+  }
+}

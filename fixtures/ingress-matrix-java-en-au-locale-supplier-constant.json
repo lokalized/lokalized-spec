@@ -1,0 +1,23 @@
+{
+  "id": "ingress-matrix-java-en-au-locale-supplier-constant",
+  "description": "Seed row 3 catalog with a constant localeSupplier returning en-AU: the derived-match route, lookup locale en-AU.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "en": [
+      "en",
+      "en-001"
+    ]
+  },
+  "localeSupplier": {
+    "behavior": "constant",
+    "locale": "en-AU"
+  },
+  "files": {
+    "en-001": {
+      "Checkout.Title": "Checkout (world English)"
+    },
+    "en": {
+      "Checkout.Title": "Checkout"
+    }
+  }
+}

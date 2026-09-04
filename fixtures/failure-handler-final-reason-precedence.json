@@ -1,0 +1,68 @@
+{
+  "id": "failure-handler-final-reason-precedence",
+  "description": "Serves final-failure precedence from the same 8.3 bullet as callback exceptions. Three keys arrange the three reasons in different orders across a two-locale chain: Mixed.NoMatchThenFailure misses its alternatives in Russian and then raises in English; Mixed.FailureThenNoMatch raises in Russian and then misses in English; Mixed.MissingThenNoMatch is absent from Russian and misses in English. DefaultStrings.java:742-746 computes the reported reason from firstFallbackFailure and the sticky noMatchingAlternativeEncountered flag rather than from the last attempt, so a port that reports the last -- or the first -- attempt's reason diverges on at least one of these. Two loaded locales with distinct primary languages, so tiebreakers are null.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "ru": {
+      "Locale.Marker": "ru",
+      "Mixed.NoMatchThenFailure": {
+        "commentary": "Alternatives-only, and the predicate is false for the counts the cases pass.",
+        "alternatives": [
+          {
+            "itemCount > 100": {
+              "translation": "ru: many items"
+            }
+          }
+        ]
+      },
+      "Mixed.FailureThenNoMatch": {
+        "commentary": "Only ONE is translated, so a Russian FEW count (2) raises here.",
+        "translation": "{{noun}}",
+        "placeholders": {
+          "noun": {
+            "value": "itemCount",
+            "translations": {
+              "CARDINALITY_ONE": "ru:ONE"
+            }
+          }
+        }
+      }
+    },
+    "en": {
+      "Locale.Marker": "en",
+      "Mixed.NoMatchThenFailure": {
+        "commentary": "Only ONE is translated, so an English OTHER count (2) raises here.",
+        "translation": "{{noun}}",
+        "placeholders": {
+          "noun": {
+            "value": "itemCount",
+            "translations": {
+              "CARDINALITY_ONE": "en:ONE"
+            }
+          }
+        }
+      },
+      "Mixed.FailureThenNoMatch": {
+        "commentary": "Alternatives-only miss, reached only when the policy keeps walking past the Russian raise.",
+        "alternatives": [
+          {
+            "itemCount > 100": {
+              "translation": "en: many items"
+            }
+          }
+        ]
+      },
+      "Mixed.MissingThenNoMatch": {
+        "commentary": "Absent from Russian entirely, so the chain is MISSING_TRANSLATION then NO_MATCHING_ALTERNATIVE.",
+        "alternatives": [
+          {
+            "itemCount > 100": {
+              "translation": "en: many items"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "id": "ingress-matrix-combined",
+  "description": "All three options set at the instance to NON-default values simultaneously (ALWAYS, any-failure, throw), so each is individually observable and each is wrong if a port silently substitutes a default. instanceLocale is ru and fallbackLocale is en, giving a two-candidate walk. Three keys serve different purposes. 'Items.Sparse {{tag}}' under-declares Russian's categories so itemCount 5 fails at ru with RESOLUTION_FAILURE, and its en counterpart interpolates the caller-supplied tag so the bidi setting shows in a resolved translation. 'Sparse.RuOnly {{tag}}' fails the same way at ru but has NO en counterpart, so the walk ends in a failure whose attemptedLocales separates the inherited any-failure ([ru, en]) from the library default ([ru]) — without this key an inherited policy is invisible, because on a plain MISSING_TRANSLATION any-failure and the default behave identically. 'Absent.Named {{tag}}' is in no catalog at all, driving the options through interpolateFailureKey where isolation keys off the LOOKUP locale. Every key carries a placeholder so bidi stays observable even when the handler responds.",
+  "fallbackLocale": "en",
+  "instanceLocale": "ru",
+  "tiebreakers": null,
+  "translationFailureHandler": {
+    "behavior": "throw"
+  },
+  "translationFallbackPolicy": "any-failure",
+  "bidiIsolation": "ALWAYS",
+  "files": {
+    "ru": {
+      "Locale.Marker": "ru",
+      "Items.Sparse {{tag}}": {
+        "commentary": "Only ONE and OTHER declared. itemCount 5 selects Russian MANY, which is missing, so getInternal throws and getResult classifies the attempt as RESOLUTION_FAILURE. An en counterpart exists, so a permissive policy resolves.",
+        "translation": "{{noun}}",
+        "placeholders": {
+          "noun": {
+            "value": "itemCount",
+            "translations": {
+              "CARDINALITY_ONE": "ru:ONE",
+              "CARDINALITY_OTHER": "ru:OTHER"
+            }
+          }
+        }
+      },
+      "Sparse.RuOnly {{tag}}": {
+        "commentary": "Same sparse declaration, but deliberately ABSENT from en. A RESOLUTION_FAILURE at ru followed by a missing en entry is the only shape in which an inherited any-failure policy is observable through attemptedLocales while the handler still responds.",
+        "translation": "{{noun}}",
+        "placeholders": {
+          "noun": {
+            "value": "itemCount",
+            "translations": {
+              "CARDINALITY_ONE": "ru:ONE",
+              "CARDINALITY_OTHER": "ru:OTHER"
+            }
+          }
+        }
+      }
+    },
+    "en": {
+      "Locale.Marker": "en",
+      "Items.Sparse {{tag}}": "en:fallback {{tag}}"
+    }
+  }
+}

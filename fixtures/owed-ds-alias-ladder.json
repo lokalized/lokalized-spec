@@ -1,0 +1,23 @@
+{
+  "id": "owed-ds-alias-ladder",
+  "description": "Catalogs for both ends of several IANA/CLDR equivalence classes, so the identity-preference ladder in semanticLanguageRangeForDerivedMatching has somewhere to land in either direction. Requests use UNRECOGNIZED range spellings (isKnownLanguageTag false), which is the only condition under which the ladder runs at all.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Checkout.Title": "en"
+    },
+    "gan": {
+      "Checkout.Title": "gan"
+    },
+    "cdo": {
+      "Checkout.Title": "cdo"
+    },
+    "nsl": {
+      "Checkout.Title": "nsl"
+    },
+    "de": {
+      "Checkout.Title": "de"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "id": "loader-smoke-node-limit",
+  "description": "A catalog loaded with maximumTranslationNodes lowered to 1, so the limit is exceeded by an ordinary two-key file.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumTranslationNodes": 1
+  },
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a",
+      "Key.B": "b"
+    }
+  }
+}

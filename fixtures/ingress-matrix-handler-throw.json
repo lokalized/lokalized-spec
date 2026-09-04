@@ -1,0 +1,15 @@
+{
+  "id": "ingress-matrix-handler-throw",
+  "description": "Failure-handler ingress matrix, instance leg pinned to throwException(). Identical catalog to ingress-matrix-handler-default. DefaultStrings.java:762 runs throwExceptionFor inside getResult itself, so this instance option makes getResult throw as well as get; both are exercised. The failure reason here is MISSING_TRANSLATION, so throwExceptionFor (:3196) takes its MissingTranslationException branch rather than rethrowing a cause.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "translationFailureHandler": {
+    "behavior": "throw"
+  },
+  "files": {
+    "en": {
+      "Locale.Marker": "en",
+      "Greeting.Named": "en:Hello, {{name}}"
+    }
+  }
+}

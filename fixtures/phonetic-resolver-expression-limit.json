@@ -1,0 +1,28 @@
+{
+  "id": "phonetic-resolver-expression-limit",
+  "description": "maximumInterpolatedOutputCharacters lowered to 8 on the expression path, where the same CharSequenceUtils conversion runs but its IllegalArgumentException is caught and rewrapped in ExpressionEvaluationException.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "runtimeLimits": {
+    "maximumInterpolatedOutputCharacters": 8
+  },
+  "phoneticResolver": {
+    "behavior": "first-letter-vowel"
+  },
+  "files": {
+    "en": {
+      "Expr.One": {
+        "translation": "no-alternative",
+        "alternatives": [
+          {
+            "noun == PHONETIC_VOWEL": {
+              "translation": "alt-vowel"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

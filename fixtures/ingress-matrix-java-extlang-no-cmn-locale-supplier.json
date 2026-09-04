@@ -1,0 +1,18 @@
+{
+  "id": "ingress-matrix-java-extlang-no-cmn-locale-supplier",
+  "description": "The zh-only catalog with a constant localeSupplier returning the extlang spelling zh-cmn, which Locale.forLanguageTag promotes to the unloaded cmn.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "localeSupplier": {
+    "behavior": "constant",
+    "locale": "zh-cmn"
+  },
+  "files": {
+    "zh": {
+      "Checkout.Title": "zh"
+    },
+    "en": {
+      "Checkout.Title": "en"
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "id": "phonetic-resolver-absent-expression",
+  "description": "No resolver configured, exercised on the expression path. DefaultStrings always installs its fail-fast default, so the evaluator's own 'no PhoneticResolver was provided' branch is unreachable and the default's IllegalStateException surfaces instead; a tagged value on the same expression still succeeds.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Expr.One": {
+        "translation": "no-alternative",
+        "alternatives": [
+          {
+            "noun == PHONETIC_VOWEL": {
+              "translation": "alt-vowel"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

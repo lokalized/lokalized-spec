@@ -1,0 +1,74 @@
+{
+  "id": "resolver-locale-two-phonetic-placeholders",
+  "description": "ADDED IN REVIEW. Call MULTIPLICITY within a candidate, crossed with the donor rule. Both catalogs carry an Article with TWO phonetic placeholders, a and b, bound to the SAME caller term, so a correct implementation invokes the resolver once per placeholder per candidate rather than once per term or once per call. At en-001 placeholder b's branch set omits PHONETIC_CONSONANT — the answer the resolver gives when handed en-001 — so that candidate throws only after BOTH of its calls have been made and recorded; under any-failure en then supplies with two more calls. The branch labels are prefixed a: and b: so the rendered string shows both placeholders were resolved independently. Tiebreakers are mandatory: en and en-001 share a language code.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "en": [
+      "en",
+      "en-001"
+    ]
+  },
+  "translationFallbackPolicy": "any-failure",
+  "phoneticResolver": {
+    "behavior": "by-locale",
+    "mapping": {
+      "en": "PHONETIC_VOWEL",
+      "en-001": "PHONETIC_CONSONANT",
+      "en-AU": "PHONETIC_H_SILENT"
+    },
+    "default": "PHONETIC_OTHER"
+  },
+  "files": {
+    "en-001": {
+      "Locale.Marker": "en-001",
+      "Article": {
+        "translation": "{{a}}+{{b}}",
+        "placeholders": {
+          "a": {
+            "value": "nounTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "a:got:en",
+              "PHONETIC_CONSONANT": "a:got:en-001",
+              "PHONETIC_H_SILENT": "a:got:en-AU",
+              "PHONETIC_OTHER": "a:got:unmapped"
+            }
+          },
+          "b": {
+            "value": "nounTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "b:got:en",
+              "PHONETIC_H_SILENT": "b:got:en-AU",
+              "PHONETIC_OTHER": "b:got:unmapped"
+            }
+          }
+        }
+      }
+    },
+    "en": {
+      "Locale.Marker": "en",
+      "Article": {
+        "translation": "{{a}}+{{b}}",
+        "placeholders": {
+          "a": {
+            "value": "nounTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "a:got:en",
+              "PHONETIC_CONSONANT": "a:got:en-001",
+              "PHONETIC_H_SILENT": "a:got:en-AU",
+              "PHONETIC_OTHER": "a:got:unmapped"
+            }
+          },
+          "b": {
+            "value": "nounTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "b:got:en",
+              "PHONETIC_CONSONANT": "b:got:en-001",
+              "PHONETIC_H_SILENT": "b:got:en-AU",
+              "PHONETIC_OTHER": "b:got:unmapped"
+            }
+          }
+        }
+      }
+    }
+  }
+}

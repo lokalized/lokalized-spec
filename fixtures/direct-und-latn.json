@@ -1,0 +1,10 @@
+{
+  "id": "direct-und-latn",
+  "description": "Plan v7 section 8.3 seed row 1: an undetermined-language request with a script reaches no loaded locale and lands on the fallback, while the diagnostic channel reports no selection at all.",
+  "fallbackLocale": "fr",
+  "tiebreakers": null,
+  "files": {
+    "en": { "Checkout.Title": "Checkout" },
+    "fr": { "Checkout.Title": "Paiement" }
+  }
+}

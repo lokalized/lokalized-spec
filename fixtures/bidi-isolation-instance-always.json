@@ -1,0 +1,17 @@
+{
+  "id": "bidi-isolation-instance-always",
+  "description": "Instance-level BidiIsolation.ALWAYS over the same en/he catalogs. The en lookups isolate here and would not under the default, so the fixture separates the mode from the locale; per-call NONE and per-call RTL_LOCALES then override it downward, giving the mirror of bidi-isolation-instance-none.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "bidiIsolation": "ALWAYS",
+  "files": {
+    "en": {
+      "Locale.Marker": "en",
+      "Greeting.Named": "Hello, {{name}}"
+    },
+    "he": {
+      "Locale.Marker": "he",
+      "Greeting.Named": "שלום, {{name}}"
+    }
+  }
+}

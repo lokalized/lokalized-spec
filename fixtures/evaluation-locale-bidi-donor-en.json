@@ -1,0 +1,15 @@
+{
+  "id": "evaluation-locale-bidi-donor-en",
+  "description": "The bidi channel of 'evaluated under the supplying locale'. interpolateTemplate wraps caller-supplied placeholder values in isolate marks when shouldApplyBidiIsolation(locale, bidiIsolation) is true, and that `locale` is the donor (DefaultStrings.java:1367); interpolateFailureKey (DefaultStrings.java:754) is handed the REQUESTED locale instead. With the default BidiIsolation.RTL_LOCALES an Arabic request served by the English donor therefore gets no isolation, while the returned-key path for the same Arabic request does. Confirmed empirically against the oracle: the resolved Arabic-request translation is 'Hello, Sarah' with no U+2068/U+2069, while the returned-key one is 'Farewell.Named ⁨Sarah⁩'. Only en carries Greeting.Named; the key used by the returned-key cases exists in no catalog at all.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Locale.Marker": "en",
+      "Greeting.Named": "Hello, {{name}}"
+    },
+    "ar": {
+      "Locale.Marker": "ar"
+    }
+  }
+}

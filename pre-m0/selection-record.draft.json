@@ -1,0 +1,21 @@
+{
+  "formatVersion": 1,
+  "status": "draft-unapproved",
+  "selectedProfileId": "strict-parity-0.x-draft",
+  "profileRegistrySha256": null,
+  "bootstrapRequirementsSha256": null,
+  "predecessorSelectionSha256": null,
+  "approvals": {
+    "humanReviewer": null,
+    "humanDecisionOwner": null,
+    "approvedAt": null,
+    "reviewAttestation": null,
+    "ownerAttestation": null
+  },
+  "blockingReasons": [
+    "Release profile inventory is incomplete.",
+    "Bootstrap requirement candidates are not complete or approved.",
+    "Human reviewer is unassigned.",
+    "Human decision owner is unassigned."
+  ]
+}

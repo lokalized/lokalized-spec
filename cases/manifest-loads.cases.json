@@ -1,0 +1,468 @@
+{
+  "formatVersion": 1,
+  "family": "manifest-loads",
+  "description": "Plan v7 section 8.3 fixture family 'manifest-loads'. Inputs only; the oracle emits expected.",
+  "skipped": [
+    {
+      "what": "An empty directory (zero entries) passed to loadFromFilesystem",
+      "why": "ingest.mjs refuses a fixture with no files, rawFiles, or rawFilesBase64, so a genuinely empty directory cannot be expressed. manifest-loads-hidden-files-only is the closest reachable equivalent: a non-empty directory that yields an empty manifest."
+    },
+    {
+      "what": "Subdirectory entries inside a strings directory (loadFromDirectory skips them via Files.isDirectory)",
+      "why": "build.mjs materializes fixture files with writeFileSync(join(fixtureDir, name)) and never creates intermediate directories, so a rawFiles key containing a path separator makes the corpus build throw ENOENT rather than producing a nested directory. The isDirectory skip branch is therefore unreachable from this fixture format."
+    },
+    {
+      "what": "The classpath asymmetry: languageTagForClasspathFileName catches the invalid-.json-name LocalizedStringLoadingException and downgrades it to an INVALID_CLASSPATH_LOCALE_FILENAME warning, continuing the load, where the filesystem loader rethrows",
+      "why": "Classpath loading is out of scope for the oracle, which drives loadFromFilesystem only. Only the throwing filesystem half is covered here, by manifest-loads-json-extension-invalid-tag. This also means INVALID_CLASSPATH_LOCALE_FILENAME is the one warning type in the schema that no case in this family can emit."
+    },
+    {
+      "what": "An unreadable or permission-denied file, and the DirectoryIteratorException / IOException 'Unable to list files in directory' branches of loadFromDirectory",
+      "why": "The fixture format cannot set file modes or make a directory listing fail, and any such case would be host- and filesystem-dependent rather than portable."
+    },
+    {
+      "what": "A partial load in which some files parse and others fail, with the successful ones retained",
+      "why": "Verified against the library: no such behavior exists. loadFromDirectory calls parseLocalizedStringsFile inline, so a single unparseable file aborts the whole loadFromFilesystem call and the observed locale list comes back empty. manifest-loads-language-files-unparseable and manifest-loads-non-object-root pin the abort under two distinct causes instead."
+    },
+    {
+      "what": "Supplying tiebreakerLocalesByLanguageCode for a language that loaded nothing, which DefaultStrings rejects with \"Tiebreaker language code '%s' has no localized strings locales\"",
+      "why": "Reachable but unobservable, and dangerous to author. ingest.mjs's own check is defeatable — putting a catalog in `files` under a tag the loader skips (say `zz`) satisfies ingest's permutation analysis, which reads `files` only, while the runtime load discovers nothing for that language. But VectorOracle records fixture-construction failures in a private fixtureProblems map with no emission channel, so the rejection would never appear in any expected block; and any lookup case on such a fixture makes the oracle throw IllegalStateException and takes the entire corpus build down. The omission is proved behaviorally instead, by the manifest-loads-language-entirely-absent / manifest-loads-language-one-child-loaded pair plus manifest-loads.getresult.tiebreaker-list-order-beats-filename-order, which makes an entry's contents observable."
+    },
+    {
+      "what": "maximumDiscoveryEntries, the limit that DOES count skipped and hidden entries (LoadingSession.discoverEntry runs before the isDirectory, hidden and tag checks), and maximumTotalInputBytes",
+      "why": "VectorOracle.loadingOptionsFrom wires both, but behavioral-vectors.schema.json restricts fixture loadingOptions to maximumJsonNestingDepth, maximumTranslationNodes, maximumWarnings, maximumLocalizedStringsFiles and maximumInputBytes with additionalProperties false, so a fixture naming either one cannot be ingested. Adding them to the schema would make the discovery-entry budget directly testable and is worth a follow-up; until then manifest-loads-file-limit-skipped-entries covers the complementary fact that these entries are NOT charged to the file cap."
+    },
+    {
+      "what": "A deterministic diagnostic for either aggregate-limit or duplicate-file collision",
+      "why": "Both messages name the second file the directory stream reached, and no fixture arrangement makes that file unique: with one loadable file the limit is not hit and no collision occurs, and with two the message depends on readdir order. Both cases are kept at informationalIds rather than dropped, since failed, failureType and the empty locale list remain portable."
+    }
+  ],
+  "cases": [
+    {
+      "id": "manifest-loads.load.complete-directory-lists-every-locale-and-key",
+      "requirementIds": [],
+      "fixture": "manifest-loads-complete",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The complete-manifest control. Four extensionless files, four locales, and per-locale key lists that differ (en alone carries Only.En). A port that discovers files but drops the per-locale key partition, or that merges catalogs across locales at load time, produces a different keysByLocale here."
+    },
+    {
+      "id": "manifest-loads.getresult.complete-exact-child-locale",
+      "requirementIds": [],
+      "fixture": "manifest-loads-complete",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting",
+        "locale": "de-AT"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Verified: with both de and de-AT loaded and an explicit tiebreaker permutation, an exact request stops at de-AT — attemptedLocales is the single element de-AT and no parent is consulted. A port that always walks the parent chain would report de-AT then de."
+    },
+    {
+      "id": "manifest-loads.getresult.complete-unloaded-child-uses-parent",
+      "requirementIds": [],
+      "fixture": "manifest-loads-complete",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting",
+        "locale": "de-CH"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Verified: de-CH is not in the manifest and reaches the loaded de catalog by CLDR fallback (attempted de-CH then de), NOT diverted to the sibling de-AT by the tiebreaker list. Discriminates a port that treats the tiebreaker list as a preference order applied before parent fallback."
+    },
+    {
+      "id": "manifest-loads.getresult.complete-key-present-only-in-fallback",
+      "requirementIds": [],
+      "fixture": "manifest-loads-complete",
+      "operation": "getResult",
+      "input": {
+        "key": "Only.En",
+        "locale": "fr"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "fr loaded successfully but does not carry this key. Verified attempted fr then en, resolved en, while the matcher still selects fr EXACTLY. A port that decides fallback per-locale rather than per-key would stop at fr and fail."
+    },
+    {
+      "id": "manifest-loads.load.partial-catalog-reports-shorter-key-list",
+      "requirementIds": [],
+      "fixture": "manifest-loads-partial-catalog",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "A deliberately partial manifest: fr is present but carries one of the three keys en carries. The load observation shows the asymmetric key lists rather than a union. A port that pre-merges catalogs into the fallback at load time cannot reproduce this."
+    },
+    {
+      "id": "manifest-loads.getresult.partial-catalog-missing-key-falls-back",
+      "requirementIds": [],
+      "fixture": "manifest-loads-partial-catalog",
+      "operation": "getResult",
+      "input": {
+        "key": "B",
+        "locale": "fr"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The key fr is missing. Verified attempted fr then en, resolved en, translated from the fallback catalog. Together with the sibling case this proves partiality is per key, not per locale."
+    },
+    {
+      "id": "manifest-loads.getresult.partial-catalog-present-key-stays-local",
+      "requirementIds": [],
+      "fixture": "manifest-loads-partial-catalog",
+      "operation": "getResult",
+      "input": {
+        "key": "A",
+        "locale": "fr"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Control for the previous case on the same fixture: the key fr does have is served by fr with attemptedLocales of length one and isFallback false. A port that consults the fallback unconditionally would show fr then en here too."
+    },
+    {
+      "id": "manifest-loads.load.empty-catalog-file-is-a-loaded-locale",
+      "requirementIds": [],
+      "fixture": "manifest-loads-empty-catalog-file",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "Added by review. fr's file is a valid but empty JSON object. Verified: the manifest still lists fr, with an EMPTY key array — the loader does not drop a zero-key catalog, and does not warn. A port that filters empty catalogs out of the manifest, or that treats an empty object as a parse failure, diverges on the very first field."
+    },
+    {
+      "id": "manifest-loads.getresult.empty-catalog-locale-selected-but-not-resolved",
+      "requirementIds": [],
+      "fixture": "manifest-loads-empty-catalog-file",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting",
+        "locale": "fr"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Added by review, and the sharpest two-channel case in the family: verified that the matcher selects fr with matchType EXACT (fr genuinely loaded) while resolution walks fr then en and resolves in en. Selection and resolution disagree about a locale that IS in the manifest. A port that derives the diagnostic channel from where the translation came from collapses these two answers into one."
+    },
+    {
+      "id": "manifest-loads.load.language-whose-every-file-is-unrecognized-contributes-nothing",
+      "requirementIds": [],
+      "fixture": "manifest-loads-language-entirely-absent",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The section 8.3 sharp clause. Both German files sit in the directory but neither is discovered, so the load succeeds with en and fr only, emits ZERO warnings, and German appears nowhere in locales or keysByLocale. A port that reports a partially-loaded German, or that warns about undiscovered files, diverges here."
+    },
+    {
+      "id": "manifest-loads.getresult.absent-language-has-no-tiebreaker-entry",
+      "requirementIds": [],
+      "fixture": "manifest-loads-language-entirely-absent",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting",
+        "locale": "de"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The proof that the German tiebreaker entry is OMITTED rather than present. Verified attemptedLocales is exactly de then en, and matchFor reports NONE. A port that seeded tiebreakerLocalesByLanguageCode from the requested manifest instead of from what actually loaded would hold de:[de,de-AT], and localeFallbackCandidates would then splice a German locale into the attempted list. The paired one-child fixture shows exactly that longer list when de-CH really does load."
+    },
+    {
+      "id": "manifest-loads.getresult.absent-language-child-request-reaches-fallback",
+      "requirementIds": [],
+      "fixture": "manifest-loads-language-entirely-absent",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting",
+        "locale": "de-AT"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Requesting the very tag whose file is on disk but undiscovered. Verified attempted de-AT, de, en with no German catalog anywhere in the chain, and the fallback translation returned. A port that indexed catalogs by filename rather than by discovered locale would serve the German file here."
+    },
+    {
+      "id": "manifest-loads.matchfor.absent-language-selects-nothing",
+      "requirementIds": [],
+      "fixture": "manifest-loads-language-entirely-absent",
+      "operation": "matchFor",
+      "input": {
+        "locale": "de"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The second channel. With no German locale loaded the matcher selects nothing at all, not the fallback: locale null, matchType NONE, consideredLocales holding only en and fr. Contrast the one-child fixture, where the same request selects a concrete German locale."
+    },
+    {
+      "id": "manifest-loads.parse.unrecognized-filename-content-is-valid",
+      "requirementIds": [],
+      "fixture": "manifest-loads-language-entirely-absent",
+      "operation": "parse",
+      "input": {
+        "file": "de.txt",
+        "locale": "de",
+        "source": "de.txt"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Feeds the skipped file straight to the parser to prove its contents are a perfectly good catalog — verified to parse to the single key Greeting. The load excluded it purely on its NAME. Without this a port could pass the load case by rejecting the file's content for the wrong reason."
+    },
+    {
+      "id": "manifest-loads.load.language-with-one-loadable-child",
+      "requirementIds": [],
+      "fixture": "manifest-loads-language-one-child-loaded",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The contrast fixture: the de file is unrecognized but de-CH loads, so German contributes exactly one locale. Pins that a language is represented by whatever survived discovery, not by the set of files placed for it."
+    },
+    {
+      "id": "manifest-loads.getresult.one-child-language-gains-identity-tiebreaker",
+      "requirementIds": [],
+      "fixture": "manifest-loads-language-one-child-loaded",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting",
+        "locale": "de"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Because exactly one German locale loaded, DefaultStrings synthesizes the identity tiebreaker de:[de-CH]; verified a bare de request reaches de-CH, returns Gruezi, and reports attempted de then de-CH with the matcher selecting de-CH by LIKELY_SUBTAG. Directly opposite to the absent-language fixture, where the same request never leaves de then en. The pair is what makes 'omitted' observable."
+    },
+    {
+      "id": "manifest-loads.getresult.one-child-sibling-region-reaches-loaded-child",
+      "requirementIds": [],
+      "fixture": "manifest-loads-language-one-child-loaded",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting",
+        "locale": "de-AT"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "de-AT is neither loaded nor the likely-subtag expansion of the loaded de-CH, so the only route to a German catalog is the synthesized tiebreaker plus the likely-language-script check. Verified attempted de-AT, de, de-CH. A port that populates the tiebreaker map but skips the script compatibility test, or vice versa, changes this list."
+    },
+    {
+      "id": "manifest-loads.matchfor.one-child-language-selects-loaded-child",
+      "requirementIds": [],
+      "fixture": "manifest-loads-language-one-child-loaded",
+      "operation": "matchFor",
+      "input": {
+        "locale": "de"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Matcher channel counterpart: verified the selection is de-CH with matchType LIKELY_SUBTAG and isMatch true, where the absent-language fixture selects nothing with NONE. Pins that the diagnostic channel is driven by the loaded set too."
+    },
+    {
+      "id": "manifest-loads.load.reversed-tiebreaker-manifest-loads-both-children",
+      "requirementIds": [],
+      "fixture": "manifest-loads-tiebreaker-order-reversed",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "Added by review. The load control for the order case: both German children really are in the manifest, so the following case cannot be explained by one of them being absent."
+    },
+    {
+      "id": "manifest-loads.getresult.tiebreaker-list-order-beats-filename-order",
+      "requirementIds": [],
+      "fixture": "manifest-loads-tiebreaker-order-reversed",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting",
+        "locale": "de-DE"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Added by review, and the case that gives the omitted-entry pair its force: the entry's CONTENT is observable, not just its presence. de-AT is written first and sorts first; the tiebreaker list names de-CH first. Verified the request resolves to de-CH with attempted de-DE, de, de-CH. Seed row 2 (direct-fr-be) cannot catch this — there the tiebreaker order and the file order agree, so a port following manifest insertion order passes it and fails here."
+    },
+    {
+      "id": "manifest-loads.load.unparseable-file-aborts-the-whole-directory",
+      "requirementIds": [],
+      "fixture": "manifest-loads-language-files-unparseable",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "A genuinely failing file, as opposed to an undiscovered one. Distinct from loader-smoke.load.unparseable-file-fails, whose directory holds ONLY the bad file: here en is valid and still does not survive. Verified the observation comes back with an empty locale list and a line:column diagnostic naming the German file. A port that skips bad files and returns a partial manifest would pass every other case in this family and still be wrong here."
+    },
+    {
+      "id": "manifest-loads.load.non-object-root-aborts-the-whole-directory",
+      "requirementIds": [],
+      "fixture": "manifest-loads-non-object-root",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "Added by review. A second, distinct way for one file to kill the directory load: valid JSON whose root is an array. Verified the diagnostic is 'a localized strings file must be comprised of a single JSON object' with no line:column, which separates root-shape rejection from syntax rejection. Without this pair a port could implement one message for both and match neither precisely."
+    },
+    {
+      "id": "manifest-loads.load.single-file-directory-ignores-fallback-locale",
+      "requirementIds": [],
+      "fixture": "manifest-loads-single-nonfallback-file",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "A directory holding one file, for a locale that is not the configured fallback. Verified loading succeeds and reports fr; the loader does not know or care about the fallback locale. The fixture is loadOnly because Strings construction is what rejects the missing fallback, and that rejection belongs to a different channel."
+    },
+    {
+      "id": "manifest-loads.load.directory-whose-only-file-is-the-fallback",
+      "requirementIds": [],
+      "fixture": "manifest-loads-fallback-only-file",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The minimal loadable manifest: one file, which is also the fallback. Pins the degenerate end of the manifest range that the multi-locale cases anchor the other end of."
+    },
+    {
+      "id": "manifest-loads.getresult.fallback-only-unloaded-request",
+      "requirementIds": [],
+      "fixture": "manifest-loads-fallback-only-file",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting",
+        "locale": "fr"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "With a single-locale manifest, verified a request for an unrelated locale still records fr in attemptedLocales before resolving in en, while the matcher selects nothing (NONE). A port that short-circuits to the fallback when only one locale is loaded would emit a one-element attempted list."
+    },
+    {
+      "id": "manifest-loads.getresult.fallback-only-missing-key",
+      "requirementIds": [],
+      "fixture": "manifest-loads-fallback-only-file",
+      "operation": "getResult",
+      "input": {
+        "key": "No.Such.Key",
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Key absent from the only catalog there is. Verified terminal shape: status RETURNED_KEY, translation equal to the key, resolvedLocale null, attemptedLocales [en], while the matcher still selects en EXACTLY. Distinguishes 'no catalog matched' from 'catalog matched, key missing'."
+    },
+    {
+      "id": "manifest-loads.load.filenames-that-are-not-locale-tags-are-skipped",
+      "requirementIds": [],
+      "fixture": "manifest-loads-unrecognized-filenames",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "Four extensionless names that are not loadable locale tags: a dotted name that fails the tag grammar, a well-formed but unassigned two-letter code, an ordinary English word that is grammatically a language subtag, and a dot-prefixed file. Verified all are skipped SILENTLY with no warning and no failure, leaving en alone. A port that accepts any well-formed subtag without checking it against the CLDR language set would load two extra locales here."
+    },
+    {
+      "id": "manifest-loads.getresult.hidden-file-locale-never-loaded",
+      "requirementIds": [],
+      "fixture": "manifest-loads-unrecognized-filenames",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting",
+        "locale": "en-GB"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The directory contains a dot-prefixed en-GB file. Verified the request walks en-GB, en-001, en and returns the en translation, proving the hidden file contributed nothing. A port that skips hidden files only by an extension check, or not at all, returns the hidden file's text instead."
+    },
+    {
+      "id": "manifest-loads.parse.hidden-filename-content-is-valid",
+      "requirementIds": [],
+      "fixture": "manifest-loads-unrecognized-filenames",
+      "operation": "parse",
+      "input": {
+        "file": ".en-GB",
+        "locale": "en-GB",
+        "source": "dot-en-GB"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Parses the hidden file directly to show the skip is a leading-dot naming rule and not a content rejection — verified to parse cleanly. Isolates the discovery rule from the parse rule."
+    },
+    {
+      "id": "manifest-loads.load.unassigned-region-filename-is-accepted",
+      "requirementIds": [],
+      "fixture": "manifest-loads-unassigned-region-filename",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "A surprise worth pinning, and confirmed against the library: de-XX names an unassigned region, yet the loader accepts it and the manifest gains a de-XX locale. Discovery validates the LANGUAGE against CLDR, not the region. A port that validates the whole tag against a known-locale table would skip this file and silently shrink the manifest."
+    },
+    {
+      "id": "manifest-loads.getresult.unassigned-region-locale-serves-exact-request",
+      "requirementIds": [],
+      "fixture": "manifest-loads-unassigned-region-filename",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting",
+        "locale": "de-XX"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The accepted odd tag is a first-class loaded locale: verified an exact request resolves there with a one-element attempted list and matchType EXACT, not through the fallback."
+    },
+    {
+      "id": "manifest-loads.getresult.unassigned-region-locale-gets-a-tiebreaker-entry",
+      "requirementIds": [],
+      "fixture": "manifest-loads-unassigned-region-filename",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting",
+        "locale": "de"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Because de-XX loaded, German DOES get an identity tiebreaker entry, so a bare de request reaches de-XX (attempted de, de-XX) rather than the fallback. The mirror image of the absent-language case: entries follow the loaded set even when the loaded tag is unusual."
+    },
+    {
+      "id": "manifest-loads.load.json-extension-with-invalid-tag-is-rejected",
+      "requirementIds": [],
+      "fixture": "manifest-loads-json-extension-invalid-tag",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The same stem that is silently skipped without an extension becomes a hard load failure when it ends in .json, with a message naming the file and suggesting valid names. Verified the diagnostic quotes the bare filename only, so it does not depend on where the fixture was materialized. This asymmetry is the single most likely thing a port gets wrong: skip-vs-reject turns on the extension, not on the name."
+    },
+    {
+      "id": "manifest-loads.load.directory-of-only-hidden-files-loads-nothing",
+      "requirementIds": [],
+      "fixture": "manifest-loads-hidden-files-only",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "The extreme partial load: a non-empty directory whose every entry is skipped yields an EMPTY manifest, successfully, with no warnings. Pins that an empty result is not itself an error at the loader layer. The fixture is loadOnly because Strings construction is what refuses a zero-locale catalog."
+    },
+    {
+      "id": "manifest-loads.load.two-filename-spellings-of-one-locale-collide",
+      "requirementIds": [],
+      "fixture": "manifest-loads-duplicate-locale-spellings",
+      "operation": "load",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "An extensionless en and an en.json in one directory resolve to the same Locale and the load fails with a duplicate-file diagnostic. A port keyed by filename would silently accept both and let one win. DEMOTED BY REVIEW from requiredPortableIds: failed, failureType, locales and keysByLocale are all deterministic, but failureMessage quotes whichever entry the directory stream reached SECOND, and that is a filesystem property, not a library property. Measured stable across five runs on APFS — and stable at the file written FIRST, i.e. readdir order is not creation order — so it cannot be pinned as a portable message. Gating parity on it would fail a correct port on any host whose readdir hashes differently."
+    },
+    {
+      "id": "manifest-loads.parse.colliding-spelling-content-is-valid",
+      "requirementIds": [],
+      "fixture": "manifest-loads-duplicate-locale-spellings",
+      "operation": "parse",
+      "input": {
+        "file": "en.json",
+        "locale": "en",
+        "source": "en.json"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Both colliding files are individually parseable — verified — so the load failure is purely about locale identity across filenames, not about content. This half of the proposition is order-independent and stays portable."
+    },
+    {
+      "id": "manifest-loads.load.uppercase-filename-normalizes-to-locale",
+      "requirementIds": [],
+      "fixture": "manifest-loads-uppercase-filename",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "A file named with an uppercase tag is discovered and reported under the canonical lowercase locale. Pins that the manifest key is the parsed Locale, not the literal filename, which is the mechanism behind the duplicate-spelling collision."
+    },
+    {
+      "id": "manifest-loads.getresult.uppercase-filename-serves-canonical-locale",
+      "requirementIds": [],
+      "fixture": "manifest-loads-uppercase-filename",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting",
+        "locale": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The canonicalized locale is usable end to end: verified a lowercase request resolves against the uppercase-named file with a one-element attempted list. A port that compares filenames case-sensitively would find no catalog and fail to build at all."
+    },
+    {
+      "id": "manifest-loads.load.file-limit-counts-only-parsed-files",
+      "requirementIds": [],
+      "fixture": "manifest-loads-file-limit-skipped-entries",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "Added by review, and the only case in the corpus touching maximumLocalizedStringsFiles — a limit that is squarely about manifest size. Verified: with the cap at 1 and one loadable file among five entries, the load SUCCEEDS. The cap is charged in beginLocalizedStringsFile, which only runs for files that are actually parsed; skipped entries are charged instead to maximumDiscoveryEntries. A port that decrements one budget per directory entry fails here while passing every other case in this family."
+    },
+    {
+      "id": "manifest-loads.load.file-limit-exceeded-aborts-whole-load",
+      "requirementIds": [],
+      "fixture": "manifest-loads-file-limit-exceeded",
+      "operation": "load",
+      "input": {},
+      "partition": "informationalIds",
+      "notes": "Added by review as the enforcement half of the previous case: the same cap of 1 against two loadable files aborts the entire directory load, so the skipped-entries case cannot be passed by a port that simply never enforces the limit. Informational for the same reason as the duplicate-spelling case — verified stable across runs here, but the message names whichever of the two files the directory stream reached second, which no implementation controls."
+    }
+  ]
+}

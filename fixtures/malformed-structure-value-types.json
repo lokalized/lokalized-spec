@@ -1,0 +1,26 @@
+{
+  "id": "malformed-structure-value-types",
+  "description": "One file per wrong JSON type for a translation entry's value: number, boolean, array, and explicit null. Each parses as JSON but is not a valid catalog entry, and all four reach the same terminal else-branch of LocalizedStringLoader.parseLocalizedString. Serves the section 8.3 'wrong node types' clause.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": 42
+    },
+    "fr": {
+      "Key.A": true
+    },
+    "de": {
+      "Key.A": [
+        "a",
+        "b"
+      ]
+    },
+    "es": {
+      "Key.A": null
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

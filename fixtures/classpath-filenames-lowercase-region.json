@@ -1,0 +1,15 @@
+{
+  "id": "classpath-filenames-lowercase-region",
+  "description": "A valid en catalog plus a file named 'de-de.json'. The stem is accepted case-insensitively and then handed to Locale.forLanguageTag, so the emitted locale key is the canonical REGION form rather than the filename's spelling. MEASURED: loads as 'de-DE'.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "rawFiles": {
+    "de-de.json": "{\"Key.dede\":\"dede\"}"
+  }
+}

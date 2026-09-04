@@ -1,0 +1,25 @@
+{
+  "id": "callback-smoke-returns-null",
+  "description": "A resolver that returns null. DefaultStrings.java:1169 raises IllegalArgumentException naming the placeholder and key.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "phoneticResolver": {
+    "behavior": "return-null"
+  },
+  "files": {
+    "en": {
+      "Article": {
+        "translation": "{{article}}",
+        "placeholders": {
+          "article": {
+            "value": "nounTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "an",
+              "PHONETIC_CONSONANT": "a"
+            }
+          }
+        }
+      }
+    }
+  }
+}

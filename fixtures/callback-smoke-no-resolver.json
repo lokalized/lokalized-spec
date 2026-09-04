@@ -1,0 +1,22 @@
+{
+  "id": "callback-smoke-no-resolver",
+  "description": "No resolver configured, so DefaultStrings installs its fail-fast default, which throws when first reached. Section 3.7: that becomes the current candidate's resolution failure.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Article": {
+        "translation": "{{article}}",
+        "placeholders": {
+          "article": {
+            "value": "nounTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "an",
+              "PHONETIC_CONSONANT": "a"
+            }
+          }
+        }
+      }
+    }
+  }
+}

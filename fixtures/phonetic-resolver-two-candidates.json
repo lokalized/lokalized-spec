@@ -1,0 +1,43 @@
+{
+  "id": "phonetic-resolver-two-candidates",
+  "description": "A phonetic RESOLUTION_FAILURE on the first candidate with a second candidate available. The instance locale is en and the fallback fr; the en entry declares only a VOWEL branch while the resolver always answers CONSONANT, so en fails on the missing branch and fr can serve. The instance policy is any-failure and the cases override it per call, driving every fallback decision against one identical failure.",
+  "fallbackLocale": "fr",
+  "instanceLocale": "en",
+  "tiebreakers": null,
+  "translationFallbackPolicy": "any-failure",
+  "phoneticResolver": {
+    "behavior": "constant",
+    "phonetic": "PHONETIC_CONSONANT"
+  },
+  "files": {
+    "en": {
+      "Article": {
+        "translation": "en:[{{a}}]",
+        "placeholders": {
+          "a": {
+            "value": "term",
+            "translations": {
+              "PHONETIC_VOWEL": "an"
+            }
+          }
+        }
+      }
+    },
+    "fr": {
+      "Article": {
+        "translation": "fr:[{{a}}]",
+        "placeholders": {
+          "a": {
+            "value": "term",
+            "translations": {
+              "PHONETIC_VOWEL": "vf",
+              "PHONETIC_CONSONANT": "cf"
+            }
+          }
+        }
+      }
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

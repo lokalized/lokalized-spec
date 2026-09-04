@@ -1,0 +1,14 @@
+{
+  "id": "loading-limits-total-bytes-zero",
+  "description": "A two-byte empty-object file whose loading options request maximumTotalInputBytes 0. The aggregate budget is a long and carries its own builder message.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumTotalInputBytes": 0
+  },
+  "loadOnly": true,
+  "files": {},
+  "rawFiles": {
+    "en": "{}"
+  }
+}

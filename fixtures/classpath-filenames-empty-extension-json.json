@@ -1,0 +1,15 @@
+{
+  "id": "classpath-filenames-empty-extension-json",
+  "description": "A valid en catalog plus a file named 'de..json' — a valid tag, an empty extension, then .json. languageTagForFileName removes exactly JSON_EXTENSION.length() characters (LocalizedStringLoader.java:1691), leaving the trailing dot behind, which the tag pattern rejects.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "rawFiles": {
+    "de..json": "{\"Key.dedotjson\":\"dedotjson\"}"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "id": "ingress-matrix-java-en-au-instance",
+  "description": "Seed row 3 catalog with the request tag en-AU as the INSTANCE locale (realized as a constant localeSupplier, as in every -instance fixture here).",
+  "fallbackLocale": "en",
+  "instanceLocale": "en-AU",
+  "tiebreakers": {
+    "en": [
+      "en",
+      "en-001"
+    ]
+  },
+  "files": {
+    "en-001": {
+      "Checkout.Title": "Checkout (world English)"
+    },
+    "en": {
+      "Checkout.Title": "Checkout"
+    }
+  }
+}

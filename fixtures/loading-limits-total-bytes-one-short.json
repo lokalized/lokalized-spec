@@ -1,0 +1,14 @@
+{
+  "id": "loading-limits-total-bytes-one-short",
+  "description": "The same verbatim 13-byte catalog loaded with maximumTotalInputBytes at 12, one short. Deliberately the same file and the same number as the per-resource fixture, so the two budgets can be told apart by their messages alone.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumTotalInputBytes": 12
+  },
+  "loadOnly": true,
+  "files": {},
+  "rawFiles": {
+    "en": "{\"Key.A\":\"a\"}"
+  }
+}

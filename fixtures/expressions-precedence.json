@@ -1,0 +1,166 @@
+{
+  "id": "expressions-precedence",
+  "description": "Serves the plan v7 section 8.3 expression clause for operator precedence, parenthesized override, short-circuit evaluation, and the two behaviors that surround an expression: what a throwing expression does to the alternative scan, and that the SECOND expression site (generated-placeholder fragment expressions, compiled by DefaultStrings.compileExpressions and evaluated by resolveExpressionTranslation) obeys the same rules. Every expression here is statically valid so the fixture constructs -- lokalized-java validates alternative expressions three times before any case runs (LocalizedStringLoader at load, LocalizedStringValidator via DefaultStrings.validateLocalizedString, and ExpressionEvaluator.compile in the constructor), and a single invalid expression aborts the whole corpus run, so discrimination has to come from which branch's translation is emitted and from whether an unbound right-hand operand is ever reached. Each key's default translation is the literal string 'no alternative' so a non-match is distinguishable from a match and from a resolution failure. Only 'en' is loaded, so there is no same-language ambiguity and tiebreakers is null.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Expr.Precedence.AndBindsTighterThanOr": {
+        "translation": "no alternative",
+        "commentary": "Correct parse is alpha || (beta && gamma). A parse of (alpha || beta) && gamma emits 'no alternative' for the same inputs.",
+        "alternatives": [
+          {
+            "alpha == 1 || beta == 1 && gamma == 1": {
+              "translation": "or-of-and matched"
+            }
+          }
+        ]
+      },
+      "Expr.Precedence.ParenthesesOverrideAndBinding": {
+        "translation": "no alternative",
+        "commentary": "Same operands as Expr.Precedence.AndBindsTighterThanOr, parenthesized the other way, so the same tuple must invert.",
+        "alternatives": [
+          {
+            "(alpha == 1 || beta == 1) && gamma == 1": {
+              "translation": "grouped or matched"
+            }
+          }
+        ]
+      },
+      "Expr.Precedence.OrShortCircuitsAndBranch": {
+        "translation": "no alternative",
+        "commentary": "alpha || (absentLeft && absentRight). Neither absent placeholder may be touched when alpha matches.",
+        "alternatives": [
+          {
+            "alpha == 1 || absentLeft == 1 && absentRight == 1": {
+              "translation": "or-of-and matched"
+            }
+          }
+        ]
+      },
+      "Expr.Precedence.AndBranchShortCircuitsBeforeOr": {
+        "translation": "no alternative",
+        "commentary": "(alpha && absentRight) || beta. The and-branch must short-circuit to false and the or-branch must still be evaluated.",
+        "alternatives": [
+          {
+            "alpha == 1 && absentRight == 1 || beta == 1": {
+              "translation": "or-of-and matched"
+            }
+          }
+        ]
+      },
+      "Expr.ShortCircuit.AndSkipsRightWhenLeftFalse": {
+        "translation": "no alternative",
+        "alternatives": [
+          {
+            "alpha == 1 && absentRight == 1": {
+              "translation": "and matched"
+            }
+          }
+        ]
+      },
+      "Expr.ShortCircuit.OrSkipsRightWhenLeftTrue": {
+        "translation": "no alternative",
+        "alternatives": [
+          {
+            "alpha == 1 || absentRight == 1": {
+              "translation": "or matched"
+            }
+          }
+        ]
+      },
+      "Expr.ShortCircuit.LeftOperandAlwaysEvaluated": {
+        "translation": "no alternative",
+        "commentary": "The left operand is unconditionally evaluated even when the right operand alone would settle the result.",
+        "alternatives": [
+          {
+            "absentLeft == 1 || alpha == 1": {
+              "translation": "or matched"
+            }
+          }
+        ]
+      },
+      "Expr.ShortCircuit.AndSkipsParenthesizedGroup": {
+        "translation": "no alternative",
+        "alternatives": [
+          {
+            "alpha == 1 && (beta == 1 || absentRight == 1)": {
+              "translation": "grouped and matched"
+            }
+          }
+        ]
+      },
+      "Expr.ShortCircuit.OrSkipsIllTypedRight": {
+        "translation": "no alternative",
+        "commentary": "The skipped right operand fails on operand TYPE rather than on a missing binding.",
+        "alternatives": [
+          {
+            "alpha == 1 || rawRight == 5": {
+              "translation": "or matched"
+            }
+          }
+        ]
+      },
+      "Expr.Alternative.EarlierAlternativeFailureAborts": {
+        "translation": "no alternative",
+        "commentary": "Alternative 0 can never be evaluated; alternative 1 would match. A throw in an earlier alternative must abort the key rather than fall through.",
+        "alternatives": [
+          {
+            "absentLeft == 1": {
+              "translation": "first alternative"
+            }
+          },
+          {
+            "alpha == 1": {
+              "translation": "second alternative"
+            }
+          }
+        ]
+      },
+      "Expr.Alternative.LaterAlternativeIsReachable": {
+        "translation": "no alternative",
+        "commentary": "Control shape for the abort key: both alternatives are always evaluable, so array order and fall-through are observable on their own.",
+        "alternatives": [
+          {
+            "beta == 1": {
+              "translation": "first alternative"
+            }
+          },
+          {
+            "alpha == 1": {
+              "translation": "second alternative"
+            }
+          }
+        ]
+      },
+      "Expr.Fragment.PrecedenceAndBindsTighterThanOr": {
+        "translation": "fragment=[{{frag}}]",
+        "commentary": "Second expression site: a generated-placeholder fragment expression, compiled and evaluated by resolveExpressionTranslation rather than alternativeMatches.",
+        "placeholders": {
+          "frag": {
+            "translation": "no fragment alternative",
+            "alternatives": [
+              {
+                "alpha == 1 || beta == 1 && gamma == 1": "or-of-and fragment"
+              }
+            ]
+          }
+        }
+      },
+      "Expr.Fragment.OrShortCircuitsAbsentOperand": {
+        "translation": "fragment=[{{frag}}]",
+        "commentary": "Short-circuiting at the fragment expression site.",
+        "placeholders": {
+          "frag": {
+            "translation": "no fragment alternative",
+            "alternatives": [
+              {
+                "alpha == 1 || absentRight == 1": "or fragment"
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

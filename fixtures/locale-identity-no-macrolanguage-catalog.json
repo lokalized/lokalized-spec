@@ -1,0 +1,17 @@
+{
+  "id": "locale-identity-no-macrolanguage-catalog",
+  "description": "The mirror of the nb-NO fixture: the macrolanguage tag 'no' is the one on disk and the specific tag is requested, proving the Norwegian bridge runs in both directions.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "no": {
+      "Greeting": "hei no",
+      "Only.No": "no only"
+    },
+    "en": {
+      "Greeting": "hello"
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

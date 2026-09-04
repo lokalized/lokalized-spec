@@ -1,0 +1,15 @@
+{
+  "id": "classpath-filenames-root-stem",
+  "description": "A valid en catalog plus a file named 'root.json'. 'root' satisfies LANGUAGE_TAG_PATTERN and Locale.Builder and resolves to a nonempty language, so it survives every check except CldrLocaleData.isKnownLanguageTag (LocalizedStringLoader.java:1672). MEASURED: it is REJECTED — a port that special-cases 'root' alongside 'und' loads a catalog Java refuses.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "rawFiles": {
+    "root.json": "{\"Key.root\":\"root\"}"
+  }
+}

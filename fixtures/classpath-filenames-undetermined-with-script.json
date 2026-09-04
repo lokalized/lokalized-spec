@@ -1,0 +1,15 @@
+{
+  "id": "classpath-filenames-undetermined-with-script",
+  "description": "A valid en catalog plus a file named 'und-Latn.json'. The undetermined exception at LocalizedStringLoader.java:1666 is a DISJUNCTION — equalsIgnoreCase(\"und\") OR startsWith(\"und-\") — and only this fixture exercises the second half. MEASURED: loads as 'und-Latn'; a port implementing only the exact-'und' half loses it.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "rawFiles": {
+    "und-Latn.json": "{\"Key.undlatn\":\"undlatn\"}"
+  }
+}

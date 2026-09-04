@@ -1,0 +1,40 @@
+{
+  "id": "browser-chooser-iana-aliases",
+  "description": "One loaded source for each side of a set of pinned IANA/JDK equivalences that discriminate: he (vs iw), id (vs in), yi (vs ji), cmn (vs zh-cmn and zh-guoyu), yue (vs zh-yue), tlh (vs i-klingon), nan (vs zh-min-nan and zh-nan), jbo (vs art-lojban), ase (vs sgn-US and sgn-ase). MEASURED: only cmn collapses onto a shared canonical language code (zh) and it is alone there, so no tiebreakers are required and the fixture builds. zh itself is deliberately NOT loaded; browser-chooser-canonical-collision is the contrasting fixture where it is.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "he": {
+      "Checkout.Title": "he"
+    },
+    "cmn": {
+      "Checkout.Title": "cmn"
+    },
+    "yue": {
+      "Checkout.Title": "yue"
+    },
+    "id": {
+      "Checkout.Title": "id"
+    },
+    "yi": {
+      "Checkout.Title": "yi"
+    },
+    "tlh": {
+      "Checkout.Title": "tlh"
+    },
+    "nan": {
+      "Checkout.Title": "nan"
+    },
+    "jbo": {
+      "Checkout.Title": "jbo"
+    },
+    "ase": {
+      "Checkout.Title": "ase"
+    },
+    "en": {
+      "Checkout.Title": "en"
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

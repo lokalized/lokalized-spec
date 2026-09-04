@@ -1,0 +1,999 @@
+{
+  "formatVersion": 1,
+  "family": "fallback-policy",
+  "description": "Plan v7 section 8.3 fixture family 'fallback-policy'. Inputs only; the oracle emits expected.",
+  "skipped": [
+    {
+      "what": "The result-shape half of the RETURN_STRING response arm: a getResult case emitting TranslationResultStatus.RETURNED_STRING with resolvedLocale null and the failure reason and cause still populated on the result.",
+      "why": "SCHEMA BLOCKER, verified by execution, not inferred. DefaultStrings.java:758-760 emits RETURNED_STRING and the oracle passes result.getStatus().name() straight through (VectorOracle.java describeResult), but schema/behavioral-vectors.schema.json restricts $defs.translationResult.status to [\"TRANSLATED\", \"RETURNED_KEY\"]. Two cases as originally authored would have failed schema validation and blocked corpus ingest. I moved them to the get operation, which emits only `translation` plus the failures channel and is fully schema-valid while still discriminating substitute-text from interpolated-key. Add \"RETURNED_STRING\" to that enum and this can be reauthored on getResult; nothing else in the corpus is affected, because options-smoke's only return-string case also uses get."
+    },
+    {
+      "what": "A case asserting that the fallback policy is NOT consulted after the final distinct candidate (DefaultStrings.java:731-733 breaks on candidateIndex + 1 >= fallbackCandidates.size() before reaching shouldTryNextLocale).",
+      "why": "The oracle records no policy-invocation channel; only the failure handler is wrapped by recording(). I confirmed by inspection of the loop that every observable (translation, status, attemptedLocales, reason, cause) is identical whether or not the policy is asked about the last candidate, so no authorable case can discriminate it. It needs a recording TranslationFallbackPolicy wrapper in VectorOracle.java, analogous to the existing recording() handler wrapper, which would also let the ATTEMPT-BY-ATTEMPT reason sequence be asserted rather than only the final precedence winner."
+    },
+    {
+      "what": "Cases asserting MULTIPLE entries in the failures channel under fallbackOnAnyFailure.",
+      "why": "FINDING, not an omission, and now confirmed empirically: across all 57 cases in this family the failures array is either absent or exactly length 1. DefaultStrings.getResult calls translationFailureHandler.handle exactly once, after the walk ends (line 749). The POLICY is consulted per candidate; the HANDLER is not. Every note in this family is written to that fact."
+    },
+    {
+      "what": "A custom TranslationFallbackPolicy that inspects attemptedLocale or the cause, and a policy that returns null (which DefaultStrings.java:734-735 turns into a NullPointerException via requireNonNull with the message \"translationFallbackPolicy returned null\").",
+      "why": "Section 8.2 forbids embedding executable callbacks; policies are referenced by name and VectorOracle.policyFrom offers only the three library policies. A named 'null-returning' behavior would have to be added there first. The same applies to a handler returning null, which DefaultStrings.java:749-750 rejects with \"TranslationFailureHandler returned null\"."
+    },
+    {
+      "what": "A fallback-observer case proving the observer sees the same match object as the result (the TranslationFailureHandler.returnKey(Consumer) overload).",
+      "why": "The oracle's handler vocabulary has no observer behavior, and matchObjectIdenticalToResult is already emitted for free on every failing case here, so an observer arm would duplicate an existing channel rather than add one."
+    },
+    {
+      "what": "Warning-set assertions for the deliberately incomplete Gender and Cardinality placeholder maps these fixtures rely on.",
+      "why": "Warning-set capture is listed as unsupported and the oracle installs no LocalizedStringWarningHandler. All seven fixtures were confirmed to load cleanly regardless, so the warnings are simply not observable through this corpus."
+    },
+    {
+      "what": "Any localeMatchSupplier or language-range negotiation ingress into this clause, and any loader manifest/discovery driving of which catalogs exist.",
+      "why": "Explicitly out of scope per the brief. This family fixes the candidate chain through fallbackLocale plus tiebreakers and an explicit per-call locale, which is sufficient to state every fallback-policy proposition without touching negotiation."
+    }
+  ],
+  "cases": [
+    {
+      "id": "fallback-policy.control.first-candidate-serves-when-it-succeeds",
+      "requirementIds": [],
+      "fixture": "fallback-policy-donor-en",
+      "operation": "getResult",
+      "input": {
+        "key": "Order.Both",
+        "locale": "de"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Baseline control for the whole family. Order.Both exists in de and in en with different text, so this pins that de really is the first candidate and that its catalog really is consulted. Verified against Java: TRANSLATED, resolvedLocale de, attemptedLocales [de]. Without it a port that never loaded or never attempted de would pass every failure case below by accident, because 'never reached de' and 'reached de and fell through' both end in the English string."
+    },
+    {
+      "id": "fallback-policy.control.alternatives-only-entry-matches-when-its-predicate-holds",
+      "requirementIds": [],
+      "fixture": "fallback-policy-donor-en",
+      "operation": "getResult",
+      "input": {
+        "key": "Order.Note",
+        "locale": "de",
+        "placeholders": {
+          "orderCount": 0
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Positive control for the NO_MATCHING_ALTERNATIVE machinery, and a gap in the family as first authored. Order.Note in de is alternatives-only; at orderCount 0 its predicate matches and de serves 'de: no orders' (verified). Without this, 'de failed with NO_MATCHING_ALTERNATIVE' is indistinguishable from 'a port silently never loaded de's Order.Note at all' in every continue case below, since both end at en."
+    },
+    {
+      "id": "fallback-policy.default.resolution-failure-halts-walk",
+      "requirementIds": [],
+      "fixture": "fallback-policy-donor-en",
+      "operation": "getResult",
+      "input": {
+        "key": "Order.Confirmation",
+        "locale": "de",
+        "placeholders": {
+          "orderGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_NEUTER"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "THE central case. The library default is fallbackOnMissingTranslationOrNoMatchingAlternative, whose shouldTryNextLocale returns 'reason != RESOLUTION_FAILURE'. de raises a RESOLUTION_FAILURE, so the walk STOPS even though en holds a good translation for the same key. Verified: RETURNED_KEY, resolvedLocale null, attemptedLocales [de], reason RESOLUTION_FAILURE, cause the contextualized IllegalStateException. A port carrying Lokalized 2.x semantics forward serves the English string here; that is exactly the silently-wrong behavior 3.0 changed."
+    },
+    {
+      "id": "fallback-policy.any-failure.resolution-failure-continues-to-donor",
+      "requirementIds": [],
+      "fixture": "fallback-policy-donor-en",
+      "operation": "getResult",
+      "input": {
+        "key": "Order.Confirmation",
+        "locale": "de",
+        "placeholders": {
+          "orderGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_NEUTER"
+          }
+        },
+        "translationFallbackPolicy": "any-failure"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The contrast that makes the previous case mean something: same fixture, key and placeholders, only the policy differs. fallbackOnAnyFailure returns true unconditionally, so the walk continues past de's resolution failure and en serves. Verified: TRANSLATED, resolvedLocale en, attemptedLocales [de, en], and NO failure channel. The pair isolates the policy as the single cause of the difference in translation, status, resolvedLocale and attemptedLocales."
+    },
+    {
+      "id": "fallback-policy.never.resolution-failure-halts-like-default",
+      "requirementIds": [],
+      "fixture": "fallback-policy-donor-en",
+      "operation": "getResult",
+      "input": {
+        "key": "Order.Confirmation",
+        "locale": "de",
+        "placeholders": {
+          "orderGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_NEUTER"
+          }
+        },
+        "translationFallbackPolicy": "never"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "neverFallback and the library default COINCIDE when the first failure is a RESOLUTION_FAILURE: verified byte-identical to default.resolution-failure-halts-walk. Authored deliberately so a port cannot be judged correct merely because 'never' differed from 'any-failure'; the three policies form a two-way, not three-way, split on this reason. The next groups show where never and the default do diverge."
+    },
+    {
+      "id": "fallback-policy.default.expression-predicate-failure-halts-walk",
+      "requirementIds": [],
+      "fixture": "fallback-policy-donor-en",
+      "operation": "getResult",
+      "input": {
+        "key": "Order.Expression",
+        "locale": "de"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A second, structurally different route to RESOLUTION_FAILURE, and the one TranslationFallbackPolicy's own javadoc calls out: a failure while evaluating a reachable alternative predicate. de HAS a usable root translation, but getInternal scans alternatives before returning it and 'absentFlag == 1' throws ExpressionEvaluationException (verified: cause type com.lokalized.ExpressionEvaluationException, message \"No value was provided for placeholder 'absentFlag'\"). Proves the default halts on the exception's REASON rather than on 'the catalog had nothing usable', and that the alternative scan precedes the root translation."
+    },
+    {
+      "id": "fallback-policy.any-failure.expression-predicate-failure-continues",
+      "requirementIds": [],
+      "fixture": "fallback-policy-donor-en",
+      "operation": "getResult",
+      "input": {
+        "key": "Order.Expression",
+        "locale": "de",
+        "translationFallbackPolicy": "any-failure"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Permissive counterpart of the expression-predicate failure; verified to reach en. Confirms the halt/continue split is driven by TranslationFailureReason and not by the exception class: a checked-in different throwable type from the gender case takes the identical policy path."
+    },
+    {
+      "id": "fallback-policy.default.missing-placeholder-value-halts-walk",
+      "requirementIds": [],
+      "fixture": "fallback-policy-donor-en",
+      "operation": "getResult",
+      "input": {
+        "key": "Order.PlaceholderValue",
+        "locale": "de"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Third RESOLUTION_FAILURE flavor: a cardinality-driven placeholder whose value name is absent from the caller context, which is an IllegalArgumentException rather than the IllegalStateException of the gender case (verified). Three distinct cause types reaching one policy decision is what stops a port from special-casing a single error class."
+    },
+    {
+      "id": "fallback-policy.any-failure.missing-placeholder-value-continues",
+      "requirementIds": [],
+      "fixture": "fallback-policy-donor-en",
+      "operation": "getResult",
+      "input": {
+        "key": "Order.PlaceholderValue",
+        "locale": "de",
+        "translationFallbackPolicy": "any-failure"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Permissive counterpart of the missing-placeholder-value failure, completing the third halt/continue pair."
+    },
+    {
+      "id": "fallback-policy.default.no-matching-alternative-continues-to-donor",
+      "requirementIds": [],
+      "fixture": "fallback-policy-donor-en",
+      "operation": "getResult",
+      "input": {
+        "key": "Order.Note",
+        "locale": "de",
+        "placeholders": {
+          "orderCount": 7
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The other half of the default policy, and the half a port that 'halts on everything' gets wrong. Order.Note in de is alternatives-only and its single predicate is false at orderCount 7, so the attempt fails with NO_MATCHING_ALTERNATIVE -- for which shouldTryNextLocale returns TRUE. Verified: TRANSLATED at en, attemptedLocales [de, en]. Read against default.resolution-failure-halts-walk on the same fixture and chain, this pins that the default discriminates BY REASON rather than treating every failed attempt alike."
+    },
+    {
+      "id": "fallback-policy.any-failure.no-matching-alternative-continues-to-donor",
+      "requirementIds": [],
+      "fixture": "fallback-policy-donor-en",
+      "operation": "getResult",
+      "input": {
+        "key": "Order.Note",
+        "locale": "de",
+        "placeholders": {
+          "orderCount": 7
+        },
+        "translationFallbackPolicy": "any-failure"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The default and permissive policies must AGREE here: verified byte-identical to the previous case. An agreement case is as load-bearing as a disagreement case -- it forbids a port from implementing 'any-failure' as 'walk further than the default in every situation'."
+    },
+    {
+      "id": "fallback-policy.never.no-matching-alternative-halts",
+      "requirementIds": [],
+      "fixture": "fallback-policy-donor-en",
+      "operation": "getResult",
+      "input": {
+        "key": "Order.Note",
+        "locale": "de",
+        "placeholders": {
+          "orderCount": 7
+        },
+        "translationFallbackPolicy": "never"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Where neverFallback finally separates from the default: it stops on NO_MATCHING_ALTERNATIVE too, so a fallback that WOULD have served is never consulted. Verified: RETURNED_KEY, attemptedLocales [de], reason NO_MATCHING_ALTERNATIVE with a null cause -- which also distinguishes this reason from MISSING_TRANSLATION on the same result shape. Completes the three-way split for this reason (never halts; default and any-failure continue), the mirror of the RESOLUTION_FAILURE split above."
+    },
+    {
+      "id": "fallback-policy.default.missing-translation-continues-to-donor",
+      "requirementIds": [],
+      "fixture": "fallback-policy-donor-en",
+      "operation": "getResult",
+      "input": {
+        "key": "Order.Tracking",
+        "locale": "de"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "MISSING_TRANSLATION as the policy driver: Order.Tracking is absent from de entirely, so the attempt fails with no throwable at all and the default continues to en. Distinct from the NO_MATCHING_ALTERNATIVE path because the de entry is never even entered -- a port that conflated 'key absent' with 'key present but unresolvable' would still pass one of the two."
+    },
+    {
+      "id": "fallback-policy.never.missing-translation-halts",
+      "requirementIds": [],
+      "fixture": "fallback-policy-donor-en",
+      "operation": "getResult",
+      "input": {
+        "key": "Order.Tracking",
+        "locale": "de",
+        "translationFallbackPolicy": "never"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "neverFallback stops after the very first candidate even when that candidate simply does not contain the key. Verified: attemptedLocales [de], reason MISSING_TRANSLATION. This is the case proving neverFallback truncates attemptedLocales rather than merely changing the reported reason, and the strongest single argument for authoring it: a port that treated 'never' as 'default' would serve the English string."
+    },
+    {
+      "id": "fallback-policy.any-failure.missing-translation-continues-to-donor",
+      "requirementIds": [],
+      "fixture": "fallback-policy-donor-en",
+      "operation": "getResult",
+      "input": {
+        "key": "Order.Tracking",
+        "locale": "de",
+        "translationFallbackPolicy": "any-failure"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Third policy on the MISSING_TRANSLATION reason, completing the 3x3 grid of {default, any-failure, never} x {RESOLUTION_FAILURE, NO_MATCHING_ALTERNATIVE, MISSING_TRANSLATION} for this fixture. The grid is the point: any single missing cell lets a wrong port through."
+    },
+    {
+      "id": "fallback-policy.get.default-resolution-failure-returns-key",
+      "requirementIds": [],
+      "fixture": "fallback-policy-donor-en",
+      "operation": "get",
+      "input": {
+        "key": "Order.Confirmation",
+        "locale": "de",
+        "placeholders": {
+          "orderGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_NEUTER"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same halt as default.resolution-failure-halts-walk seen through get() rather than getResult(). get() is getResult(...).getTranslation(), so the observable narrows to the returned-key string. Authored because the failure channel (reason, attempted locales, cause identity) still has to be recorded even when the caller cannot see the result object -- verified present on this case."
+    },
+    {
+      "id": "fallback-policy.get.any-failure-resolution-failure-returns-donor-translation",
+      "requirementIds": [],
+      "fixture": "fallback-policy-donor-en",
+      "operation": "get",
+      "input": {
+        "key": "Order.Confirmation",
+        "locale": "de",
+        "placeholders": {
+          "orderGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_NEUTER"
+          }
+        },
+        "translationFallbackPolicy": "any-failure"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Partner of the previous case. Under the permissive policy get() returns the English translation and NO failure is ever handed to the handler, so the failures channel is absent entirely (verified). Absence of the channel is the assertion: the handler is consulted once after the walk stops, never per failed candidate."
+    },
+    {
+      "id": "fallback-policy.precedence.chain-control-first-candidate-serves",
+      "requirementIds": [],
+      "fixture": "fallback-policy-precedence-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Precedence.ChainControl",
+        "locale": "de-AT"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Control for the whole precedence fixture: the key is in all three catalogs with distinct text and de-AT serves it (verified TRANSLATED, attemptedLocales [de-AT]). Every precedence case below is meaningless if the chain is not actually three deep and ordered de-AT, de, en; the OnlyInFallback control below proves the far end."
+    },
+    {
+      "id": "fallback-policy.precedence.alternatives-only-first-candidate-matches",
+      "requirementIds": [],
+      "fixture": "fallback-policy-precedence-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Precedence.NoMatchThenMissing",
+        "locale": "de-AT",
+        "placeholders": {
+          "tier": 1
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Positive control for the de-AT alternatives entry the next case relies on: at tier 1 the predicate matches and de-AT serves 'de-AT: tier one' (verified). Without it, the NO_MATCHING_ALTERNATIVE case cannot distinguish 'the predicate was evaluated and was false' from 'the entry never loaded'."
+    },
+    {
+      "id": "fallback-policy.precedence.no-match-outranks-later-missing-translation",
+      "requirementIds": [],
+      "fixture": "fallback-policy-precedence-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Precedence.NoMatchThenMissing",
+        "locale": "de-AT",
+        "placeholders": {
+          "tier": 7
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Final failure precedence, first proposition. de-AT fails with NO_MATCHING_ALTERNATIVE; de and en do not contain the key at all, so the LAST attempt fails with MISSING_TRANSLATION. DefaultStrings.java:742-746 nonetheless reports NO_MATCHING_ALTERNATIVE, because noMatchingAlternativeEncountered is a sticky flag, not the last attempt's reason. Verified: attemptedLocales [de-AT, de, en], reason NO_MATCHING_ALTERNATIVE. A port reporting the terminal candidate's reason -- the obvious implementation -- gets this exactly backwards."
+    },
+    {
+      "id": "fallback-policy.precedence.resolution-failure-outranks-later-reasons",
+      "requirementIds": [],
+      "fixture": "fallback-policy-precedence-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Precedence.ResolutionThenNoMatchThenMissing",
+        "locale": "de-AT",
+        "placeholders": {
+          "orderGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_NEUTER"
+          },
+          "tier": 7
+        },
+        "translationFallbackPolicy": "any-failure"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Final failure precedence, second proposition, and the only one needing all three reasons in one walk. Under any-failure the chain produces RESOLUTION_FAILURE at de-AT, NO_MATCHING_ALTERNATIVE at de, MISSING_TRANSLATION at en. Verified: attemptedLocales [de-AT, de, en], reason RESOLUTION_FAILURE, cause the de-AT IllegalStateException. Precedence is strictly RESOLUTION_FAILURE > NO_MATCHING_ALTERNATIVE > MISSING_TRANSLATION regardless of order of occurrence; first-cause-retention below shows the reverse order too."
+    },
+    {
+      "id": "fallback-policy.precedence.default-policy-halts-at-the-same-resolution-failure",
+      "requirementIds": [],
+      "fixture": "fallback-policy-precedence-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Precedence.ResolutionThenNoMatchThenMissing",
+        "locale": "de-AT",
+        "placeholders": {
+          "orderGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_NEUTER"
+          },
+          "tier": 7
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Same key and inputs as the previous case under the library default. Verified: identical reason and cause, but attemptedLocales shrinks from [de-AT, de, en] to [de-AT] because the walk never continued. Pairing the two separates 'reports the right reason' from 'attempted the right locales' -- a port could get the reason right by luck while walking the wrong number of candidates."
+    },
+    {
+      "id": "fallback-policy.precedence.first-resolution-failure-cause-is-retained",
+      "requirementIds": [],
+      "fixture": "fallback-policy-precedence-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Precedence.FirstCauseRetention",
+        "locale": "de-AT",
+        "placeholders": {
+          "orderGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_NEUTER"
+          },
+          "tier": 7
+        },
+        "translationFallbackPolicy": "any-failure"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "First-cause retention, the subtlest clause in the family, and also the reverse precedence order (a NO_MATCHING_ALTERNATIVE occurs BEFORE any resolution failure and still loses). Under any-failure the walk sees NO_MATCHING_ALTERNATIVE at de-AT, IllegalStateException at de, IllegalArgumentException at en. Each of those two throwables was verified by resolving de and en directly. DefaultStrings assigns firstFallbackFailure only while it is null, so the reported cause is the de IllegalStateException -- confirmed against Java. A port retaining the most recent failure (the natural result of overwriting a variable in a loop) emits the en IllegalArgumentException instead, which is a different type AND a different message."
+    },
+    {
+      "id": "fallback-policy.precedence.default-halts-after-walking-past-a-no-match",
+      "requirementIds": [],
+      "fixture": "fallback-policy-precedence-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Precedence.FirstCauseRetention",
+        "locale": "de-AT",
+        "placeholders": {
+          "orderGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_NEUTER"
+          },
+          "tier": 7
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The default policy on the same chain: it CONTINUES past de-AT's NO_MATCHING_ALTERNATIVE and then HALTS at de's RESOLUTION_FAILURE. Verified attemptedLocales [de-AT, de] exactly, so en's competing IllegalArgumentException is never raised. One case exercising both halves of the default policy's predicate inside a single walk; a port that halts on every failure stops after one candidate and a port that halts on none stops after three."
+    },
+    {
+      "id": "fallback-policy.precedence.first-cause-retained-is-rethrown-verbatim",
+      "requirementIds": [],
+      "fixture": "fallback-policy-precedence-chain",
+      "operation": "get",
+      "input": {
+        "key": "Precedence.FirstCauseRetention",
+        "locale": "de-AT",
+        "placeholders": {
+          "orderGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_NEUTER"
+          },
+          "tier": 7
+        },
+        "translationFallbackPolicy": "any-failure",
+        "translationFailureHandler": {
+          "behavior": "throw"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "First-cause retention observed through the throwing path, and the reason this case uses get with an explicit throw handler rather than getResult. DefaultStrings.throwExceptionFor rethrows translationFailure.getCause() unchanged when it is a RuntimeException, so what escapes is verified to be the de IllegalStateException itself -- not a MissingTranslationException wrapping it, and not en's IllegalArgumentException. This is the 'final exact rethrow' proposition and it is only observable once two candidates have already failed differently."
+    },
+    {
+      "id": "fallback-policy.precedence.missing-everywhere-reports-missing-translation",
+      "requirementIds": [],
+      "fixture": "fallback-policy-precedence-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Precedence.MissingEverywhere",
+        "locale": "de-AT"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The floor of the precedence ladder: a key absent from all three catalogs, no throwable and no unmatched alternative anywhere, so the reported reason is MISSING_TRANSLATION with a null cause (verified) across attemptedLocales [de-AT, de, en]. Negative control for both precedence cases above -- without it, a port that hard-coded the highest-precedence reason would pass them."
+    },
+    {
+      "id": "fallback-policy.precedence.never-truncates-attempted-locales-to-one",
+      "requirementIds": [],
+      "fixture": "fallback-policy-precedence-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Precedence.MissingEverywhere",
+        "locale": "de-AT",
+        "translationFallbackPolicy": "never"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Same key under neverFallback. Verified: the reported reason is identical to the previous case and only attemptedLocales differs, shrinking from three candidates to [de-AT]. Isolates the policy's effect on the ATTEMPTED LIST with the failure reason held constant, which is the one thing the reason-only cases cannot show."
+    },
+    {
+      "id": "fallback-policy.precedence.default-reaches-fallback-that-serves",
+      "requirementIds": [],
+      "fixture": "fallback-policy-precedence-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Precedence.OnlyInFallback",
+        "locale": "de-AT"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Positive control for the far end of the chain: a key present only in the terminal fallback catalog is served under the default policy (verified TRANSLATED at en, attemptedLocales [de-AT, de, en]), proving the chain genuinely reaches its third element rather than merely listing it."
+    },
+    {
+      "id": "fallback-policy.precedence.never-stops-before-a-fallback-that-would-have-served",
+      "requirementIds": [],
+      "fixture": "fallback-policy-precedence-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Precedence.OnlyInFallback",
+        "locale": "de-AT",
+        "translationFallbackPolicy": "never"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The 'neverFallback where a fallback would have succeeded' clause, stated against a chain long enough to be interesting. The previous case proves the translation is reachable, so returning the key here is a policy decision and nothing else."
+    },
+    {
+      "id": "fallback-policy.precedence.default-halt-forfeits-a-reachable-donor",
+      "requirementIds": [],
+      "fixture": "fallback-policy-precedence-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Precedence.HaltsMidChain",
+        "locale": "de-AT",
+        "placeholders": {
+          "orderGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_NEUTER"
+          },
+          "tier": 7
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The sharpest case in the family and a gap in the set as first authored. de-AT fails NO_MATCHING_ALTERNATIVE (default continues), de fails RESOLUTION_FAILURE (default halts), and en holds a PLAIN TEXT translation that would have served. Verified: RETURNED_KEY, attemptedLocales [de-AT, de], reason RESOLUTION_FAILURE. Every other default-halts case in this family halts at the first candidate or on a chain whose remaining catalogs would also have failed, so none of them shows the default policy actually forfeiting a good translation mid-chain. This one does."
+    },
+    {
+      "id": "fallback-policy.precedence.any-failure-reaches-the-donor-the-default-forfeits",
+      "requirementIds": [],
+      "fixture": "fallback-policy-precedence-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Precedence.HaltsMidChain",
+        "locale": "de-AT",
+        "placeholders": {
+          "orderGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_NEUTER"
+          },
+          "tier": 7
+        },
+        "translationFallbackPolicy": "any-failure"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The permissive partner: verified TRANSLATED from en with attemptedLocales [de-AT, de, en]. Together with the previous case this proves the forfeited translation was genuinely reachable, so the default policy's halt is a behavioral choice and not an artifact of the fixture."
+    },
+    {
+      "id": "fallback-policy.precedence.never-halts-at-the-first-no-match-of-the-same-chain",
+      "requirementIds": [],
+      "fixture": "fallback-policy-precedence-chain",
+      "operation": "getResult",
+      "input": {
+        "key": "Precedence.HaltsMidChain",
+        "locale": "de-AT",
+        "placeholders": {
+          "orderGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_NEUTER"
+          },
+          "tier": 7
+        },
+        "translationFallbackPolicy": "never"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Third policy on the same key, and the only place in the family where one key yields three different reported REASONS and three different attempted-locale lengths: never gives [de-AT] / NO_MATCHING_ALTERNATIVE, the default gives [de-AT, de] / RESOLUTION_FAILURE, any-failure gives [de-AT, de, en] / TRANSLATED. All three verified. A port cannot satisfy this triple by getting any two of reason, cause and attempted list right."
+    },
+    {
+      "id": "fallback-policy.instance.any-failure-applies-without-per-call-override",
+      "requirementIds": [],
+      "fixture": "fallback-policy-instance-any-failure",
+      "operation": "getResult",
+      "input": {
+        "key": "Order.Confirmation",
+        "locale": "de",
+        "placeholders": {
+          "orderGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_NEUTER"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Instance-level configuration with no per-call options at all. Identical input to default.resolution-failure-halts-walk on the sibling fixture but a verified different outcome (TRANSLATED at en), which proves the instance policy is consulted when TranslationOptions carries none -- and that a port has not hard-wired the library default at the call site."
+    },
+    {
+      "id": "fallback-policy.instance.per-call-default-overrides-permissive-instance",
+      "requirementIds": [],
+      "fixture": "fallback-policy-instance-any-failure",
+      "operation": "getResult",
+      "input": {
+        "key": "Order.Confirmation",
+        "locale": "de",
+        "placeholders": {
+          "orderGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_NEUTER"
+          }
+        },
+        "translationFallbackPolicy": "missing-or-no-match"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Per-call override in the permissive-instance -> strict-call direction. DefaultStrings.java:685 uses orElse, so the per-call value REPLACES the instance value outright; it does not merge, intersect, or take the more permissive of the two. Naming the library default explicitly per call must therefore reverse a permissive instance -- verified: RETURNED_KEY, attemptedLocales [de]. This is the only way to prove replacement rather than 'the stricter wins'."
+    },
+    {
+      "id": "fallback-policy.instance.per-call-never-overrides-permissive-instance",
+      "requirementIds": [],
+      "fixture": "fallback-policy-instance-any-failure",
+      "operation": "getResult",
+      "input": {
+        "key": "Order.Confirmation",
+        "locale": "de",
+        "placeholders": {
+          "orderGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_NEUTER"
+          }
+        },
+        "translationFallbackPolicy": "never"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Third policy per call against the same permissive instance, so all three values are shown to be settable per call. HONEST LIMIT, corrected from the original authoring: on a RESOLUTION_FAILURE 'never' and 'missing-or-no-match' coincide, so this case's output is verified byte-identical to the previous one. It discriminates per-call-never from the INSTANCE's any-failure and nothing more; the two cases below do the never-versus-default work on reasons where they actually differ."
+    },
+    {
+      "id": "fallback-policy.instance.per-call-never-overrides-permissive-instance-on-no-match",
+      "requirementIds": [],
+      "fixture": "fallback-policy-instance-any-failure",
+      "operation": "getResult",
+      "input": {
+        "key": "Order.Note",
+        "locale": "de",
+        "placeholders": {
+          "orderCount": 7
+        },
+        "translationFallbackPolicy": "never"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The override machinery on a second failure reason, where never and the default genuinely diverge. Under the instance's permissive policy this key is served by en; the per-call never stops at de with NO_MATCHING_ALTERNATIVE (verified). Rules out an implementation that only honours the per-call policy on the resolution-failure branch."
+    },
+    {
+      "id": "fallback-policy.instance.per-call-never-overrides-permissive-instance-on-missing-translation",
+      "requirementIds": [],
+      "fixture": "fallback-policy-instance-any-failure",
+      "operation": "getResult",
+      "input": {
+        "key": "Order.Tracking",
+        "locale": "de",
+        "translationFallbackPolicy": "never"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Third reason through the same permissive instance. Verified: attemptedLocales [de], reason MISSING_TRANSLATION, whereas the instance policy alone reaches en. Completes {RESOLUTION_FAILURE, NO_MATCHING_ALTERNATIVE, MISSING_TRANSLATION} for per-call override against a permissive instance, so a port cannot honour the override on only the reasons it happens to test."
+    },
+    {
+      "id": "fallback-policy.instance.never-applies-without-per-call-override",
+      "requirementIds": [],
+      "fixture": "fallback-policy-instance-never",
+      "operation": "getResult",
+      "input": {
+        "key": "Order.Tracking",
+        "locale": "de"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The strict instance with no per-call options. Order.Tracking is missing from de and present in en, so under the library default it would be served; under the instance's neverFallback it is not (verified RETURNED_KEY, attemptedLocales [de]). The clearest proof that the instance policy -- not the library default -- is what an option-free call inherits."
+    },
+    {
+      "id": "fallback-policy.instance.per-call-any-failure-overrides-strict-instance",
+      "requirementIds": [],
+      "fixture": "fallback-policy-instance-never",
+      "operation": "getResult",
+      "input": {
+        "key": "Order.Confirmation",
+        "locale": "de",
+        "placeholders": {
+          "orderGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_NEUTER"
+          }
+        },
+        "translationFallbackPolicy": "any-failure"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Per-call override in the strict-instance -> permissive-call direction, the mirror of instance.per-call-default-overrides-permissive-instance. Both directions are needed: an implementation that always took the stricter of instance and per-call would pass one and fail the other."
+    },
+    {
+      "id": "fallback-policy.instance.per-call-default-overrides-strict-instance",
+      "requirementIds": [],
+      "fixture": "fallback-policy-instance-never",
+      "operation": "getResult",
+      "input": {
+        "key": "Order.Tracking",
+        "locale": "de",
+        "translationFallbackPolicy": "missing-or-no-match"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Naming the library default per call against a neverFallback instance. Under 'never' the walk stops at de; under the explicitly named default it continues on MISSING_TRANSLATION and en serves (verified TRANSLATED, attemptedLocales [de, en]). Proves 'missing-or-no-match' is a real value a caller can select, not merely the absence of a value -- a port representing the default as null or undefined would silently inherit the instance's 'never' here."
+    },
+    {
+      "id": "fallback-policy.handler.throw-rethrows-resolution-failure-cause-verbatim",
+      "requirementIds": [],
+      "fixture": "fallback-policy-throwing-handler",
+      "operation": "get",
+      "input": {
+        "key": "Order.Confirmation",
+        "locale": "de",
+        "placeholders": {
+          "orderGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_NEUTER"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The throwing handler on a RESOLUTION_FAILURE. throwExceptionFor rethrows the retained cause itself when it is a RuntimeException, so what escapes is verified to be the contextualized IllegalStateException from the gender placeholder -- NOT a MissingTranslationException, and not a wrapper. A port that always constructs its own failure exception loses the cause identity application code catches on."
+    },
+    {
+      "id": "fallback-policy.handler.throw-on-missing-translation-raises-missing-translation-exception",
+      "requirementIds": [],
+      "fixture": "fallback-policy-throwing-handler",
+      "operation": "get",
+      "input": {
+        "key": "Order.Tracking",
+        "locale": "de",
+        "translationFallbackPolicy": "never"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The other arm of throwExceptionFor: with no cause retained it constructs MissingTranslationException carrying key, placeholders, lookup locale, match result, reason and attempted locales. Verified thrown type com.lokalized.MissingTranslationException with message \"No match for 'Order.Tracking' was found for locale 'de'.\" Paired with the previous case this proves the thrown TYPE is a function of whether a resolution cause exists, which is in turn a function of the policy and the chain -- not a constant."
+    },
+    {
+      "id": "fallback-policy.handler.throw-on-no-matching-alternative-carries-that-reason",
+      "requirementIds": [],
+      "fixture": "fallback-policy-throwing-handler",
+      "operation": "get",
+      "input": {
+        "key": "Order.Note",
+        "locale": "de",
+        "placeholders": {
+          "orderCount": 7
+        },
+        "translationFallbackPolicy": "never"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Third reason through the throwing handler. Also a MissingTranslationException (verified), but the failure it carries reports NO_MATCHING_ALTERNATIVE rather than MISSING_TRANSLATION -- visible on the recorded failure channel. The exception class is shared with the previous case while the reason is not, so a port cannot infer one from the other."
+    },
+    {
+      "id": "fallback-policy.handler.get-result-also-throws-under-throw-handler",
+      "requirementIds": [],
+      "fixture": "fallback-policy-throwing-handler",
+      "operation": "getResult",
+      "input": {
+        "key": "Order.Confirmation",
+        "locale": "de",
+        "placeholders": {
+          "orderGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_NEUTER"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "SURPRISE, authored as the library actually behaves and VERIFIED against Java: getResult is commonly described as the non-throwing entry point, but the THROW_EXCEPTION arm of the response switch lives inside getResult itself (DefaultStrings.java:761-763), so getResult throws exactly as get does under a throwing handler; get is merely getResult(...).getTranslation(). A port that made getResult swallow the handler's throw-response and return a result object would diverge here, and this case is the only thing that catches it."
+    },
+    {
+      "id": "fallback-policy.handler.permissive-policy-prevents-the-throw-entirely",
+      "requirementIds": [],
+      "fixture": "fallback-policy-throwing-handler",
+      "operation": "get",
+      "input": {
+        "key": "Order.Confirmation",
+        "locale": "de",
+        "placeholders": {
+          "orderGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_NEUTER"
+          }
+        },
+        "translationFallbackPolicy": "any-failure"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Policy and handler are orthogonal knobs and this is where that is proved: the same throwing-handler instance and the same failing key return an ordinary English translation once the policy lets the walk reach en, because no failure is ever finalized and the handler is never invoked. The failures channel is verified absent. A port that invoked the handler per failed candidate would throw here."
+    },
+    {
+      "id": "fallback-policy.handler.per-call-return-key-replaces-throwing-instance-handler",
+      "requirementIds": [],
+      "fixture": "fallback-policy-throwing-handler",
+      "operation": "get",
+      "input": {
+        "key": "Order.Confirmation",
+        "locale": "de",
+        "placeholders": {
+          "orderGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_NEUTER"
+          }
+        },
+        "translationFailureHandler": {
+          "behavior": "return-key"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Per-call handler override against a throwing instance handler, the handler-side analogue of the policy override cases; same orElse replacement semantics at DefaultStrings.java:684. Verified to return the key instead of throwing, which also confirms the two per-call option fields are independent -- this case overrides the handler while leaving the policy inherited."
+    },
+    {
+      "id": "fallback-policy.handler.per-call-return-string-replaces-throwing-instance-handler",
+      "requirementIds": [],
+      "fixture": "fallback-policy-throwing-handler",
+      "operation": "get",
+      "input": {
+        "key": "Order.Confirmation",
+        "locale": "de",
+        "placeholders": {
+          "orderGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_NEUTER"
+          }
+        },
+        "translationFailureHandler": {
+          "behavior": "return-string",
+          "text": "[substituted per call]"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Per-call replacement into the THIRD response arm, which the family otherwise only reaches from an instance-level handler. Verified: returns '[substituted per call]' rather than throwing or returning the key. Rules out a port that models per-call handler override as a boolean 'throw or not'."
+    },
+    {
+      "id": "fallback-policy.callback.handler-exception-propagates-out-of-get-result",
+      "requirementIds": [],
+      "fixture": "fallback-policy-handler-throws-in-callback",
+      "operation": "getResult",
+      "input": {
+        "key": "Order.Confirmation",
+        "locale": "de",
+        "placeholders": {
+          "orderGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_NEUTER"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Section 8.3 'callback exceptions'. handle() is invoked with no guarding try/catch, so an exception thrown by the handler escapes getResult with the handler's own type and message and DISPLACES the resolution failure that triggered it. Verified: the escaping throwable is IllegalStateException 'handler refused to answer', while the recorded failure channel still shows RESOLUTION_FAILURE with the gender IllegalStateException as cause. The case asserts both halves: what the handler saw, and what the caller got instead."
+    },
+    {
+      "id": "fallback-policy.callback.handler-exception-propagates-out-of-get",
+      "requirementIds": [],
+      "fixture": "fallback-policy-handler-throws-in-callback",
+      "operation": "get",
+      "input": {
+        "key": "Order.Confirmation",
+        "locale": "de",
+        "placeholders": {
+          "orderGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_NEUTER"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same callback exception on the get ingress, which the family did not previously pin. Verified identical to the getResult case, because get delegates. Authored because a port could plausibly wrap the handler call on one entry point and not the other -- get and getResult must both let the callback's exception through unchanged."
+    },
+    {
+      "id": "fallback-policy.callback.handler-exception-on-missing-translation-under-never",
+      "requirementIds": [],
+      "fixture": "fallback-policy-handler-throws-in-callback",
+      "operation": "getResult",
+      "input": {
+        "key": "Order.Tracking",
+        "locale": "de",
+        "translationFallbackPolicy": "never"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same callback exception reached through a different failure reason with NO resolution cause in play. Verified: the escaping throwable is still the handler's, and the recorded failure is MISSING_TRANSLATION with a null cause. Proves the escaping exception is the handler's regardless of what the failure was -- a port that only routed callback exceptions on the resolution-failure path, where an exception is already in flight, passes the previous case and fails this one."
+    },
+    {
+      "id": "fallback-policy.callback.permissive-policy-avoids-calling-the-handler",
+      "requirementIds": [],
+      "fixture": "fallback-policy-handler-throws-in-callback",
+      "operation": "getResult",
+      "input": {
+        "key": "Order.Confirmation",
+        "locale": "de",
+        "placeholders": {
+          "orderGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_NEUTER"
+          }
+        },
+        "translationFallbackPolicy": "any-failure"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A throwing callback that never fires, because the permissive policy lets en serve the key and the handler is consulted only after the walk stops. The strongest available statement of handler-invocation timing: the handler runs at most once per call, after fallback ends, and not at all when fallback succeeds. Verified: TRANSLATED, no throw, no failures channel."
+    },
+    {
+      "id": "fallback-policy.callback.handler-not-called-when-first-candidate-succeeds",
+      "requirementIds": [],
+      "fixture": "fallback-policy-handler-throws-in-callback",
+      "operation": "getResult",
+      "input": {
+        "key": "Order.Both",
+        "locale": "de"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Trivial-looking but load-bearing control: a key that resolves at the first candidate under a fixture whose handler throws on invocation. Verified TRANSLATED from de. If the handler were invoked speculatively, eagerly, or once per candidate, this case would throw instead of returning the German string."
+    },
+    {
+      "id": "fallback-policy.callback.per-call-return-key-handler-replaces-throwing-callback",
+      "requirementIds": [],
+      "fixture": "fallback-policy-handler-throws-in-callback",
+      "operation": "getResult",
+      "input": {
+        "key": "Order.Confirmation",
+        "locale": "de",
+        "placeholders": {
+          "orderGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_NEUTER"
+          }
+        },
+        "translationFailureHandler": {
+          "behavior": "return-key"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Per-call replacement of a throwing callback with the ordinary return-key handler, yielding a normal RETURNED_KEY result (verified, and the one place in this family where the RETURNED_KEY status is observed on the result object rather than through get). Confirms the callback exception is a property of the installed handler and not of the failure, and that per-call handler replacement is total."
+    },
+    {
+      "id": "fallback-policy.handler.return-string-substitutes-on-resolution-failure",
+      "requirementIds": [],
+      "fixture": "fallback-policy-return-string-handler",
+      "operation": "get",
+      "input": {
+        "key": "Order.Confirmation",
+        "locale": "de",
+        "placeholders": {
+          "orderGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_NEUTER"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The RETURN_STRING arm of the response switch. Verified: the returned translation is the handler's fixed text, and the failure channel still reports RESOLUTION_FAILURE with the gender IllegalStateException as cause, so a substitute string does not erase the diagnosis. Uses get rather than getResult ON PURPOSE: getResult here emits TranslationResultStatus.RETURNED_STRING, which the corpus schema's translationResult.status enum does not admit -- see the skipped entry for the enum widening that would let the result-shape half of this proposition be recorded."
+    },
+    {
+      "id": "fallback-policy.handler.return-string-not-used-when-policy-reaches-donor",
+      "requirementIds": [],
+      "fixture": "fallback-policy-return-string-handler",
+      "operation": "getResult",
+      "input": {
+        "key": "Order.Confirmation",
+        "locale": "de",
+        "placeholders": {
+          "orderGender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_NEUTER"
+          }
+        },
+        "translationFallbackPolicy": "any-failure"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Partner to the previous case: under the permissive policy the substitute text never appears because the handler is never called. Verified TRANSLATED from en, so this one is safe on getResult and pins the full result shape of a successful fallback under a substituting instance handler. Without this pairing a port could return the substitute string unconditionally on any failed FIRST candidate and still pass the case above."
+    },
+    {
+      "id": "fallback-policy.handler.return-string-does-not-interpolate-the-missing-key",
+      "requirementIds": [],
+      "fixture": "fallback-policy-return-string-handler",
+      "operation": "get",
+      "input": {
+        "key": "Missing {{who}} entry",
+        "locale": "de",
+        "placeholders": {
+          "who": "Ada"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A key absent from both catalogs that itself contains a placeholder. The RETURN_KEY arm runs interpolateFailureKey and emits 'Missing Ada entry'; the RETURN_STRING arm bypasses it entirely and emits the handler's fixed text (both verified). Isolates the fail-soft key-interpolation behavior as belonging to one response arm rather than to the failure path in general."
+    },
+    {
+      "id": "fallback-policy.handler.per-call-return-key-interpolates-the-missing-key",
+      "requirementIds": [],
+      "fixture": "fallback-policy-return-string-handler",
+      "operation": "get",
+      "input": {
+        "key": "Missing {{who}} entry",
+        "locale": "de",
+        "placeholders": {
+          "who": "Ada"
+        },
+        "translationFailureHandler": {
+          "behavior": "return-key"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same absent placeholder-bearing key under a per-call return-key handler, which must interpolate it to 'Missing Ada entry' (verified). Read against the previous case this is a single-variable comparison of the two non-throwing response arms on the same operation, and it doubles as the missing-key fail-soft check for this family."
+    }
+  ]
+}

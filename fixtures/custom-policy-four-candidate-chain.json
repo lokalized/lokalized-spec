@@ -1,0 +1,143 @@
+{
+  "id": "custom-policy-four-candidate-chain",
+  "description": "A FOUR-candidate chain for the caller-supplied-policy clauses. Requesting en-GB against loaded en-GB, en-001, en with FALLBACK LOCALE fr makes localeFallbackCandidates (DefaultStrings.java:2474-2503) produce exactly [en-GB, en-001, en, fr] — measured by execution, not assumed. The fallback locale is fr and not en precisely because DefaultStrings.java:2489 appends getFallbackLocale() as the terminal candidate: with fallbackLocale en this same file set yields only THREE candidates and fr is never reached at all. Four distinct candidates are what make 'stopped at the second' separable from 'stopped at the last', and what make 'three policy calls for four attempts' a real count rather than a coincidence. Keys are built so different candidates fail for structurally different reasons inside ONE walk: Chain.NoMatchAtGb is alternatives-only at en-GB and absent at en-001, giving NO_MATCHING_ALTERNATIVE followed by MISSING_TRANSLATION; Chain.ResolutionAtEn001 throws only at the second candidate; Chain.ThreeDistinctCauses throws a DIFFERENT exception type at each of the first three candidates (java.lang.IllegalStateException from a missing GENDER_NEUTER branch, java.lang.IllegalArgumentException from a placeholder whose context name is never supplied, and com.lokalized.ExpressionEvaluationException from comparing a raw string with >), all three confirmed distinct by execution, so the policy's cause argument is observable per call; Chain.FailsEverywhere fails at ALL FOUR candidates so policyCalls can be counted against attemptedLocales with no candidate succeeding. Chain.MissingEverywhere and Chain.OnlyInFallback serve the pure truncation arms, Chain.OnlyInEn the succeeds-after-truncation arm, and Chain.InEveryCatalog the no-consultation control. Three loaded locales share the primary language en, so tiebreakers is mandatory and lists that exact permutation; fr is alone in its language and needs none.",
+  "fallbackLocale": "fr",
+  "tiebreakers": {
+    "en": [
+      "en-GB",
+      "en-001",
+      "en"
+    ]
+  },
+  "files": {
+    "en-GB": {
+      "Chain.InEveryCatalog": "en-GB: in every catalog",
+      "Chain.NoMatchAtGb": {
+        "commentary": "Alternatives-only. tier == 1 matches; any other tier yields NO_MATCHING_ALTERNATIVE at the FIRST candidate.",
+        "alternatives": [
+          {
+            "tier == 1": {
+              "translation": "en-GB: tier one"
+            }
+          }
+        ]
+      },
+      "Chain.ThreeDistinctCauses": {
+        "commentary": "GENDER_NEUTER is deliberately absent, so a tagged NEUTER value throws IllegalStateException 'Missing Gender translation for NEUTER'.",
+        "translation": "en-GB: {{subject}}",
+        "placeholders": {
+          "subject": {
+            "value": "orderGender",
+            "translations": {
+              "GENDER_MASCULINE": "him",
+              "GENDER_FEMININE": "her"
+            }
+          }
+        }
+      },
+      "Chain.FailsEverywhere": {
+        "commentary": "Reads context name absentCount, which no case supplies: IllegalArgumentException.",
+        "translation": "en-GB: {{itemWord}}",
+        "placeholders": {
+          "itemWord": {
+            "value": "absentCount",
+            "translations": {
+              "CARDINALITY_ONE": "item",
+              "CARDINALITY_OTHER": "items"
+            }
+          }
+        }
+      }
+    },
+    "en-001": {
+      "Chain.InEveryCatalog": "en-001: in every catalog",
+      "Chain.ResolutionAtEn001": {
+        "commentary": "GENDER_NEUTER absent: IllegalStateException at the SECOND candidate only.",
+        "translation": "en-001: {{subject}}",
+        "placeholders": {
+          "subject": {
+            "value": "orderGender",
+            "translations": {
+              "GENDER_MASCULINE": "him",
+              "GENDER_FEMININE": "her"
+            }
+          }
+        }
+      },
+      "Chain.ThreeDistinctCauses": {
+        "commentary": "Reads context name absentCount, which no case supplies: IllegalArgumentException, a DIFFERENT type from en-GB's.",
+        "translation": "en-001: {{itemWord}}",
+        "placeholders": {
+          "itemWord": {
+            "value": "absentCount",
+            "translations": {
+              "CARDINALITY_ONE": "item",
+              "CARDINALITY_OTHER": "items"
+            }
+          }
+        }
+      },
+      "Chain.FailsEverywhere": {
+        "translation": "en-001: {{itemWord}}",
+        "placeholders": {
+          "itemWord": {
+            "value": "absentCount",
+            "translations": {
+              "CARDINALITY_ONE": "item",
+              "CARDINALITY_OTHER": "items"
+            }
+          }
+        }
+      }
+    },
+    "en": {
+      "Chain.InEveryCatalog": "en: in every catalog",
+      "Chain.OnlyInEn": "en: only the third candidate has this",
+      "Chain.NoMatchAtGb": "en: plain text the third candidate can serve",
+      "Chain.ResolutionAtEn001": "en: plain text the third candidate can serve",
+      "Chain.ThreeDistinctCauses": {
+        "commentary": "rank is supplied as the raw string 'high', so evaluating rank > 1 throws ExpressionEvaluationException, a THIRD distinct type.",
+        "alternatives": [
+          {
+            "rank > 1": {
+              "translation": "en: high rank"
+            }
+          }
+        ]
+      },
+      "Chain.FailsEverywhere": {
+        "translation": "en: {{itemWord}}",
+        "placeholders": {
+          "itemWord": {
+            "value": "absentCount",
+            "translations": {
+              "CARDINALITY_ONE": "item",
+              "CARDINALITY_OTHER": "items"
+            }
+          }
+        }
+      }
+    },
+    "fr": {
+      "Chain.InEveryCatalog": "fr: in every catalog",
+      "Chain.OnlyInFallback": "fr: only the fallback catalog has this",
+      "Chain.NoMatchAtGb": "fr: fallback text",
+      "Chain.ResolutionAtEn001": "fr: fallback text",
+      "Chain.ThreeDistinctCauses": "fr: fallback text after three distinct causes",
+      "Chain.FailsEverywhere": {
+        "translation": "fr: {{itemWord}}",
+        "placeholders": {
+          "itemWord": {
+            "value": "absentCount",
+            "translations": {
+              "CARDINALITY_ONE": "item",
+              "CARDINALITY_OTHER": "items"
+            }
+          }
+        }
+      }
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

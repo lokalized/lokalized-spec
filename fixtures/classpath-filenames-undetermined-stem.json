@@ -1,0 +1,15 @@
+{
+  "id": "classpath-filenames-undetermined-stem",
+  "description": "A valid en catalog plus a file named 'und.json'. isLanguageTag treats the explicitly-undetermined tag as an exception (LocalizedStringLoader.java:1666) to the empty-resolved-language rejection at :1669, then still requires CLDR membership at :1672. MEASURED: loads as 'und'.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "rawFiles": {
+    "und.json": "{\"Key.und\":\"und\"}"
+  }
+}

@@ -1,0 +1,856 @@
+{
+  "formatVersion": 1,
+  "family": "bidi-isolation",
+  "description": "Plan v7 section 8.3 fixture family 'bidi-isolation'. Inputs only; the oracle emits expected.",
+  "skipped": [
+    {
+      "what": "A case exercising BidiUtils.isolate's non-String CharSequence branch -- the path that materializes a value through charAt() rather than trusting toString() -- and BoundedIsolatedValue.render's memoization plus its re-check of an already-rendered value against a smaller budget.",
+      "why": "Unreachable through the vector format. VectorOracle.decodeValue can only produce String, Boolean, BigDecimal/BigInteger/Long/Integer/Double/Float, PluralOperands and language-form enums, so every value is either a String (taking the `value instanceof String` fast path) or a non-CharSequence (taking String.valueOf). An application-defined CharSequence whose toString() must not be invoked cannot be expressed in JSON, and the comment on that branch ('instead of invoking application-defined toString()') makes clear it exists for hostile Java callers. Java-only in any case: a JS port has no equivalent lazy CharSequence contract. The memoized re-check needs one placeholder rendered twice in one template under a shrinking budget, which the single-slot templates here cannot express and which belongs to an interpolation-limits family, not this one."
+    },
+    {
+      "what": "A fixture that sets bidiIsolation to RTL_LOCALES explicitly at the instance level.",
+      "why": "Observationally identical to bidi-isolation-default-mode by construction: DefaultStrings.java:477 stores DEFAULT_BIDI_ISOLATION when the builder was handed null, so the explicit and defaulted instances hold the same enum constant thereafter. Such a fixture would be decoration -- it could not produce an output the default-mode fixture does not already produce, and a case that 'tests the default' by setting the same value proves less than it appears. RTL_LOCALES is instead pinned where it IS discriminating: supplied per call over an instance NONE and over an instance ALWAYS, in both directions, each with an LTR control."
+    },
+    {
+      "what": "Bidi isolation of a value produced by a phonetic-axis placeholder, and of a value returned by a custom PhoneticResolver.",
+      "why": "Listed by the task as unsupported: the oracle can neither configure a PhoneticResolver nor observe the default one. Would in any case land in the generated-placeholder branch, which the file-defined-value case already shows is not isolated."
+    },
+    {
+      "what": "Whether a loader warning is emitted, or suppressed, when a strings file itself contains raw U+2066..U+2069 controls inside a translation template.",
+      "why": "Warning-set capture is unsupported by the oracle. Note that the isolation code path never inspects template text at all -- only caller-supplied context values reach BidiUtils -- so any such behavior would belong to the loader family, not this one."
+    },
+    {
+      "what": "Bidi isolation observed through a localeMatchSupplier / negotiation ingress, i.e. an RTL locale selected by content negotiation rather than passed directly.",
+      "why": "Negotiation ingress is listed as unsupported, and VectorOracle.buildStrings installs a plain localeSupplier rather than a localeMatchSupplier. The isolation decision reads only the resolved Locale object, so negotiation could not change the answer; the requested-versus-donor question that could is covered directly."
+    },
+    {
+      "what": "A second explicitly-script-tagged RTL locale (for example az-Arab or und-Arab) alongside ar-Latn.",
+      "why": "Redundant. localeUsesRightToLeftScript has exactly two branches -- explicit script subtag, or CLDR likely-subtag maximization -- and the ar / ar-Latn pair plus he and ar exercise both, in both directions, on both a shared and a distinct primary language. A third tag would add a CLDR-data assertion the cldr-conformance corpus already owns, not a new code path."
+    },
+    {
+      "what": "A case combining bidi isolation with a non-default TranslationFallbackPolicy so that a THIRD locale supplies after an earlier donor threw, and isolation is then decided from that third locale.",
+      "why": "Deliberately left to the fallback-policy family, which owns the policy clause and already builds the multi-donor chain. Layering bidi on top would make a failure ambiguous between the two mechanisms; the donor rule is pinned here on the single-donor shape where nothing else can move."
+    }
+  ],
+  "cases": [
+    {
+      "id": "bidi-isolation.default.he-request-latin-value-isolated",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-default-mode",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Named",
+        "locale": "he",
+        "placeholders": {
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Pins the library DEFAULT. No bidiIsolation is configured anywhere, so DefaultStrings.java:477 falls back to DEFAULT_BIDI_ISOLATION = RTL_LOCALES (:73/:80). Hebrew is the donor and Hebr is in GeneratedCldrLocaleData.RTL_SCRIPTS, so the Latin name must be wrapped. A port whose default is NONE returns a bare 'Sarah' here, and this is the only case in the family that catches that without any explicit mode being set."
+    },
+    {
+      "id": "bidi-isolation.default.en-request-hebrew-value-not-isolated",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-default-mode",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Named",
+        "locale": "en",
+        "placeholders": {
+          "name": "שרה"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The other half of the default. A Hebrew value dropped into an English template is NOT isolated under RTL_LOCALES, because shouldApplyBidiIsolation looks at the resolved locale's script (BidiUtils.localeUsesRightToLeftScript) and never at the value's own direction. A port that defaulted to ALWAYS, or that sniffed the VALUE for RTL characters instead of the locale, emits isolate marks here and fails. Paired with the sibling case this proves the default is RTL_LOCALES and not NONE or ALWAYS."
+    },
+    {
+      "id": "bidi-isolation.default.ambient-instance-locale-isolates",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-default-mode",
+      "operation": "get",
+      "input": {
+        "key": "Greeting.Named",
+        "placeholders": {
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "No per-call locale at all, so optionsFrom builds TranslationOptions.none() and localeLookupFor falls through to the instance localeSupplier -- the ambient locale, he (DefaultStrings.java:2456). Isolation must still be decided from that ambient locale, and the he template must be the one that resolves. A port that only consults an explicitly-passed locale, or that treats a missing locale as the FALLBACK locale (en) rather than the instance locale, gets both the wrong template and no marks. Authored as `get` rather than `getResult` on purpose: the oracle's getResult branch always evaluates Cardinality.supportedCardinalitiesForLocale(Locale.forLanguageTag(input.locale)) for its classifications channel, and Locale.forLanguageTag(null) throws, so a locale-less getResult would record an oracle NullPointerException instead of a translation."
+    },
+    {
+      "id": "bidi-isolation.default.get-explicit-he-matches-ambient",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-default-mode",
+      "operation": "get",
+      "input": {
+        "key": "Greeting.Named",
+        "locale": "he",
+        "placeholders": {
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Same operation and same expected shape as the ambient case, with the locale passed explicitly. Authored as its pair so the ambient case is read against an identical-operation comparand rather than against a getResult sibling: if the two `get` translations agree, the ambient path really did select he; if a port resolved the ambient call against en they diverge in both the template text and the isolate marks."
+    },
+    {
+      "id": "bidi-isolation.instance-none.rtl-request-not-isolated",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-instance-none",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Named",
+        "locale": "he",
+        "placeholders": {
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Instance-level NONE must beat the locale's RTL-ness: shouldApplyBidiIsolation returns false for NONE before ever asking about the script (DefaultStrings.java:1424-1426). Under the library default this same lookup isolates, so the case is a real discriminator. A port that hard-coded 'isolate when the resolved locale is RTL' -- which the four bidi cases already in the evaluation-locale family would let it get away with, since that family cannot set a mode -- fails here."
+    },
+    {
+      "id": "bidi-isolation.instance-none.per-call-always-overrides",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-instance-none",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Named",
+        "locale": "he",
+        "placeholders": {
+          "name": "Sarah"
+        },
+        "bidiIsolation": "ALWAYS"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Per-call override in the permissive direction. options.getBidiIsolation().orElse(getBidiIsolation()) at DefaultStrings.java:683 means the per-call value REPLACES the instance value rather than intersecting with it. Same fixture and same input as the previous case, opposite output: a port that ignores per-call bidiIsolation, or that ANDs it with the instance setting, produces the unisolated string."
+    },
+    {
+      "id": "bidi-isolation.instance-none.per-call-rtl-locales-overrides",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-instance-none",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Named",
+        "locale": "he",
+        "placeholders": {
+          "name": "Sarah"
+        },
+        "bidiIsolation": "RTL_LOCALES"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "RTL_LOCALES supplied per-call over an instance NONE. Distinct from the ALWAYS override because it must re-enable the script test rather than force isolation on: it isolates only because the resolved locale happens to be Hebrew. Needed so the next case can show the same override producing the opposite answer for an LTR locale."
+    },
+    {
+      "id": "bidi-isolation.instance-none.per-call-rtl-locales-ltr-request-not-isolated",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-instance-none",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Named",
+        "locale": "en",
+        "placeholders": {
+          "name": "שרה"
+        },
+        "bidiIsolation": "RTL_LOCALES"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Control that makes the previous case load-bearing. The identical per-call override on an LTR locale must NOT isolate, proving the override installs the RTL_LOCALES policy and is not just a truthy 'turn isolation on' flag. A port that mapped any non-NONE per-call value onto ALWAYS passes the previous case and fails this one."
+    },
+    {
+      "id": "bidi-isolation.instance-always.ltr-request-isolated",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-instance-always",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Named",
+        "locale": "en",
+        "placeholders": {
+          "name": "שרה"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Instance-level ALWAYS isolates in an LTR locale, which is the whole point of the mode: it protects an RTL value embedded in an LTR translation, the inverse of the case RTL_LOCALES handles. shouldApplyBidiIsolation returns true unconditionally for ALWAYS (DefaultStrings.java:1427-1428). Under the default this lookup emits no marks, so the case discriminates instance ALWAYS from an ignored instance setting."
+    },
+    {
+      "id": "bidi-isolation.instance-always.ltr-value-in-ltr-locale-isolated",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-instance-always",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Named",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ALWAYS means always: a pure-Latin value in a pure-Latin locale is still wrapped, because nothing in shouldApplyBidiIsolation or BidiUtils.isolate inspects the value's direction. This kills any implementation that treats isolation as an optimization to be skipped when 'nothing could reorder'. Exact string comparisons downstream depend on the marks being present here."
+    },
+    {
+      "id": "bidi-isolation.instance-always.per-call-none-overrides",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-instance-always",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Named",
+        "locale": "en",
+        "placeholders": {
+          "name": "שרה"
+        },
+        "bidiIsolation": "NONE"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Per-call override in the restrictive direction, the mirror of instance-none.per-call-always-overrides. Together the two prove the per-call value replaces the instance value in BOTH directions rather than only being able to widen or only being able to narrow."
+    },
+    {
+      "id": "bidi-isolation.instance-always.per-call-rtl-locales-narrows",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-instance-always",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Named",
+        "locale": "en",
+        "placeholders": {
+          "name": "שרה"
+        },
+        "bidiIsolation": "RTL_LOCALES"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A per-call RTL_LOCALES must be able to turn OFF isolation that the instance's ALWAYS would have applied, because the resolved locale is LTR. A port that treated the instance setting as a floor -- 'at least as much isolation as configured' -- emits marks here and fails."
+    },
+    {
+      "id": "bidi-isolation.instance-always.per-call-rtl-locales-rtl-request-isolated",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-instance-always",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Named",
+        "locale": "he",
+        "placeholders": {
+          "name": "Sarah"
+        },
+        "bidiIsolation": "RTL_LOCALES"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Companion to the narrowing case: the same per-call RTL_LOCALES over the same instance ALWAYS still isolates when the resolved locale is RTL. Without this pair the narrowing case could be satisfied by a port that reads a per-call RTL_LOCALES as NONE."
+    },
+    {
+      "id": "bidi-isolation.rtl-request-ltr-donor.default-mode-not-isolated",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-rtl-request-ltr-donor",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Named",
+        "locale": "ar",
+        "placeholders": {
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The section 8.3 clause case, and the family's sharpest finding. Arabic is requested; the ar catalog lacks the key; the English fallback entry supplies it. DefaultStrings.java:713 hands getInternal the candidateLocale (en), and that is the locale shouldApplyBidiIsolation sees at :1367 -- so under the default RTL_LOCALES an RTL LOOKUP SERVED BY A FALLBACK-LOCALE ENTRY IS NOT ISOLATED. A port that keys isolation off the requested locale wraps the value here and corrupts every exact comparison on the fallback path. The existing evaluation-locale family records this same observation under the default; this fixture exists so the next two cases can vary the MODE on the identical input, which that family cannot do."
+    },
+    {
+      "id": "bidi-isolation.rtl-request-ltr-donor.get-donor-rule-matches-get-result",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-rtl-request-ltr-donor",
+      "operation": "get",
+      "input": {
+        "key": "Greeting.Named",
+        "locale": "ar",
+        "placeholders": {
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The clause's core input through the OTHER entry point. get() is getResult(...).getTranslation() (DefaultStrings.java:640-643), so the donor rule must produce the identical bare string on both. Authored because a port is free to implement get() as its own resolution path; if it applied isolation from the requested locale there while getResult used the donor, only a paired case catches the divergence."
+    },
+    {
+      "id": "bidi-isolation.rtl-request-ltr-donor.per-call-always-isolates",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-rtl-request-ltr-donor",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Named",
+        "locale": "ar",
+        "placeholders": {
+          "name": "Sarah"
+        },
+        "bidiIsolation": "ALWAYS"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Separates the MODE from the LOCALE on the exact input the clause is about. Identical request and donor as the default-mode case, ALWAYS instead of the default, and the value is now wrapped. This proves that case's bare output is a consequence of the donor-locale rule and not of isolation being unreachable on fallback paths at all."
+    },
+    {
+      "id": "bidi-isolation.rtl-request-ltr-donor.per-call-none-not-isolated",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-rtl-request-ltr-donor",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Named",
+        "locale": "ar",
+        "placeholders": {
+          "name": "Sarah"
+        },
+        "bidiIsolation": "NONE"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The third mode on the clause's input, completing NONE/ALWAYS/RTL_LOCALES coverage for an RTL request served by an LTR donor. Its output necessarily coincides with the default-mode case -- that agreement is the proposition: a port cannot 'fix' the default-mode case by special-casing NONE, because both configurations are recorded as producing the same bare string while ALWAYS on the same input does not."
+    },
+    {
+      "id": "bidi-isolation.rtl-request-ltr-donor.returned-key-uses-requested-locale",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-rtl-request-ltr-donor",
+      "operation": "getResult",
+      "input": {
+        "key": "Farewell {{name}}",
+        "locale": "ar",
+        "placeholders": {
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The asymmetry. This key is in no catalog, so there is no donor and DefaultStrings.java:754 hands interpolateFailureKey the REQUESTED locale, whose script test at :1406 sees Arabic and isolates. Same fixture, same mode, same value, same requested locale as the clause case above -- and the opposite answer, purely because one path resolved an entry and the other did not. A port that unifies the two paths on a single locale is wrong on exactly one of them."
+    },
+    {
+      "id": "bidi-isolation.rtl-request-ltr-donor.returned-key-per-call-none-not-isolated",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-rtl-request-ltr-donor",
+      "operation": "getResult",
+      "input": {
+        "key": "Farewell {{name}}",
+        "locale": "ar",
+        "placeholders": {
+          "name": "Sarah"
+        },
+        "bidiIsolation": "NONE"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The mode is consulted on the failure-key path too, not just on the resolved path: interpolateFailureKey takes the same bidiIsolation argument (DefaultStrings.java:1394) and calls the same shouldApplyBidiIsolation (:1406). Without this a port could hard-code 'the returned key is always isolated for an RTL request' and still pass the previous case."
+    },
+    {
+      "id": "bidi-isolation.rtl-request-ltr-donor.returned-key-per-call-always-isolates-ltr-request",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-rtl-request-ltr-donor",
+      "operation": "getResult",
+      "input": {
+        "key": "Farewell {{name}}",
+        "locale": "en",
+        "placeholders": {
+          "name": "שרה"
+        },
+        "bidiIsolation": "ALWAYS"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ALWAYS on the failure-key path with an LTR requested locale. Completes the three-mode matrix for the returned-key channel and shows that the channel is not hard-wired to RTL_LOCALES semantics. Under the default this same request emits no marks."
+    },
+    {
+      "id": "bidi-isolation.ltr-request-rtl-donor.default-mode-isolated",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-ltr-request-rtl-donor",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Named",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The clause built the other way round: English is requested, the en catalog lacks the key, the Arabic fallback locale supplies it (localeFallbackCandidates appends getFallbackLocale(), DefaultStrings.java:2489), and under the default RTL_LOCALES the Latin name IS wrapped because the DONOR is Arabic. Exactly inverts the rtl-request-ltr-donor case. A port keying off the requested locale drops the marks here -- and dropping them is the failure mode that actually garbles rendering, since a Latin run inside an Arabic sentence is what reorders."
+    },
+    {
+      "id": "bidi-isolation.ltr-request-rtl-donor.per-call-none-not-isolated",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-ltr-request-rtl-donor",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Named",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        },
+        "bidiIsolation": "NONE"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "NONE suppresses the donor-driven isolation. Same fixture, same input, opposite output from the previous case, so the mode's effect is separable from the donor locale's."
+    },
+    {
+      "id": "bidi-isolation.ltr-request-rtl-donor.per-call-always-isolated",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-ltr-request-rtl-donor",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Named",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        },
+        "bidiIsolation": "ALWAYS"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ALWAYS on the same input reaches the same isolated output as the default did, but for a different reason -- unconditional rather than via the donor's script. Recorded so all three modes are pinned on this direction of the clause, and so a port cannot pass the default-mode case by implementing ALWAYS everywhere: the NONE sibling forbids that."
+    },
+    {
+      "id": "bidi-isolation.ltr-request-rtl-donor.returned-key-uses-requested-locale-not-isolated",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-ltr-request-rtl-donor",
+      "operation": "getResult",
+      "input": {
+        "key": "Farewell {{name}}",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Mirror of the returned-key asymmetry. The key exists in no catalog, so interpolateFailureKey uses the REQUESTED locale (en) and does not isolate -- even though this instance's fallback locale is Arabic and every resolved lookup on this fixture does isolate. A port that used the fallback locale, or the last attempted locale, on the failure path wraps the value here."
+    },
+    {
+      "id": "bidi-isolation.ltr-request-rtl-donor.ar-request-direct-isolated",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-ltr-request-rtl-donor",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Named",
+        "locale": "ar",
+        "placeholders": {
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Control isolating the variable: the same Arabic entry requested directly, with no fallback in play, must also isolate (attemptedLocales is just [ar] rather than [en, ar], which the result channel records). Establishes that the isolation in the fallback case belongs to the donor's script and not to the act of falling back."
+    },
+    {
+      "id": "bidi-isolation.script.ar-likely-subtag-arab-isolates",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-script-detection",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Named",
+        "locale": "ar",
+        "placeholders": {
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "'ar' carries no script subtag, so BidiUtils.localeUsesRightToLeftScript takes the script.length() == 0 branch and asks CldrLocaleData.likelySubtagFor (ar -> ar-Arab-EG), then tests Arab against RTL_SCRIPTS. A port that only looked at an explicit script subtag would find none and treat plain 'ar' as LTR, silently disabling isolation for the single most common RTL locale tag."
+    },
+    {
+      "id": "bidi-isolation.script.ar-latn-explicit-script-does-not-isolate",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-script-detection",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Named",
+        "locale": "ar-Latn",
+        "placeholders": {
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The discriminator for the other branch of localeUsesRightToLeftScript: a non-empty getScript() short-circuits the likely-subtag lookup, so ar-Latn tests Latn, is LTR, and is NOT isolated under the default RTL_LOCALES. Same primary language as the previous case, opposite answer, and ar-Latn is a loaded catalog so it resolves to itself and the donor rule cannot confound the reading. A port that decided RTL-ness from a hard-coded language list (ar, he, fa, ur) rather than from the script wraps the value here and fails."
+    },
+    {
+      "id": "bidi-isolation.script.ar-latn-per-call-always-isolates",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-script-detection",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Named",
+        "locale": "ar-Latn",
+        "placeholders": {
+          "name": "Sarah"
+        },
+        "bidiIsolation": "ALWAYS"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Proves the ar-Latn non-isolation is the script test's doing and not a tiebreaker or catalog quirk of this fixture: forcing ALWAYS on the identical lookup isolates, and the translation text stays the ar-Latn one, so the same entry was selected both times."
+    },
+    {
+      "id": "bidi-isolation.value-shapes.plain-latin-wrapped",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-value-shapes",
+      "operation": "getResult",
+      "input": {
+        "key": "Wrap.Value",
+        "locale": "en",
+        "placeholders": {
+          "value": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Baseline for the value-shape family: a plain value is wrapped in FSI (U+2068) and PDI (U+2069), and nothing else in the template is touched. The surrounding brackets pin that the marks go around the VALUE, not around the whole interpolated string."
+    },
+    {
+      "id": "bidi-isolation.value-shapes.arabic-value-wrapped",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-value-shapes",
+      "operation": "getResult",
+      "input": {
+        "key": "Wrap.Value",
+        "locale": "en",
+        "placeholders": {
+          "value": "مرحبا"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "An RTL value in an LTR locale under ALWAYS -- the configuration the mode exists for. Same marks as the Latin case: BidiUtils.isolate always opens with FIRST_STRONG_ISOLATE, so a port that chose LRI or RLI based on the value's own direction produces different bytes here."
+    },
+    {
+      "id": "bidi-isolation.value-shapes.mixed-direction-value-wrapped",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-value-shapes",
+      "operation": "getResult",
+      "input": {
+        "key": "Wrap.Value",
+        "locale": "en",
+        "placeholders": {
+          "value": "Sarah مرحبا"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "A value that is itself mixed-direction. The library still emits a single FSI/PDI pair around the whole value and does not segment it or insert marks at the direction change. A port that tried to be clever about internal runs emits a different string."
+    },
+    {
+      "id": "bidi-isolation.value-shapes.already-fsi-isolated-value-unchanged",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-value-shapes",
+      "operation": "getResult",
+      "input": {
+        "key": "Wrap.Value",
+        "locale": "en",
+        "placeholders": {
+          "value": "⁨Sarah⁩"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Idempotence. BidiUtils.isIsolated returns true for a value that starts with an isolate initiator, stays at depth > 0 until the final character, and ends balanced; isolate() then returns the String unchanged. A port that wraps unconditionally emits a doubly-isolated value; renderers tolerate it but exact comparisons do not."
+    },
+    {
+      "id": "bidi-isolation.value-shapes.already-lri-isolated-value-unchanged",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-value-shapes",
+      "operation": "getResult",
+      "input": {
+        "key": "Wrap.Value",
+        "locale": "en",
+        "placeholders": {
+          "value": "⁦Sarah⁩"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The initiator set is {LRI U+2066, RLI U+2067, FSI U+2068}, not FSI alone (BidiUtils.isIsolateInitiator). A value already wrapped in LRI/PDI must be left alone. A port that only recognized FSI as pre-isolation double-wraps here while passing the FSI case."
+    },
+    {
+      "id": "bidi-isolation.value-shapes.already-rli-isolated-value-unchanged",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-value-shapes",
+      "operation": "getResult",
+      "input": {
+        "key": "Wrap.Value",
+        "locale": "en",
+        "placeholders": {
+          "value": "⁧مرحبا⁩"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Third member of the initiator set, RLI U+2067, with an RTL payload. Completes the recognition table so a port cannot pass by hard-coding two of the three initiators."
+    },
+    {
+      "id": "bidi-isolation.value-shapes.empty-isolate-pair-unchanged",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-value-shapes",
+      "operation": "getResult",
+      "input": {
+        "key": "Wrap.Value",
+        "locale": "en",
+        "placeholders": {
+          "value": "⁨⁩"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The length-2 boundary of isIsolated (its guard is valueLength < 2). An empty FSI/PDI pair is already isolated and must survive untouched. A port whose pre-isolation check required at least one character between the marks re-wraps it."
+    },
+    {
+      "id": "bidi-isolation.value-shapes.isolate-closing-before-end-is-rewrapped",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-value-shapes",
+      "operation": "getResult",
+      "input": {
+        "key": "Wrap.Value",
+        "locale": "en",
+        "placeholders": {
+          "value": "⁨a⁩b"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Starts with FSI and is balanced overall, but depth returns to 0 before the last character, so isIsolated returns false at its `isolateDepth == 0 && i < valueLength - 1` guard and the whole thing is wrapped again with the inner pair preserved. The sharpest test of the idempotence check: a naive 'starts with an initiator and ends with PDI' test passes the earlier cases and fails this one, leaving 'b' outside any isolate."
+    },
+    {
+      "id": "bidi-isolation.value-shapes.unmatched-pop-is-dropped",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-value-shapes",
+      "operation": "getResult",
+      "input": {
+        "key": "Wrap.Value",
+        "locale": "en",
+        "placeholders": {
+          "value": "a⁩b"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "An unmatched PDI inside a caller value is DISCARDED, not copied through: the balancing loop appends a PDI only when isolateDepth > 0. Letting a stray PDI through would pop the isolate the library just opened and defeat the whole mechanism, so a port that treats isolation as pure concatenation is unsafe against hostile or careless input. This is the injection-resistance case."
+    },
+    {
+      "id": "bidi-isolation.value-shapes.unmatched-pop-preserved-when-isolation-off",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-value-shapes",
+      "operation": "getResult",
+      "input": {
+        "key": "Wrap.Value",
+        "locale": "en",
+        "placeholders": {
+          "value": "a⁩b"
+        },
+        "bidiIsolation": "NONE"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Control for the previous case: with isolation off the stray PDI passes through verbatim, because the dropping happens inside BidiUtils.isolate and nowhere else -- with NONE the value never becomes a BoundedIsolatedValue and reaches StringInterpolator as a plain CharSequence. Proves the library does not sanitize directional controls in general; a port that added a global scrubbing step would pass the dropping case and fail this one."
+    },
+    {
+      "id": "bidi-isolation.value-shapes.unmatched-initiator-is-balanced",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-value-shapes",
+      "operation": "getResult",
+      "input": {
+        "key": "Wrap.Value",
+        "locale": "en",
+        "placeholders": {
+          "value": "⁧ab"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The complement of the dropped-PDI case: an initiator the caller left open is closed by the library, which appends one PDI per unclosed level before the outer PDI. Not pre-isolated (depth never returns to 0, so isIsolated's final `isolateDepth == 0` test fails), so the outer FSI/PDI wrap is applied too. A port that only wrapped, without balancing, leaves an RLI open and reorders everything after the placeholder."
+    },
+    {
+      "id": "bidi-isolation.value-shapes.empty-string-gets-no-marks",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-value-shapes",
+      "operation": "getResult",
+      "input": {
+        "key": "Wrap.Value",
+        "locale": "en",
+        "placeholders": {
+          "value": ""
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "isolate() returns \"\" from its valueLength == 0 early return, so an empty caller value contributes NO marks at all even under ALWAYS -- note that the empty string is still non-null, so it does reach BidiUtils.isolatedValue. A port that wraps unconditionally emits an FSI/PDI pair around nothing, which is invisible on screen and breaks every exact-string assertion involving an optional field."
+    },
+    {
+      "id": "bidi-isolation.value-shapes.non-string-value-is-isolated",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-value-shapes",
+      "operation": "getResult",
+      "input": {
+        "key": "Wrap.Value",
+        "locale": "en",
+        "placeholders": {
+          "value": {
+            "$lokalized": "integer",
+            "value": "42"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Isolation is applied to every caller-supplied value, not only to strings: BoundedIsolatedValue.render sends a non-CharSequence through String.valueOf and then isolates. A port that isolated only values already typed as strings leaves numbers -- exactly the values that reorder next to RTL text -- unprotected."
+    },
+    {
+      "id": "bidi-isolation.value-shapes.null-value-is-not-isolated",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-value-shapes",
+      "operation": "getResult",
+      "input": {
+        "key": "Wrap.Value",
+        "locale": "en",
+        "placeholders": {
+          "value": null
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The `value != null` guard at DefaultStrings.java:1367 runs before isolation, so a null caller value is put into the interpolation context untouched; StringInterpolator then records it as UNRESOLVED and interpolateTemplate throws IllegalArgumentException(\"Missing value for placeholder(s) [value] in key 'Wrap.Value'\"), which getResult catches as a RESOLUTION_FAILURE. A port that isolated first would produce a resolved '[⁨null⁩]' -- the word null wrapped in directional controls -- instead of a failure. The free failure channel records the reason and cause identity."
+    },
+    {
+      "id": "bidi-isolation.generated.file-defined-value-not-isolated",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-generated-placeholder",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Titled",
+        "locale": "en",
+        "placeholders": {
+          "gender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_FEMININE"
+          },
+          "name": "Sarah",
+          "city": "القاهرة"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Isolation applies ONLY to caller-supplied values. In interpolateTemplate the file-defined branch (placeholderBindings.containsKey) never calls shouldApplyBidiIsolation; only the else branch reading immutableContext does (DefaultStrings.java:1365-1371). So under ALWAYS the generated {{title}} ('Ms.', which came out of the strings file) is bare while {{name}} and {{city}} are wrapped, in one string. A port that isolates every interpolated slot uniformly wraps the translator's own text -- the single most likely bidi bug in a port, and this is the only case in the corpus that catches it."
+    },
+    {
+      "id": "bidi-isolation.generated.per-call-none-isolates-nothing",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-generated-placeholder",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Titled",
+        "locale": "en",
+        "placeholders": {
+          "gender": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_FEMININE"
+          },
+          "name": "Sarah",
+          "city": "القاهرة"
+        },
+        "bidiIsolation": "NONE"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Control that makes the mixed case readable: with NONE the identical lookup produces the fully bare string, so the marks present in the sibling are attributable to the two caller-supplied slots specifically rather than to anything about this template or this gender selection."
+    },
+    {
+      "id": "bidi-isolation.output-limit.isolated-value-at-the-boundary-succeeds",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-output-limit",
+      "operation": "getResult",
+      "input": {
+        "key": "Wrap.Value",
+        "locale": "en",
+        "placeholders": {
+          "value": "abcdef"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The two isolate characters count against maximumInterpolatedOutputCharacters. Traced: StringInterpolator emits '[' (1 character), then hands BoundedIsolatedValue.render a remaining budget of 10 - 1 = 9; isolate builds FSI + 6 + PDI = 8, which fits; the interpolator appends it (9) and then ']' (10). Exactly on the configured 10, so the lookup must succeed. Pins the off-by-one against the next case."
+    },
+    {
+      "id": "bidi-isolation.output-limit.isolated-value-over-the-boundary-fails",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-output-limit",
+      "operation": "getResult",
+      "input": {
+        "key": "Wrap.Value",
+        "locale": "en",
+        "placeholders": {
+          "value": "abcdefg"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "One character more and the isolated output overruns: the rendered value is FSI + 7 + PDI = 9, the interpolator is at 10 after appending it, and the closing ']' trips an appendChecked, throwing IllegalStateException(\"Interpolated output exceeds the maximum of 10 characters\"). BidiUtils and StringInterpolator raise the identical type and message, so the case pins the failure, not which appendChecked saw it. getResult catches it as a RESOLUTION_FAILURE and the default return-key handler takes over, so the result is a RETURNED_KEY whose failure record carries the cause identity -- that is what distinguishes this from an ordinary missing translation. A port that applied the limit to the pre-isolation value silently succeeds here and emits an over-budget string."
+    },
+    {
+      "id": "bidi-isolation.output-limit.same-value-succeeds-with-isolation-off",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-output-limit",
+      "operation": "getResult",
+      "input": {
+        "key": "Wrap.Value",
+        "locale": "en",
+        "placeholders": {
+          "value": "abcdefg"
+        },
+        "bidiIsolation": "NONE"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The discriminator for the whole limit group: the identical value under the identical limit RESOLVES once isolation is switched off, because '[abcdefg]' is nine characters and fits inside 10. Same fixture, same key, same limit; the mode is the only variable -- so a port cannot pass the failing sibling by tightening its budget accounting generally."
+    },
+    {
+      "id": "bidi-isolation.output-limit.pre-isolated-value-adds-no-marks-and-fits",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-output-limit",
+      "operation": "getResult",
+      "input": {
+        "key": "Wrap.Value",
+        "locale": "en",
+        "placeholders": {
+          "value": "⁨abcdef⁩"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Idempotence observed THROUGH the budget, which no other case can do. The value is already FSI/PDI-wrapped and eight characters long; isIsolated returns true and isolate() returns the same String, adding nothing, so '[' + 8 + ']' lands exactly on 10 and the lookup succeeds. A port that re-wraps a pre-isolated value would produce ten characters here and blow the limit -- turning a silent double-wrap into an observable failure, where the value-shapes fixture (with the default 262144 limit) could only observe it as a longer string."
+    },
+    {
+      "id": "bidi-isolation.failure-response.return-string-is-not-interpolated-or-isolated",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-failure-response",
+      "operation": "getResult",
+      "input": {
+        "key": "Farewell {{name}}",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The RETURN_STRING branch returns translationFailureResponse.getTranslation() verbatim into the TranslationResult (DefaultStrings.java:757-759); it never reaches interpolateFailureKey, so the '{{name}}' inside the substitute is neither interpolated nor isolated even though the instance is set to ALWAYS. A port that funnelled every failure response through the same interpolation path emits an isolated 'Sarah' here."
+    },
+    {
+      "id": "bidi-isolation.failure-response.return-key-per-call-is-interpolated-and-isolated",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-failure-response",
+      "operation": "getResult",
+      "input": {
+        "key": "Farewell {{name}}",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        },
+        "translationFailureHandler": {
+          "behavior": "return-key"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Same fixture, same key, same ALWAYS mode -- only the per-call handler differs, and now the key IS interpolated and the value IS isolated. Pins that the handler's RESPONSE, not the mode, decides whether isolation happens at all on the failure path, and that a per-call handler replaces the instance handler (DefaultStrings.java:684). getResult twin of the get case below."
+    },
+    {
+      "id": "bidi-isolation.failure-response.get-return-key-per-call-matches-get-result",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-failure-response",
+      "operation": "get",
+      "input": {
+        "key": "Farewell {{name}}",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        },
+        "translationFailureHandler": {
+          "behavior": "return-key"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "get() versus getResult() on identical input: get returns the same isolated interpolated key that getResult puts in result.translation, because get is getResult(...).getTranslation() (DefaultStrings.java:640-643). Authored as a pair with the getResult twin so a port cannot implement the two entry points with divergent isolation."
+    },
+    {
+      "id": "bidi-isolation.failure-response.get-throw-message-is-not-isolated",
+      "requirementIds": [],
+      "fixture": "bidi-isolation-failure-response",
+      "operation": "get",
+      "input": {
+        "key": "Farewell {{name}}",
+        "locale": "en",
+        "placeholders": {
+          "name": "Sarah"
+        },
+        "translationFailureHandler": {
+          "behavior": "throw"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The throwing path under ALWAYS, authored as `get` because that is where the handler's THROW_EXCEPTION response actually escapes -- getResult on this same input would return a result object. The failure reason is MISSING_TRANSLATION with no cause, so throwExceptionFor (DefaultStrings.java:3196-3212) falls past its rethrow-the-cause branch and constructs a MissingTranslationException whose message is the one built at :742, carrying the RAW key with its literal '{{name}}'. It never touches the interpolator or BidiUtils. A port that isolated eagerly, or that interpolated the key before constructing the diagnostic, puts directional controls inside an exception message, which is unreadable in logs."
+    }
+  ]
+}

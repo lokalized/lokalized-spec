@@ -1,0 +1,17 @@
+{
+  "id": "owed-construct-catalog-null",
+  "description": "Construction refusal subject. DefaultStrings:262 -- a catalog supplier that answers null, which is NOT the same as supplying none. Its files load cleanly; the refusal is at Strings construction, which is what makes it invisible without the 'construct' operation.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "refusesConstruction": true,
+  "constructionOverrides": {
+    "catalogSource": "returnsNull"
+  },
+  "files": {
+    "en": {
+      "Greeting": {
+        "translation": "Hello"
+      }
+    }
+  }
+}

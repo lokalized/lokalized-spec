@@ -1,0 +1,12 @@
+{
+  "id": "loading-limits-nodes-zero-empty-catalog",
+  "description": "An empty JSON object catalog loaded with maximumTranslationNodes lowered to 0. The node limit is documented NONNEGATIVE (unlike the positive-only limits), so 0 survives the builder, and a zero-member root object charges 0 nodes. Verified loadable end to end, so loadOnly is false and a Strings instance is built from it.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumTranslationNodes": 0
+  },
+  "files": {
+    "en": {}
+  }
+}

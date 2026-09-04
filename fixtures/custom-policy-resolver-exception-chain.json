@@ -1,0 +1,65 @@
+{
+  "id": "custom-policy-resolver-exception-chain",
+  "description": "The THIRD callback's exception inside a multi-candidate walk. Section 8.3's 'callback exceptions' clause covers the policy and the handler in the fixtures above; this one covers the PhoneticResolver, which callback-smoke exercises only on single-candidate chains where no policy consultation can occur. The instance resolver is throw, so any RAW phonetic term at any candidate raises IllegalStateException inside getInternal and is converted to a RESOLUTION_FAILURE the policy then decides on — the resolver's own throwable reaching the policy's cause argument, which no other family shows. Loading fr-CA, fr and en with fallback en, requesting fr-CA executes as exactly [fr-CA, fr, en], verified. Res.Article carries a phonetic placeholder at BOTH fr-CA and fr and plain text at en, so a policy that continues past RESOLUTION_FAILURE produces TWO resolver invocations carrying two DIFFERENT donor locales before en serves — the donor rule for callbacks proven across a walk rather than at one candidate. Res.OnlyAtEn is absent from the first two catalogs and carries the phonetic placeholder at the LAST candidate, so its resolver exception lands where no further consultation may occur. Loaded fr-CA and fr share the primary language fr, so tiebreakers lists that exact permutation.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "fr": [
+      "fr-CA",
+      "fr"
+    ]
+  },
+  "phoneticResolver": {
+    "behavior": "throw",
+    "message": "resolver refused this term"
+  },
+  "files": {
+    "fr-CA": {
+      "Res.Article": {
+        "commentary": "Phonetic placeholder at the FIRST candidate. A raw term reaches the throwing resolver; a tagged value does not.",
+        "translation": "fr-CA: {{article}}",
+        "placeholders": {
+          "article": {
+            "value": "nounTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "un-vowel",
+              "PHONETIC_CONSONANT": "un-consonant"
+            }
+          }
+        }
+      }
+    },
+    "fr": {
+      "Res.Article": {
+        "commentary": "The same placeholder at the SECOND candidate, so a continuing policy produces a second resolver call with a different donor locale.",
+        "translation": "fr: {{article}}",
+        "placeholders": {
+          "article": {
+            "value": "nounTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "le-vowel",
+              "PHONETIC_CONSONANT": "le-consonant"
+            }
+          }
+        }
+      }
+    },
+    "en": {
+      "Res.Article": "en: plain text after two resolver failures",
+      "Res.OnlyAtEn": {
+        "commentary": "Present ONLY at the final candidate, so its resolver exception occurs where DefaultStrings.java:731-733 has already broken out of the consultation.",
+        "translation": "en: {{article}}",
+        "placeholders": {
+          "article": {
+            "value": "nounTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "an",
+              "PHONETIC_CONSONANT": "a"
+            }
+          }
+        }
+      }
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

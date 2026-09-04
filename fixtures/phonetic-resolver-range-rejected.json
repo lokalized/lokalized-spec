@@ -1,0 +1,31 @@
+{
+  "id": "phonetic-resolver-range-rejected",
+  "description": "DELIBERATELY UNLOADABLE, hence loadOnly. A placeholder combining a cardinality-style range with phonetic branches. DefaultStrings carries a phonetic-specific 'Phonetic translations cannot use ranges' guard, but the loader rejects the file first with a different message, making that guard unreachable; this fixture pins the diagnostic a port must actually produce, through both the directory loader and the single-file parser.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "phoneticResolver": {
+    "behavior": "first-letter-vowel"
+  },
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Ranged": {
+        "translation": "{{a}}",
+        "placeholders": {
+          "a": {
+            "range": {
+              "start": "s",
+              "end": "e"
+            },
+            "translations": {
+              "PHONETIC_VOWEL": "an",
+              "PHONETIC_CONSONANT": "a"
+            }
+          }
+        }
+      }
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

@@ -1,0 +1,368 @@
+{
+  "formatVersion": 1,
+  "planSection": "3.1",
+  "generatedFrom": {
+    "plan": "IMPLEMENTATION-PLAN-v7.md",
+    "javaEnums": [
+      "Animacy",
+      "Cardinality",
+      "Classifier",
+      "Clusivity",
+      "Definiteness",
+      "Formality",
+      "Gender",
+      "GrammaticalCase",
+      "Ordinality",
+      "Phonetic"
+    ],
+    "schemaCrossCheck": "src/main/resources/schema/lokalized-strings.schema.json"
+  },
+  "subpaths": [
+    {
+      "subpath": "lokalized",
+      "contents": "strict core, parser, cardinal/locale/direct-match data, small browser chooser",
+      "browser": true,
+      "edge": true,
+      "node": true
+    },
+    {
+      "subpath": "lokalized/core",
+      "contents": "strict runtime plus synchronous raw-catalog parsing accepted by `createStrings`",
+      "browser": true,
+      "edge": true,
+      "node": true
+    },
+    {
+      "subpath": "lokalized/parse",
+      "contents": "parser, validator, schema model, warnings",
+      "browser": true,
+      "edge": true,
+      "node": true
+    },
+    {
+      "subpath": "lokalized/load",
+      "contents": "manifest validation, planning, Fetch loading, identity",
+      "browser": true,
+      "edge": true,
+      "node": true
+    },
+    {
+      "subpath": "lokalized/ssr",
+      "contents": "SSR stamp creation and validation",
+      "browser": true,
+      "edge": true,
+      "node": true
+    },
+    {
+      "subpath": "lokalized/negotiate",
+      "contents": "full RFC 4647, pinned IANA closure, header helpers",
+      "browser": true,
+      "edge": true,
+      "node": true
+    },
+    {
+      "subpath": "lokalized/node",
+      "contents": "directory/filesystem loading and manifest generation",
+      "browser": false,
+      "edge": false,
+      "node": true
+    },
+    {
+      "subpath": "lokalized/data/ordinal",
+      "contents": "optional ordinal data and classifiers",
+      "browser": true,
+      "edge": true,
+      "node": true
+    },
+    {
+      "subpath": "lokalized/data/ranges",
+      "contents": "optional cardinal-range data and classifier",
+      "browser": true,
+      "edge": true,
+      "node": true
+    }
+  ],
+  "owners": [
+    {
+      "owner": "core",
+      "namedSymbols": [
+        "CardinalRangeData",
+        "CatalogIdentity",
+        "DataProvenance",
+        "DirectLocaleContext",
+        "LanguageRange",
+        "OrdinalData",
+        "SourceDataProvenance",
+        "Strings",
+        "StringsLoadCoverage",
+        "StringsLoadVerification",
+        "chooseBrowserLocale",
+        "chooseLocaleForPreferredLanguages",
+        "createStrings",
+        "decimal",
+        "forLocale",
+        "forLocaleMatch",
+        "pluralOperands"
+      ],
+      "unenumeratedCategories": [
+        "construction/translation/result types",
+        "match/configuration structural types",
+        "failure policy/observer/handler types and helpers",
+        "tagged-value types",
+        "all 61 named language-form constants",
+        "cardinal classifiers/support probes",
+        "CLDR/IANA runtime metadata",
+        "core errors"
+      ],
+      "reExportedByRoot": true
+    },
+    {
+      "owner": "parse",
+      "namedSymbols": [
+        "StringsParseError",
+        "defineCatalog",
+        "defineLocalizedString",
+        "mergeParsedStringsFiles",
+        "parseStrings"
+      ],
+      "unenumeratedCategories": [
+        "parsed/model/warning/limit types"
+      ],
+      "reExportedByRoot": true
+    },
+    {
+      "owner": "load",
+      "namedSymbols": [
+        "CatalogIdentity",
+        "CatalogIdentityInputV1",
+        "FetchEntry",
+        "LoadedStrings",
+        "StringsLoadCoverage",
+        "StringsManifestV1",
+        "chain",
+        "fetchSet"
+      ],
+      "unenumeratedCategories": [
+        "manifest/load option and failure types",
+        "manifest parse/validate/configuration/identity functions",
+        "subset/whole loaders",
+        "loading errors"
+      ],
+      "reExportedByRoot": false
+    },
+    {
+      "owner": "ssr",
+      "namedSymbols": [
+        "createSsrStamp",
+        "validateSsrStamp"
+      ],
+      "unenumeratedCategories": [
+        "SSR stamp/context types"
+      ],
+      "reExportedByRoot": false
+    },
+    {
+      "owner": "negotiate",
+      "namedSymbols": [
+        "LanguageRange",
+        "LocaleMatcher",
+        "LocaleNegotiator"
+      ],
+      "unenumeratedCategories": [
+        "range parser/factory/option helpers",
+        "re-exports core's  type and IANA metadata"
+      ],
+      "reExportedByRoot": false
+    },
+    {
+      "owner": "node",
+      "namedSymbols": [
+        "DirectoryManifestOptions",
+        "LoadStringsFromDirectoryOptions",
+        "LoadStringsFromFilesOptions",
+        "readStringsManifest"
+      ],
+      "unenumeratedCategories": [
+        "file/whole-manifest loaders",
+        "directory loader",
+        "directory-to-manifest generator",
+        "re-exports applicable shared load types"
+      ],
+      "reExportedByRoot": false
+    },
+    {
+      "owner": "data/ordinal",
+      "namedSymbols": [
+        "ordinalData"
+      ],
+      "unenumeratedCategories": [
+        "number/operand ordinal classifiers and support probes"
+      ],
+      "reExportedByRoot": false
+    },
+    {
+      "owner": "data/ranges",
+      "namedSymbols": [
+        "cardinalRangeData",
+        "cardinalityForRange"
+      ],
+      "unenumeratedCategories": [],
+      "reExportedByRoot": false
+    }
+  ],
+  "rootReExportsOwners": [
+    "core",
+    "parse"
+  ],
+  "languageFormConstants": [
+    "ANIMACY_ANIMATE",
+    "ANIMACY_INANIMATE",
+    "CARDINALITY_FEW",
+    "CARDINALITY_MANY",
+    "CARDINALITY_ONE",
+    "CARDINALITY_OTHER",
+    "CARDINALITY_TWO",
+    "CARDINALITY_ZERO",
+    "CASE_ABLATIVE",
+    "CASE_ACCUSATIVE",
+    "CASE_DATIVE",
+    "CASE_GENITIVE",
+    "CASE_INSTRUMENTAL",
+    "CASE_LOCATIVE",
+    "CASE_NOMINATIVE",
+    "CASE_PREPOSITIONAL",
+    "CASE_VOCATIVE",
+    "CLASSIFIER_ANIMAL",
+    "CLASSIFIER_BOUND",
+    "CLASSIFIER_FLAT",
+    "CLASSIFIER_GENERAL",
+    "CLASSIFIER_LONG_THIN",
+    "CLASSIFIER_MACHINE",
+    "CLASSIFIER_PERSON",
+    "CLASSIFIER_VEHICLE",
+    "CLUSIVITY_EXCLUSIVE",
+    "CLUSIVITY_INCLUSIVE",
+    "DEFINITENESS_CONSTRUCT",
+    "DEFINITENESS_DEFINITE",
+    "DEFINITENESS_INDEFINITE",
+    "FORMALITY_CASUAL",
+    "FORMALITY_FORMAL",
+    "FORMALITY_HONORIFIC",
+    "FORMALITY_HUMBLE",
+    "FORMALITY_INFORMAL",
+    "GENDER_COMMON",
+    "GENDER_FEMININE",
+    "GENDER_MASCULINE",
+    "GENDER_NEUTER",
+    "ORDINALITY_FEW",
+    "ORDINALITY_MANY",
+    "ORDINALITY_ONE",
+    "ORDINALITY_OTHER",
+    "ORDINALITY_TWO",
+    "ORDINALITY_ZERO",
+    "PHONETIC_CONSONANT",
+    "PHONETIC_GLIDE_W",
+    "PHONETIC_GLIDE_Y",
+    "PHONETIC_GN",
+    "PHONETIC_H_ASPIRATED",
+    "PHONETIC_H_SILENT",
+    "PHONETIC_LUNAR",
+    "PHONETIC_OTHER",
+    "PHONETIC_PN",
+    "PHONETIC_PS",
+    "PHONETIC_SOLAR",
+    "PHONETIC_STRESSED_A",
+    "PHONETIC_S_IMPURE",
+    "PHONETIC_VOWEL",
+    "PHONETIC_X",
+    "PHONETIC_Z"
+  ],
+  "languageFormConstantsByAxis": {
+    "Animacy": [
+      "ANIMACY_ANIMATE",
+      "ANIMACY_INANIMATE"
+    ],
+    "Cardinality": [
+      "CARDINALITY_ZERO",
+      "CARDINALITY_ONE",
+      "CARDINALITY_TWO",
+      "CARDINALITY_FEW",
+      "CARDINALITY_MANY",
+      "CARDINALITY_OTHER"
+    ],
+    "Classifier": [
+      "CLASSIFIER_GENERAL",
+      "CLASSIFIER_PERSON",
+      "CLASSIFIER_ANIMAL",
+      "CLASSIFIER_LONG_THIN",
+      "CLASSIFIER_FLAT",
+      "CLASSIFIER_BOUND",
+      "CLASSIFIER_MACHINE",
+      "CLASSIFIER_VEHICLE"
+    ],
+    "Clusivity": [
+      "CLUSIVITY_INCLUSIVE",
+      "CLUSIVITY_EXCLUSIVE"
+    ],
+    "Definiteness": [
+      "DEFINITENESS_DEFINITE",
+      "DEFINITENESS_INDEFINITE",
+      "DEFINITENESS_CONSTRUCT"
+    ],
+    "Formality": [
+      "FORMALITY_CASUAL",
+      "FORMALITY_INFORMAL",
+      "FORMALITY_FORMAL",
+      "FORMALITY_HUMBLE",
+      "FORMALITY_HONORIFIC"
+    ],
+    "Gender": [
+      "GENDER_MASCULINE",
+      "GENDER_FEMININE",
+      "GENDER_COMMON",
+      "GENDER_NEUTER"
+    ],
+    "GrammaticalCase": [
+      "CASE_NOMINATIVE",
+      "CASE_ACCUSATIVE",
+      "CASE_GENITIVE",
+      "CASE_DATIVE",
+      "CASE_INSTRUMENTAL",
+      "CASE_LOCATIVE",
+      "CASE_PREPOSITIONAL",
+      "CASE_VOCATIVE",
+      "CASE_ABLATIVE"
+    ],
+    "Ordinality": [
+      "ORDINALITY_ZERO",
+      "ORDINALITY_ONE",
+      "ORDINALITY_TWO",
+      "ORDINALITY_FEW",
+      "ORDINALITY_MANY",
+      "ORDINALITY_OTHER"
+    ],
+    "Phonetic": [
+      "PHONETIC_VOWEL",
+      "PHONETIC_CONSONANT",
+      "PHONETIC_H_SILENT",
+      "PHONETIC_H_ASPIRATED",
+      "PHONETIC_S_IMPURE",
+      "PHONETIC_Z",
+      "PHONETIC_GN",
+      "PHONETIC_PS",
+      "PHONETIC_PN",
+      "PHONETIC_X",
+      "PHONETIC_GLIDE_Y",
+      "PHONETIC_GLIDE_W",
+      "PHONETIC_STRESSED_A",
+      "PHONETIC_SOLAR",
+      "PHONETIC_LUNAR",
+      "PHONETIC_OTHER"
+    ]
+  },
+  "deferredSubpaths": [
+    "lokalized/react",
+    "lokalized/locale-intl",
+    "lokalized/cardinality-intl"
+  ]
+}

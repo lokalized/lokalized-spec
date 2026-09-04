@@ -1,0 +1,50 @@
+{
+  "id": "resolver-locale-throwing-across-walk",
+  "description": "The same three-candidate walk with a resolver that always raises. Under any-failure every candidate that carries Article invokes the resolver and every invocation throws, so resolverCalls records the locale of each candidate on the FAILING path too. Both catalogs carry a complete branch set, so the only failure in play is the resolver's own — the locale channel must be populated for calls that returned nothing.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "en": [
+      "en",
+      "en-001"
+    ]
+  },
+  "translationFallbackPolicy": "any-failure",
+  "phoneticResolver": {
+    "behavior": "throw",
+    "message": "resolver refuses every locale"
+  },
+  "files": {
+    "en-001": {
+      "Locale.Marker": "en-001",
+      "Article": {
+        "translation": "{{article}}",
+        "placeholders": {
+          "article": {
+            "value": "nounTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "got:en",
+              "PHONETIC_CONSONANT": "got:en-001",
+              "PHONETIC_OTHER": "got:unmapped"
+            }
+          }
+        }
+      }
+    },
+    "en": {
+      "Locale.Marker": "en",
+      "Article": {
+        "translation": "{{article}}",
+        "placeholders": {
+          "article": {
+            "value": "nounTerm",
+            "translations": {
+              "PHONETIC_VOWEL": "got:en",
+              "PHONETIC_CONSONANT": "got:en-001",
+              "PHONETIC_OTHER": "got:unmapped"
+            }
+          }
+        }
+      }
+    }
+  }
+}

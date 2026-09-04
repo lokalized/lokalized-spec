@@ -1,0 +1,97 @@
+{
+  "formatVersion": 1,
+  "family": "per-call-override-order",
+  "description": "Plan v7 section 8.3 fixture family 'per-call-override-order'. Inputs only; the oracle emits expected.",
+  "skipped": [
+    {
+      "what": "A both-present TranslationOptions, i.e. a case observing the constructor guard at TranslationOptions.java:70-71 ('Specify either locale or languageRanges, not both')",
+      "why": "Unconstructible in Java, so no case can record it. The private constructor is reached only from Builder.build() and the NONE constant, and Builder.locale(x) nulls languageRanges whenever x != null (TranslationOptions.java:309-313) while Builder.languageRanges(y) nulls locale whenever y != null (:330-333). No Java caller can present both, so the guard is dead by construction -- the same shape as DefaultStrings:254's both-suppliers arm, whose authored case also constructed and was removed. This family therefore records the property that IS observable: which of the two survives is decided by APPLICATION ORDER, and both orders are measured here."
+    },
+    {
+      "what": "What a JS per-call options OBJECT LITERAL carrying both locale and languageRanges must do",
+      "why": "Not an oracle question. A literal has no application order -- spread order is the same accident as JSON key order -- so no Java run can answer it, and the rows in this family must not be read as answering it. Java's own analogue of the literal is the CONSTRUCTOR, which refuses; its analogue of the ordered setters is the BUILDER, which the port does not have and which coverage-dispositions.json classifies as nonportable at TranslationOptions$Builder :310/:312/:330/:332 ('a nullable setter on a MUTABLE BUILDER, which the port does not have'). The port-side obligation lives where it belongs, as the permanent `required` disposition on TranslationOptions#<init>:70, whose own text asks for a port-side ingress case and records that it cannot be oracle-derived. Choosing the port's answer is a plan decision."
+    }
+  ],
+  "cases": [
+    {
+      "id": "per-call-override-order.zh-tw.ranges-then-locale",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-zh-tw-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title",
+        "locale": "zh-TW",
+        "languageRanges": "en",
+        "perCallOverrideOrder": [
+          "languageRanges",
+          "locale"
+        ]
+      },
+      "partition": "informationalIds",
+      "notes": "The REVERSE-ORDER partner of ingress-matrix-java.zh-tw.per-call-ranges-displace-per-call-locale, which carries the identical key, locale and ranges and states the opposite order. Same inputs, opposite outcome: there the ranges survive and the lookup is en-driven, here the locale survives and the lookup is zh-TW-driven with the longer chain. Neither row is 'the' answer for a both-present call -- together they say the answer is the LAST setter applied, which is the only proposition Java supports. The separate top-level match block is the oracle's own matchFor(zh-TW) probe, emitted whenever input.locale is present, and is identical in both rows: it shows the locale field was accepted in each and then kept or discarded by the order alone. Anchored by ingress-matrix-java.zh-tw.per-call-locale (locale alone) and ingress-matrix-java.zh-tw.per-call-language-ranges (ranges alone). DO NOT RATCHET THIS ROW AS PASSING. It passes against lokalized-js today only because tools/conformance.mjs forwards `locale` and drops `languageRanges`, so the port honours the locale and coincides with Java, which discarded the ranges for a different reason (they were applied first). Once M7's B3 lands the port must REFUSE a per-call options object carrying both -- Java's own analogue of that object is the constructor at TranslationOptions.java:70-71, which refuses -- and this row will stop passing, correctly. Recording it in measurements/conformance.json would turn that correct refusal into a ratchet regression."
+    },
+    {
+      "id": "per-call-override-order.zh-tw.locale-then-ranges-on-zh-hant-only-key",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-zh-tw-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Unrelated.Key",
+        "locale": "zh-TW",
+        "languageRanges": "en",
+        "perCallOverrideOrder": [
+          "locale",
+          "languageRanges"
+        ]
+      },
+      "partition": "informationalIds",
+      "notes": "The same order dependence on the key that exists ONLY in zh-Hant, so the two orders differ in status and translation rather than only in the chain. Locale applied first, ranges second: the ranges survive, the lookup is en-driven, and en has no Unrelated.Key. A port that reproduced the chain difference but not the resolution outcome passes the Checkout.Title pair and fails here."
+    },
+    {
+      "id": "per-call-override-order.zh-tw.ranges-then-locale-on-zh-hant-only-key",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-zh-tw-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Unrelated.Key",
+        "locale": "zh-TW",
+        "languageRanges": "en",
+        "perCallOverrideOrder": [
+          "languageRanges",
+          "locale"
+        ]
+      },
+      "partition": "informationalIds",
+      "notes": "The reverse of the row above, byte-identical in every field except the order array. Ranges applied first, locale second: the locale survives, the lookup is zh-TW-driven and reaches the zh-Hant catalog. Its independent anchor is ingress-matrix-java.zh-tw.per-call-locale-reaches-zh-hant-only-key, which asks the same key through the locale ingress alone. DO NOT RATCHET THIS ROW AS PASSING. It passes against lokalized-js today only because tools/conformance.mjs forwards `locale` and drops `languageRanges`, so the port honours the locale and coincides with Java, which discarded the ranges for a different reason (they were applied first). Once M7's B3 lands the port must REFUSE a per-call options object carrying both -- Java's own analogue of that object is the constructor at TranslationOptions.java:70-71, which refuses -- and this row will stop passing, correctly. Recording it in measurements/conformance.json would turn that correct refusal into a ratchet regression."
+    },
+    {
+      "id": "per-call-override-order.zh-tw.ranges-only-on-zh-hant-only-key",
+      "requirementIds": [],
+      "fixture": "ingress-matrix-java-zh-tw-baseline",
+      "operation": "getResult",
+      "input": {
+        "key": "Unrelated.Key",
+        "languageRanges": "en"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "CONTROL, and the one row in this family with a single ingress and no order to state -- so it is refused a perCallOverrideOrder by both ingest.mjs and the oracle. It fixes what 'the ranges survived' means for this key independently of the order machinery: it must agree field for field with per-call-override-order.zh-tw.locale-then-ranges-on-zh-hant-only-key, and if it does not, the order field is not doing what it claims. MEASURED and equal (RETURNED_KEY, MISSING_TRANSLATION, lookupLocale en, attempted [en]). An ordinary per-call ranges ingress, so it is partitioned requiredPortableIds unlike the four order-dependent rows around it. ITS ONE LIMITATION, stated rather than left to be discovered: this fixture's instance locale is also en, so an implementation that IGNORED per-call languageRanges entirely and fell through to the instance locale answers this row correctly by coincidence -- it anchors the corpus row, and cannot by itself catch that port. The row that can is ingress-matrix-java.zh-tw.per-call-language-ranges, whose ranges resolve to zh-Hant and whose chain [zh-Hant, en] differs from the instance locale's."
+    },
+    {
+      "id": "per-call-override-order.supplied-match.ranges-then-locale",
+      "requirementIds": [],
+      "fixture": "supplied-match-type-none-with-locale",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting.Hello",
+        "locale": "en",
+        "languageRanges": "fr",
+        "perCallOverrideOrder": [
+          "languageRanges",
+          "locale"
+        ]
+      },
+      "partition": "informationalIds",
+      "notes": "The REVERSE-ORDER partner of supplied-match.ingress.per-call-ranges-clear-an-earlier-per-call-locale, with the identical key, locale and ranges. Here the difference reaches the TRANSLATION: fr serves 'Bonjour' when the ranges survive, en serves 'Hello' when the locale does, so the order is visible in the returned string and not only in the diagnostics. The invalid ambient localeMatchSupplier must stay unbuilt on both orders -- either per-call ingress returns from localeLookupFor before the supplier is touched -- so an absent supplierCalls channel is half the observation, and a port that reopened the supplier when a second per-call ingress appeared throws instead of answering."
+    }
+  ]
+}

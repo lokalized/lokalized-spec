@@ -1,0 +1,36 @@
+{
+  "id": "evaluation-locale-fallback-pt",
+  "description": "NEW IN THIS REVIEW. Portuguese as a donor for requesters OUTSIDE its own language, which the pt-pair fixture cannot provide because both of its Portuguese donors serve Portuguese requesters. Loaded: pt (donor), en, ru, ar. French is deliberately NOT loaded here: verified against GeneratedCldrPluralData, fr and pt have equivalent cardinal rule sets ('i = 0,1' versus 'i = 0..1' are the same predicate, and their many-rules are the identical string), so no count could discriminate an fr requester from a pt donor and such a case would be pure decoration. Four loaded locales, four distinct primary language codes, so tiebreakers are null.",
+  "fallbackLocale": "pt",
+  "tiebreakers": null,
+  "files": {
+    "pt": {
+      "Locale.Marker": "pt",
+      "Items.Fallback": {
+        "translation": "{{noun}}",
+        "placeholders": {
+          "noun": {
+            "value": "itemCount",
+            "translations": {
+              "CARDINALITY_ZERO": "pt:ZERO",
+              "CARDINALITY_ONE": "pt:ONE",
+              "CARDINALITY_TWO": "pt:TWO",
+              "CARDINALITY_FEW": "pt:FEW",
+              "CARDINALITY_MANY": "pt:MANY",
+              "CARDINALITY_OTHER": "pt:OTHER"
+            }
+          }
+        }
+      }
+    },
+    "en": {
+      "Locale.Marker": "en"
+    },
+    "ru": {
+      "Locale.Marker": "ru"
+    },
+    "ar": {
+      "Locale.Marker": "ar"
+    }
+  }
+}

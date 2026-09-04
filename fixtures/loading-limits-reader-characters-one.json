@@ -1,0 +1,14 @@
+{
+  "id": "loading-limits-reader-characters-one",
+  "description": "A catalog far larger than one UTF-16 code unit loaded with maximumReaderCharacters at 1. The reader limit governs Reader input only; filesystem and InputStream loading are bounded by the byte limits. Verified to load successfully.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumReaderCharacters": 1
+  },
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  }
+}

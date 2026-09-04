@@ -1,0 +1,165 @@
+{
+  "id": "expressions-owed-static-rejections",
+  "description": "Deliberately unloadable catalogs, one locale file per statically-rejected expression, so each load-time diagnostic is observed on its own rather than aborting a shared run. Covers the checks the corpus reached but never made FIRE: the boolean-operand rule for '&&' (both orientations -- the JavaScript-truthiness trap), the chained-comparison rule with the boolean on the RIGHT, the ordering-operator numeric rule in both orientations, canBeEqualExpressionValue's refusal, '<=' proven to be an ordering operator at validation, the two constant pairs that must be refused so the NUMBER/CARDINALITY allowance is not read as 'anything goes', an expression that ends on a bare operand, and the three expression size ceilings breached by exactly one unit. The size cases are measured against TranslationRuntimeLimits.hardCeilings(), which is what LocalizedStringLoader validates with; the last file is a control that loads.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": {
+        "translation": "t",
+        "alternatives": [
+          {
+            "count": {
+              "translation": "none"
+            }
+          }
+        ]
+      }
+    },
+    "fr": {
+      "Key.A": {
+        "translation": "t",
+        "alternatives": [
+          {
+            "alpha && alpha == 1": {
+              "translation": "none"
+            }
+          }
+        ]
+      }
+    },
+    "de": {
+      "Key.A": {
+        "translation": "t",
+        "alternatives": [
+          {
+            "alpha == 1 && beta": {
+              "translation": "none"
+            }
+          }
+        ]
+      }
+    },
+    "es": {
+      "Key.A": {
+        "translation": "t",
+        "alternatives": [
+          {
+            "count == (count == 0)": {
+              "translation": "none"
+            }
+          }
+        ]
+      }
+    },
+    "it": {
+      "Key.A": {
+        "translation": "t",
+        "alternatives": [
+          {
+            "value > CARDINALITY_ONE": {
+              "translation": "none"
+            }
+          }
+        ]
+      }
+    },
+    "nl": {
+      "Key.A": {
+        "translation": "t",
+        "alternatives": [
+          {
+            "CARDINALITY_ONE < value": {
+              "translation": "none"
+            }
+          }
+        ]
+      }
+    },
+    "pt": {
+      "Key.A": {
+        "translation": "t",
+        "alternatives": [
+          {
+            "GENDER_MASCULINE == 1": {
+              "translation": "none"
+            }
+          }
+        ]
+      }
+    },
+    "ru": {
+      "Key.A": {
+        "translation": "t",
+        "alternatives": [
+          {
+            "1 == GENDER_MASCULINE": {
+              "translation": "none"
+            }
+          }
+        ]
+      }
+    },
+    "pl": {
+      "Key.A": {
+        "translation": "t",
+        "alternatives": [
+          {
+            "count <= CARDINALITY_ONE": {
+              "translation": "none"
+            }
+          }
+        ]
+      }
+    },
+    "sv": {
+      "Key.A": {
+        "translation": "t",
+        "alternatives": [
+          {
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa == 1": {
+              "translation": "none"
+            }
+          }
+        ]
+      }
+    },
+    "tr": {
+      "Key.A": {
+        "translation": "t",
+        "alternatives": [
+          {
+            "a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1 && a == 1": {
+              "translation": "none"
+            }
+          }
+        ]
+      }
+    },
+    "fi": {
+      "Key.A": {
+        "translation": "t",
+        "alternatives": [
+          {
+            "(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((a == 1)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))": {
+              "translation": "none"
+            }
+          }
+        ]
+      }
+    },
+    "cs": {
+      "Key.A": {
+        "translation": "t",
+        "alternatives": [
+          {
+            "count == 0": {
+              "translation": "none"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

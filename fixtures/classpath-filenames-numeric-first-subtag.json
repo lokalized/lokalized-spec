@@ -1,0 +1,15 @@
+{
+  "id": "classpath-filenames-numeric-first-subtag",
+  "description": "A valid en catalog plus a file named '419.json'. LANGUAGE_TAG_PATTERN requires the FIRST subtag to be alphabetic ([A-Za-z]{1,8}) while later subtags may be alphanumeric, so a purely numeric stem fails the pattern for a reason unrelated to length. The rejection route that the nine-letter fixture cannot reach.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "rawFiles": {
+    "419.json": "{\"Key.numeric\":\"numeric\"}"
+  }
+}

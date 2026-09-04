@@ -1,0 +1,26 @@
+{
+  "id": "ingress-matrix-java-zh-tw-match-supplier-locale",
+  "description": "Seed row 4 catalog with a localeMatchSupplier returning matchFor(Locale zh-TW). The lookup locale is the selection zh-Hant, so the chain loses the zh-TW step the per-call-locale route walks.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "zh": [
+      "zh",
+      "zh-Hant"
+    ]
+  },
+  "localeMatchSupplier": {
+    "behavior": "match-locale",
+    "locale": "zh-TW"
+  },
+  "files": {
+    "zh": {
+      "Checkout.Title": "结账"
+    },
+    "zh-Hant": {
+      "Unrelated.Key": "無關"
+    },
+    "en": {
+      "Checkout.Title": "Checkout"
+    }
+  }
+}

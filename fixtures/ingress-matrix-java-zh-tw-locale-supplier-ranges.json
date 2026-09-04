@@ -1,0 +1,26 @@
+{
+  "id": "ingress-matrix-java-zh-tw-locale-supplier-ranges",
+  "description": "Seed row 4 catalog with a localeSupplier that negotiates 'zh-TW' and collapses to the bare Locale zh-Hant. The re-derived match is EXACT/zh-Hant with range zh-hant, where the match supplier on the identical header preserves LIKELY_SUBTAG/zh-Hant with range zh-tw: same ingress family, same selection, different reported match.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "zh": [
+      "zh",
+      "zh-Hant"
+    ]
+  },
+  "localeSupplier": {
+    "behavior": "match-ranges",
+    "ranges": "zh-TW"
+  },
+  "files": {
+    "zh": {
+      "Checkout.Title": "结账"
+    },
+    "zh-Hant": {
+      "Unrelated.Key": "無關"
+    },
+    "en": {
+      "Checkout.Title": "Checkout"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "id": "owed-bidi-repeated-placeholder-tight-limit",
+  "description": "The same repeated-placeholder template under maximumInterpolatedOutputCharacters 11. 'abcd' isolates to 6 characters; the first occurrence fits, and the second is offered a remaining budget of 5, so the MEMOIZED path's own limit check (render line 210) rejects it. Note the threshold differs from the first render's: line 210 compares the ISOLATED length against the remaining budget, while BidiUtils.isolate line 98 compares the RAW length -- and the reported maximum is the FULL limit (11), not the remaining budget.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "runtimeLimits": {
+    "maximumInterpolatedOutputCharacters": 11
+  },
+  "bidiIsolation": "ALWAYS",
+  "files": {
+    "en": {
+      "Locale.Marker": "en",
+      "Twice.Value": "{{v}}{{v}}"
+    }
+  }
+}

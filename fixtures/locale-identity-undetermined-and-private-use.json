@@ -1,0 +1,30 @@
+{
+  "id": "locale-identity-undetermined-and-private-use",
+  "description": "und, und-Latn, x-private and en-x-custom loaded together. LocaleUtils.normalizedLanguage returns empty for undetermined and private-use tags, so und and und-Latn create no tiebreaker ambiguity at all (DefaultStrings skips them when grouping loaded locales by language code), while en-x-custom DOES carry primary language en and therefore forces a tiebreaker permutation with en. That asymmetry is the point of the fixture. NOTE (ingest): the und-Latn catalog was REMOVED. Loading both und and und-Latn makes the language 'und' ambiguous, and DefaultStrings then rejects the required tiebreaker entry outright with \"Tiebreaker language code 'und' must identify a primary language\" — so that catalog set cannot be built at all. und-Latn survives here as a REQUESTED tag, which is what the cases actually exercise.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "en": [
+      "en",
+      "en-x-custom"
+    ]
+  },
+  "files": {
+    "und": {
+      "Greeting": "g und",
+      "Only.Und": "und only"
+    },
+    "x-private": {
+      "Greeting": "g x-private",
+      "Only.Private": "private only"
+    },
+    "en-x-custom": {
+      "Greeting": "g en-x-custom"
+    },
+    "en": {
+      "Greeting": "hello",
+      "Only.En": "en only"
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

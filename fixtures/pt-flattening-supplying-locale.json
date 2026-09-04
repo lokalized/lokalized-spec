@@ -1,0 +1,31 @@
+{
+  "id": "pt-flattening-supplying-locale",
+  "description": "Plan v7 section 8.3 same-language-flattening clause, boundary half: pt-PT is loaded but does NOT carry the key, so per-key fallback reaches the pt catalog. DefaultStrings.getResult passes `candidateLocale` -- the locale that SUPPLIED the entry -- into getInternal (DefaultStrings.java:712), and cardinalityForValue classifies with that locale (DefaultStrings.java:1438), so the pt entry's cardinality placeholder is evaluated under pt's rules even though the caller asked for pt-PT. This fixture exists so that 'never flatten pt-PT into pt' cannot be over-applied into 'a pt entry served to a pt-PT caller must use pt-PT rules'. The pt-PT file carries an unrelated key rather than being absent or empty: pt-PT must remain a LOADED locale, otherwise the mandatory pt tiebreaker list would no longer be an exact permutation of the loaded pt-language locales and the fixture would not build.",
+  "fallbackLocale": "pt",
+  "tiebreakers": {
+    "pt": [
+      "pt",
+      "pt-PT"
+    ]
+  },
+  "files": {
+    "pt": {
+      "I have {{itemCount}} items": {
+        "translation": "pt|{{itemCount}}|{{items}}",
+        "placeholders": {
+          "items": {
+            "value": "itemCount",
+            "translations": {
+              "CARDINALITY_ONE": "pt-ONE",
+              "CARDINALITY_MANY": "pt-MANY",
+              "CARDINALITY_OTHER": "pt-OTHER"
+            }
+          }
+        }
+      }
+    },
+    "pt-PT": {
+      "Unrelated.Key": "chave sem relacao"
+    }
+  }
+}

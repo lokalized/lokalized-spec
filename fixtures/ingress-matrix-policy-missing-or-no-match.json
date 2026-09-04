@@ -1,0 +1,30 @@
+{
+  "id": "ingress-matrix-policy-missing-or-no-match",
+  "description": "Fallback-policy ingress matrix, instance leg pinned EXPLICITLY to missing-or-no-match. Identical catalog to ingress-matrix-policy-default; the pair exists so the corpus records that explicitly configuring the default and leaving it unset are the same thing, checked on BOTH failure reasons rather than only one.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "translationFallbackPolicy": "missing-or-no-match",
+  "files": {
+    "ru": {
+      "Locale.Marker": "ru",
+      "Items.Sparse": {
+        "commentary": "Only ONE and OTHER declared, though Russian also selects FEW and MANY. Reaching MANY throws inside getInternal, which getResult classifies as RESOLUTION_FAILURE.",
+        "translation": "{{noun}}",
+        "placeholders": {
+          "noun": {
+            "value": "itemCount",
+            "translations": {
+              "CARDINALITY_ONE": "ru:ONE",
+              "CARDINALITY_OTHER": "ru:OTHER"
+            }
+          }
+        }
+      }
+    },
+    "en": {
+      "Locale.Marker": "en",
+      "Items.Sparse": "en:fallback-resolved",
+      "Items.EnOnly": "en:only-here"
+    }
+  }
+}

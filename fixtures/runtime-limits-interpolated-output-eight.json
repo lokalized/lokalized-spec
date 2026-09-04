@@ -1,0 +1,30 @@
+{
+  "id": "runtime-limits-interpolated-output-eight",
+  "description": "Plan v7 section 8.3 runtime-limits clause: maximumInterpolatedOutputCharacters pinned exactly at 8, with bidiIsolation left at the library default so per-call overrides can be measured against it. StringInterpolator.appendChecked bounds the OUTPUT builder, not the template, so 'Hi {{name}}' separates value length from template length. When isolation is in force the interpolator hands BidiUtils.BoundedIsolatedValue the REMAINING budget for rendering while DefaultStrings.java:1367 passes it the FULL maximum for error reporting, so the FSI and PDI markers are charged against the same 8 characters but the message still names 8. The Fragment keys put an 8- and a 9-character generated fragment at depth 1, where the same cap applies per expansion and the failure is contextualized by placeholder.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "runtimeLimits": {
+    "maximumInterpolatedOutputCharacters": 8
+  },
+  "files": {
+    "en": {
+      "Greeting": "Hi {{name}}",
+      "Fragment": {
+        "translation": "{{f}}",
+        "placeholders": {
+          "f": {
+            "translation": "abcdefgh"
+          }
+        }
+      },
+      "Fragment over": {
+        "translation": "{{g}}",
+        "placeholders": {
+          "g": {
+            "translation": "abcdefghi"
+          }
+        }
+      }
+    }
+  }
+}

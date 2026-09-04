@@ -1,0 +1,15 @@
+{
+  "id": "classpath-filenames-mixed-case-extension",
+  "description": "A valid en catalog plus a file named 'de.Json'. The mixed-case variant of the case-insensitive extension check at LocalizedStringLoader.java:1677, separated from the all-uppercase fixture so each spelling is asserted on its own.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "rawFiles": {
+    "de.Json": "{\"Key.deJson\":\"deJson\"}"
+  }
+}

@@ -1,0 +1,124 @@
+{
+  "formatVersion": 1,
+  "status": "blocked-pending-human-calibration-and-inventory",
+  "sourceCalibration": {
+    "path": "production-calibration-record.draft.json",
+    "sha256": "eb6a008f8b904fd9d4500da61fba9716d1393d333c97ab14a1940578d852c418",
+    "requiredStatus": "approved"
+  },
+  "inventoryBasis": {
+    "status": "machine-validated-agent-reviewed-human-pending",
+    "sourcePlanSha256": "4ace5e349bedd45b16cd87182aed3306d33fae92b034ed01ddb93bc733c5f62d",
+    "anticipatedInitialSliceRecords": 1963,
+    "sourceInventorySha256": [
+      "2f43dbf81591dfb03ecce5a3d5cfa477dd85892c6f401f16eec9812d16531867",
+      "c444f46e0745d2ddacb797ff1f1164d68a47cb05fa97ef1742ccd94b6519371a",
+      "e225cd8b396b440e74268a5bfd604496e4e95bb659fffef8ff68a76aae536b8d"
+    ],
+    "reviewAttestation": {
+      "path": "inventory-review.draft.json",
+      "sha256": "9cbb086599a4a0bea1fa8d25fb476ef04bf7e31f884653019504eb8dac45a7da",
+      "requiredStatus": "human-approved"
+    }
+  },
+  "agentThroughput": {
+    "minutesPerAcceptedRecord": 0.255195,
+    "contingencyFactor": 1.5,
+    "initialSliceRecordCount": 1963,
+    "allowanceMinutes": 751.4216775,
+    "classification": "planning-only"
+  },
+  "humanAttention": {
+    "implementerMinutesPerAcceptedRecord": 0.0,
+    "reviewerMinutesPerAcceptedRecord": 0.25,
+    "decisionOwnerMinutesPerAcceptedRecord": 0.0,
+    "fixedDecisionOwnerMinutes": 60,
+    "schemaLinterToolingMinutes": 0,
+    "schemaLinterToolingRole": "productionImplementer",
+    "contingencyFactor": 1.5,
+    "initialSliceRecordCount": 1963,
+    "allowanceMinutes": 796.125
+  },
+  "m0Envelope": {
+    "targetDate": "2026-10-15",
+    "combinedHumanEffortCapHours": 21.2688,
+    "committedImplementerHoursPerWeek": 10,
+    "committedReviewerHoursPerWeek": 10,
+    "committedDecisionOwnerHoursPerWeek": 2
+  },
+  "m2Envelope": {
+    "elapsedDurationDays": 30,
+    "combinedHumanEffortCapHours": 21.2688
+  },
+  "tripwirePolicy": {
+    "checkpoint": {
+      "triggerRule": "earlier-of-elapsed-or-effort",
+      "elapsedFraction": 0.5,
+      "effortFraction": 0.5,
+      "requiredApprovers": [
+        "humanReviewer",
+        "humanDecisionOwner"
+      ],
+      "allowedPauseOutcomes": [
+        "stop",
+        "claim-cut-migration",
+        "in-cap-remediation",
+        "new-envelope"
+      ]
+    },
+    "stop": {
+      "triggerRule": "either-date-or-effort-cap",
+      "elapsedFraction": 1,
+      "effortFraction": 1,
+      "continuationRequires": [
+        "new-envelope",
+        "claim-cuts-or-funded-capacity"
+      ]
+    },
+    "m0RequiredArtifacts": [
+      "corrected-direct-locale-contract",
+      "executable-registry-linter-result",
+      "reproducible-lossless-candidate-results"
+    ],
+    "m2RequiredArtifacts": [
+      "node-root-core-result",
+      "exact-floor-browser-result",
+      "m1-m3a-evidence-closure"
+    ]
+  },
+  "eventLog": [],
+  "approval": {
+    "planSha256": "4ace5e349bedd45b16cd87182aed3306d33fae92b034ed01ddb93bc733c5f62d",
+    "rolesSha256": "3e4abb4e901df1d98a94d028168baf934ba995cc12880e7dcafa50d68c7f29ca",
+    "inventoryReviewSha256": "9cbb086599a4a0bea1fa8d25fb476ef04bf7e31f884653019504eb8dac45a7da",
+    "calibrationSha256": "eb6a008f8b904fd9d4500da61fba9716d1393d333c97ab14a1940578d852c418",
+    "profileRegistrySha256": "46c0fec915e03e6b1e924c8fbf9ea9d7b3d6f677014e3a288dd547d38934c9ec",
+    "bootstrapRequirementsSha256": "2b26decff5b6351635f7ceb7835d897c624d3addfade8315f8dc7a64d06bb4b0",
+    "selectionRecordSha256": "72574d2a5b11218d569947c40fcdf7b44c7e02c5b94a4bee5e1f329a8e9713d4",
+    "approvalCommit": null,
+    "approvedAt": "2026-09-01T21:23:45Z",
+    "startEvent": "m0-start",
+    "ledgerSource": "maintainer-declared",
+    "countedWorkCategories": [],
+    "otherM0WorkItems": [],
+    "registryHumanAllowanceHours": 13.2688,
+    "otherM0WorkAllowanceHours": 8,
+    "thresholdCalculationHours": 21.2688,
+    "humanReviewer": "Mark Allen",
+    "humanDecisionOwner": "Mark Allen"
+  },
+  "predecessorCapacitySha256": null,
+  "history": [],
+  "blockingReasons": [
+    "The machine-validated inventory still requires human review before it can bind the cap.",
+    "Production implementer is unassigned.",
+    "Human reviewer is unassigned.",
+    "Human decision owner is unassigned.",
+    "Human-attention calibration has not run.",
+    "Schema, linter, and tooling human effort is not estimated.",
+    "The M0 target date, weekly role commitments, and combined human-effort cap are unset.",
+    "The provisional M2 duration and combined-effort cap are unset.",
+    "The itemized, role-allocated, evidence-backed estimate for all other M0 work\u2014including the time-aware lifecycle checker\u2014is unset.",
+    "The frozen-input approval commit, committed start record, start event, ledger, counted categories, and other-M0 allowance are unset."
+  ]
+}

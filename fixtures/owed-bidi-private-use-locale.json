@@ -1,0 +1,21 @@
+{
+  "id": "owed-bidi-private-use-locale",
+  "description": "BidiIsolation.RTL_LOCALES with three catalogs whose LOCALES decide isolation: ar maximizes to ar-Arab-EG and isolates, en maximizes to en-Latn-US and does not, and x-private has no script subtag AND no likely subtag at all -- the only route to BidiUtils.localeUsesRightToLeftScript's `likelySubtag.isPresent()` FALSE arm, where `script` stays empty and isRightToLeftScript(\"\") decides.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "bidiIsolation": "RTL_LOCALES",
+  "files": {
+    "en": {
+      "Locale.Marker": "en",
+      "Wrap.Value": "[{{value}}]"
+    },
+    "ar": {
+      "Locale.Marker": "ar",
+      "Wrap.Value": "[{{value}}]"
+    },
+    "x-private": {
+      "Locale.Marker": "x-private",
+      "Wrap.Value": "[{{value}}]"
+    }
+  }
+}

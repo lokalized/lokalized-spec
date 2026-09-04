@@ -1,0 +1,49 @@
+{
+  "id": "malformed-structure-placeholder-references",
+  "description": "Templates whose {{...}} references are structurally invalid: a malformed name, an unclosed placeholder, a stray closing delimiter, a reserved language-form constant, and malformed references reached through a placeholder translation and through an alternative (which exercises the declaration-path rendering).",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "Hello, {{1bad}}"
+    },
+    "fr": {
+      "Key.A": "Hello, {{name"
+    },
+    "de": {
+      "Key.A": "Hello }} there"
+    },
+    "es": {
+      "Key.A": "I read {{CARDINALITY_ONE}}"
+    },
+    "it": {
+      "Key.A": {
+        "translation": "I read {{books}}",
+        "placeholders": {
+          "books": {
+            "value": "count",
+            "translations": {
+              "CARDINALITY_ONE": "{{1bad}} book",
+              "CARDINALITY_OTHER": "books"
+            }
+          }
+        }
+      }
+    },
+    "nl": {
+      "Key.A": {
+        "translation": "t",
+        "alternatives": [
+          {
+            "count == 0": {
+              "translation": "none {{1bad}}"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

@@ -1,0 +1,25 @@
+{
+  "id": "warnings-limit-zero-one-warning",
+  "description": "A Russian catalog that produces exactly one warning, loaded with maximumWarnings 0. Deliberately unloadable: the session throws on the first warning, so no Strings instance can be built and loadOnly is required.",
+  "fallbackLocale": "ru",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumWarnings": 0
+  },
+  "loadOnly": true,
+  "files": {
+    "ru": {
+      "Zulu": {
+        "translation": "{{zc}}",
+        "placeholders": {
+          "zc": {
+            "value": "n",
+            "translations": {
+              "CARDINALITY_ONE": "z"
+            }
+          }
+        }
+      }
+    }
+  }
+}

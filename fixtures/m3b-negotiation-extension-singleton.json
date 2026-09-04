@@ -1,0 +1,14 @@
+{
+  "id": "m3b-negotiation-extension-singleton",
+  "description": "A catalog loaded under a tag carrying a BCP 47 extension singleton (de-u-co-phonebk). RFC 4647 extended filtering treats a single-character subtag in the tag as terminating the match instead of being skipped, and no corpus locale carries one.",
+  "fallbackLocale": "fr",
+  "tiebreakers": null,
+  "files": {
+    "fr": {
+      "Checkout.Title": "fr"
+    },
+    "de-u-co-phonebk": {
+      "Checkout.Title": "de-u-co-phonebk"
+    }
+  }
+}

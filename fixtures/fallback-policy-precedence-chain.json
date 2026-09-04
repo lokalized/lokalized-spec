@@ -1,0 +1,116 @@
+{
+  "id": "fallback-policy-precedence-chain",
+  "description": "Plan v7 section 8.3 'final failure precedence'. A three-catalog chain (de-AT, de, en with fallback en) requested at de-AT, built so DIFFERENT candidates fail for DIFFERENT reasons inside one walk. DefaultStrings.java:742-746 computes the final reason by precedence, not by recency: firstFallbackFailure != null wins as RESOLUTION_FAILURE, else the sticky noMatchingAlternativeEncountered flag wins as NO_MATCHING_ALTERNATIVE, else MISSING_TRANSLATION -- and firstFallbackFailure is assigned only while still null, so it retains the FIRST resolution failure's throwable, never the last. Precedence.FirstCauseRetention deliberately makes de throw IllegalStateException ('Missing Gender translation for NEUTER') and en throw IllegalArgumentException ('Missing value for placeholder absentCount'), verified by resolving each locale directly, so first-versus-last cause retention is observable. Precedence.HaltsMidChain gives the three policies three different attempted-locale lengths AND three different reported reasons from one key. Two loaded locales share the primary language de, so tiebreakers is mandatory and lists the exact permutation {de-AT, de}.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "de": [
+      "de-AT",
+      "de"
+    ]
+  },
+  "files": {
+    "de-AT": {
+      "Precedence.ChainControl": "de-AT: chain control",
+      "Precedence.NoMatchThenMissing": {
+        "commentary": "Alternatives-only. tier == 1 matches, tier == 7 does not, so one control case and one NO_MATCHING_ALTERNATIVE case share the entry.",
+        "alternatives": [
+          {
+            "tier == 1": {
+              "translation": "de-AT: tier one"
+            }
+          }
+        ]
+      },
+      "Precedence.ResolutionThenNoMatchThenMissing": {
+        "commentary": "GENDER_NEUTER is deliberately absent from this map. A NEUTER value reaches the gender branch at DefaultStrings.java:1014-1015 and throws IllegalStateException 'Missing Gender translation for NEUTER' (the enum's own name(), not the JS constant spelling), which contextualizePlaceholderFailure re-wraps at DefaultStrings.java:1265-1268. getResult records it as RESOLUTION_FAILURE.",
+        "translation": "de-AT: {{subject}}",
+        "placeholders": {
+          "subject": {
+            "value": "orderGender",
+            "translations": {
+              "GENDER_MASCULINE": "him",
+              "GENDER_FEMININE": "her"
+            }
+          }
+        }
+      },
+      "Precedence.FirstCauseRetention": {
+        "commentary": "Unmatched at tier 7: the chain's NO_MATCHING_ALTERNATIVE, which occurs BEFORE either resolution failure.",
+        "alternatives": [
+          {
+            "tier == 1": {
+              "translation": "de-AT: tier one"
+            }
+          }
+        ]
+      },
+      "Precedence.HaltsMidChain": {
+        "commentary": "Unmatched at tier 7. neverFallback halts here with NO_MATCHING_ALTERNATIVE; the default policy walks past it.",
+        "alternatives": [
+          {
+            "tier == 1": {
+              "translation": "de-AT: tier one"
+            }
+          }
+        ]
+      }
+    },
+    "de": {
+      "Precedence.ChainControl": "de: chain control",
+      "Precedence.ResolutionThenNoMatchThenMissing": {
+        "commentary": "Unmatched at tier 7: the NO_MATCHING_ALTERNATIVE that the earlier RESOLUTION_FAILURE must outrank.",
+        "alternatives": [
+          {
+            "tier == 1": {
+              "translation": "de: tier one"
+            }
+          }
+        ]
+      },
+      "Precedence.FirstCauseRetention": {
+        "commentary": "Throws IllegalStateException 'Missing Gender translation for NEUTER'. This is the FIRST resolution failure in the chain; en's is a different type and message. GENDER_NEUTER is deliberately absent from this map. A NEUTER value reaches the gender branch at DefaultStrings.java:1014-1015 and throws IllegalStateException 'Missing Gender translation for NEUTER' (the enum's own name(), not the JS constant spelling), which contextualizePlaceholderFailure re-wraps at DefaultStrings.java:1265-1268. getResult records it as RESOLUTION_FAILURE.",
+        "translation": "de: {{subject}}",
+        "placeholders": {
+          "subject": {
+            "value": "orderGender",
+            "translations": {
+              "GENDER_MASCULINE": "him",
+              "GENDER_FEMININE": "her"
+            }
+          }
+        }
+      },
+      "Precedence.HaltsMidChain": {
+        "commentary": "The RESOLUTION_FAILURE at which the default policy halts, forfeiting the plain en translation one candidate later. GENDER_NEUTER is deliberately absent from this map. A NEUTER value reaches the gender branch at DefaultStrings.java:1014-1015 and throws IllegalStateException 'Missing Gender translation for NEUTER' (the enum's own name(), not the JS constant spelling), which contextualizePlaceholderFailure re-wraps at DefaultStrings.java:1265-1268. getResult records it as RESOLUTION_FAILURE.",
+        "translation": "de: {{subject}}",
+        "placeholders": {
+          "subject": {
+            "value": "orderGender",
+            "translations": {
+              "GENDER_MASCULINE": "him",
+              "GENDER_FEMININE": "her"
+            }
+          }
+        }
+      }
+    },
+    "en": {
+      "Precedence.ChainControl": "en: chain control",
+      "Precedence.OnlyInFallback": "en: only the fallback catalog has this",
+      "Precedence.HaltsMidChain": "en: reachable, but the default policy never consults this",
+      "Precedence.FirstCauseRetention": {
+        "commentary": "Throws IllegalArgumentException 'Missing value for placeholder absentCount'. Deliberately a DIFFERENT type and message from de's IllegalStateException, so retaining the last cause instead of the first is visible. The cardinality placeholder reads a context name no case supplies, reaching the non-range cardinality branch at DefaultStrings.java:966-968: IllegalArgumentException \"Missing value for placeholder 'absentCount' in key ...\", contextualized at DefaultStrings.java:1265-1268.",
+        "translation": "en: {{itemWord}}",
+        "placeholders": {
+          "itemWord": {
+            "value": "absentCount",
+            "translations": {
+              "CARDINALITY_ONE": "item",
+              "CARDINALITY_OTHER": "items"
+            }
+          }
+        }
+      }
+    }
+  }
+}

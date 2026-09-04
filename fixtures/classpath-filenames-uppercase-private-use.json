@@ -1,0 +1,15 @@
+{
+  "id": "classpath-filenames-uppercase-private-use",
+  "description": "A valid en catalog plus a file named 'X-Custom.json'. The 'x-' gate at LocalizedStringLoader.java:1663 lowercases with Locale.ROOT before testing the prefix, so an uppercase private-use marker takes the same escape hatch. MEASURED: loads, and the key canonicalises to lowercase 'x-custom'.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "rawFiles": {
+    "X-Custom.json": "{\"Key.Xcustom\":\"Xcustom\"}"
+  }
+}

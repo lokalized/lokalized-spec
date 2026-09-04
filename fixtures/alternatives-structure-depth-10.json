@@ -1,0 +1,86 @@
+{
+  "id": "alternatives-structure-depth-10",
+  "description": "Alternatives nested 10 levels deep. JSON container depth of the entry is 31. Generated, not hand-authored.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumJsonNestingDepth": 128
+  },
+  "files": {
+    "en": {
+      "Nested.Alternatives": {
+        "translation": "depth-1",
+        "alternatives": [
+          {
+            "count == 1": {
+              "translation": "depth-2",
+              "alternatives": [
+                {
+                  "count == 1": {
+                    "translation": "depth-3",
+                    "alternatives": [
+                      {
+                        "count == 1": {
+                          "translation": "depth-4",
+                          "alternatives": [
+                            {
+                              "count == 1": {
+                                "translation": "depth-5",
+                                "alternatives": [
+                                  {
+                                    "count == 1": {
+                                      "translation": "depth-6",
+                                      "alternatives": [
+                                        {
+                                          "count == 1": {
+                                            "translation": "depth-7",
+                                            "alternatives": [
+                                              {
+                                                "count == 1": {
+                                                  "translation": "depth-8",
+                                                  "alternatives": [
+                                                    {
+                                                      "count == 1": {
+                                                        "translation": "depth-9",
+                                                        "alternatives": [
+                                                          {
+                                                            "count == 1": {
+                                                              "translation": "depth-10",
+                                                              "alternatives": [
+                                                                {
+                                                                  "count == 1": {
+                                                                    "translation": "leaf"
+                                                                  }
+                                                                }
+                                                              ]
+                                                            }
+                                                          }
+                                                        ]
+                                                      }
+                                                    }
+                                                  ]
+                                                }
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "id": "classpath-resources-catalog",
+  "description": "A clean three-locale catalog in which every file carries a unique marker key (Only.En, Only.De, Only.Fr) alongside a shared Common.Greeting. The markers are the point: because loadFromClasspathResources takes the locale from the caller, the only way to observe WHICH resource landed under WHICH locale is a per-file key. Serves the multi-locale, locale-key, conflict and resource-path clauses. Verified to load from the filesystem as de/en/fr with three distinct primary languages, so no tiebreakers are required and Strings construction succeeds.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Common.Greeting": "Hello",
+      "Only.En": "en"
+    },
+    "de": {
+      "Common.Greeting": "Hallo",
+      "Only.De": "de"
+    },
+    "fr": {
+      "Common.Greeting": "Bonjour",
+      "Only.Fr": "fr"
+    }
+  }
+}

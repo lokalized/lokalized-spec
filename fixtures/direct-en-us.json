@@ -1,0 +1,9 @@
+{
+  "id": "direct-en-us",
+  "description": "Plan v7 section 8.3 seed row 5: a direct en-US lookup against a lone loaded en must still report a non-null cldr-fallback diagnostic rather than a null selection.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": { "Checkout.Title": "Checkout" }
+  }
+}

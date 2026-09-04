@@ -1,0 +1,12 @@
+{
+  "id": "ingress-matrix-handler-default",
+  "description": "Failure-handler ingress matrix, instance leg UNSET so the library default TranslationFailureHandler.returnKey() applies (DefaultStrings.java:472). Absent.Key is in no catalog, so every lookup of it reaches the handler. A single loaded locale means localeFallbackCandidates yields exactly one candidate, so the fallback policy is never consulted (:731) and the row is about which handler responds and nothing else.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Locale.Marker": "en",
+      "Greeting.Named": "en:Hello, {{name}}"
+    }
+  }
+}

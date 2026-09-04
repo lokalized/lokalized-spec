@@ -1,0 +1,17 @@
+{
+  "id": "locale-identity-zh-hant-script",
+  "description": "zh-Hant as the sole Chinese catalog, so every request is judged on script identity. Deliberately different from the section 8.3 seed row 4 fixture (direct-zh-tw), which also loads zh: here zh-Hant is the only place a Chinese key can come from.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "zh-Hant": {
+      "Greeting": "nihao",
+      "Only.Hant": "hant only"
+    },
+    "en": {
+      "Greeting": "hello"
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

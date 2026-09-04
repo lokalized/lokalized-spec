@@ -1,0 +1,29 @@
+{
+  "id": "ingress-matrix-java-extlang-match-supplier-ranges-zh-cmn",
+  "description": "Extlang arm catalog with a localeMatchSupplier negotiating the header 'zh-cmn' through the whole-list solver, which keeps the literal range and reaches a DIFFERENT catalog than the kernel does.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "zh": [
+      "zh",
+      "cmn"
+    ]
+  },
+  "localeMatchSupplier": {
+    "behavior": "match-ranges",
+    "ranges": "zh-cmn"
+  },
+  "files": {
+    "zh": {
+      "Checkout.Title": "zh"
+    },
+    "cmn": {
+      "Checkout.Title": "cmn"
+    },
+    "yue": {
+      "Checkout.Title": "yue"
+    },
+    "en": {
+      "Checkout.Title": "en"
+    }
+  }
+}

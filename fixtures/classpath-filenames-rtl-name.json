@@ -1,0 +1,15 @@
+{
+  "id": "classpath-filenames-rtl-name",
+  "description": "A valid en catalog plus an Arabic-script (right-to-left) named file with a .json extension. The diagnostic quotes the name inside a left-to-right message with no bidi isolation applied, so this also records how an RTL run is embedded in a warning. Informational.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "rawFiles": {
+    "عربي.json": "{\"Key.rtl\":\"rtl\"}"
+  }
+}

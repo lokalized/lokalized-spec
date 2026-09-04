@@ -1,0 +1,26 @@
+{
+  "id": "ingress-matrix-java-case-locale-supplier-ranges",
+  "description": "Case arm with ZH-hant negotiated inside a localeSupplier and collapsed to a bare Locale.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "zh": [
+      "zh",
+      "zh-Hant"
+    ]
+  },
+  "localeSupplier": {
+    "behavior": "match-ranges",
+    "ranges": "ZH-hant"
+  },
+  "files": {
+    "zh": {
+      "Checkout.Title": "zh"
+    },
+    "zh-Hant": {
+      "Checkout.Title": "zh-Hant"
+    },
+    "en": {
+      "Checkout.Title": "en"
+    }
+  }
+}

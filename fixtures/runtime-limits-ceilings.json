@@ -1,0 +1,138 @@
+{
+  "id": "runtime-limits-ceilings",
+  "description": "Plan v7 section 8.3 runtime-limits clause: every limit set to its hard ceiling (MAXIMUM_NUMBER_PRECISION 4096, MAXIMUM_ABSOLUTE_NUMBER_SCALE 4096, MAXIMUM_VISIBLE_DECIMAL_PLACES 4096, MAXIMUM_COMPACT_EXPONENT 4096, MAXIMUM_EXPRESSION_CHARACTERS 4096, MAXIMUM_EXPRESSION_TOKENS 512, MAXIMUM_EXPRESSION_NESTING_DEPTH 64, MAXIMUM_GENERATED_PLACEHOLDER_DEPTH 64, MAXIMUM_INTERPOLATED_OUTPUT_CHARACTERS 1048576, MAXIMUM_GENERATED_EXPANSION_CHARACTERS 8388608), all read from TranslationRuntimeLimits.java lines 80-101. Builder.build's validateCeiling rejects anything above a ceiling, so the fixture constructing at all pins the ceilings from below. The cases then show two values that fail under the defaults succeeding here — pinning that the configured limit, not a hardcoded default, governs at runtime — and one that still fails, pinning that PluralOperands.Builder's own bound is not reached by the instance configuration.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "runtimeLimits": {
+    "maximumNumberPrecision": 4096,
+    "maximumAbsoluteNumberScale": 4096,
+    "maximumVisibleDecimalPlaces": 4096,
+    "maximumCompactExponent": 4096,
+    "maximumExpressionCharacters": 4096,
+    "maximumExpressionTokens": 512,
+    "maximumExpressionNestingDepth": 64,
+    "maximumGeneratedPlaceholderDepth": 64,
+    "maximumInterpolatedOutputCharacters": 1048576,
+    "maximumGeneratedExpansionCharacters": 8388608
+  },
+  "files": {
+    "en": {
+      "Counted": {
+        "translation": "{{label}}",
+        "placeholders": {
+          "label": {
+            "value": "n",
+            "translations": {
+              "CARDINALITY_ONE": "one",
+              "CARDINALITY_OTHER": "other"
+            }
+          }
+        }
+      },
+      "Depth thirty three": {
+        "translation": "{{s1}}",
+        "placeholders": {
+          "s1": {
+            "translation": "{{s2}}"
+          },
+          "s2": {
+            "translation": "{{s3}}"
+          },
+          "s3": {
+            "translation": "{{s4}}"
+          },
+          "s4": {
+            "translation": "{{s5}}"
+          },
+          "s5": {
+            "translation": "{{s6}}"
+          },
+          "s6": {
+            "translation": "{{s7}}"
+          },
+          "s7": {
+            "translation": "{{s8}}"
+          },
+          "s8": {
+            "translation": "{{s9}}"
+          },
+          "s9": {
+            "translation": "{{s10}}"
+          },
+          "s10": {
+            "translation": "{{s11}}"
+          },
+          "s11": {
+            "translation": "{{s12}}"
+          },
+          "s12": {
+            "translation": "{{s13}}"
+          },
+          "s13": {
+            "translation": "{{s14}}"
+          },
+          "s14": {
+            "translation": "{{s15}}"
+          },
+          "s15": {
+            "translation": "{{s16}}"
+          },
+          "s16": {
+            "translation": "{{s17}}"
+          },
+          "s17": {
+            "translation": "{{s18}}"
+          },
+          "s18": {
+            "translation": "{{s19}}"
+          },
+          "s19": {
+            "translation": "{{s20}}"
+          },
+          "s20": {
+            "translation": "{{s21}}"
+          },
+          "s21": {
+            "translation": "{{s22}}"
+          },
+          "s22": {
+            "translation": "{{s23}}"
+          },
+          "s23": {
+            "translation": "{{s24}}"
+          },
+          "s24": {
+            "translation": "{{s25}}"
+          },
+          "s25": {
+            "translation": "{{s26}}"
+          },
+          "s26": {
+            "translation": "{{s27}}"
+          },
+          "s27": {
+            "translation": "{{s28}}"
+          },
+          "s28": {
+            "translation": "{{s29}}"
+          },
+          "s29": {
+            "translation": "{{s30}}"
+          },
+          "s30": {
+            "translation": "{{s31}}"
+          },
+          "s31": {
+            "translation": "{{s32}}"
+          },
+          "s32": {
+            "translation": "{{s33}}"
+          },
+          "s33": {
+            "translation": "deep"
+          }
+        }
+      }
+    }
+  }
+}

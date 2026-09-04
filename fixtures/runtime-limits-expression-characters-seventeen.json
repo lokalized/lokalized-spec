@@ -1,0 +1,36 @@
+{
+  "id": "runtime-limits-expression-characters-seventeen",
+  "description": "Plan v7 section 8.3 runtime-limits clause: maximumExpressionCharacters pinned exactly at 17, the length of BOTH of this catalog's expressions — the whole-message alternative '(a > 0) && b == 1' and the generated-fragment predicate '(a > 1) && a == 2'. DefaultStrings compiles every loaded expression eagerly in its constructor (compileExpressions, calling ExpressionEvaluator.compile at DefaultStrings.java:576 for fragment predicates and 594 for whole-message alternatives) through an evaluator carrying the instance limits, so this fixture only builds at all if the implementation measures both sources at 17 UTF-16 units and treats validateExpressionSourceLength as strictly greater-than. Probe-verified against the real library: at limit 16 each expression is rejected by name.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "runtimeLimits": {
+    "maximumExpressionCharacters": 17
+  },
+  "files": {
+    "en": {
+      "Bag": {
+        "translation": "bag-default",
+        "alternatives": [
+          {
+            "(a > 0) && b == 1": {
+              "translation": "bag-matched"
+            }
+          }
+        ]
+      },
+      "Frag": {
+        "translation": "{{f}}",
+        "placeholders": {
+          "f": {
+            "translation": "frag-default",
+            "alternatives": [
+              {
+                "(a > 1) && a == 2": "frag-matched"
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

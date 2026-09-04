@@ -1,0 +1,11 @@
+{
+  "id": "raw-vs-tagged-plain-slot",
+  "description": "Plan v7 section 8.3 clause \"raw text 1.0 and GENDER_FEMININE remaining text while tagged forms dispatch\", plain-interpolation half. One key with a single ordinary placeholder slot and no placeholder definitions, so the value never reaches a selector — StringInterpolator renders it directly (CharSequence appended verbatim, everything else via String.valueOf; verified against StringInterpolator.java). Single loaded locale so attemptedLocales is exactly [en] and no fallback policy is consulted. Verified by execution: the fixture builds and all eleven cases against it return TRANSLATED.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "PlainSlot": "[{{value}}]"
+    }
+  }
+}

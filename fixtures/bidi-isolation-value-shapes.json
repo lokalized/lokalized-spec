@@ -1,0 +1,13 @@
+{
+  "id": "bidi-isolation-value-shapes",
+  "description": "BidiIsolation.ALWAYS in a plain en catalog so isolation is unconditional and every case varies only the caller-supplied VALUE. Exercises BidiUtils.isolate's whole decision table: the FSI/PDI wrap, idempotence for values already isolated with LRI/RLI/FSI, the isIsolated guards (valueLength < 2, depth returning to zero before the final character), dropping of unmatched PDIs, balancing of unclosed initiators, the zero-length early return, non-CharSequence rendering, and the value != null guard at DefaultStrings.java:1367. The template brackets the slot so the marks' position is observable.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "bidiIsolation": "ALWAYS",
+  "files": {
+    "en": {
+      "Locale.Marker": "en",
+      "Wrap.Value": "[{{value}}]"
+    }
+  }
+}

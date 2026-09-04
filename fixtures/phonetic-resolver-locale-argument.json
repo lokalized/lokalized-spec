@@ -1,0 +1,48 @@
+{
+  "id": "phonetic-resolver-locale-argument",
+  "description": "A by-locale resolver whose answer encodes WHICH locale it was handed. 'en' and 'fr-CA' are loaded -- distinct primary languages, so tiebreakers stays null -- and the mapping names 'en' and 'en-US' with a LUNAR default, so an en-US request served by the en catalog is distinguishable from one where the requested tag were passed through, and a fr-CA request reaches the resolver's own default. The en-US mapping entry is what makes the absence of the requested tag falsifiable rather than assumed.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "phoneticResolver": {
+    "behavior": "by-locale",
+    "mapping": {
+      "en": "PHONETIC_VOWEL",
+      "en-US": "PHONETIC_CONSONANT"
+    },
+    "default": "PHONETIC_LUNAR"
+  },
+  "files": {
+    "en": {
+      "Article": {
+        "translation": "en:[{{a}}]",
+        "placeholders": {
+          "a": {
+            "value": "term",
+            "translations": {
+              "PHONETIC_VOWEL": "handed-en",
+              "PHONETIC_CONSONANT": "handed-en-US",
+              "PHONETIC_LUNAR": "handed-neither"
+            }
+          }
+        }
+      }
+    },
+    "fr-CA": {
+      "Article": {
+        "translation": "frca:[{{a}}]",
+        "placeholders": {
+          "a": {
+            "value": "term",
+            "translations": {
+              "PHONETIC_VOWEL": "handed-en",
+              "PHONETIC_CONSONANT": "handed-en-US",
+              "PHONETIC_LUNAR": "handed-neither"
+            }
+          }
+        }
+      }
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}
