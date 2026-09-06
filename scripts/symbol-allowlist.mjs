@@ -13,6 +13,7 @@
  *   node scripts/symbol-allowlist.mjs --write
  *   node scripts/symbol-allowlist.mjs --check
  */
+import { planPath as resolvePlanPath } from "./planning-path.mjs";
 import { readFile, writeFile } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -21,7 +22,7 @@ const specDirectory = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const javaDirectory = process.env.LOKALIZED_JAVA_DIR
   ? resolve(process.env.LOKALIZED_JAVA_DIR)
   : resolve(specDirectory, "../lokalized-java");
-const PLAN = join(specDirectory, "IMPLEMENTATION-PLAN-v7.md");
+const PLAN = resolvePlanPath();
 const OUTPUT = join(specDirectory, "symbol-allowlist.json");
 
 /**

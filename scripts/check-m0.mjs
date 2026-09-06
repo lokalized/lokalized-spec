@@ -3,7 +3,7 @@
 /**
  * The M0 engineering gate.
  *
- * Per M0-STATUS.md, M0 is tracked by these gates rather than by the pre-m0 certification ceremony.
+ * Per the planning directory's M0-STATUS.md, M0 is tracked by these gates rather than by the pre-m0 certification ceremony.
  * This runs every gate across all three sibling repositories and prints one verdict.
  *
  * Sibling repos are resolved from the container directory, matching how lokalized.com already
@@ -76,7 +76,7 @@ if (process.argv.includes("--json")) {
       ? "\nM0 engineering gates: ALL GREEN"
       : `\n${failed.length} failed, ${skipped.length} skipped. M0 is not complete.`,
   );
-  console.log("\nCertification (pre-m0/readiness.mjs) is deliberately not a gate; see M0-STATUS.md.");
+  console.log("\nCertification (pre-m0/readiness.mjs) is deliberately not a gate; see ../planning/M0-STATUS.md.");
 }
 
 process.exit(failed.length === 0 ? 0 : 1);

@@ -13,6 +13,7 @@
  *
  * Exits nonzero on any drift.
  */
+import { planPath as resolvePlanPath } from "./planning-path.mjs";
 import { readdir, readFile } from "node:fs/promises";
 import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -22,7 +23,7 @@ const javaDirectory = process.env.LOKALIZED_JAVA_DIR
   ? resolve(process.env.LOKALIZED_JAVA_DIR)
   : resolve(specDirectory, "../lokalized-java");
 const sourceDirectory = join(javaDirectory, "src/main/java/com/lokalized");
-const PLAN = join(specDirectory, "IMPLEMENTATION-PLAN-v7.md");
+const PLAN = resolvePlanPath();
 
 const OUTER = /^public (?:final |abstract )?(?:class|interface|enum|@interface) (\w+)\b/m;
 const NESTED = /^[ \t]+public (?:static )?(?:final )?(?:abstract )?(?:class|interface|enum) (\w+)\b/gm;

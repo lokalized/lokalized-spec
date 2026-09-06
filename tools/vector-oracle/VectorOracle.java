@@ -338,8 +338,24 @@ public final class VectorOracle {
 				break;
 			}
 			case "get": {
-				// The THROWING path. get() applies the failure handler's response, so a 'throw' handler
-				// surfaces here as a thrown case while getResult() would have returned the key.
+				// CORRECTED. This comment used to read "a 'throw' handler surfaces here as a thrown case
+				// while getResult() would have returned the key". That is FALSE, and the corpus this very
+				// class emitted says so: throwExceptionFor is called from translateOrFail (DefaultStrings
+				// :762), which is BELOW the getResult/get split, so a THROW_EXCEPTION response escapes
+				// both entry points identically. 71 getResult rows record a thrown block -- 8 of them
+				// MissingTranslationException, two named '...getresult-throws-too' precisely to pin the
+				// pair (failure-handler.throw.instance.get-throws-missing-translation-exception and
+				// .getresult-throws-too record the SAME exception from the two calls). COUNTED, not
+				// recalled: the corpus holds exactly two such ids, failure-handler.no-matching-
+				// alternative.throw.getresult-throws-too and failure-handler.throw.instance
+				// .getresult-throws-too. The earlier 'three' was written from intent, which is the
+				// recurring way these notes go wrong.
+				//
+				// What get() actually decides is narrower: it returns TranslationResult#getTranslation(),
+				// so a RETURN_KEY or RETURN_STRING response is observable here only as that string, and
+				// the status / attempted locales / match that getResult carries are lost. That is why a
+				// family authored on get() is the right place for the message of a throw and the wrong
+				// place for the shape of a result -- not because the two differ about throwing.
 				String key = input.getString("key", null);
 				Map<String, Object> placeholders = input.get("placeholders") == null
 						? null

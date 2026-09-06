@@ -1,10 +1,11 @@
+import { planPath as resolvePlanPath } from "../scripts/planning-path.mjs";
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const directory = dirname(fileURLToPath(import.meta.url));
 const projectDirectory = join(directory, "..");
-const planLines = readFileSync(join(projectDirectory, "IMPLEMENTATION-PLAN-v7.md"), "utf8").split(
+const planLines = readFileSync(resolvePlanPath(), "utf8").split(
   "\n"
 );
 if (planLines.at(-1) === "") planLines.pop();

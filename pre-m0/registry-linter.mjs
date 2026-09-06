@@ -16,6 +16,7 @@
  *
  *   node pre-m0/registry-linter.mjs [--registry PATH] [--json]
  */
+import { planPath as resolvePlanPath } from "../scripts/planning-path.mjs";
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
@@ -30,7 +31,7 @@ const argOf = (flag, fallback) => {
 };
 
 const registryPath = resolve(argOf("--registry", join(here, "bootstrap.requirements.candidate.json")));
-const planPath = join(specDirectory, "IMPLEMENTATION-PLAN-v7.md");
+const planPath = resolvePlanPath();
 const worklistPath = join(here, "bootstrap-worklist.json");
 
 const sha256 = (value) => createHash("sha256").update(value).digest("hex");

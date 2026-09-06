@@ -10,6 +10,7 @@
  *
  *   node pre-m0/assemble-registry.mjs --input atomized.json [--out pre-m0/requirements.json]
  */
+import { planPath as resolvePlanPath } from "../scripts/planning-path.mjs";
 import { createHash } from "node:crypto";
 import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
@@ -61,7 +62,7 @@ const ancestorsOf = (m, seen = new Set()) => {
 };
 const isAncestorOrEqual = (a, b) => a === b || ancestorsOf(b).has(a);
 
-const planPath = join(specDirectory, "IMPLEMENTATION-PLAN-v7.md");
+const planPath = resolvePlanPath();
 const planLines = readFileSync(planPath, "utf8").split("\n");
 const planSha = sha256(readFileSync(planPath));
 const worklist = JSON.parse(readFileSync(join(here, "bootstrap-worklist.json"), "utf8"));

@@ -1,3 +1,4 @@
+import { planPath as resolvePlanPath } from "../scripts/planning-path.mjs";
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { existsSync, lstatSync, readFileSync, realpathSync, statSync } from "node:fs";
@@ -10,7 +11,7 @@ const assertReady = process.argv.includes("--assert-ready");
 const unknownArguments = process.argv.slice(2).filter((argument) => argument !== "--assert-ready");
 
 const paths = {
-  plan: join(projectDirectory, "IMPLEMENTATION-PLAN-v7.md"),
+  plan: resolvePlanPath(),
   inventoryValidator: join(directory, "validate.mjs"),
   bootstrap: join(directory, "bootstrap.requirements.candidate.json"),
   profiles: join(directory, "release-profiles.draft.json"),

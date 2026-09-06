@@ -80,11 +80,14 @@ const expand = (key, table) => {
 function build() {
   const jdk = jdkVersion();
 
-  // Regenerate the candidate space so it is never stale relative to the CLDR data it derives from.
+  // Regenerate the candidate space so it is never stale relative to the CLDR data it derives from,
+  // nor relative to the pinned JDK's own equivalence tables, which it now also draws on.
   const candGen = spawnSync("node", [join(here, "candidates.mjs")], { encoding: "utf8" });
   if (candGen.status !== 0) throw new Error(`candidate generation failed: ${candGen.stderr}`);
   const candidatesPath = join(here, "candidates.txt");
   const candidateBytes = readFileSync(candidatesPath);
+  const keysPath = join(here, "jdk-equivalence-keys.txt");
+  const jdkKeys = readFileSync(keysPath, "utf8").split("\n").filter(Boolean);
 
   const rawPath = join(here, "closure.raw.json");
   const run = spawnSync(join(JDK, "bin/java"), [join(here, "Extract.java"), candidatesPath, rawPath], { encoding: "utf8" });
@@ -92,6 +95,21 @@ function build() {
   const probeStats = /probed=(\d+) rejected=(\d+) closureKeys=(\d+)/.exec(run.stderr);
 
   const raw = JSON.parse(readFileSync(rawPath, "utf8"));
+
+  // COMPLETENESS, checked rather than argued. The losslessness check below verifies that every
+  // PROBED range reconstructs, which says nothing about a range nobody probed — and for four keys
+  // (`cmn-hans`, `cmn-hant`, `lv-lvs`, `lv-ltg`) nobody did, so the artifact shipped without them
+  // and every gate stayed green. The fix is not "a wider guess": it is this assertion, that the
+  // extracted closure carries an entry for EVERY key of the JDK's own equivalence tables. Those keys
+  // come from `LocaleEquivalentMaps` by reflection — the JDK's input data, not this artifact — so
+  // this cannot be satisfied by a probe space derived from the artifact under test.
+  const unprobed = jdkKeys.filter((key) => !Object.hasOwn(raw, key));
+  if (unprobed.length > 0)
+    throw new Error(
+      `${unprobed.length} of the JDK's own equivalence keys produced no closure entry, e.g. ` +
+        `${unprobed.slice(0, 5).join(", ")}. Either candidates.mjs stopped emitting them or the ` +
+        `oracle rejected them; a missing key is a range the port will answer differently from Java.`,
+    );
 
   // Reduce to genuine table entries, shortest key first so a base is available when testing longer keys.
   const table = {};
@@ -119,12 +137,22 @@ function build() {
     artifacts: [{ path: "generated/iana-language-range-equivalents.json", sha256: sha256(artifactBytes) }],
     inputs: [
       { path: "tools/iana-oracle/Extract.java", sha256: sha256(readFileSync(join(here, "Extract.java"))) },
+      { path: "tools/iana-oracle/EquivalenceKeys.java", sha256: sha256(readFileSync(join(here, "EquivalenceKeys.java"))) },
       { path: "tools/iana-oracle/candidates.mjs", sha256: sha256(readFileSync(join(here, "candidates.mjs"))) },
       { path: "tools/iana-oracle/candidates.txt", sha256: sha256(candidateBytes) },
+      // The probe space's second source is locked too: a JDK whose table changed shape would
+      // otherwise change the artifact with nothing in the lock recording that it had.
+      { path: "tools/iana-oracle/jdk-equivalence-keys.txt", sha256: sha256(readFileSync(keysPath)) },
     ],
     oracle: { jdkVersion: jdk.version, jdkVendor: jdk.vendor, requiredMajor: REQUIRED_MAJOR },
     probe: probeStats
-      ? { probed: Number(probeStats[1]), rejected: Number(probeStats[2]), rawClosureKeys: Number(probeStats[3]), reducedEntries: Object.keys(table).length }
+      ? {
+          probed: Number(probeStats[1]),
+          rejected: Number(probeStats[2]),
+          rawClosureKeys: Number(probeStats[3]),
+          reducedEntries: Object.keys(table).length,
+          jdkEquivalenceKeys: jdkKeys.length,
+        }
       : null,
     jdkCompatibilityOverrides: [],
   };

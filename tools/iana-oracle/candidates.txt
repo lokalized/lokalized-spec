@@ -13595,6 +13595,8 @@ cmn-hak
 cmn-hal
 cmn-ham
 cmn-han
+cmn-hans
+cmn-hant
 cmn-hao
 cmn-hap
 cmn-haq
@@ -20489,6 +20491,8 @@ emz
 en
 en-GB-oed
 en-GB-oxendict
+en-gb-oed
+en-gb-oxendict
 en-x-i-default
 ena
 enb
@@ -40204,6 +40208,8 @@ lux
 luy
 luz
 lv
+lv-ltg
+lv-lvs
 lva
 lvi
 lvk
@@ -61122,6 +61128,8 @@ sgn-bdx
 sgn-bdy
 sgn-bdz
 sgn-be
+sgn-be-fr
+sgn-be-nl
 sgn-bea
 sgn-beb
 sgn-bec
@@ -61773,6 +61781,7 @@ sgn-cgc
 sgn-cgg
 sgn-cgk
 sgn-ch
+sgn-ch-de
 sgn-chb
 sgn-chc
 sgn-chd
@@ -62178,6 +62187,7 @@ sgn-djo
 sgn-djr
 sgn-dju
 sgn-djw
+sgn-dk
 sgn-dka
 sgn-dkg
 sgn-dkk
@@ -62600,6 +62610,7 @@ sgn-gaw
 sgn-gax
 sgn-gay
 sgn-gaz
+sgn-gb
 sgn-gba
 sgn-gbb
 sgn-gbc
@@ -62822,6 +62833,7 @@ sgn-gqi
 sgn-gqn
 sgn-gqr
 sgn-gqu
+sgn-gr
 sgn-gra
 sgn-grb
 sgn-grc
@@ -63425,6 +63437,7 @@ sgn-jog
 sgn-jor
 sgn-jos
 sgn-jow
+sgn-jp
 sgn-jpa
 sgn-jpr
 sgn-jpx
@@ -65066,6 +65079,7 @@ sgn-mww
 sgn-mwx
 sgn-mwy
 sgn-mwz
+sgn-mx
 sgn-mxa
 sgn-mxb
 sgn-mxc
@@ -65321,6 +65335,7 @@ sgn-nhw
 sgn-nhx
 sgn-nhy
 sgn-nhz
+sgn-ni
 sgn-nia
 sgn-nib
 sgn-nic
@@ -68151,6 +68166,7 @@ sgn-urw
 sgn-urx
 sgn-ury
 sgn-urz
+sgn-us
 sgn-usa
 sgn-ush
 sgn-usi
@@ -107903,6 +107919,8 @@ zh-cmm
 zh-cmn
 zh-cmn-Hans
 zh-cmn-Hant
+zh-cmn-hans
+zh-cmn-hant
 zh-cmo
 zh-cmr
 zh-cms

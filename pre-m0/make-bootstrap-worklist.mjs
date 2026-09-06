@@ -1,3 +1,4 @@
+import { planPath as resolvePlanPath } from "../scripts/planning-path.mjs";
 import { createHash } from "node:crypto";
 import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -5,7 +6,7 @@ import { fileURLToPath } from "node:url";
 
 const directory = dirname(fileURLToPath(import.meta.url));
 const projectDirectory = join(directory, "..");
-const planPath = join(projectDirectory, "IMPLEMENTATION-PLAN-v7.md");
+const planPath = resolvePlanPath();
 const outputPath = join(directory, "bootstrap-worklist.json");
 const inventoryPaths = ["sections-1-4.json", "sections-5-7.json", "sections-8-14.json"].map(
   (name) => join(directory, "inventory", name)
