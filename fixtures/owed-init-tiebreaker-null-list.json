@@ -1,0 +1,17 @@
+{
+  "id": "owed-init-tiebreaker-null-list",
+  "description": "DefaultStrings:335 -- a null tiebreaker locale LIST for a language code, which a JS record spells `{ en: null }`.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "refusesConstruction": true,
+  "constructionOverrides": {
+    "tiebreakerSource": "nullList"
+  },
+  "files": {
+    "en": {
+      "Greeting": {
+        "translation": "Hello"
+      }
+    }
+  }
+}

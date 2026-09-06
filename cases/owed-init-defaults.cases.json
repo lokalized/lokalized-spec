@@ -1,0 +1,87 @@
+{
+  "formatVersion": 1,
+  "family": "owed-init-defaults",
+  "description": "Plan v7 section 8.3 fixture family 'owed-init-defaults'. Inputs only; the oracle emits expected.",
+  "cases": [
+    {
+      "id": "owed-init-defaults.refusal.duplicate-translation-key-in-one-catalog",
+      "requirementIds": [],
+      "fixture": "owed-init-duplicate-string-key",
+      "operation": "construct",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings:500. A port whose catalog is a plain object silently keeps the LAST entry, which is the opposite of Java's refusal, and no loaded-file case can reach this because the bounded parser refuses a duplicate JSON member first."
+    },
+    {
+      "id": "owed-init-defaults.refusal.null-tiebreaker-list",
+      "requirementIds": [],
+      "fixture": "owed-init-tiebreaker-null-list",
+      "operation": "construct",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings:335. Distinct from a MISSING entry, which is legal, and from an EMPTY list, which reaches the permutation refusal at :394 instead -- both measured."
+    },
+    {
+      "id": "owed-init-defaults.refusal.null-tiebreaker-entry",
+      "requirementIds": [],
+      "fixture": "owed-init-tiebreaker-null-entry",
+      "operation": "construct",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings:343. A port that skipped a null entry would silently shorten the resolution order for an ambiguous language code."
+    },
+    {
+      "id": "owed-init-defaults.refusal.null-tiebreaker-language-code",
+      "requirementIds": [],
+      "fixture": "owed-init-tiebreaker-null-language-code",
+      "operation": "construct",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings:2650. The disposition for this branch hedged that it should become nonportable if the JS TiebreakerMap were record-only; it is not -- src/internal/locale.js accepts a Map -- so a null key is a live portable input and this row is what makes the refusal observable."
+    },
+    {
+      "id": "owed-init-defaults.accepts.null-locale-supplier-does-not-clear-the-match-supplier",
+      "requirementIds": [],
+      "fixture": "owed-init-null-locale-supplier-keeps-match-supplier",
+      "operation": "construct",
+      "input": {
+        "probeKey": "Greeting"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Strings.java:288, the NULL arm, and it is an ACCEPTING row on purpose: the discriminator is that the instance builds AND answers from the surviving match supplier's locale. The probe answers 'Hallo', not 'Hello', so a port that read `localeResolver: undefined` as a second specified source (and refused for 'exactly one') or as clearing the match resolver (and fell back to 'en') differs here."
+    },
+    {
+      "id": "owed-init-defaults.accepts.null-match-supplier-does-not-clear-the-locale-supplier",
+      "requirementIds": [],
+      "fixture": "owed-init-null-match-supplier-keeps-locale-supplier",
+      "operation": "construct",
+      "input": {
+        "probeKey": "Greeting"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Strings.java:310, the mirror. Same discriminator in the other direction."
+    },
+    {
+      "id": "owed-init-defaults.library-default-handler-answers-the-key-itself",
+      "requirementIds": [],
+      "fixture": "owed-init-library-default-callbacks",
+      "operation": "construct",
+      "input": {
+        "probeKey": "Missing.Everywhere"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings:472. Every RETURNED_KEY row elsewhere in the corpus proves the ORACLE'S recording handler, which wraps returnKey when a fixture names none; this row is the only one where the library selects its own. A port whose default were throw-on-missing or return-empty passes all 2,300 other rows and fails here, and the probe records the distinction directly (a thrown default would record threwType instead of a value)."
+    },
+    {
+      "id": "owed-init-defaults.library-default-policy-falls-back-to-the-fallback-catalog",
+      "requirementIds": [],
+      "fixture": "owed-init-library-default-callbacks",
+      "operation": "construct",
+      "input": {
+        "probeKey": "OnlyInFallback"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings:473, on the same fixture and the same instance shape. 'OnlyInFallback' exists in 'en' and not in the instance locale 'de', so the LIBRARY'S OWN default policy is what decides whether the walk continues. A port defaulting to 'never fall back' answers the key itself here while still passing every recording-policy row in the corpus."
+    }
+  ]
+}

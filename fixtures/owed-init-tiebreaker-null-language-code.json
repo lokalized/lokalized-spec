@@ -1,0 +1,17 @@
+{
+  "id": "owed-init-tiebreaker-null-language-code",
+  "description": "DefaultStrings:2650, through normalizedTiebreakerLanguageCode -- a NULL tiebreaker language code. Only a Map can present one, which is exactly why plan 3.1 types the construction input as a TiebreakerMap and not a plain record.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "refusesConstruction": true,
+  "constructionOverrides": {
+    "tiebreakerSource": "nullLanguageCode"
+  },
+  "files": {
+    "en": {
+      "Greeting": {
+        "translation": "Hello"
+      }
+    }
+  }
+}

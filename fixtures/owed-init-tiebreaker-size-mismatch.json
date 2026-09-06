@@ -1,0 +1,23 @@
+{
+  "id": "owed-init-tiebreaker-size-mismatch",
+  "description": "DefaultStrings:394, FIRST disjunct -- the tiebreaker list is a strict SUBSET of the loaded locales for its language, so the sizes differ. Differs from owed-init-base only in dropping 'en-US' from the list.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "en": [
+      "en"
+    ]
+  },
+  "refusesConstruction": true,
+  "files": {
+    "en": {
+      "Greeting": {
+        "translation": "Hello"
+      }
+    },
+    "en-US": {
+      "Greeting": {
+        "translation": "Howdy"
+      }
+    }
+  }
+}

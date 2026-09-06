@@ -1,0 +1,13 @@
+{
+  "id": "owed-null-placeholder-name-base",
+  "description": "One locale and one interpolating key, so a null placeholder NAME is the only thing that can go wrong. The template resolves cleanly from the supplied 'who', which is what stops the refusal from being confused with an unresolved placeholder.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Greeting": {
+        "translation": "Hello {{who}}"
+      }
+    }
+  }
+}

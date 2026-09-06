@@ -1,0 +1,32 @@
+{
+  "id": "owed-supplied-match-weight-not-finite",
+  "description": "A localeMatchSupplier handing the library a LocaleMatchResult built through its PUBLIC constructor with a NON-FINITE effective weight. LocaleMatchResult:111's first clause, the only one of its four that no JSON number can express -- the fixture carries the string sentinel 'infinity', which VectorOracle.fabricatedWeightFrom turns into Double.POSITIVE_INFINITY and lokalized-js's runner into the JS number Infinity. A JS caller reaches this state by writing `effectiveWeight: Infinity` or `NaN`, neither of which needs any deliberate effort.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "localeMatchSupplier": {
+    "behavior": "fabricated",
+    "ranges": [
+      {
+        "range": "fr",
+        "weight": 1
+      }
+    ],
+    "fallbackLocale": "en",
+    "consideredLocales": [
+      "en",
+      "fr"
+    ],
+    "matchType": "EXACT",
+    "locale": "fr",
+    "range": "fr",
+    "weight": "infinity"
+  },
+  "files": {
+    "en": {
+      "Checkout.Title": "Checkout"
+    },
+    "fr": {
+      "Checkout.Title": "Paiement"
+    }
+  }
+}

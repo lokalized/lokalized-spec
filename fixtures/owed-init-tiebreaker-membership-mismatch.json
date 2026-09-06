@@ -1,0 +1,24 @@
+{
+  "id": "owed-init-tiebreaker-membership-mismatch",
+  "description": "DefaultStrings:394, SECOND disjunct -- the list is the RIGHT SIZE but the WRONG MEMBERSHIP, so the size test passes and only the set equality fails. It is also the only shape that puts BOTH the 'missing' and the 'unrelated' predicate (:396, :400) through both of their arms: 'en' is loaded and listed, 'en-US' is loaded and unlisted, 'en-GB' is listed and unloaded.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "en": [
+      "en",
+      "en-GB"
+    ]
+  },
+  "refusesConstruction": true,
+  "files": {
+    "en": {
+      "Greeting": {
+        "translation": "Hello"
+      }
+    },
+    "en-US": {
+      "Greeting": {
+        "translation": "Howdy"
+      }
+    }
+  }
+}

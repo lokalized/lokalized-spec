@@ -30,6 +30,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -243,6 +244,18 @@ public final class VectorOracle {
 				builder = builder.localizedStringSupplier(() -> degenerate);
 				break;
 			}
+			// :500 -- the SAME key twice inside one locale's iterable. A catalog map cannot express this
+			// and neither can a JS record; an ARRAY catalog on either side can, and a port that builds a
+			// plain object from one silently keeps the LAST, which is the opposite of Java's refusal.
+			// The same node twice is enough: :500 keys on the string, not on node identity.
+			case "duplicateKey": {
+				List<LocalizedString> repeated = new ArrayList<>();
+				for (LocalizedString each : firstCatalogOf(loaded)) { repeated.add(each); repeated.add(each); break; }
+				Map<Locale, Iterable<LocalizedString>> degenerate = new LinkedHashMap<>();
+				degenerate.put(Locale.forLanguageTag("en"), repeated);
+				builder = builder.localizedStringSupplier(() -> degenerate);
+				break;
+			}
 			default:
 				throw new IllegalArgumentException("unknown constructionOverrides.catalogSource '" + catalogSource + "'");
 		}
@@ -263,6 +276,17 @@ public final class VectorOracle {
 			// setter wins. Keeping it would have been dead machinery behind a case that observed nothing.
 			if ("omit".equals(localeSource)) {
 				// install neither
+			} else if ("explicitNullLocaleSupplier".equals(localeSource)) {
+				// Strings.java:288's NULL arm. `localeSupplier(null)` does NOT clear a locale-match
+				// supplier already set -- only a NON-null value replaces it -- so this CONSTRUCTS and the
+				// match supplier decides. The asymmetry is the whole point: a builder that cleared on null
+				// would leave no locale source at all and refuse at DefaultStrings:254, and a JS caller
+				// writing `{ localeMatchResolver: fn, localeResolver: undefined }` must reach the same
+				// state, not the refusal.
+				builder = builder.localeMatchSupplier(localeMatchSupplierFrom(matchSupplier)).localeSupplier(null);
+			} else if ("explicitNullMatchSupplier".equals(localeSource)) {
+				// Strings.java:310's NULL arm, the mirror.
+				builder = builder.localeSupplier(localeSupplierFrom(localeSupplier)).localeMatchSupplier(null);
 			} else {
 				throw new IllegalArgumentException("unknown constructionOverrides.localeSource '" + localeSource + "'");
 			}
@@ -276,8 +300,35 @@ public final class VectorOracle {
 			builder = builder.localeSupplier(matcher -> instanceLocale);
 		}
 
+		// A DEGENERATE TIEBREAKER MAP. Three shapes that a JSON `tiebreakers` object cannot spell -- a
+		// null list, a null entry inside a list, and a NULL KEY -- and each is a DefaultStrings refusal a
+		// JS caller CAN reach, because plan 3.1 types the construction input as a `TiebreakerMap` and a
+		// `Map` can carry a null key where a record cannot. Same closed-set discipline as catalogSource:
+		// one documented refusal per value, an unknown value fails the build loudly.
+		String tiebreakerSource = overrides.getString("tiebreakerSource", null);
 		JsonValue tiebreakers = config.get("tiebreakers");
-		if (tiebreakers != null && !tiebreakers.isNull()) {
+		if (tiebreakerSource != null) {
+			Map<String, List<Locale>> degenerate = new LinkedHashMap<>();
+			switch (tiebreakerSource) {
+				// :335 -- a null tiebreaker locale LIST for a language code. `{ en: null }` in JS.
+				case "nullList": degenerate.put("en", null); break;
+				// :343 -- a null entry INSIDE a list. `{ en: [null] }` in JS.
+				case "nullEntry": {
+					List<Locale> withHole = new ArrayList<>();
+					withHole.add(null);
+					degenerate.put("en", withHole);
+					break;
+				}
+				// :2650, through normalizedTiebreakerLanguageCode -- a NULL LANGUAGE CODE. Only a Map can
+				// present one, on either side.
+				case "nullLanguageCode":
+					degenerate.put(null, new ArrayList<>(Arrays.asList(Locale.forLanguageTag("en"))));
+					break;
+				default:
+					throw new IllegalArgumentException("unknown constructionOverrides.tiebreakerSource '" + tiebreakerSource + "'");
+			}
+			builder = builder.tiebreakerLocalesByLanguageCode(degenerate);
+		} else if (tiebreakers != null && !tiebreakers.isNull()) {
 			Map<String, List<Locale>> byLanguage = new LinkedHashMap<>();
 			for (JsonObject.Member member : tiebreakers.asObject()) {
 				List<Locale> locales = new ArrayList<>();
@@ -287,15 +338,32 @@ public final class VectorOracle {
 			builder = builder.tiebreakerLocalesByLanguageCode(byLanguage);
 		}
 
-		// Instance-level options. The failure handler is ALWAYS installed, wrapping the library default
-		// when the fixture names none, so the observation channel exists without changing behavior.
-		builder = builder.translationFailureHandler(handlerFrom(config.get("translationFailureHandler")));
+		// THE LIBRARY'S OWN DEFAULTS, which no fixture could reach before this.
+		//
+		// The handler and the policy are ALWAYS installed below, wrapping the library default when the
+		// fixture names none, so the observation channels exist without a fixture opting in. That is
+		// behavior-neutral for every channel -- and it means DefaultStrings:472 and :473, where the
+		// library SELECTS its own default because the caller supplied nothing, never executed. A port
+		// whose default handler was throw-on-missing, or whose default policy was "never fall back",
+		// passed every case in the corpus.
+		//
+		// `instanceCallbacks: "libraryDefaults"` installs NEITHER, so those two selections run. The cost
+		// is the recording channels, which is why it is an override rather than the norm: a fixture that
+		// takes it is observable only through `construct`'s probe, and `construct` emits no channels.
+		if ("libraryDefaults".equals(overrides.getString("instanceCallbacks", null))) {
+			if (config.get("translationFailureHandler") != null && !config.get("translationFailureHandler").isNull())
+				throw new IllegalArgumentException("instanceCallbacks 'libraryDefaults' cannot be combined with a named translationFailureHandler");
+			if (config.get("translationFallbackPolicy") != null && !config.get("translationFallbackPolicy").isNull())
+				throw new IllegalArgumentException("instanceCallbacks 'libraryDefaults' cannot be combined with a named translationFallbackPolicy");
+		} else if (overrides.get("instanceCallbacks") != null) {
+			throw new IllegalArgumentException("unknown constructionOverrides.instanceCallbacks '" + overrides.getString("instanceCallbacks", null) + "'");
+		} else {
+			builder = builder.translationFailureHandler(handlerFrom(config.get("translationFailureHandler")));
 
-		// Always installed, wrapping the library default when the fixture names none, so the policy
-		// observation channel exists without a fixture opting in. Pure delegation: behavior-neutral.
-		TranslationFallbackPolicy policy = policyFrom(config.get("translationFallbackPolicy"));
-		builder = builder.translationFallbackPolicy(recordingPolicy(
-				policy != null ? policy : TranslationFallbackPolicy.fallbackOnMissingTranslationOrNoMatchingAlternative()));
+			TranslationFallbackPolicy policy = policyFrom(config.get("translationFallbackPolicy"));
+			builder = builder.translationFallbackPolicy(recordingPolicy(
+					policy != null ? policy : TranslationFallbackPolicy.fallbackOnMissingTranslationOrNoMatchingAlternative()));
+		}
 
 		JsonValue resolver = config.get("phoneticResolver");
 		if (resolver != null && !resolver.isNull()) builder = builder.phoneticResolver(resolverFrom(resolver));
@@ -323,6 +391,17 @@ public final class VectorOracle {
 				Map<String, Object> placeholders = input.get("placeholders") == null
 						? null
 						: decodePlaceholders(input.get("placeholders").asObject());
+
+				// A NULL PLACEHOLDER NAME (DefaultStrings:690). JSON has no null object key, so the case
+				// asks for one with a flag instead. Java refuses it explicitly and a JS `Map` placeholder
+				// source -- which plan 3.2 blesses for generated and untrusted keys -- can carry one, so
+				// the refusal is portable. Applied AFTER decoding so the case can still supply ordinary
+				// placeholders alongside it, which is what keeps the row from being answerable by an
+				// unrelated missing-placeholder failure.
+				if (input.getBoolean("nullPlaceholderName", false)) {
+					if (placeholders == null) placeholders = new LinkedHashMap<>();
+					placeholders.put(null, "ignored");
+				}
 
 				TranslationResult result = strings.getResult(key, placeholders, optionsFrom(input));
 
@@ -999,17 +1078,36 @@ public final class VectorOracle {
 		if (!SUPPLIER_CALLS.isEmpty()) expected.put("supplierCalls", new ArrayList<Object>(SUPPLIER_CALLS));
 	}
 
-	/** Wrap a policy so every consultation is recorded, including the ones that never happen. */
+	/**
+	 * Wrap a policy so every consultation is recorded, including the ones that never happen.
+	 *
+	 * The arguments are recorded BEFORE the delegate runs and the outcome is filled in afterwards --
+	 * the same shape `resolverFrom` already uses (VectorOracle.java:930-950) and for the same reason.
+	 * Recording after the call made a THROWING policy's consultation unobservable: the whole
+	 * policyCalls channel came back absent, so a port could pass every `throw-in-policy` row while
+	 * handing the policy the wrong reason, locale or cause on that final consultation.
+	 *
+	 * `threw` is written ONLY on the throwing path, so a policy that RETURNS null (`return-null`,
+	 * which Java then rejects at DefaultStrings.java:735) stays distinguishable from one that threw:
+	 * both record `decision: null`, and only the latter names the exception. Every non-throwing
+	 * consultation keeps its exact four-key shape, so no existing `expected` block moves.
+	 */
 	private static TranslationFallbackPolicy recordingPolicy(TranslationFallbackPolicy delegate) {
 		return (reason, locale, cause) -> {
-			Boolean decision = delegate.shouldTryNextLocale(reason, locale, cause);
 			Map<String, Object> call = new TreeMap<>();
 			call.put("reason", reason == null ? null : reason.name());
 			call.put("locale", locale == null ? null : locale.toLanguageTag());
 			call.put("causeType", cause == null ? null : cause.getClass().getName());
-			call.put("decision", decision);
+			call.put("decision", null);
 			POLICY_CALLS.add(call);
-			return decision;
+			try {
+				Boolean decision = delegate.shouldTryNextLocale(reason, locale, cause);
+				call.put("decision", decision);
+				return decision;
+			} catch (RuntimeException e) {
+				call.put("threw", e.getClass().getName());
+				throw e;
+			}
 		};
 	}
 
@@ -1089,7 +1187,7 @@ public final class VectorOracle {
 							requested,
 							localeTag == null ? null : Locale.forLanguageTag(localeTag),
 							rangeText == null ? null : new Locale.LanguageRange(rangeText),
-							config.get("weight") == null ? null : config.get("weight").asDouble(),
+							fabricatedWeightFrom(config.get("weight")),
 							LocaleMatchType.valueOf(config.getString("matchType", "NONE")),
 							Locale.forLanguageTag(config.getString("fallbackLocale", "en")),
 							considered);
@@ -1105,6 +1203,33 @@ public final class VectorOracle {
 			SUPPLIER_CALLS.add(call);
 			return supplied;
 		};
+	}
+
+	/**
+	 * A fabricated match's effective weight, including the NON-FINITE value JSON cannot spell.
+	 *
+	 * LocaleMatchResult:111 refuses a weight that is not finite, at most 0, or above 1. The last two
+	 * are ordinary JSON numbers and the corpus has both; the FIRST cannot be written in JSON at all,
+	 * so its arm was unreachable while a JS caller can pass `Infinity` or `NaN` without trying. The
+	 * string sentinels are a CLOSED set of two, and an unrecognized string fails the build loudly
+	 * rather than defaulting to a finite number, which would close the branch with a case that
+	 * observed the wrong refusal.
+	 *
+	 * The two sentinels are not interchangeable and only ONE of them discriminates the clause.
+	 * POSITIVE_INFINITY is also caught by `effectiveWeight > 1.0`, so a port that dropped the
+	 * finiteness test entirely still refuses it -- measured on lokalized-js, where deleting
+	 * `!Number.isFinite(effectiveWeight)` left the infinity row passing. NaN is the discriminating
+	 * value: `NaN > 1.0` and `NaN <= 0.0` are both false here and in JS, so `!Double.isFinite(w)` is
+	 * the only conjunct that can reject it. Reaching the branch is not discriminating it, and the
+	 * infinity row alone only reached it.
+	 */
+	private static Double fabricatedWeightFrom(JsonValue weight) {
+		if (weight == null || weight.isNull()) return null;
+		if (!weight.isString()) return weight.asDouble();
+		String sentinel = weight.asString();
+		if ("infinity".equals(sentinel)) return Double.POSITIVE_INFINITY;
+		if ("nan".equals(sentinel)) return Double.NaN;
+		throw new IllegalArgumentException("unknown fabricated match weight sentinel '" + sentinel + "'");
 	}
 
 	/** Named handler behaviors. Section 8.2 requires callbacks by versioned id, never embedded code. */
@@ -1127,6 +1252,12 @@ public final class VectorOracle {
 				String message = config.getString("message", "handler failed deliberately");
 				return recording(failure -> { throw new IllegalStateException(message); });
 			}
+			case "return-null":
+				// A handler that returns null rather than a response. DefaultStrings.java:749-750 wraps the
+				// call in requireNonNull, so Java answers with a NullPointerException carrying a message it
+				// composes itself. The port's refusal of a null response was derived by READING that line
+				// (plan open question 7); this behavior is what lets the corpus state it instead.
+				return recording(failure -> null);
 			default:
 				throw new IllegalArgumentException("unknown failure handler behavior: " + behavior);
 		}
@@ -1162,6 +1293,12 @@ public final class VectorOracle {
 				String message = config.getString("message", "fallback policy failed deliberately");
 				return (reason, locale, cause) -> { throw new IllegalStateException(message); };
 			}
+			case "return-null":
+				// The policy-side counterpart of `return-null` above, and of the resolver's, which has had
+				// one since M5. DefaultStrings.java:734-735 rejects it with requireNonNull. Distinguishable
+				// from throw-in-policy in the record: both leave `decision` null, and only a throw names an
+				// exception in `threw`.
+				return (reason, locale, cause) -> null;
 			default:
 				throw new IllegalArgumentException("unknown custom fallback policy behavior: " + behavior);
 		}

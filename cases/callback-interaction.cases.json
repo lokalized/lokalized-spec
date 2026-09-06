@@ -12,10 +12,6 @@
       "why": "No named callback behavior raises an Error, and the per-candidate catch at DefaultStrings.java:721 catches only RuntimeException, so an Error would escape the fallback loop before it could ever become a retained cause. Expressing this needs a new named behavior plus a decision about whether the oracle should record an Error at all."
     },
     {
-      "what": "A fallback policy that returns null, which DefaultStrings.java:734-735 turns into a NullPointerException from requireNonNull(..., \"translationFallbackPolicy returned null\") -- the policy-side counterpart of the resolver's null-return case.",
-      "why": "The primer's named policy behaviors are missing-or-no-match, any-failure, never, continue-for-locales, continue-for-reasons and throw-in-policy; none of them can return null, and customPolicyFrom rejects any other behavior name. A \"return-null\" policy behavior would have to be added to the oracle first."
-    },
-    {
       "what": "A per-call PhoneticResolver override interacting with a per-call policy or handler.",
       "why": "TranslationOptions carries only bidiIsolation, translationFailureHandler and translationFallbackPolicy (DefaultStrings.java:684-686); there is no per-call resolver form, as the task statement notes. The instance resolver is therefore the fixed member of every override combination, which is what the both-per-call-overrides case makes explicit."
     },

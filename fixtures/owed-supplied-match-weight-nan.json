@@ -1,0 +1,32 @@
+{
+  "id": "owed-supplied-match-weight-nan",
+  "description": "A localeMatchSupplier handing the library a LocaleMatchResult built through its PUBLIC constructor with a NaN effective weight. This is the row that DISCRIMINATES LocaleMatchResult:111's four-way weight guard rather than merely reaching it: the sibling 'infinity' fixture is also refused by the `effectiveWeight > 1.0` conjunct, so a port with no finiteness test at all still passes it -- measured on lokalized-js, where deleting `!Number.isFinite(effectiveWeight)` left the infinity row green. `NaN > 1.0` and `NaN <= 0.0` are both false in Java and in JS, so `!Double.isFinite(w)` is the only conjunct that can reject this input. A JS caller reaches the state without trying: NaN is what a q-value parse of a malformed Accept-Language header, or a division by a zero denominator, produces.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "localeMatchSupplier": {
+    "behavior": "fabricated",
+    "ranges": [
+      {
+        "range": "fr",
+        "weight": 1
+      }
+    ],
+    "fallbackLocale": "en",
+    "consideredLocales": [
+      "en",
+      "fr"
+    ],
+    "matchType": "EXACT",
+    "locale": "fr",
+    "range": "fr",
+    "weight": "nan"
+  },
+  "files": {
+    "en": {
+      "Checkout.Title": "Checkout"
+    },
+    "fr": {
+      "Checkout.Title": "Paiement"
+    }
+  }
+}

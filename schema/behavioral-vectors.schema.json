@@ -88,7 +88,10 @@
                   "locale": { "$ref": "#/$defs/languageTag" },
                   "ranges": { "$ref": "#/$defs/languageRanges" },
                   "range": { "type": "string" },
-                  "weight": { "type": "number" },
+                  "weight": {
+                    "description": "A fabricated match's effective weight. LocaleMatchResult:111 refuses a weight that is not finite, at most 0, or above 1; the non-finite values cannot be written as JSON numbers, so the string sentinels 'infinity' and 'nan' name them. 'nan' is the one that DISCRIMINATES the clause: Infinity is caught by `effectiveWeight > 1.0` even with the finiteness test deleted (measured -- deleting !Number.isFinite from lokalized-js leaves the infinity row passing), while NaN > 1.0 and NaN <= 0.0 are both false in Java and in JS, so only NaN separates !Double.isFinite(w) from the two bounds. Closed set of two -- both runners refuse any other string rather than coercing it, since Number(typo) is NaN and would land on the same arm while testing the wrong input.",
+                    "oneOf": [{ "type": "number" }, { "enum": ["infinity", "nan"] }]
+                  },
                   "matchType": { "enum": ["NONE", "EXACT", "CANONICAL", "CLDR_FALLBACK", "LIKELY_SUBTAG", "EXTENDED_RANGE", "PRIMARY_LANGUAGE", "WILDCARD"] },
                   "fallbackLocale": { "$ref": "#/$defs/languageTag" },
                   "consideredLocales": { "type": "array", "items": { "$ref": "#/$defs/languageTag" } }
@@ -127,10 +130,18 @@
           "constructionOverrides": {
             "type": ["object", "null"],
             "additionalProperties": false,
-            "description": "Deliberately degenerate builder configurations that no well-formed fixture can express, each naming one DefaultStrings construction validation. Closed set; the oracle refuses an unknown value rather than silently building a valid instance.",
+            "description": "Deliberately degenerate builder configurations that no well-formed fixture can express, each naming one DefaultStrings (or Strings.Builder) construction validation. Closed set; both the oracle and lokalized-js's runner refuse an unknown value rather than silently building a valid instance. MOST name a REFUSAL and require refusesConstruction; the two Strings.Builder null-argument arms and instanceCallbacks deliberately CONSTRUCT, and ingest.mjs checks that distinction in both directions.",
             "properties": {
-              "catalogSource": { "enum": ["omit", "returnsNull", "nullLocaleKey", "duplicateNormalizedTag", "nullCatalogValue", "nullEntry"] },
-              "localeSource": { "enum": ["omit"] }
+              "catalogSource": { "enum": ["omit", "returnsNull", "nullLocaleKey", "duplicateNormalizedTag", "nullCatalogValue", "nullEntry", "duplicateKey"] },
+              "localeSource": { "enum": ["omit", "explicitNullLocaleSupplier", "explicitNullMatchSupplier"] },
+              "tiebreakerSource": {
+                "description": "A degenerate tiebreaker map: shapes a JSON `tiebreakers` object cannot spell, each a DefaultStrings refusal a JS caller reaches through plan 3.1's TiebreakerMap -- only its Map half can carry a null key.",
+                "enum": ["nullList", "nullEntry", "nullLanguageCode"]
+              },
+              "instanceCallbacks": {
+                "description": "'libraryDefaults' installs NEITHER the recording failure handler nor the recording fallback policy, so DefaultStrings:472 and :473 select the library's OWN defaults. The cost is the two observation channels, which is why it is an override and not the norm; such a fixture is observable only through `construct`'s probe.",
+                "enum": ["libraryDefaults"]
+              }
             }
           },
           "refusesConstruction": {
@@ -184,7 +195,14 @@
               "supportedCardinalitiesForLocale", "supportedOrdinalitiesForLocale"
             ]
           },
-          "input": { "type": "object" },
+          "input": {
+            "type": "object",
+            "$comment": "Open by design -- each operation reads its own keys. The two PER-CALL CALLBACK overrides are named because they were the hole: fixture-level callbacks have always been enum-checked here, per-call ones were not, so a misspelled behavior reached VectorOracle's decoder and its 'unknown ... behavior' IllegalArgumentException was banked as an `expected.thrown` block indistinguishable in shape from a library ingress refusal. Probed, not assumed: two typo'd cases were ingested and built, and both recorded exactly that. tools/vector-oracle/ingest.mjs reads these same enums so the mistake is refused before a JVM round trip.",
+            "properties": {
+              "translationFailureHandler": { "$ref": "#/$defs/failureHandler" },
+              "translationFallbackPolicy": { "$ref": "#/$defs/fallbackPolicy" }
+            }
+          },
           "partition": {
             "enum": ["requiredPortableIds", "requiredImplementationIds", "informationalIds"],
             "description": "Portable cases gate cross-language parity. Implementation cases gate one family's release without inflating parity. Informational cases may be unsupported and never enter either numerator."
@@ -269,7 +287,8 @@
                     "reason": { "oneOf": [{ "type": "null" }, { "enum": ["MISSING_TRANSLATION", "NO_MATCHING_ALTERNATIVE", "RESOLUTION_FAILURE"] }] },
                     "locale": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/languageTag" }] },
                     "causeType": { "type": ["string", "null"] },
-                    "decision": { "type": ["boolean", "null"] }
+                    "decision": { "type": ["boolean", "null"] },
+                    "threw": { "type": "string", "$comment": "Present ONLY when the policy delegate threw, in which case decision is null. Its absence with a null decision means the policy RETURNED null, which Java then rejects at DefaultStrings.java:735." }
                   }
                 }
               },
@@ -449,7 +468,7 @@
           "additionalProperties": false,
           "required": ["behavior"],
           "properties": {
-            "behavior": { "enum": ["return-key", "throw", "return-string", "throw-in-handler"] },
+            "behavior": { "enum": ["return-key", "throw", "return-string", "throw-in-handler", "return-null"] },
             "text": { "type": "string" },
             "message": { "type": "string" }
           }
@@ -469,7 +488,7 @@
           "additionalProperties": false,
           "required": ["behavior"],
           "properties": {
-            "behavior": { "enum": ["continue-for-locales", "continue-for-reasons", "throw-in-policy"] },
+            "behavior": { "enum": ["continue-for-locales", "continue-for-reasons", "throw-in-policy", "return-null"] },
             "locales": { "type": "array", "items": { "$ref": "#/$defs/languageTag" } },
             "reasons": { "type": "array", "items": { "enum": ["MISSING_TRANSLATION", "NO_MATCHING_ALTERNATIVE", "RESOLUTION_FAILURE"] } },
             "message": { "type": "string" }

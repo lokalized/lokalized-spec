@@ -1,0 +1,20 @@
+{
+  "id": "null-callbacks-two-locales",
+  "description": "Two catalogs in DIFFERENT languages (de, en) with fallbackLocale en, so the candidate chain's length is decided entirely by the requested locale: requesting de builds [de, en] and gives exactly one policy consultation, requesting en builds [en] and gives none. That contrast is what makes a null-returning policy's rejection attributable to the CONSULTATION rather than to its installation. The instance handler is return-key and the instance policy is any-failure, both benign, so every case's per-call override is the only variable. Present.De and Present.En exist so a translated lookup can be observed on the same fixture; no key is present in both, and Missing.Everywhere is present in neither.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "translationFailureHandler": {
+    "behavior": "return-key"
+  },
+  "translationFallbackPolicy": "any-failure",
+  "files": {
+    "de": {
+      "Present.De": "de: present"
+    },
+    "en": {
+      "Present.En": "en: present"
+    }
+  },
+  "rawFiles": {},
+  "rawFilesBase64": {}
+}

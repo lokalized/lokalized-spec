@@ -1,0 +1,18 @@
+{
+  "id": "owed-init-tiebreaker-language-not-loaded",
+  "description": "DefaultStrings:388 -- a tiebreaker language code with NO loaded catalogs at all. A port that ignored unknown tiebreaker keys accepts a typo'd key and then resolves ambiguity by some other rule with no diagnostic.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "pt": [
+      "pt-BR"
+    ]
+  },
+  "refusesConstruction": true,
+  "files": {
+    "en": {
+      "Greeting": {
+        "translation": "Hello"
+      }
+    }
+  }
+}

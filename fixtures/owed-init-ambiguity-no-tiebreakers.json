@@ -1,0 +1,19 @@
+{
+  "id": "owed-init-ambiguity-no-tiebreakers",
+  "description": "DefaultStrings:426 -- THE ambiguity refusal: two catalogs share a primary language and no tiebreakers were configured at all. This is M5b defect 1 exactly, and it differs from owed-init-base in one field: the tiebreaker map is absent.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "refusesConstruction": true,
+  "files": {
+    "en": {
+      "Greeting": {
+        "translation": "Hello"
+      }
+    },
+    "en-US": {
+      "Greeting": {
+        "translation": "Howdy"
+      }
+    }
+  }
+}

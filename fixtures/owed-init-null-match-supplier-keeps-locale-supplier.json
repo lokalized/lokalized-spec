@@ -1,0 +1,25 @@
+{
+  "id": "owed-init-null-match-supplier-keeps-locale-supplier",
+  "description": "Strings.java:310's NULL arm, the mirror: a localeMatchSupplier(null) does not clear a locale supplier already set.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "localeSupplier": {
+    "behavior": "constant",
+    "locale": "de"
+  },
+  "constructionOverrides": {
+    "localeSource": "explicitNullMatchSupplier"
+  },
+  "files": {
+    "en": {
+      "Greeting": {
+        "translation": "Hello"
+      }
+    },
+    "de": {
+      "Greeting": {
+        "translation": "Hallo"
+      }
+    }
+  }
+}

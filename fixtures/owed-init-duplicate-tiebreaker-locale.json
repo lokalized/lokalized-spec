@@ -1,0 +1,25 @@
+{
+  "id": "owed-init-duplicate-tiebreaker-locale",
+  "description": "DefaultStrings:349 -- a DUPLICATE tiebreaker locale within one list. Tiebreaker order decides which catalog wins an ambiguous match, so a port that deduplicated silently has accepted a configuration whose author's intent is unknowable.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "en": [
+      "en",
+      "en-US",
+      "en"
+    ]
+  },
+  "refusesConstruction": true,
+  "files": {
+    "en": {
+      "Greeting": {
+        "translation": "Hello"
+      }
+    },
+    "en-US": {
+      "Greeting": {
+        "translation": "Howdy"
+      }
+    }
+  }
+}

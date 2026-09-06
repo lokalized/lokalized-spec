@@ -1,0 +1,23 @@
+{
+  "id": "owed-init-base",
+  "description": "THE CONTROL for the DefaultStrings.<init> tiebreaker family: two catalogs sharing one primary language WITH a correct exact-permutation tiebreaker list. It constructs and answers, so every refusal row below is read against an accepting instance that differs from it in exactly one field.",
+  "fallbackLocale": "en",
+  "tiebreakers": {
+    "en": [
+      "en",
+      "en-US"
+    ]
+  },
+  "files": {
+    "en": {
+      "Greeting": {
+        "translation": "Hello"
+      }
+    },
+    "en-US": {
+      "Greeting": {
+        "translation": "Howdy"
+      }
+    }
+  }
+}

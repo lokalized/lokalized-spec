@@ -1,0 +1,25 @@
+{
+  "id": "owed-init-null-locale-supplier-keeps-match-supplier",
+  "description": "Strings.java:288's NULL arm. A localeSupplier(null) does NOT clear a localeMatchSupplier already set, so this CONSTRUCTS and the match supplier decides the ambient locale. Constructing is the observation.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "localeMatchSupplier": {
+    "behavior": "match-locale",
+    "locale": "de"
+  },
+  "constructionOverrides": {
+    "localeSource": "explicitNullLocaleSupplier"
+  },
+  "files": {
+    "en": {
+      "Greeting": {
+        "translation": "Hello"
+      }
+    },
+    "de": {
+      "Greeting": {
+        "translation": "Hallo"
+      }
+    }
+  }
+}

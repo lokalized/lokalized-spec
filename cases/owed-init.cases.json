@@ -1,0 +1,90 @@
+{
+  "formatVersion": 1,
+  "family": "owed-init",
+  "description": "Plan v7 section 8.3 fixture family 'owed-init'. Inputs only; the oracle emits expected.",
+  "cases": [
+    {
+      "id": "owed-init.control.ambiguous-catalogs-with-tiebreakers-construct",
+      "requirementIds": [],
+      "fixture": "owed-init-base",
+      "operation": "construct",
+      "input": {
+        "probeKey": "Greeting"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "THE CONTROL. Every other row in this family says 'this was refused'; without an accepting row that shares the two-catalog ambiguous shape, none of them shows the operation can tell acceptance from refusal. probeKey makes the success an observation -- the instance answers Greeting from the elected catalog -- rather than the absence of a throw."
+    },
+    {
+      "id": "owed-init.refusal.fallback-locale-names-no-catalog",
+      "requirementIds": [],
+      "fixture": "owed-init-fallback-not-loaded",
+      "operation": "construct",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings:309. The most basic configuration error the library has, and no case took it: every other fixture's fallbackLocale is loaded. A port that quietly elected the first catalog instead would pass the entire corpus and then serve the wrong language forever. The refusal message enumerates the known locales, so the diagnostic content is compared too."
+    },
+    {
+      "id": "owed-init.refusal.tiebreaker-language-codes-normalize-alike",
+      "requirementIds": [],
+      "fixture": "owed-init-tiebreaker-codes-collide",
+      "operation": "construct",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings:329. The configuration-side twin of the M5b tiebreaker canonicalization defects: a port that keyed its tiebreaker map by RAW spelling accepts both keys and silently keeps one. 'mo'/'ro' rather than 'iw'/'he' deliberately -- the JDK collapses iw to he on its own, so an iw/he row would pass on a port that did no CLDR normalization at all. The two keys are authored in SORTED order because the built artifact is canonical JSON: Java's message names whichever supplied code it met first, and the authored order does not survive serialization. Measured -- authored '{ ro, mo }' this row recorded \"codes 'ro' and 'mo'\" and lokalized-js, reading the same artifact, answered them the other way round and FAILED. ingest.mjs now refuses an unsorted tiebreaker map so the hazard cannot return one fixture at a time. FOUND A REAL PORT DEFECT: before this row lokalized-js had no key-collision check and answered the :394 permutation refusal for this input."
+    },
+    {
+      "id": "owed-init.refusal.duplicate-tiebreaker-locale-in-one-list",
+      "requirementIds": [],
+      "fixture": "owed-init-duplicate-tiebreaker-locale",
+      "operation": "construct",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings:349. Read against owed-init.control.ambiguous-catalogs-with-tiebreakers-construct, whose list is the same two locales without the repeat and which constructs. FOUND A REAL PORT DEFECT: lokalized-js built its comparison set straight from the caller's array, so the repeat was silently deduplicated and the instance CONSTRUCTED where Java refuses."
+    },
+    {
+      "id": "owed-init.refusal.tiebreaker-language-has-no-catalogs",
+      "requirementIds": [],
+      "fixture": "owed-init-tiebreaker-language-not-loaded",
+      "operation": "construct",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings:388."
+    },
+    {
+      "id": "owed-init.refusal.tiebreaker-list-is-a-subset",
+      "requirementIds": [],
+      "fixture": "owed-init-tiebreaker-size-mismatch",
+      "operation": "construct",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings:394, the SIZE disjunct. The refusal message names the missing locale, so the case also pins the diagnostic a port must reproduce."
+    },
+    {
+      "id": "owed-init.refusal.tiebreaker-list-is-not-a-permutation",
+      "requirementIds": [],
+      "fixture": "owed-init-tiebreaker-membership-mismatch",
+      "operation": "construct",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings:394, the SET-EQUALITY disjunct, plus both arms of the :396 'missing' and :400 'unrelated' predicates. A port that checked only the LIST LENGTH accepts this input; a port that computed the two diagnostic lists by any other rule prints a different message. Measured on the pinned JDK: 'missing: [en-US]; unrelated: [en-GB]'."
+    },
+    {
+      "id": "owed-init.refusal.ambiguous-catalogs-without-tiebreakers",
+      "requirementIds": [],
+      "fixture": "owed-init-ambiguity-no-tiebreakers",
+      "operation": "construct",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings:426, the null-list arm. This is the defect M5b found by hand -- Java refuses 'en' + 'en-US' without tiebreakers and the port accepted it -- and until now the corpus could not see it, because every ambiguous fixture supplied tiebreakers."
+    },
+    {
+      "id": "owed-init.refusal.fallback-equivalent-to-multiple-catalogs",
+      "requirementIds": [],
+      "fixture": "owed-init-fallback-equivalent-to-many",
+      "operation": "construct",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings:465, reached through :457's no-list arm. A port that silently elected one of the two equivalent catalogs would pass every other row in the corpus. The refusal message enumerates the equivalent locales in tag order, which is what makes the row discriminate the SET as well as the refusal."
+    }
+  ]
+}

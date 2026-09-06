@@ -16,8 +16,8 @@
       "why": "FINDING, not an omission, and now confirmed empirically: across all 57 cases in this family the failures array is either absent or exactly length 1. DefaultStrings.getResult calls translationFailureHandler.handle exactly once, after the walk ends (line 749). The POLICY is consulted per candidate; the HANDLER is not. Every note in this family is written to that fact."
     },
     {
-      "what": "A custom TranslationFallbackPolicy that inspects attemptedLocale or the cause, and a policy that returns null (which DefaultStrings.java:734-735 turns into a NullPointerException via requireNonNull with the message \"translationFallbackPolicy returned null\").",
-      "why": "Section 8.2 forbids embedding executable callbacks; policies are referenced by name and VectorOracle.policyFrom offers only the three library policies. A named 'null-returning' behavior would have to be added there first. The same applies to a handler returning null, which DefaultStrings.java:749-750 rejects with \"TranslationFailureHandler returned null\"."
+      "what": "A custom TranslationFallbackPolicy that inspects attemptedLocale or the cause. The null-returning half of this entry is CLOSED: VectorOracle now has `return-null` behaviors for both the policy and the handler, and the `null-callbacks` family records what Java does with them.",
+      "why": "Section 8.2 forbids embedding executable callbacks; policies are referenced by name. What remains open is only ACTUATION on the cause: customPolicyFrom's vocabulary decides on locale and reason, never on the Throwable, so a policy that continues for one exception type and halts for another cannot be expressed. The cause is OBSERVED on every consultation (policyCalls carries causeType, including on the consultation that returns null or throws); it is simply never the thing that drives the decision. A 'continue-for-cause-types' behavior would close it."
     },
     {
       "what": "A fallback-observer case proving the observer sees the same match object as the result (the TranslationFailureHandler.returnKey(Consumer) overload).",

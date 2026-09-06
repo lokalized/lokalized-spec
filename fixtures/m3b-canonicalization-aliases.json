@@ -7,14 +7,14 @@
       "en",
       "en-Zinh"
     ],
+    "fa": [
+      "fa-Arab-AF",
+      "fa-IR"
+    ],
     "sr": [
       "sr-Cyrl",
       "sr-Latn-BA",
       "sr-Latn-fonipa"
-    ],
-    "fa": [
-      "fa-Arab-AF",
-      "fa-IR"
     ]
   },
   "files": {

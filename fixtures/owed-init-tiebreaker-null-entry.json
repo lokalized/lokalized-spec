@@ -1,0 +1,17 @@
+{
+  "id": "owed-init-tiebreaker-null-entry",
+  "description": "DefaultStrings:343 -- a null entry INSIDE a tiebreaker list, which a JS record spells `{ en: [null] }`.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "refusesConstruction": true,
+  "constructionOverrides": {
+    "tiebreakerSource": "nullEntry"
+  },
+  "files": {
+    "en": {
+      "Greeting": {
+        "translation": "Hello"
+      }
+    }
+  }
+}

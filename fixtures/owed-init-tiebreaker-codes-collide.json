@@ -1,0 +1,21 @@
+{
+  "id": "owed-init-tiebreaker-codes-collide",
+  "description": "DefaultStrings:329 -- two tiebreaker language codes that CANONICALIZE to the same code. 'mo' and 'ro' are a CLDR alias pair, not a JDK legacy pair: Locale.Builder leaves 'mo' as 'mo', so only CLDR normalization collapses them, and a port applying the JDK's own he->iw mapping and nothing else accepts this input. The keys are in SORTED order deliberately: the built artifact is RFC 8785 canonical JSON, so a consumer reading it never sees the order they were authored in, and Java's diagnostic names whichever supplied code it met FIRST.",
+  "fallbackLocale": "ro",
+  "tiebreakers": {
+    "mo": [
+      "mo"
+    ],
+    "ro": [
+      "ro"
+    ]
+  },
+  "refusesConstruction": true,
+  "files": {
+    "ro": {
+      "Greeting": {
+        "translation": "Salut"
+      }
+    }
+  }
+}

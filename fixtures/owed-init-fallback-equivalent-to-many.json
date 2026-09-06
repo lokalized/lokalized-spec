@@ -1,0 +1,19 @@
+{
+  "id": "owed-init-fallback-equivalent-to-many",
+  "description": "DefaultStrings:465 -- the fallback tag is canonically equivalent to MORE THAN ONE loaded catalog and no tiebreaker list can disambiguate it. Reaching this needs the fallback's language bucket to be empty while two catalogs are still equivalent to it, which only the undetermined language does: 'und-bokmal' and 'und-nynorsk' both canonicalize to 'und', and LocaleUtils.normalizedLanguage is empty for both, so neither enters supportedLocalesByLanguageCode and :457 finds no list to walk.",
+  "fallbackLocale": "und",
+  "tiebreakers": null,
+  "refusesConstruction": true,
+  "files": {
+    "und-bokmal": {
+      "Greeting": {
+        "translation": "Hallo"
+      }
+    },
+    "und-nynorsk": {
+      "Greeting": {
+        "translation": "Hei"
+      }
+    }
+  }
+}

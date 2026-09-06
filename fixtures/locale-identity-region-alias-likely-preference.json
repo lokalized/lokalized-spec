@@ -3,25 +3,21 @@
   "description": "The other branch of CldrLocaleData.preferredRegionAlias: languages whose likely region appears LATER in the alias value list. Each language loads two catalogs - the alias list's first value and the likely-subtag value - so a wrong preference rule selects a real but different catalog instead of failing to match. The list covers picks at index 1 (sk, vic, ckb, hy), 2 (cal), 3 (hr and pau, the last value of their four-value rows), 4 (et), 5 (bs, the last value of the six-value 890 row) and 14 (uz, the deepest pick reachable anywhere in the alias table). Every language here needs tiebreakers, each an exact permutation of its two loaded locales.",
   "fallbackLocale": "en",
   "tiebreakers": {
-    "et": [
-      "et-EE",
-      "et-RU"
+    "bs": [
+      "bs-RS",
+      "bs-BA"
     ],
-    "sk": [
-      "sk-CZ",
-      "sk-SK"
-    ],
-    "vic": [
-      "vic-CW",
-      "vic-SX"
+    "cal": [
+      "cal-FM",
+      "cal-MP"
     ],
     "ckb": [
       "ckb-IQ",
       "ckb-SA"
     ],
-    "cal": [
-      "cal-FM",
-      "cal-MP"
+    "et": [
+      "et-EE",
+      "et-RU"
     ],
     "hr": [
       "hr-HR",
@@ -31,17 +27,21 @@
       "hy-AM",
       "hy-RU"
     ],
+    "pau": [
+      "pau-FM",
+      "pau-PW"
+    ],
+    "sk": [
+      "sk-CZ",
+      "sk-SK"
+    ],
     "uz": [
       "uz-RU",
       "uz-UZ"
     ],
-    "bs": [
-      "bs-RS",
-      "bs-BA"
-    ],
-    "pau": [
-      "pau-FM",
-      "pau-PW"
+    "vic": [
+      "vic-CW",
+      "vic-SX"
     ]
   },
   "files": {

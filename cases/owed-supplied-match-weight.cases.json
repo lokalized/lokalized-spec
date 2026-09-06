@@ -1,0 +1,29 @@
+{
+  "formatVersion": 1,
+  "family": "owed-supplied-match-weight",
+  "description": "Plan v7 section 8.3 fixture family 'owed-supplied-match-weight'. Inputs only; the oracle emits expected.",
+  "cases": [
+    {
+      "id": "owed-supplied-match-weight.effective-weight-is-not-finite",
+      "requirementIds": [],
+      "fixture": "owed-supplied-match-weight-not-finite",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "LocaleMatchResult:111's NON-FINITE clause, the last of its four arms and the one the m3b-supplied-match.weight-above-one note recorded as inexpressible in this fixture format. It is expressible with a string sentinel, and it matters more in JS than in Java: an Infinity or a NaN arrives from ordinary arithmetic on a weight -- a division by a zero denominator, a parse of a malformed q-value -- so a port that checked only the two bounds accepts a match whose weight is meaningless and then orders candidates by it."
+    },
+    {
+      "id": "owed-supplied-match-weight.effective-weight-is-nan",
+      "requirementIds": [],
+      "fixture": "owed-supplied-match-weight-nan",
+      "operation": "getResult",
+      "input": {
+        "key": "Checkout.Title"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The DISCRIMINATING half of LocaleMatchResult:111's non-finite clause. The sibling 'effective-weight-is-not-finite' row reaches the branch but does not separate its arms: Infinity is refused by `effectiveWeight > 1.0` too, and deleting the finiteness test from lokalized-js leaves that row passing (measured 2026-09-06). NaN is the only value for which `> 1.0` and `<= 0.0` are BOTH false, so this row fails on any port that checks only the two bounds. Authored because a case that closes a branch without distinguishing its arms is worse than no case -- the disposition gets deleted and the gap goes invisible."
+    }
+  ]
+}

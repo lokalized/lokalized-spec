@@ -4,14 +4,6 @@
   "description": "Plan v7 section 8.3 fixture family 'custom-policy'. Inputs only; the oracle emits expected.",
   "skipped": [
     {
-      "what": "A recorded policyCalls entry for the consultation that THROWS, under throw-in-policy.",
-      "why": "FINDING, re-verified against the harness source and by execution, not an authoring omission. VectorOracle.recordingPolicy (VectorOracle.java:533-546) calls delegate.shouldTryNextLocale FIRST and appends the record afterwards, so a throwing delegate never reaches the append and the whole policyCalls channel comes back ABSENT — confirmed on all nine throw-in-policy cases in this set. The reason, locale and cause the throwing policy was handed are therefore unobservable. Those cases assert the absence plus the thrown identity, which still discriminates precedence, but a port could pass them while handing the policy the wrong locale or reason on that final consultation. Moving the POLICY_CALLS.add into a try/finally in recordingPolicy (recording a threw field the way resolverFrom already does at VectorOracle.java:462-481) would close it; nothing else in the corpus changes, because no other family uses throw-in-policy."
-    },
-    {
-      "what": "A caller-supplied policy that returns null, which DefaultStrings.java:734-735 rejects with requireNonNull(..., \"translationFallbackPolicy returned null\") and turns into a NullPointerException.",
-      "why": "Section 8.2 forbids embedding executable callbacks and VectorOracle.customPolicyFrom (VectorOracle.java:584-604) offers only continue-for-locales, continue-for-reasons and throw-in-policy. A named 'return-null' behavior would have to be added there and to the schema's fallbackPolicy enum first. The same gap was recorded by the earlier fallback-policy family and is unchanged. Note the asymmetry worth closing: the resolver vocabulary DOES have return-null, so the null-rejection clause is stated for one callback and unstatable for the other."
-    },
-    {
       "what": "A policy that decides on the CAUSE argument, for example continuing only for ExpressionEvaluationException while halting for IllegalStateException.",
       "why": "The vocabulary actuates on locale and reason only. custom-policy.cause.three-consecutive-calls-carry-three-distinct-types proves three structurally different Throwables reach three consecutive consultations with distinct causeTypes, so the argument is OBSERVED per call; it is simply never the thing that drives the decision. A 'continue-for-cause-types' behavior in customPolicyFrom would let the observation become an actuation."
     },
@@ -223,7 +215,7 @@
         }
       },
       "partition": "requiredPortableIds",
-      "notes": "The same all-fail chain reached through the OTHER caller-supplied mechanism, so the 'one fewer call than attempt' invariant is shown to be a property of the loop rather than of a particular policy shape. Executed, this emits the same observation as every-candidate-fails-with-a-cause; that equality is the proposition. A port that special-cased one policy kind — for example by evaluating a locale list eagerly over the whole chain instead of per consultation — would diverge on exactly one of this pair."
+      "notes": "The same all-fail chain reached through the OTHER caller-supplied mechanism, so the 'one fewer call than attempt' invariant is shown to be a property of the loop rather than of a particular policy shape. Executed, this emits the same observation as every-candidate-fails-with-a-cause; that equality is the proposition. A port that special-cased one policy kind \u2014 for example by evaluating a locale list eagerly over the whole chain instead of per consultation \u2014 would diverge on exactly one of this pair."
     },
     {
       "id": "custom-policy.finalcandidate.library-default-also-stops-short-of-the-last",
@@ -397,7 +389,7 @@
         }
       },
       "partition": "requiredPortableIds",
-      "notes": "Third arm on the same key and placeholders: a policy that continues ONLY for resolution failures never reaches the resolution failure, because the plain missing translation at en-GB stops it first. Catches a port that evaluates the policy against the eventual reported reason rather than the per-attempt reason — the eventual reason here would have been RESOLUTION_FAILURE and the walk would have continued."
+      "notes": "Third arm on the same key and placeholders: a policy that continues ONLY for resolution failures never reaches the resolution failure, because the plain missing translation at en-GB stops it first. Catches a port that evaluates the policy against the eventual reported reason rather than the per-attempt reason \u2014 the eventual reason here would have been RESOLUTION_FAILURE and the walk would have continued."
     },
     {
       "id": "custom-policy.cause.three-consecutive-calls-carry-three-distinct-types",
@@ -423,7 +415,7 @@
         }
       },
       "partition": "requiredPortableIds",
-      "notes": "The cause-argument clause. Three consecutive candidates fail for structurally different reasons and the recorded causeType differs on every call — verified by execution as java.lang.IllegalStateException (missing GENDER_NEUTER), java.lang.IllegalArgumentException (placeholder value never supplied), then com.lokalized.ExpressionEvaluationException (raw string compared with >). fr then serves, giving three calls against four attempts. A port that passed a single wrapped or first-seen throwable to every consultation collapses all three to one type."
+      "notes": "The cause-argument clause. Three consecutive candidates fail for structurally different reasons and the recorded causeType differs on every call \u2014 verified by execution as java.lang.IllegalStateException (missing GENDER_NEUTER), java.lang.IllegalArgumentException (placeholder value never supplied), then com.lokalized.ExpressionEvaluationException (raw string compared with >). fr then serves, giving three calls against four attempts. A port that passed a single wrapped or first-seen throwable to every consultation collapses all three to one type."
     },
     {
       "id": "custom-policy.cause.first-call-carries-the-first-candidates-cause",
@@ -496,7 +488,7 @@
         }
       },
       "partition": "requiredPortableIds",
-      "notes": "Combines truncation, first-cause retention, and a throwing handler on one call. The locale policy continues past en-GB and halts at en-001, so the policyCalls channel shows IllegalStateException then IllegalArgumentException, yet the thrown exception carries the FIRST cause — verified as IllegalStateException with message ending 'Missing Gender translation for NEUTER' — because firstFallbackFailure is assigned only while still null (DefaultStrings.java:724-725). A port retaining the last cause would throw carrying the IllegalArgumentException."
+      "notes": "Combines truncation, first-cause retention, and a throwing handler on one call. The locale policy continues past en-GB and halts at en-001, so the policyCalls channel shows IllegalStateException then IllegalArgumentException, yet the thrown exception carries the FIRST cause \u2014 verified as IllegalStateException with message ending 'Missing Gender translation for NEUTER' \u2014 because firstFallbackFailure is assigned only while still null (DefaultStrings.java:724-725). A port retaining the last cause would throw carrying the IllegalArgumentException."
     },
     {
       "id": "custom-policy.truncation.get-returns-the-interpolated-key",
@@ -556,7 +548,7 @@
         }
       },
       "partition": "requiredPortableIds",
-      "notes": "Truncation and a raising handler in one call, which the rest of the family separates. The policy halts at en-001, and the handler — which is reached, unlike in every throwing-policy case — is handed a TranslationFailure whose attemptedLocales is the truncated [en-GB, en-001] rather than the full four, and then raises. Executed: the failures channel records the truncated list and the thrown identity is the handler's IllegalStateException with its own message. A port that built the failure from the full candidate list, or that computed the failure before the walk finished, diverges on the recorded attemptedLocales while the thrown identity stays the same."
+      "notes": "Truncation and a raising handler in one call, which the rest of the family separates. The policy halts at en-001, and the handler \u2014 which is reached, unlike in every throwing-policy case \u2014 is handed a TranslationFailure whose attemptedLocales is the truncated [en-GB, en-001] rather than the full four, and then raises. Executed: the failures channel records the truncated list and the thrown identity is the handler's IllegalStateException with its own message. A port that built the failure from the full candidate list, or that computed the failure before the walk finished, diverges on the recorded attemptedLocales while the thrown identity stays the same."
     },
     {
       "id": "custom-policy.instance.custom-policy-applies-without-a-per-call-override",
@@ -611,7 +603,7 @@
         }
       },
       "partition": "requiredPortableIds",
-      "notes": "Custom-over-custom override: a per-call reason-based policy displaces an instance locale-based one entirely. Covers the case a built-in override cannot, namely that the replacement path is not special-cased to the three library singletons — a port that only honored per-call overrides when they were one of the named built-ins would keep the instance policy here and stop at es."
+      "notes": "Custom-over-custom override: a per-call reason-based policy displaces an instance locale-based one entirely. Covers the case a built-in override cannot, namely that the replacement path is not special-cased to the three library singletons \u2014 a port that only honored per-call overrides when they were one of the named built-ins would keep the instance policy here and stop at es."
     },
     {
       "id": "custom-policy.instance.per-call-never-narrows-the-instance-custom-policy",
@@ -818,7 +810,7 @@
         }
       },
       "partition": "requiredPortableIds",
-      "notes": "Third arm: two callbacks that both raise IllegalStateException, separated ONLY by message. The emitted message is the policy's, proving order of consultation rather than order of catch. The absent failures channel independently confirms the handler was never entered — under throw-in-handler the recording wrapper appends the failure BEFORE raising, so its absence here cannot be explained by the wrapper."
+      "notes": "Third arm: two callbacks that both raise IllegalStateException, separated ONLY by message. The emitted message is the policy's, proving order of consultation rather than order of catch. The absent failures channel independently confirms the handler was never entered \u2014 under throw-in-handler the recording wrapper appends the failure BEFORE raising, so its absence here cannot be explained by the wrapper."
     },
     {
       "id": "custom-policy.throwing.not-consulted-when-the-first-candidate-serves",
@@ -964,7 +956,7 @@
         }
       },
       "partition": "requiredPortableIds",
-      "notes": "The third callback's exception inside a walk, which neither this family's other fixtures nor callback-smoke reach. A raw term hits the throwing PhoneticResolver at fr-CA and again at fr; each throw is caught by the getInternal guard and surfaces to the policy as RESOLUTION_FAILURE whose CAUSE is the resolver's own java.lang.IllegalStateException, and en's plain text then serves. Executed: resolverCalls carries TWO entries whose locales are fr-CA and fr — the donor rule for callbacks proven to be re-evaluated per candidate rather than fixed at the requested locale — and policyCalls carries two matching causeTypes. A port that resolved the phonetic term once per lookup, or that passed the requested locale to every candidate's resolver call, emits one entry or two identical ones."
+      "notes": "The third callback's exception inside a walk, which neither this family's other fixtures nor callback-smoke reach. A raw term hits the throwing PhoneticResolver at fr-CA and again at fr; each throw is caught by the getInternal guard and surfaces to the policy as RESOLUTION_FAILURE whose CAUSE is the resolver's own java.lang.IllegalStateException, and en's plain text then serves. Executed: resolverCalls carries TWO entries whose locales are fr-CA and fr \u2014 the donor rule for callbacks proven to be re-evaluated per candidate rather than fixed at the requested locale \u2014 and policyCalls carries two matching causeTypes. A port that resolved the phonetic term once per lookup, or that passed the requested locale to every candidate's resolver call, emits one entry or two identical ones."
     },
     {
       "id": "custom-policy.resolver.default-policy-halts-at-the-resolver-exception",
@@ -994,7 +986,7 @@
         }
       },
       "partition": "requiredPortableIds",
-      "notes": "The no-call-after-the-last clause stated where the last candidate fails INSIDE a callback rather than by a missing key. Res.OnlyAtEn is absent from fr-CA and fr, so the default policy continues twice on MISSING_TRANSLATION, and the resolver then throws at en — the final candidate. Executed: three attemptedLocales, exactly TWO policyCalls, and a single resolverCall whose locale is en. A port that consulted after the last candidate would emit a third policy entry carrying the resolver's IllegalStateException, which the rendered key text cannot reveal."
+      "notes": "The no-call-after-the-last clause stated where the last candidate fails INSIDE a callback rather than by a missing key. Res.OnlyAtEn is absent from fr-CA and fr, so the default policy continues twice on MISSING_TRANSLATION, and the resolver then throws at en \u2014 the final candidate. Executed: three attemptedLocales, exactly TWO policyCalls, and a single resolverCall whose locale is en. A port that consulted after the last candidate would emit a third policy entry carrying the resolver's IllegalStateException, which the rendered key text cannot reveal."
     },
     {
       "id": "custom-policy.resolver.tagged-value-serves-the-first-candidate-with-neither-channel",
@@ -1019,7 +1011,7 @@
         }
       },
       "partition": "requiredPortableIds",
-      "notes": "The fixture's control, and the reason the two cases above measure the resolver rather than the entry. The same key, candidate and policy, but a tagged PHONETIC_VOWEL bypasses the resolver at DefaultStrings.java:1157-1186, so fr-CA serves 'fr-CA: un-vowel' with BOTH channels absent: no resolverCalls because the tag short-circuits the callback, and no policyCalls because the first candidate succeeded. The falsifier is concrete — a port that resolved the tagged value through the resolver would throw here instead of translating, and would walk to en."
+      "notes": "The fixture's control, and the reason the two cases above measure the resolver rather than the entry. The same key, candidate and policy, but a tagged PHONETIC_VOWEL bypasses the resolver at DefaultStrings.java:1157-1186, so fr-CA serves 'fr-CA: un-vowel' with BOTH channels absent: no resolverCalls because the tag short-circuits the callback, and no policyCalls because the first candidate succeeded. The falsifier is concrete \u2014 a port that resolved the tagged value through the resolver would throw here instead of translating, and would walk to en."
     },
     {
       "id": "custom-policy.resolver.throwing-policy-outranks-the-throwing-resolver",

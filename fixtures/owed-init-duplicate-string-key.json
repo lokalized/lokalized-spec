@@ -1,0 +1,17 @@
+{
+  "id": "owed-init-duplicate-string-key",
+  "description": "DefaultStrings:500 -- the SAME translation key twice inside one locale's iterable. Unreachable from a loaded file (the bounded parser refuses a duplicate member) and unreachable from a record catalog; an ARRAY catalog reaches it on both sides.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "refusesConstruction": true,
+  "constructionOverrides": {
+    "catalogSource": "duplicateKey"
+  },
+  "files": {
+    "en": {
+      "Greeting": {
+        "translation": "Hello"
+      }
+    }
+  }
+}

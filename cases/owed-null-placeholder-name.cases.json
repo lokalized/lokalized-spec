@@ -1,0 +1,36 @@
+{
+  "formatVersion": 1,
+  "family": "owed-null-placeholder-name",
+  "description": "Plan v7 section 8.3 fixture family 'owed-null-placeholder-name'. Inputs only; the oracle emits expected.",
+  "cases": [
+    {
+      "id": "owed-null-placeholder-name.control.a-well-named-placeholder-resolves",
+      "requirementIds": [],
+      "fixture": "owed-null-placeholder-name-base",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting",
+        "placeholders": {
+          "who": "world"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "THE CONTROL, and it is not decoration: the refusal row below carries this same placeholder map plus a null key, so without this row a port that refused EVERY placeholder map would pass the refusal and look correct."
+    },
+    {
+      "id": "owed-null-placeholder-name.refusal.a-null-placeholder-name-is-refused",
+      "requirementIds": [],
+      "fixture": "owed-null-placeholder-name-base",
+      "operation": "getResult",
+      "input": {
+        "key": "Greeting",
+        "placeholders": {
+          "who": "world"
+        },
+        "nullPlaceholderName": true
+      },
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings:690. Java snapshots the caller's placeholder map and refuses a null KEY before any lookup runs. Plan 3.2 types Placeholders as `Record<string, unknown> | ReadonlyMap<string, unknown>` and blesses the Map form for generated or untrusted keys, so a null key is an ordinary caller shape on this side too -- and it is exactly the shape a generated key list produces when one entry is missing. FOUND A REAL PORT DEFECT: lokalized-js answered 'Hello world', silently ignoring the null-named entry, which is the behaviour the disposition for this branch predicted."
+    }
+  ]
+}

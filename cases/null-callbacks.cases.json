@@ -1,0 +1,147 @@
+{
+  "formatVersion": 1,
+  "family": "null-callbacks",
+  "description": "Plan v7 section 8.3 fixture family 'null-callbacks'. Inputs only; the oracle emits expected.",
+  "cases": [
+    {
+      "id": "null-callbacks.policy.null-decision-is-rejected-at-the-consultation",
+      "requirementIds": [],
+      "fixture": "null-callbacks-two-locales",
+      "operation": "getResult",
+      "input": {
+        "key": "Missing.Everywhere",
+        "locale": "de",
+        "translationFallbackPolicy": {
+          "behavior": "return-null"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The proposition open question 7 could not state. DefaultStrings.java:734-735 wraps shouldTryNextLocale in requireNonNull, so a policy that answers null does not stop the walk and does not continue it -- it aborts the lookup with a NullPointerException carrying a message the library composes. Until this behavior existed in the oracle the port's refusal was derived from READING that line. The policyCalls entry records decision null with no threw, which is what distinguishes a policy that RETURNED null from one that raised."
+    },
+    {
+      "id": "null-callbacks.policy.control-the-same-walk-under-the-instance-policy",
+      "requirementIds": [],
+      "fixture": "null-callbacks-two-locales",
+      "operation": "getResult",
+      "input": {
+        "key": "Missing.Everywhere",
+        "locale": "de"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "CONTROL for the case above, and the half that makes it mean something. Same fixture, same key, same requested locale, no per-call policy: the instance any-failure policy is consulted at exactly the point the null-returning one is, answers true, and the walk reaches en and then the handler. A recorded consultation here is the evidence that the null case's NullPointerException comes from a consultation that really happens."
+    },
+    {
+      "id": "null-callbacks.policy.control-a-one-candidate-chain-never-consults-it",
+      "requirementIds": [],
+      "fixture": "null-callbacks-two-locales",
+      "operation": "getResult",
+      "input": {
+        "key": "Missing.Everywhere",
+        "locale": "en",
+        "translationFallbackPolicy": {
+          "behavior": "return-null"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The zh-123 control: the null-returning policy is INSTALLED and the lookup still succeeds in returning the key, because requesting en builds the one-element chain [en] and DefaultStrings.java:731-732 breaks before any consultation. Without this row, a port that rejected the policy at construction, or on the final candidate, would pass the case above for the wrong reason. Isolates chain length as the only variable."
+    },
+    {
+      "id": "null-callbacks.policy.null-decision-propagates-out-of-get",
+      "requirementIds": [],
+      "fixture": "null-callbacks-two-locales",
+      "operation": "get",
+      "input": {
+        "key": "Missing.Everywhere",
+        "locale": "de",
+        "translationFallbackPolicy": {
+          "behavior": "return-null"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same rejection through get rather than getResult, where a port might reasonably have routed it into the failure-handler machinery that get otherwise shares. It does not: the NullPointerException leaves the lookup before the handler at DefaultStrings.java:749 is reached, exactly as the throwing-policy family records for an exception."
+    },
+    {
+      "id": "null-callbacks.policy.null-decision-carries-the-resolution-failure-cause",
+      "requirementIds": [],
+      "fixture": "callback-interaction-first-cause",
+      "operation": "getResult",
+      "input": {
+        "key": "Article",
+        "locale": "en-US",
+        "placeholders": {
+          "nounTerm": "apple",
+          "personGender": "not-a-gender",
+          "visitCount": 1
+        },
+        "translationFallbackPolicy": {
+          "behavior": "return-null"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The null decision taken on a RESOLUTION_FAILURE rather than a missing translation, on the existing first-cause fixture whose en-US entry fails through a throwing PhoneticResolver. The recorded consultation therefore carries a non-null causeType and the RESOLUTION_FAILURE reason alongside decision null, so the row states which arguments the policy was handed on the consultation that killed the lookup -- an observation that only exists because recordingPolicy now records before its delegate."
+    },
+    {
+      "id": "null-callbacks.handler.null-response-is-rejected-after-the-walk",
+      "requirementIds": [],
+      "fixture": "null-callbacks-two-locales",
+      "operation": "getResult",
+      "input": {
+        "key": "Missing.Everywhere",
+        "locale": "de",
+        "translationFailureHandler": {
+          "behavior": "return-null"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The handler-side counterpart. DefaultStrings.java:749-750 wraps handle() in requireNonNull with a message built from the interface's simple name. The failures channel still shows the handler was handed the failure it then answered null for, which is the evidence that the rejection happened AFTER the walk and after the handler ran, not instead of them."
+    },
+    {
+      "id": "null-callbacks.handler.control-the-same-walk-under-a-return-key-handler",
+      "requirementIds": [],
+      "fixture": "null-callbacks-two-locales",
+      "operation": "getResult",
+      "input": {
+        "key": "Missing.Everywhere",
+        "locale": "de",
+        "translationFailureHandler": {
+          "behavior": "return-key"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "CONTROL. Identical walk, identical failure, a handler that returns a response instead of null: the lookup answers the key. Pairs with the row above to isolate the RESPONSE as the only variable."
+    },
+    {
+      "id": "null-callbacks.handler.control-a-translated-key-never-consults-it",
+      "requirementIds": [],
+      "fixture": "null-callbacks-two-locales",
+      "operation": "getResult",
+      "input": {
+        "key": "Present.De",
+        "locale": "de",
+        "translationFailureHandler": {
+          "behavior": "return-null"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The zh-123 control for the handler: the null-returning handler is installed and the lookup TRANSLATES, because the first candidate answers and the handler is never consulted. A port that validated the handler's return type at construction, or called the handler on a successful lookup, would answer differently here while still passing the rejection case."
+    },
+    {
+      "id": "null-callbacks.precedence.the-null-policy-is-rejected-before-the-null-handler",
+      "requirementIds": [],
+      "fixture": "null-callbacks-two-locales",
+      "operation": "getResult",
+      "input": {
+        "key": "Missing.Everywhere",
+        "locale": "de",
+        "translationFallbackPolicy": {
+          "behavior": "return-null"
+        },
+        "translationFailureHandler": {
+          "behavior": "return-null"
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "Both callbacks answer null on the same lookup. The policy's requireNonNull is inside the candidate loop and the handler's is after it, so the policy's message is the one that escapes and the handler is never consulted -- readable from the message alone because the library composes the two differently. Discriminates a port that validated its callbacks up front, in which case which one is reported would depend on validation order rather than on the walk."
+    }
+  ]
+}

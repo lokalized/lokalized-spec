@@ -8,14 +8,6 @@
       "why": "VectorOracle.handlerFrom has no named behavior id for it, and section 8.2 forbids embedding executable callback code in a case. The 'throw-in-handler' behavior covers the observable half (a callback raising inside handle), but the documented guarantee that the observer runs BEFORE the returnKey response is produced -- and that its exception propagates in place of the key -- cannot be distinguished from a plain throwing handler with the ids that exist. Adding a 'return-key-with-throwing-observer' behavior to VectorOracle.handlerFrom would make it authorable."
     },
     {
-      "what": "A handler that returns null, exercising the requireNonNull at DefaultStrings.java:749-750 and its '<handler> returned null' message.",
-      "why": "No named behavior emits a null TranslationFailureResponse, and the schema's failureHandler enum is closed over the four existing behaviors. This is a real fail-fast path (a NullPointerException with a library-authored message) that no case in the corpus reaches."
-    },
-    {
-      "what": "A TranslationFallbackPolicy implementation that returns null, exercising the requireNonNull at DefaultStrings.java:734-735 ('translationFallbackPolicy returned null').",
-      "why": "ADDED in this review pass. The policy is the second user-supplied callback in the resolution loop and it has the same null contract as the handler, but VectorOracle.policyFrom only maps three named library policies, so there is no way to install a misbehaving one. Symmetrical with the null-handler gap above and reachable by the same oracle extension."
-    },
-    {
       "what": "TranslationFailure.getLocaleMatchResult() being EMPTY, and the identity of the match object when no negotiation occurred.",
       "why": "DefaultStrings always constructs DefaultTranslationFailure with the LocaleMatchResult that localeLookupFor produced (DefaultStrings.java:747), so the empty-Optional branch of the interface default method is unreachable from any authored case through the direct-locale ingress. Reaching it needs localeMatchSupplier / language-range negotiation, which the oracle explicitly does not drive."
     },

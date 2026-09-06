@@ -1,0 +1,14 @@
+{
+  "id": "owed-init-fallback-not-loaded",
+  "description": "DefaultStrings:309 -- the configured fallback locale is canonically equivalent to NO loaded catalog. Differs from owed-init-base only in the fallback tag and in loading one catalog instead of two.",
+  "fallbackLocale": "de",
+  "tiebreakers": null,
+  "refusesConstruction": true,
+  "files": {
+    "en": {
+      "Greeting": {
+        "translation": "Hello"
+      }
+    }
+  }
+}

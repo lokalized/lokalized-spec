@@ -30,6 +30,126 @@ if (!inputPath) {
 
 const CASE_ID = /^[a-z0-9]+(?:[.-][a-z0-9]+)*$/;
 const FIXTURE_ID = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+/**
+ * The named callback vocabularies, READ FROM THE SCHEMA rather than restated here.
+ *
+ * A misspelled behavior name used to be the worst kind of authoring mistake this harness could make.
+ * `VectorOracle`'s decoders end in `default: throw new IllegalArgumentException("unknown ...
+ * behavior: " + name)`, and that throw happens INSIDE the per-case try, so it was recorded as an
+ * ordinary `expected.thrown` block: `java.lang.IllegalArgumentException`, null cause, a plausible
+ * message — the same shape the library's own ingress refusals take. Probed rather than reasoned
+ * about: two cases carrying `return-nulll` and `retrun-key` were ingested and built, and both banked
+ * exactly that. This is the `define` lesson repeating — a refusal-recording operation turns every
+ * typo into a believable observation — so the vocabulary is checked before the JVM ever sees it.
+ *
+ * Sourced from the schema so there is ONE list to keep in step with the oracle, and so the two gates
+ * (this one, and `check:schemas` over the built artifact) can never disagree with each other.
+ */
+const CALLBACK_BEHAVIORS = (() => {
+  const schema = JSON.parse(readFileSync(join(spec, "schema/behavioral-vectors.schema.json"), "utf8"));
+  /** The `behavior` enum of a `$defs` entry written as `oneOf: [null, {object with behavior}]`. */
+  const behaviorsOf = (name) => {
+    const branch = (schema.$defs[name]?.oneOf ?? []).find((b) => b?.properties?.behavior?.enum);
+    if (!branch) throw new Error(`schema $defs.${name} has no behavior enum; ingest cannot check it`);
+    return new Set(branch.properties.behavior.enum);
+  };
+  return {
+    translationFailureHandler: { behaviors: behaviorsOf("failureHandler"), named: null },
+    translationFallbackPolicy: {
+      behaviors: behaviorsOf("fallbackPolicy"),
+      // The policy alone also has a STRING form naming a built-in library policy.
+      named: new Set((schema.$defs.fallbackPolicy.oneOf ?? []).find((b) => b?.enum)?.enum ?? []),
+    },
+    phoneticResolver: { behaviors: behaviorsOf("phoneticResolver"), named: null },
+    localeSupplier: { behaviors: null, named: null },
+    localeMatchSupplier: { behaviors: null, named: null },
+  };
+})();
+
+/**
+ * Check one callback spec against its vocabulary. Absent and null are always fine — they mean "use
+ * the library default", which is a real configuration and the one most cases want.
+ *
+ * @returns {string | null} a problem description, or null when the spec is well formed
+ */
+function callbackProblem(field, value) {
+  const vocabulary = CALLBACK_BEHAVIORS[field];
+  if (!vocabulary || value === undefined || value === null) return null;
+  if (typeof value === "string") {
+    if (vocabulary.named?.has(value)) return null;
+    return vocabulary.named
+      ? `names built-in ${field} '${value}'; the oracle knows only [${[...vocabulary.named].sort().join(", ")}]`
+      : `gives ${field} as a string; it takes an object with a 'behavior'`;
+  }
+  if (typeof value !== "object" || Array.isArray(value)) return `gives ${field} as ${Array.isArray(value) ? "an array" : typeof value}`;
+  if (!vocabulary.behaviors) return null;
+  if (!vocabulary.behaviors.has(value.behavior))
+    return `names ${field} behavior '${value.behavior}', which VectorOracle's decoder does not know; `
+      + `it would be recorded as an 'unknown ... behavior' IllegalArgumentException that reads like a `
+      + `library refusal. Known: [${[...vocabulary.behaviors].sort().join(", ")}]`;
+  return null;
+}
+/**
+ * The `constructionOverrides` values whose arm CONSTRUCTS rather than refuses, as `field:value`.
+ *
+ * Kept as a list rather than derived, because nothing in Node can know which Java arm throws — and a
+ * derivation that guessed would be worse than a list that is checked in both directions. Every entry
+ * here is measured on the pinned JDK by the case that names it.
+ */
+const ACCEPTING_CONSTRUCTION_OVERRIDES = new Set([
+  // Strings.java:288 / :310 — a null setter argument does NOT clear the sibling supplier.
+  "localeSource:explicitNullLocaleSupplier",
+  "localeSource:explicitNullMatchSupplier",
+  // DefaultStrings.java:472 / :473 — the library selects its own handler and policy.
+  "instanceCallbacks:libraryDefaults",
+]);
+
+/**
+ * The `constructionOverrides` values whose arm REFUSES. Together with the set above this is the
+ * CLOSED set `VectorOracle.buildStrings` actually decodes, field by field.
+ *
+ * It exists because the comment below claimed something that was not true. Until 2026-09-06 the
+ * check partitioned `declared` into "in the accepting set" and "everything else", and called the
+ * second half `refusing` — so a value the oracle has never heard of was classified as a refusal and
+ * sailed through. MEASURED before the fix: a fixture carrying
+ * `constructionOverrides: { catalogSource: "bogusValue" }` with `refusesConstruction: true` passed
+ * `ingest.mjs --dry-run` at exit 0, while the comment said "an override this list does not know is
+ * refused before the JVM sees it". `check:schemas` and the two runners' AuthoringError would have
+ * caught it downstream, so this was a truthfulness defect rather than a safety hole — but a gate
+ * that describes a check it does not perform is exactly the shape this project keeps being bitten
+ * by, and the cheap repair is to perform it.
+ *
+ * Transcribed from `VectorOracle.buildStrings`' four switch/if-chains, each of which ends in a
+ * `default:` that throws `unknown constructionOverrides.<field> '<value>'`. An UNKNOWN FIELD is
+ * refused too: the oracle reads only these four names off the object and silently ignores any
+ * other, so `{ bogusField: "x" }` would have been a no-op override on a fixture asserting a refusal.
+ */
+const REFUSING_CONSTRUCTION_OVERRIDES = new Set([
+  // DefaultStrings.java:250 / :262 / :273 / :280 / :286 / :293 / :500 — catalogSource's seven arms.
+  "catalogSource:omit",
+  "catalogSource:returnsNull",
+  "catalogSource:nullLocaleKey",
+  "catalogSource:duplicateNormalizedTag",
+  "catalogSource:nullCatalogValue",
+  "catalogSource:nullEntry",
+  "catalogSource:duplicateKey",
+  // DefaultStrings.java:254 — the both-absent arm of "exactly one of".
+  "localeSource:omit",
+  // DefaultStrings.java:335 / :343 / :2650 — the three degenerate tiebreaker-map shapes.
+  "tiebreakerSource:nullList",
+  "tiebreakerSource:nullEntry",
+  "tiebreakerSource:nullLanguageCode",
+]);
+
+/** Every `field` VectorOracle.buildStrings reads off `constructionOverrides`. */
+const CONSTRUCTION_OVERRIDE_FIELDS = new Set([
+  "catalogSource",
+  "localeSource",
+  "tiebreakerSource",
+  "instanceCallbacks",
+]);
+
 const OPERATIONS = new Set([
   "getResult", "get", "matchFor", "languageForms", "load", "parse", "loadClasspath", "loadClasspathResources",
   "construct", "acceptLanguage", "define",
@@ -149,6 +269,33 @@ for (const family of families) {
     }
     const tiebreakers = fixture.tiebreakers ?? {};
 
+    // TIEBREAKER KEYS MUST BE IN SORTED ORDER, because the corpus cannot carry any other order.
+    //
+    // `VectorOracle.buildStrings` walks this map into a LinkedHashMap, so Java sees the order the
+    // fixture was AUTHORED in, and `DefaultStrings:329` names whichever supplied code it met FIRST
+    // when two of them canonicalize alike. But `build.mjs` serializes the artifact as RFC 8785
+    // canonical JSON — keys sorted — so a consumer reading `behavioral-vectors.json` never sees the
+    // authored order and cannot reproduce a row that depends on it. MEASURED, not reasoned about:
+    // `owed-init-tiebreaker-codes-collide` was authored `{ ro, mo }`, Java recorded "codes 'ro' and
+    // 'mo' both normalize to 'ro'", and lokalized-js — reading the same artifact — answered with the
+    // names the other way round and FAILED. Re-authoring the fixture in sorted order changed exactly
+    // that one `expected` block and no other, out of 2,321.
+    //
+    // This is the per-call-override-order trap one layer down, and it gets the same treatment: the
+    // authored order is refused rather than silently re-sorted, so a fixture whose meaning depends on
+    // it is rejected at authoring time instead of banking a Java answer nothing can check. The two
+    // pre-existing multi-key fixtures were re-authored sorted and their `expected` blocks did not
+    // move, which is the evidence that this rule costs the corpus nothing.
+    {
+      const keys = Object.keys(tiebreakers);
+      const sorted = [...keys].sort();
+      if (keys.join(" ") !== sorted.join(" "))
+        fail(where, `tiebreaker language codes must be authored in sorted order — the built artifact is `
+          + `canonical JSON, so the authored order is not preserved and a case that depends on it `
+          + `(DefaultStrings:329 names the FIRST supplied code of a colliding pair) records a Java `
+          + `answer no consumer can reproduce; got [${keys.join(", ")}], want [${sorted.join(", ")}]`);
+    }
+
     // Full CLDR canonicalization is more than language aliasing — region aliases can be multi-valued
     // and are resolved through likely-subtags. Where any filename is alias-affected this check cannot
     // predict the loaded tag exactly, so its findings are advisory and the Java run is the authority;
@@ -160,11 +307,55 @@ for (const family of families) {
     // The exemption is paid for below: such a fixture must be referenced by a `construct` case and by
     // nothing else, so it can never become the "fixture nobody references" that closes a branch while
     // specifying nothing.
-    // Every constructionOverrides value names a refusal, so a fixture carrying one that does not also
-    // declare refusesConstruction would be asserting a success the oracle cannot produce.
-    if (fixture.constructionOverrides && fixture.refusesConstruction !== true)
-      fail(where, "sets constructionOverrides but not refusesConstruction; every override names a "
-        + "DefaultStrings validation that REFUSES the configuration");
+    // MOST constructionOverrides values name a refusal, so a fixture carrying one that does not also
+    // declare refusesConstruction would be asserting a success the oracle cannot produce. Two do NOT:
+    // Strings.Builder's null-argument arms construct on purpose (a null setter does not clear its
+    // sibling), and `instanceCallbacks: "libraryDefaults"` exists to let the library SELECT its own
+    // handler and policy, which is only observable on an instance that was built. The rule is checked
+    // in BOTH directions against a closed set, so neither kind can be mislabelled: naming an accepting
+    // override beside `refusesConstruction` is refused too, and an override neither list knows is
+    // refused before the JVM sees it rather than defaulting to either answer. That last clause was
+    // FALSE until 2026-09-06 — see REFUSING_CONSTRUCTION_OVERRIDES for the measurement — and the
+    // `unknown` arm below is what makes it true.
+    {
+      const overrides = fixture.constructionOverrides ?? null;
+      const declared = overrides ? Object.entries(overrides).map(([field, value]) => `${field}:${value}`) : [];
+      const unknownFields = overrides
+        ? Object.keys(overrides).filter((field) => !CONSTRUCTION_OVERRIDE_FIELDS.has(field))
+        : [];
+      const unknown = declared.filter(
+        (each) =>
+          !ACCEPTING_CONSTRUCTION_OVERRIDES.has(each) && !REFUSING_CONSTRUCTION_OVERRIDES.has(each),
+      );
+      const accepting = declared.filter((each) => ACCEPTING_CONSTRUCTION_OVERRIDES.has(each));
+      const refusing = declared.filter((each) => REFUSING_CONSTRUCTION_OVERRIDES.has(each));
+      if (unknownFields.length > 0)
+        fail(where, `sets constructionOverrides field(s) [${unknownFields.join(", ")}] that `
+          + `VectorOracle.buildStrings never reads, so the override would silently do nothing. `
+          + `Known fields: [${[...CONSTRUCTION_OVERRIDE_FIELDS].sort().join(", ")}]`);
+      else if (unknown.length > 0)
+        fail(where, `sets constructionOverrides [${unknown.join(", ")}], which VectorOracle.buildStrings `
+          + "does not decode; its switch would throw 'unknown constructionOverrides.<field>' INSIDE the "
+          + "per-case try and bank an authoring typo as a believable library refusal. Known: "
+          + `[${[...ACCEPTING_CONSTRUCTION_OVERRIDES, ...REFUSING_CONSTRUCTION_OVERRIDES].sort().join(", ")}]`);
+      else if (accepting.length > 0 && refusing.length > 0)
+        fail(where, `mixes accepting overrides [${accepting.join(", ")}] with refusing ones [${refusing.join(", ")}]`);
+      else if (refusing.length > 0 && fixture.refusesConstruction !== true)
+        fail(where, `sets constructionOverrides [${refusing.join(", ")}] but not refusesConstruction; each of `
+          + "those names a DefaultStrings validation that REFUSES the configuration");
+      else if (accepting.length > 0 && fixture.refusesConstruction === true)
+        fail(where, `sets constructionOverrides [${accepting.join(", ")}] AND refusesConstruction, but those `
+          + "overrides name arms that deliberately CONSTRUCT; a case against them observes the built "
+          + "instance, not a refusal");
+    }
+
+    // The callback vocabulary, at the fixture level. `check:schemas` already covers this once the
+    // artifact is built; checking here reports it alongside every other authoring problem in one
+    // pass, and before a JVM round trip has banked anything.
+    for (const field of ["translationFailureHandler", "translationFallbackPolicy", "phoneticResolver"]) {
+      const problem = callbackProblem(field, fixture[field]);
+      if (problem) fail(where, problem);
+    }
 
     const aliasAffected = loaded.some((tag) => resolveLanguage(tag).aliased)
       || fixture.loadOnly === true || fixture.refusesConstruction === true;
@@ -363,6 +554,20 @@ for (const family of families) {
           + `guard without reaching a single field comparison, so the case would close nothing`);
         continue;
       }
+    }
+
+    // THE PER-CALL CALLBACK VOCABULARY, which nothing checked until now and which the schema could
+    // not reach: `input` is deliberately open, so a misspelled `behavior` sailed through to
+    // VectorOracle's decoder and its `unknown ... behavior` IllegalArgumentException was banked as an
+    // ordinary `expected.thrown` refusal. Probed, not argued: `return-nulll` and `retrun-key` were
+    // ingested and built, and both produced exactly such a row.
+    {
+      let bad = false;
+      for (const field of ["translationFailureHandler", "translationFallbackPolicy"]) {
+        const problem = callbackProblem(field, (testCase.input ?? {})[field]);
+        if (problem) { fail(where, `per-call override ${problem}`); bad = true; }
+      }
+      if (bad) continue;
     }
 
     seenCaseIds.add(testCase.id);

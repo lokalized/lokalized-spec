@@ -1,0 +1,25 @@
+{
+  "id": "owed-init-library-default-callbacks",
+  "description": "DefaultStrings:472 and :473 -- the LIBRARY'S OWN default failure handler and fallback policy, which the oracle's recording wrappers displaced in every other fixture. Neither is installed here, so the constructor selects TranslationFailureHandler.returnKey() and fallbackOnMissingTranslationOrNoMatchingAlternative() itself and the probe observes what they do. The instance locale is 'de' and the fallback 'en' so the default POLICY has something to decide.",
+  "fallbackLocale": "en",
+  "instanceLocale": "de",
+  "tiebreakers": null,
+  "constructionOverrides": {
+    "instanceCallbacks": "libraryDefaults"
+  },
+  "files": {
+    "en": {
+      "Greeting": {
+        "translation": "Hello"
+      },
+      "OnlyInFallback": {
+        "translation": "from-en"
+      }
+    },
+    "de": {
+      "Greeting": {
+        "translation": "Hallo"
+      }
+    }
+  }
+}
