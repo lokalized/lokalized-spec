@@ -1,0 +1,20 @@
+{
+  "id": "lvariant-chain-serves-early",
+  "description": "The CONTROL fixture, differing from lvariant-chain-exhausts only in which catalogs are loaded. en, ja and th each serve the bare-language candidate, which the walk reaches BEFORE the compatibility-extension candidates further down the chain, so the identical request tags that make the exhausting fixture refuse are served here instead. Its existence is what makes the refusal rows evidence about the CHAIN rather than an assertion about the tags.",
+  "fallbackLocale": "fr",
+  "tiebreakers": null,
+  "files": {
+    "en": {
+      "Hello": "hello-en"
+    },
+    "fr": {
+      "Hello": "bonjour"
+    },
+    "ja": {
+      "Hello": "konnichiwa"
+    },
+    "th": {
+      "Hello": "sawatdee"
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "id": "lvariant-chain-exhausts",
+  "description": "Three catalogs none of which can serve an en/ja/th request, so the resolution walk runs the WHOLE candidate chain before falling back to fr. That is the condition under which TranslationResult's constructor validates the accumulated attempted locales (TranslationResult.java:114-126) and meets the compatibility-extension locales the chain synthesises. Norwegian is loaded so the same fixture also carries the bridge control, and nn/nb/fr are three distinct language codes so no tiebreakers are required.",
+  "fallbackLocale": "fr",
+  "tiebreakers": null,
+  "files": {
+    "fr": {
+      "Hello": "bonjour"
+    },
+    "nb": {
+      "Hello": "BOKMAAL"
+    },
+    "nn": {
+      "Hello": "NYNORSK"
+    }
+  }
+}

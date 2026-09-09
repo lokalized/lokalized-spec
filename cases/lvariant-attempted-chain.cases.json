@@ -1,0 +1,160 @@
+{
+  "formatVersion": 1,
+  "family": "lvariant-attempted-chain",
+  "description": "Plan v7 section 8.3 fixture family 'lvariant-attempted-chain'. Inputs only; the oracle emits expected.",
+  "cases": [
+    {
+      "id": "lvariant.exhausting-walk.en-us-posix.duplicate-attempted-language-tag",
+      "requirementIds": [],
+      "fixture": "lvariant-chain-exhausts",
+      "operation": "getResult",
+      "input": {
+        "key": "Hello",
+        "locale": "en-US-x-lvariant-POSIX"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The DUPLICATE refusal of TranslationResult.java:118-122. The chain for en_US_POSIX ends with a variant-lowercased en_US_posix whose toLanguageTag collides case-insensitively with the first candidate's, and the walk only reaches it because no catalog serves first. Paired with lvariant.early-serve.en-us-posix.*, which asks the SAME tag of a fixture that serves at 'en'."
+    },
+    {
+      "id": "lvariant.exhausting-walk.ja-jp.ill-formed-attempted-locale",
+      "requirementIds": [],
+      "fixture": "lvariant-chain-exhausts",
+      "operation": "getResult",
+      "input": {
+        "key": "Hello",
+        "locale": "ja-JP-x-lvariant-JP"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The WELL-FORMEDNESS refusal of LocaleUtils.requireWellFormed via TranslationResult.java:115. Java's own compatibility-extension synthesis produces a Locale that Locale.Builder then rejects; note the offending candidate is the variant-LOWERCASED one, not the legacy ja_JP_JP form, which Locale.Builder.setLocale accepts by special case. Paired with lvariant.early-serve.ja-jp.*."
+    },
+    {
+      "id": "lvariant.exhausting-walk.th-th.ill-formed-attempted-locale",
+      "requirementIds": [],
+      "fixture": "lvariant-chain-exhausts",
+      "operation": "getResult",
+      "input": {
+        "key": "Hello",
+        "locale": "th-TH-x-lvariant-TH"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The th mirror of the ja row, and it is not decoration: it carries the -u-nu- extension rather than -u-ca-, so a port that special-cased one calendar keyword would still refuse this one."
+    },
+    {
+      "id": "lvariant.exhausting-walk.no-no-ny.bridge-serves-nn",
+      "requirementIds": [],
+      "fixture": "lvariant-chain-exhausts",
+      "operation": "getResult",
+      "input": {
+        "key": "Hello",
+        "locale": "no-NO-x-lvariant-NY"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "CONTROL. The fourth legacy lvariant shape, on the same fixture as the three refusals: Locale.forLanguageTag folds it to nn-NO, the Norwegian bridge serves the nn catalog, and NOTHING refuses. A port that refused every x-lvariant tag fails here."
+    },
+    {
+      "id": "lvariant.exhausting-walk.en-us.plain-tag-exhausts-without-refusing",
+      "requirementIds": [],
+      "fixture": "lvariant-chain-exhausts",
+      "operation": "getResult",
+      "input": {
+        "key": "Hello",
+        "locale": "en-US"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "CONTROL isolating the OTHER conjunct. The walk exhausts exactly as it does for en-US-x-lvariant-POSIX and answers the fallback; exhaustion alone is not what refuses."
+    },
+    {
+      "id": "lvariant.exhausting-walk.fr.direct-hit",
+      "requirementIds": [],
+      "fixture": "lvariant-chain-exhausts",
+      "operation": "getResult",
+      "input": {
+        "key": "Hello",
+        "locale": "fr"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "CONTROL. A one-element attempted chain on the same fixture, so a port that refused on the fixture rather than on the chain fails here."
+    },
+    {
+      "id": "lvariant.exhausting-walk.en-us-posix.selection-channel-does-not-refuse",
+      "requirementIds": [],
+      "fixture": "lvariant-chain-exhausts",
+      "operation": "matchFor",
+      "input": {
+        "locale": "en-US-x-lvariant-POSIX"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "CONTROL against OVERCORRECTION, and the sharpest one here. The identical tag on the identical fixture answers the SELECTION channel without refusing, so a port that fixed the refusal at the tag layer (normalizeTag, or the request boundary) rather than in the resolution walk turns this row red while turning the getResult row green."
+    },
+    {
+      "id": "lvariant.exhausting-walk.ja-jp.selection-channel-does-not-refuse",
+      "requirementIds": [],
+      "fixture": "lvariant-chain-exhausts",
+      "operation": "matchFor",
+      "input": {
+        "locale": "ja-JP-x-lvariant-JP"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "CONTROL against overcorrection, ja arm."
+    },
+    {
+      "id": "lvariant.exhausting-walk.th-th.selection-channel-does-not-refuse",
+      "requirementIds": [],
+      "fixture": "lvariant-chain-exhausts",
+      "operation": "matchFor",
+      "input": {
+        "locale": "th-TH-x-lvariant-TH"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "CONTROL against overcorrection, th arm."
+    },
+    {
+      "id": "lvariant.early-serve.en-us-posix.serves-before-the-duplicate",
+      "requirementIds": [],
+      "fixture": "lvariant-chain-serves-early",
+      "operation": "getResult",
+      "input": {
+        "key": "Hello",
+        "locale": "en-US-x-lvariant-POSIX"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The paired control for the duplicate refusal: same request tag, a catalog that serves at 'en', and the colliding candidate is never reached. A port that refuses this tag unconditionally fails here."
+    },
+    {
+      "id": "lvariant.early-serve.ja-jp.serves-before-the-ill-formed-candidate",
+      "requirementIds": [],
+      "fixture": "lvariant-chain-serves-early",
+      "operation": "getResult",
+      "input": {
+        "key": "Hello",
+        "locale": "ja-JP-x-lvariant-JP"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The paired control for the ja refusal. Note the attempted chain still BEGINS with the legacy ja_JP_JP compatibility locale and that one is well-formed to Locale.Builder; only the lowercased candidate further down is not, and the walk stops at 'ja' before reaching it."
+    },
+    {
+      "id": "lvariant.early-serve.th-th.serves-before-the-ill-formed-candidate",
+      "requirementIds": [],
+      "fixture": "lvariant-chain-serves-early",
+      "operation": "getResult",
+      "input": {
+        "key": "Hello",
+        "locale": "th-TH-x-lvariant-TH"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The paired control for the th refusal."
+    },
+    {
+      "id": "lvariant.early-serve.no-no-ny.bridge-without-an-nn-catalog",
+      "requirementIds": [],
+      "fixture": "lvariant-chain-serves-early",
+      "operation": "getResult",
+      "input": {
+        "key": "Hello",
+        "locale": "no-NO-x-lvariant-NY"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "CONTROL. The bridge tag against a fixture with no Norwegian catalog at all: the walk runs nn-NO, nn, no and then the fallback, and still refuses nothing."
+    }
+  ]
+}

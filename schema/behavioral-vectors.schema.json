@@ -390,11 +390,15 @@
               "thrown": {
                 "type": "object",
                 "additionalProperties": false,
-                "required": ["causeType", "message", "type"],
+                "required": ["causeType", "identicalToRetainedCause", "message", "type"],
                 "properties": {
                   "type": { "type": "string" },
                   "message": { "type": ["string", "null"] },
-                  "causeType": { "type": ["string", "null"] }
+                  "causeType": { "type": ["string", "null"] },
+                  "identicalToRetainedCause": {
+                    "type": ["boolean", "null"],
+                    "description": "Whether the throwable that escaped IS the first cause the walk retained, by reference. Tri-state: null means no observed failure carried a cause, so the comparison could not be made. Text cannot answer this -- Java rethrows the retained cause on THROW_EXCEPTION and constructs a fresh exception of the same class with the same message on RETURN_KEY, both at TranslationResult's constructor."
+                  }
                 }
               }
             }

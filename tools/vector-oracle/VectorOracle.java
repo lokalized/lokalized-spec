@@ -115,6 +115,28 @@ public final class VectorOracle {
 				thrown.put("type", e.getClass().getName());
 				thrown.put("message", e.getMessage());
 				thrown.put("causeType", e.getCause() == null ? null : e.getCause().getClass().getName());
+				// WHICH OBJECT escaped, not merely which shape -- and the one observation a port
+				// cannot be compared on without it.
+				//
+				// `type`, `message` and `causeType` are all TEXT, and text cannot separate the two
+				// ways a lookup ends in an exception. `DefaultStrings.throwExceptionFor`
+				// (DefaultStrings.java:3196-3213) rethrows the retained first cause BY IDENTITY when
+				// the handler answers THROW_EXCEPTION; a RETURN_KEY/RETURN_STRING handler instead
+				// re-enters `TranslationResult`'s constructor outside every try (:755/:759), which
+				// CONSTRUCTS a fresh exception at the same site, from the same inputs, and therefore
+				// with the SAME class and the SAME message as the cause the walk retained. MEASURED
+				// on the pinned Corretto 21 over `lvariant-chain-exhausts`: with a throwing handler
+				// `thrown == failure.getCause()` is true for ja-JP-x-lvariant-JP, th-TH-x-lvariant-TH
+				// and en-US-x-lvariant-POSIX, and with the fixture's own default (returnKey) it is
+				// false for all three -- every recorded text field identical across the two runs.
+				//
+				// TRI-STATE for the reason `matchObjectIdenticalToResult` is: null means the
+				// comparison could not be made, because no observed failure carried a cause to be
+				// identical to. Reporting `false` there would claim a distinction nothing observed.
+				Throwable retainedCause = OBSERVED_FAILURES.isEmpty() ? null
+						: OBSERVED_FAILURES.get(OBSERVED_FAILURES.size() - 1).getCause().orElse(null);
+				thrown.put("identicalToRetainedCause",
+						retainedCause == null ? null : Boolean.valueOf(e == retainedCause));
 				Map<String, Object> wrapper = new TreeMap<>();
 				wrapper.put("thrown", thrown);
 				// A case that throws often threw BECAUSE of a failure the handler saw first; that
