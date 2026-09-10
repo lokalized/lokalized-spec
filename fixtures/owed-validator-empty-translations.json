@@ -1,0 +1,29 @@
+{
+  "id": "owed-validator-empty-translations",
+  "description": "LocalizedStringValidator:212 -- a language-form placeholder whose translations map is EMPTY. Reachable only from a programmatic catalog: LocalizedStringLoader:2645 refuses the same emptiness first, with its own differently worded 'placeholder translations are required', so no loaded file has ever reached the validator's spelling.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "refusesConstruction": true,
+  "constructionOverrides": {
+    "catalogSource": "defined",
+    "definedCatalog": [
+      {
+        "key": "Greeting",
+        "translation": "Hello {{itemCount}}",
+        "placeholders": {
+          "itemCount": {
+            "value": "count",
+            "translations": {}
+          }
+        }
+      }
+    ]
+  },
+  "files": {
+    "en": {
+      "Greeting": {
+        "translation": "Hello"
+      }
+    }
+  }
+}

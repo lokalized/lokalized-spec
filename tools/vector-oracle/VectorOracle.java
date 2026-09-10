@@ -278,6 +278,53 @@ public final class VectorOracle {
 				builder = builder.localizedStringSupplier(() -> degenerate);
 				break;
 			}
+			// A PROGRAMMATIC catalog: LocalizedString graphs built by `define`'s model decoder and handed
+			// to the builder instead of a loaded one. This is the sink DefaultStrings:297 needs.
+			//
+			// WHY IT EXISTS. LocalizedStringValidator's nine `required` branches were dispositioned
+			// "unreachable through the loader", empirically and correctly: every validator rejection a
+			// LOADED file can reach is pre-empted by a differently-worded LocalizedStringLoader check
+			// firing first. Each of those entries then named what was owed -- "a `define` /
+			// defineLocalizedString corpus OPERATION; VectorOracle has ... none of which can construct a
+			// model that did not come from a file". HALF of that arrived with the `define` slice:
+			// buildLocalizedString below is exactly such a decoder, adversarially probed. What `define`
+			// did NOT bring is a SINK -- it hands its graph to LocalizedStringSet.contains, which runs no
+			// validation at all. DefaultStrings' constructor is the sink: :297 calls
+			// validateLocalizedString on EVERY supplied LocalizedString, so a programmatic catalog runs
+			// LocalizedStringValidator with no loader in front of it.
+			//
+			// MEASURED on the pinned Corretto 21 before this arm was written, with the control that would
+			// have condemned it: an ordinary { key, translation } graph BUILDS and answers, while the
+			// eight degenerate graphs each produce the validator's own wording -- "Invalid localized
+			// string 'Greeting' for locale 'en': ..." -- and not the loader's.
+			//
+			// The catalog is keyed at the fixture's FALLBACK locale so a well-formed model reaches
+			// DefaultStrings:305's fallback-reachability check with a match; a refusal here is the
+			// validator's, never an unreachable-fallback artifact.
+			case "defined": {
+				JsonValue defined = overrides.get("definedCatalog");
+				if (defined == null || !defined.isArray())
+					throw new AssertionError("constructionOverrides.catalogSource 'defined' needs an array 'definedCatalog'");
+				List<LocalizedString> programmatic = new ArrayList<>();
+				for (JsonValue node : defined.asArray()) {
+					// FAIL LOUD, not bank. buildLocalizedString lets LocalizedString's own constructor
+					// refusals (<init>:110, ExpressionTranslation:871) escape as RuntimeExceptions, which is
+					// right for `define` -- that operation OBSERVES them. Here they would be caught by the
+					// `construct` clause and recorded as a DefaultStrings refusal, attributing a model the
+					// fixture could not even build to a constructor validation it never reached. A fixture
+					// whose model does not build is an authoring mistake and must stop the run.
+					try {
+						programmatic.add(buildLocalizedString(node));
+					} catch (RuntimeException e) {
+						throw new AssertionError("constructionOverrides.definedCatalog node could not be built: "
+								+ e.getClass().getName() + ": " + e.getMessage(), e);
+					}
+				}
+				Map<Locale, Iterable<LocalizedString>> byLocale = new LinkedHashMap<>();
+				byLocale.put(Locale.forLanguageTag(config.getString("fallbackLocale", null)), programmatic);
+				builder = builder.localizedStringSupplier(() -> byLocale);
+				break;
+			}
 			default:
 				throw new IllegalArgumentException("unknown constructionOverrides.catalogSource '" + catalogSource + "'");
 		}

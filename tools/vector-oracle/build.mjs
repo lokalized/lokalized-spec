@@ -221,6 +221,51 @@ if (seed.problems.length > 0) {
   process.exit(1);
 }
 
+/**
+ * `refusesConstruction` is a DECLARATION; here it is checked against what Java actually did.
+ *
+ * WHY THIS GATE EXISTS, and it is a gap a reviewer measured rather than one anyone predicted.
+ * `ingest.mjs` cross-checks the flag against `constructionOverrides` in both directions (an override
+ * naming a refusing arm must set it; one naming an accepting arm must not) and requires a `construct`
+ * case to name the fixture. But `catalogSource:defined` is deliberately filtered OUT of that
+ * comparison (`MODEL_DEPENDENT_CONSTRUCTION_OVERRIDES`), because whether a programmatic catalog is
+ * refused depends on the MODEL and not on the override — so for exactly the fixtures the
+ * `owed-validator` family introduced, the flag became an unchecked assertion while still buying the
+ * tiebreaker-rule exemption at `ingest.mjs`. MEASURED in a sandbox before this was written: setting
+ * `refusesConstruction: true` on `owed-validator-base`, which constructs, left `--write` at exit 0
+ * and banked `{"constructed": true, …}` beside the flag with no gate firing anywhere.
+ *
+ * The oracle has now RUN, so the flag can be compared against the observation instead of against
+ * another declaration. That is the same move `deliberatelyDroppedIds` and the no-counterpart claims
+ * made: derive the answer, then fail on the claim that disagrees with it.
+ */
+{
+  /** @type {Map<string, boolean[]>} */
+  const constructedByFixture = new Map();
+  for (const c of cases) {
+    if (c.operation !== "construct") continue;
+    const observed = expectedById.get(c.id)?.construct?.constructed;
+    if (typeof observed !== "boolean") continue;
+    if (!constructedByFixture.has(c.fixture)) constructedByFixture.set(c.fixture, []);
+    /** @type {boolean[]} */ (constructedByFixture.get(c.fixture)).push(observed);
+  }
+  /** @type {string[]} */
+  const problems = [];
+  for (const [id, fixture] of Object.entries(fixtures)) {
+    const observations = constructedByFixture.get(id);
+    if (observations === undefined) continue;
+    const declared = fixture.refusesConstruction === true;
+    if (declared && observations.some((constructed) => constructed))
+      problems.push(`fixture ${id} declares refusesConstruction, but Java CONSTRUCTED it in ${observations.filter(Boolean).length} of ${observations.length} construct case(s)`);
+    if (!declared && observations.some((constructed) => !constructed))
+      problems.push(`fixture ${id} does not declare refusesConstruction, but Java REFUSED it in ${observations.filter((c) => !c).length} of ${observations.length} construct case(s)`);
+  }
+  if (problems.length > 0) {
+    console.error(JSON.stringify({ status: "refuses-construction-declaration-disagrees-with-java", detail: "a fixture's refusesConstruction flag contradicts the outcome the oracle recorded; the flag also buys an ingest exemption, so it may not be left unchecked", problems }, null, 2));
+    process.exit(1);
+  }
+}
+
 const corpus = {
   formatVersion: 1,
   behavioralVectorsVersion: "1.0.0",

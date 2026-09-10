@@ -1,0 +1,34 @@
+{
+  "id": "owed-validator-range-non-cardinal",
+  "description": "LocalizedStringValidator:233 -- a RANGE-driven placeholder whose translations are not cardinal. A single non-cardinal form, deliberately: two would trip :230 one line earlier and this case would close a branch it never reached. LocalizedStringLoader:2661 pre-empts the file path with 'range-based translations only support Cardinality'.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "refusesConstruction": true,
+  "constructionOverrides": {
+    "catalogSource": "defined",
+    "definedCatalog": [
+      {
+        "key": "Greeting",
+        "translation": "Hello {{itemCount}}",
+        "placeholders": {
+          "itemCount": {
+            "range": {
+              "start": "first",
+              "end": "last"
+            },
+            "translations": {
+              "GENDER_MASCULINE": "masc"
+            }
+          }
+        }
+      }
+    ]
+  },
+  "files": {
+    "en": {
+      "Greeting": {
+        "translation": "Hello"
+      }
+    }
+  }
+}

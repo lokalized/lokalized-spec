@@ -132,7 +132,13 @@
             "additionalProperties": false,
             "description": "Deliberately degenerate builder configurations that no well-formed fixture can express, each naming one DefaultStrings (or Strings.Builder) construction validation. Closed set; both the oracle and lokalized-js's runner refuse an unknown value rather than silently building a valid instance. MOST name a REFUSAL and require refusesConstruction; the two Strings.Builder null-argument arms and instanceCallbacks deliberately CONSTRUCT, and ingest.mjs checks that distinction in both directions.",
             "properties": {
-              "catalogSource": { "enum": ["omit", "returnsNull", "nullLocaleKey", "duplicateNormalizedTag", "nullCatalogValue", "nullEntry", "duplicateKey"] },
+              "catalogSource": { "enum": ["omit", "returnsNull", "nullLocaleKey", "duplicateNormalizedTag", "nullCatalogValue", "nullEntry", "duplicateKey", "defined"] },
+              "definedCatalog": {
+                "description": "Required by, and only by, catalogSource 'defined': a PROGRAMMATIC catalog written in `define`'s model vocabulary (the strings-file vocabulary), supplied to Strings.Builder.localizedStringSupplier instead of a loaded one and keyed at the fixture's fallbackLocale. It is the sink DefaultStrings:297 needs: the constructor validates every supplied LocalizedString through LocalizedStringValidator, with no LocalizedStringLoader check in front of it to pre-empt the wording. A node the model decoder cannot BUILD fails the run rather than being banked as a construction refusal.",
+                "type": "array",
+                "minItems": 1,
+                "items": { "type": "object" }
+              },
               "localeSource": { "enum": ["omit", "explicitNullLocaleSupplier", "explicitNullMatchSupplier"] },
               "tiebreakerSource": {
                 "description": "A degenerate tiebreaker map: shapes a JSON `tiebreakers` object cannot spell, each a DefaultStrings refusal a JS caller reaches through plan 3.1's TiebreakerMap -- only its Map half can carry a null key.",

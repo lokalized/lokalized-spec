@@ -142,9 +142,25 @@ const REFUSING_CONSTRUCTION_OVERRIDES = new Set([
   "tiebreakerSource:nullLanguageCode",
 ]);
 
+/**
+ * The one `constructionOverrides` value whose outcome the VALUE does not decide.
+ *
+ * `catalogSource: "defined"` supplies a PROGRAMMATIC catalog, so whether DefaultStrings' constructor
+ * refuses depends on the MODEL the fixture writes, not on the override name: an ordinary
+ * `{ key, translation }` node constructs, and a node the validator rejects refuses. It therefore
+ * cannot sit in either closed set above, and the both-directions rule below is driven by the
+ * fixture's own `refusesConstruction` flag instead. What replaces the lost check is stricter in the
+ * direction that matters: the arm REQUIRES a `definedCatalog`, `definedCatalog` requires the arm,
+ * and `VectorOracle` turns a node its decoder cannot build into an AssertionError that stops the
+ * run rather than a construct refusal — so the failure mode this pairing exists to prevent, an
+ * authoring mistake banked as a believable library refusal, is closed at the oracle instead.
+ */
+const MODEL_DEPENDENT_CONSTRUCTION_OVERRIDES = new Set(["catalogSource:defined"]);
+
 /** Every `field` VectorOracle.buildStrings reads off `constructionOverrides`. */
 const CONSTRUCTION_OVERRIDE_FIELDS = new Set([
   "catalogSource",
+  "definedCatalog",
   "localeSource",
   "tiebreakerSource",
   "instanceCallbacks",
@@ -319,7 +335,23 @@ for (const family of families) {
     // `unknown` arm below is what makes it true.
     {
       const overrides = fixture.constructionOverrides ?? null;
-      const declared = overrides ? Object.entries(overrides).map(([field, value]) => `${field}:${value}`) : [];
+      // `definedCatalog` carries a MODEL, not a closed-set token, so it is classified by the pairing
+      // check below rather than by `field:value` membership; stringifying an array here would produce
+      // a token no list can ever hold and report every such fixture as an unknown override.
+      const declared = overrides
+        ? Object.entries(overrides)
+            .filter(([field]) => field !== "definedCatalog")
+            .map(([field, value]) => `${field}:${value}`)
+            .filter((each) => !MODEL_DEPENDENT_CONSTRUCTION_OVERRIDES.has(each))
+        : [];
+      const definedCatalog = overrides ? overrides.definedCatalog : undefined;
+      const namesDefined = overrides?.catalogSource === "defined";
+      if (namesDefined && !(Array.isArray(definedCatalog) && definedCatalog.length > 0))
+        fail(where, "sets constructionOverrides catalogSource 'defined' without a non-empty "
+          + "'definedCatalog' array; VectorOracle would have no programmatic catalog to supply");
+      if (definedCatalog !== undefined && !namesDefined)
+        fail(where, "sets constructionOverrides.definedCatalog without catalogSource 'defined', so the "
+          + "model would be written, read by nothing, and the fixture would silently use its loaded files");
       const unknownFields = overrides
         ? Object.keys(overrides).filter((field) => !CONSTRUCTION_OVERRIDE_FIELDS.has(field))
         : [];

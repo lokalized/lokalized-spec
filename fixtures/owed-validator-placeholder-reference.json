@@ -1,0 +1,23 @@
+{
+  "id": "owed-validator-placeholder-reference",
+  "description": "LocalizedStringValidator's validateTemplate:302 and invalid():327's CAUSED arm -- a root translation carrying a MALFORMED placeholder reference. StringInterpolator.placeholderNamesIn raises an IllegalArgumentException that the validator RETAINS as the cause, which is what makes this the caused spelling of 'Invalid localized string ... for locale ...'. Chosen over the other cause-carrying arm, a bad alternative EXPRESSION, deliberately and by measurement: Java wraps both, and the port wraps this one ('catalog:en: invalid placeholder reference in translation for key ...') but NOT the expression one -- src/core/index.js compiles expressions in a pass of its own after the structural walk and surfaces the evaluator's message unwrapped, which test/parse.test.js:351 pins on purpose. So an expression fixture here would have recorded a port divergence rather than the branch, and this one records the branch.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "refusesConstruction": true,
+  "constructionOverrides": {
+    "catalogSource": "defined",
+    "definedCatalog": [
+      {
+        "key": "Greeting",
+        "translation": "Hello {{"
+      }
+    ]
+  },
+  "files": {
+    "en": {
+      "Greeting": {
+        "translation": "Hello"
+      }
+    }
+  }
+}

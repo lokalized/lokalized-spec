@@ -1,0 +1,32 @@
+{
+  "id": "owed-validator-invalid-identifier",
+  "description": "LocalizedStringValidator:312 -- a generated-placeholder NAME that is not a valid identifier. The placeholder's own definition is well formed and identical to the control's, so the refusal can only be the name. LocalizedStringLoader's ensureValidPlaceholderName (:2601-2613) pre-empts the file path with its own wording.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "refusesConstruction": true,
+  "constructionOverrides": {
+    "catalogSource": "defined",
+    "definedCatalog": [
+      {
+        "key": "Greeting",
+        "translation": "Hello",
+        "placeholders": {
+          "not a name": {
+            "value": "count",
+            "translations": {
+              "CARDINALITY_ONE": "one",
+              "CARDINALITY_OTHER": "other"
+            }
+          }
+        }
+      }
+    ]
+  },
+  "files": {
+    "en": {
+      "Greeting": {
+        "translation": "Hello"
+      }
+    }
+  }
+}

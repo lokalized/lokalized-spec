@@ -1,0 +1,32 @@
+{
+  "id": "owed-validator-mixed-axes",
+  "description": "LocalizedStringValidator:230 -- translations drawn from TWO language-form axes. LocalizedStringLoader:2653 pre-empts it on the file path with 'you cannot mix-and-match language forms in placeholder translations'; Java's own src/test/resources/strings-invalid-mixed/en exists for this rule and only ever exercises the loader's half of it. This is also invalid():327's CAUSE-LESS arm.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "refusesConstruction": true,
+  "constructionOverrides": {
+    "catalogSource": "defined",
+    "definedCatalog": [
+      {
+        "key": "Greeting",
+        "translation": "Hello {{itemCount}}",
+        "placeholders": {
+          "itemCount": {
+            "value": "count",
+            "translations": {
+              "CARDINALITY_ONE": "one",
+              "GENDER_MASCULINE": "masc"
+            }
+          }
+        }
+      }
+    ]
+  },
+  "files": {
+    "en": {
+      "Greeting": {
+        "translation": "Hello"
+      }
+    }
+  }
+}

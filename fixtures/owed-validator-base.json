@@ -1,0 +1,46 @@
+{
+  "id": "owed-validator-base",
+  "description": "THE CONTROL for the owed-validator family. A PROGRAMMATIC catalog (constructionOverrides.catalogSource 'defined') carrying the three shapes the refusal fixtures degenerate -- a plain node, a language-form placeholder, and a whole-message alternative with a valid expression -- and it CONSTRUCTS. Without it every row in this family says 'something was refused' and none shows that DefaultStrings' constructor accepts a programmatic catalog at all; and because each refusal fixture differs from this one in exactly ONE member, a refusal here can never be the accidental product of a shape the constructor was always going to reject. Its 'files' exist only to satisfy the loader that runs before the override replaces the catalog; nothing reads them.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "constructionOverrides": {
+    "catalogSource": "defined",
+    "definedCatalog": [
+      {
+        "key": "Greeting",
+        "translation": "Hello"
+      },
+      {
+        "key": "Items",
+        "translation": "{{itemCount}} items",
+        "placeholders": {
+          "itemCount": {
+            "value": "count",
+            "translations": {
+              "CARDINALITY_ONE": "one",
+              "CARDINALITY_OTHER": "other"
+            }
+          }
+        }
+      },
+      {
+        "key": "Alt",
+        "translation": "Fallback",
+        "alternatives": [
+          {
+            "count == 1": {
+              "translation": "One"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "files": {
+    "en": {
+      "Greeting": {
+        "translation": "Hello"
+      }
+    }
+  }
+}

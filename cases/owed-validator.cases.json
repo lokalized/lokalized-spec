@@ -1,0 +1,72 @@
+{
+  "formatVersion": 1,
+  "family": "owed-validator",
+  "description": "Plan v7 section 8.3 fixture family 'owed-validator'. Inputs only; the oracle emits expected.",
+  "cases": [
+    {
+      "id": "owed-validator.control.programmatic-catalog-constructs",
+      "requirementIds": [],
+      "fixture": "owed-validator-base",
+      "operation": "construct",
+      "input": {
+        "probeKey": "Greeting"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "THE CONTROL. A programmatic catalog carrying a plain node, a well-formed language-form placeholder and a valid whole-message alternative CONSTRUCTS, and the probe answers 'Hello'. Every refusal in this family differs from this fixture in exactly one member, so without this row a port that refused ALL programmatic catalogs would pass the whole family."
+    },
+    {
+      "id": "owed-validator.refusal.empty-translations",
+      "requirementIds": [],
+      "fixture": "owed-validator-empty-translations",
+      "operation": "construct",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "LocalizedStringValidator:212, and DefaultStrings:297 is the site that reaches it. The discriminator is the refusal IDENTITY: a port that accepts an empty translations map, or refuses it with a different exception or message, differs here and nowhere else. Read against owed-validator.control.programmatic-catalog-constructs, whose 'Items' node carries the same placeholder with a NON-empty map."
+    },
+    {
+      "id": "owed-validator.refusal.mixed-axes",
+      "requirementIds": [],
+      "fixture": "owed-validator-mixed-axes",
+      "operation": "construct",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "LocalizedStringValidator:230, plus invalid():327's cause-less arm. Read against the control's 'Items' node, which differs only in that both of its forms come from one axis."
+    },
+    {
+      "id": "owed-validator.refusal.range-non-cardinal",
+      "requirementIds": [],
+      "fixture": "owed-validator-range-non-cardinal",
+      "operation": "construct",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "LocalizedStringValidator:233. ONE non-cardinal form, not two: two would be refused by :230 a line earlier and this row would close a branch it never entered -- the zh-123 shape, where an input rejected by an earlier guard 'confirms' a check it never reached."
+    },
+    {
+      "id": "owed-validator.refusal.invalid-identifier",
+      "requirementIds": [],
+      "fixture": "owed-validator-invalid-identifier",
+      "operation": "construct",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "LocalizedStringValidator:312's !isValidLocalizedStringIdentifier disjunct. Its sibling disjunct (identifier == null) is unreachable -- every caller passes a value already established non-null, re-probed on the pinned Corretto 21 against the one caller that could plausibly present one (the placeholderDefinitions map key, which LocalizedString.Builder refuses first). CORRECTED 2026-09-09: this note used to end 'which is why the line stays required on this arm alone', and that was already false when it shipped -- the same slice moved LocalizedStringValidator#validateIdentifier:312 from required to EXCLUDED, on the strength of exactly this unreachability plus the coverage this case buys. The disposition is the measured record; a case note asserting a branch's own status is how two texts end up making one false claim, which is the shape M3b already paid for once."
+    },
+    {
+      "id": "owed-validator.refusal.reserved-identifier",
+      "requirementIds": [],
+      "fixture": "owed-validator-reserved-identifier",
+      "operation": "construct",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "LocalizedStringValidator:314. Read against owed-validator.refusal.invalid-identifier: both names reach validateIdentifier, and only the reserved one carries the ': language-form constants are reserved' clause, so a port with one rejection where Java has two differs on exactly one of these two rows."
+    },
+    {
+      "id": "owed-validator.refusal.placeholder-reference",
+      "requirementIds": [],
+      "fixture": "owed-validator-placeholder-reference",
+      "operation": "construct",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "LocalizedStringValidator's validateTemplate and invalid():327's CAUSED arm -- the only refusal in this family that retains a cause, which is the whole reason it is here: every other row exercises invalid()'s cause-less spelling and none of them distinguishes the two. Read against owed-validator.control.programmatic-catalog-constructs, whose 'Items' node carries a well-formed reference to the same kind of template."
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "id": "owed-validator-reserved-identifier",
+  "description": "LocalizedStringValidator:314 -- a generated-placeholder name that IS a valid identifier but is a reserved language-form constant. Read against owed-validator-invalid-identifier: the two differ only in which of validateIdentifier's two rejections fires, and their messages differ, so a port collapsing them into one diagnostic differs here. Java keeps TWO reserved-name lists (the validator's RESERVED_LANGUAGE_FORM_NAMES and the loader's SUPPORTED_LANGUAGE_FORMS_BY_NAME); their symmetric difference was measured EMPTY on the pinned JDK, so this case pins the wording rather than a drift that has no witness today.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "refusesConstruction": true,
+  "constructionOverrides": {
+    "catalogSource": "defined",
+    "definedCatalog": [
+      {
+        "key": "Greeting",
+        "translation": "Hello",
+        "placeholders": {
+          "CARDINALITY_ONE": {
+            "value": "count",
+            "translations": {
+              "CARDINALITY_ONE": "one",
+              "CARDINALITY_OTHER": "other"
+            }
+          }
+        }
+      }
+    ]
+  },
+  "files": {
+    "en": {
+      "Greeting": {
+        "translation": "Hello"
+      }
+    }
+  }
+}
