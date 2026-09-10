@@ -1,0 +1,93 @@
+{
+  "formatVersion": 1,
+  "family": "m3b-form-diagnostics-value-types",
+  "description": "Plan v7 section 8.3 fixture family 'm3b-form-diagnostics-value-types'. Inputs only; the oracle emits expected. Companion to m3b-form-diagnostics, over the SAME sparse fixture, for the two things that family's inputs could not express: the RANGE arm's accept-set refusal, which Java composes with its own 'Range start placeholder' / 'Range end placeholder' description (DefaultStrings.java:948-951 -> :1459-1462), and the Long/BigInteger collision that makes a JS bigint unnameable. Both were arguments living in port comments; these rows put them where a gate can read them.",
+  "cases": [
+    {
+      "id": "m3b-form-diagnostics-value-types.range.start-wrong-type-string",
+      "requirementIds": [],
+      "fixture": "m3b-form-diagnostics-sparse",
+      "operation": "getResult",
+      "input": {
+        "key": "Range.Books",
+        "placeholders": {
+          "low": "lo",
+          "high": 5
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings.getInternal:948 -> cardinalityForValue's accept-set throw at :1459-1462, reached through the RANGE arm with description 'Range start placeholder'. The non-range arm's twin (description 'Placeholder') is already covered by classifier.wrong-value-type; this is the first case in the corpus that reaches the composed refusal with any description OTHER than 'Placeholder', and the whole point of the row is that first word. A port that runs the accept-set test only in the non-range arm answers with the numeric classifier's own unprefixed wording and names neither the endpoint nor the accept set, which is visible byte-for-byte in failureCause.message."
+    },
+    {
+      "id": "m3b-form-diagnostics-value-types.range.end-wrong-type-gender",
+      "requirementIds": [],
+      "fixture": "m3b-form-diagnostics-sparse",
+      "operation": "getResult",
+      "input": {
+        "key": "Range.Books",
+        "placeholders": {
+          "low": 1,
+          "high": {
+            "$lokalized": "language-form",
+            "axis": "gender",
+            "name": "GENDER_FEMININE"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The END endpoint's twin of the row above, with description 'Range end placeholder' (DefaultStrings.java:950-951). Deliberately a CROSS-AXIS language form rather than a second string: it proves the accept-set test admits only the axis's OWN enum, and it exercises javaSimpleNameOf's tagged-form arm on the range path, so the refusal ends '...but was Gender'. A port that copied the start guard and forgot the end guard passes the row above and fails this one."
+    },
+    {
+      "id": "m3b-form-diagnostics-value-types.range.start-plural-operands-control",
+      "requirementIds": [],
+      "fixture": "m3b-form-diagnostics-sparse",
+      "operation": "getResult",
+      "input": {
+        "key": "Range.Books",
+        "placeholders": {
+          "low": {
+            "$lokalized": "plural-operands",
+            "value": "1"
+          },
+          "high": 5
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The POSITIVE CONTROL the two rows above need, and it is not the trivial one. cardinalityForValue accepts three shapes -- the axis enum, a PluralOperands, and a Number -- so a range guard written as 'typeof value === number' would refuse this legal endpoint and turn a rendering into a refusal. Java answers 'I read books.' here (forRange(ONE, OTHER) is OTHER for en, and Range.Books carries CARDINALITY_OTHER), so the row discriminates an over-strict guard from a correct one rather than merely proving the fixture renders."
+    },
+    {
+      "id": "m3b-form-diagnostics-value-types.clusivity.wrong-value-type-long",
+      "requirementIds": [],
+      "fixture": "m3b-form-diagnostics-sparse",
+      "operation": "getResult",
+      "input": {
+        "key": "Clusivity.Meet",
+        "placeholders": {
+          "party": {
+            "$lokalized": "long",
+            "value": "1"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "DefaultStrings.java:1113's nominal-axis refusal, reached with a java.lang.Long. Authored as one half of a MEASURED COLLISION rather than for the branch, which clusivity.wrong-value-type already covers with an Integer: this row records 'but was Long' and its bigint twin records 'but was BigInteger' from the SAME JS carrier, since the runner decodes both tags to a JS bigint. The claim that a bigint cannot be named unambiguously used to live only in a comment in javaSimpleNameOf; these two rows put it in the corpus where the diagnostic gate can see it."
+    },
+    {
+      "id": "m3b-form-diagnostics-value-types.clusivity.wrong-value-type-bigint",
+      "requirementIds": [],
+      "fixture": "m3b-form-diagnostics-sparse",
+      "operation": "getResult",
+      "input": {
+        "key": "Clusivity.Meet",
+        "placeholders": {
+          "party": {
+            "$lokalized": "bigint",
+            "value": "1"
+          }
+        }
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The other half of the Long/BigInteger collision above, same key and same numeric value so the ONLY difference recorded between the two rows is the Java class name. Together they are the corpus evidence for the two remaining numeric-carrier divergences, on exactly the terms phonetic-resolver.input.integer and .double supply for Integer/Double."
+    }
+  ]
+}
