@@ -1,0 +1,9 @@
+{
+  "id": "loader-path-absent",
+  "description": "A load pointed at a path that does not exist. The fixture materializes nothing at all: its parent exists so the message names the path the fixture chose rather than a missing ancestor. Reaches LocalizedStringLoader.loadFromDirectory:1232, which no corpus case could express before S14 because build.mjs created every fixture directory itself.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {},
+  "pathShape": "absent"
+}

@@ -1,0 +1,52 @@
+{
+  "formatVersion": 1,
+  "family": "loader-path-shapes",
+  "description": "Plan v7 section 8.3 fixture family 'loader-path-shapes'. Inputs only; the oracle emits expected.",
+  "cases": [
+    {
+      "id": "loader-path-shapes.load.absent-path-refuses",
+      "requirementIds": [],
+      "fixture": "loader-path-absent",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "DISCRIMINATING: a port that let the host filesystem error escape reports an ENOENT rather than the library's own message, and a port that collapsed the two Location guards reports the not-a-directory wording instead."
+    },
+    {
+      "id": "loader-path-shapes.load.regular-file-refuses",
+      "requirementIds": [],
+      "fixture": "loader-path-regular-file",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "DISCRIMINATING against its sibling: the path EXISTS here, so only a port that tests existence and directory-ness separately produces this message rather than the absent-path one."
+    },
+    {
+      "id": "loader-path-shapes.load.child-directory-is-not-descended-into",
+      "requirementIds": [],
+      "fixture": "loader-nested-directory",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "DISCRIMINATING: a port that recursed loads fr as well as en. Until S14 ablating the child-directory skip turned 0 required cases red -- this is the case that changes that."
+    },
+    {
+      "id": "loader-path-shapes.load.child-directory-still-charges-the-budget",
+      "requirementIds": [],
+      "fixture": "loader-nested-directory-budget",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "DISCRIMINATING against the sibling above: the same directory loads at budget 2 and refuses at 1, so the skipped child is proven to have been COUNTED. A port that charged the budget only for files it parsed passes the sibling and fails here."
+    },
+    {
+      "id": "loader-path-shapes.load.special-file-refuses",
+      "requirementIds": [],
+      "fixture": "loader-special-file-entry",
+      "operation": "load",
+      "input": {},
+      "partition": "requiredPortableIds",
+      "notes": "DISCRIMINATING: a port that opened the entry before stat'ing it BLOCKS FOREVER on a FIFO with no writer rather than refusing, and one that skipped non-regular files silently loads en alone. The message quotes the CANONICAL path, which is the form :1757 uses."
+    }
+  ]
+}

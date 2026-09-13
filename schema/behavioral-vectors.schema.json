@@ -6,9 +6,17 @@
   "$comment": "Plan v7 sections 8.2 and 8.3. Distinct from cldr-conformance-vectors.schema.json, which covers only generated plural selection. This corpus covers resolution, matching, interpolation, loading, and failure behavior.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["behavioralVectorsVersion", "cases", "fixtures", "formatVersion", "oracle"],
+  "required": [
+    "behavioralVectorsVersion",
+    "cases",
+    "fixtures",
+    "formatVersion",
+    "oracle"
+  ],
   "properties": {
-    "formatVersion": { "const": 1 },
+    "formatVersion": {
+      "const": 1
+    },
     "behavioralVectorsVersion": {
       "type": "string",
       "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
@@ -17,11 +25,20 @@
     "oracle": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["implementation", "javaVersion", "librarySourcesSha256"],
+      "required": [
+        "implementation",
+        "javaVersion",
+        "librarySourcesSha256"
+      ],
       "description": "Provenance of the expected blocks. Recorded because the corpus is only as authoritative as the build that produced it.",
       "properties": {
-        "implementation": { "const": "lokalized-java" },
-        "javaVersion": { "type": "string", "minLength": 1 },
+        "implementation": {
+          "const": "lokalized-java"
+        },
+        "javaVersion": {
+          "type": "string",
+          "minLength": 1
+        },
         "librarySourcesSha256": {
           "type": "string",
           "pattern": "^[0-9a-f]{64}$",
@@ -33,14 +50,42 @@
       "type": "object",
       "minProperties": 1,
       "description": "Strings-file fixtures keyed by fixture ID. Files are materialized to disk and read through the real LocalizedStringLoader, so loading is exercised rather than simulated.",
-      "propertyNames": { "$ref": "#/$defs/identifier" },
+      "propertyNames": {
+        "$ref": "#/$defs/identifier"
+      },
       "additionalProperties": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["bidiIsolation", "description", "fallbackLocale", "files", "instanceLocale", "constructionOverrides", "loadOnly", "refusesConstruction", "loadingOptions", "localeMatchSupplier", "localeSupplier", "phoneticResolver", "rawFiles", "rawFilesBase64", "runtimeLimits", "tiebreakers", "translationFailureHandler", "translationFallbackPolicy"],
+        "required": [
+          "bidiIsolation",
+          "constructionOverrides",
+          "description",
+          "entries",
+          "fallbackLocale",
+          "files",
+          "instanceLocale",
+          "loadOnly",
+          "loadingOptions",
+          "localeMatchSupplier",
+          "localeSupplier",
+          "pathShape",
+          "phoneticResolver",
+          "rawFiles",
+          "rawFilesBase64",
+          "refusesConstruction",
+          "runtimeLimits",
+          "tiebreakers",
+          "translationFailureHandler",
+          "translationFallbackPolicy"
+        ],
         "properties": {
-          "description": { "type": "string", "minLength": 1 },
-          "fallbackLocale": { "$ref": "#/$defs/languageTag" },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "fallbackLocale": {
+            "$ref": "#/$defs/languageTag"
+          },
           "instanceLocale": {
             "$ref": "#/$defs/languageTag",
             "$comment": "DefaultStrings requires exactly one ambient locale source even when every case passes an explicit per-call locale."
@@ -48,29 +93,56 @@
           "tiebreakers": {
             "description": "Required by DefaultStrings whenever two loaded locales share a language code. Each key's value list must all carry that primary language.",
             "oneOf": [
-              { "type": "null" },
+              {
+                "type": "null"
+              },
               {
                 "type": "object",
                 "minProperties": 1,
-                "additionalProperties": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/languageTag" } }
+                "additionalProperties": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "$ref": "#/$defs/languageTag"
+                  }
+                }
               }
             ]
           },
-          "translationFailureHandler": { "$ref": "#/$defs/failureHandler" },
-          "translationFallbackPolicy": { "$ref": "#/$defs/fallbackPolicy" },
-          "phoneticResolver": { "$ref": "#/$defs/phoneticResolver" },
+          "translationFailureHandler": {
+            "$ref": "#/$defs/failureHandler"
+          },
+          "translationFallbackPolicy": {
+            "$ref": "#/$defs/fallbackPolicy"
+          },
+          "phoneticResolver": {
+            "$ref": "#/$defs/phoneticResolver"
+          },
           "localeSupplier": {
             "description": "Ambient locale ingress. Mutually exclusive with localeMatchSupplier — DefaultStrings requires exactly one (DefaultStrings.java:255). Absent both, the ambient locale is the fixture's constant instanceLocale.",
             "oneOf": [
-              { "type": "null" },
+              {
+                "type": "null"
+              },
               {
                 "type": "object",
                 "additionalProperties": false,
-                "required": ["behavior"],
+                "required": [
+                  "behavior"
+                ],
                 "properties": {
-                  "behavior": { "enum": ["constant", "match-ranges"] },
-                  "locale": { "$ref": "#/$defs/languageTag" },
-                  "ranges": { "$ref": "#/$defs/languageRanges" }
+                  "behavior": {
+                    "enum": [
+                      "constant",
+                      "match-ranges"
+                    ]
+                  },
+                  "locale": {
+                    "$ref": "#/$defs/languageTag"
+                  },
+                  "ranges": {
+                    "$ref": "#/$defs/languageRanges"
+                  }
                 }
               }
             ]
@@ -78,47 +150,126 @@
           "localeMatchSupplier": {
             "description": "Negotiation ingress. `fabricated` uses LocaleMatchResult's public constructor to supply a match the matcher would never produce, which is how the intentional lookup difference for supplied matches becomes observable.",
             "oneOf": [
-              { "type": "null" },
+              {
+                "type": "null"
+              },
               {
                 "type": "object",
                 "additionalProperties": false,
-                "required": ["behavior"],
+                "required": [
+                  "behavior"
+                ],
                 "properties": {
-                  "behavior": { "enum": ["match-ranges", "match-locale", "fabricated"] },
-                  "locale": { "$ref": "#/$defs/languageTag" },
-                  "ranges": { "$ref": "#/$defs/languageRanges" },
-                  "range": { "type": "string" },
+                  "behavior": {
+                    "enum": [
+                      "match-ranges",
+                      "match-locale",
+                      "fabricated"
+                    ]
+                  },
+                  "locale": {
+                    "$ref": "#/$defs/languageTag"
+                  },
+                  "ranges": {
+                    "$ref": "#/$defs/languageRanges"
+                  },
+                  "range": {
+                    "type": "string"
+                  },
                   "weight": {
                     "description": "A fabricated match's effective weight. LocaleMatchResult:111 refuses a weight that is not finite, at most 0, or above 1; the non-finite values cannot be written as JSON numbers, so the string sentinels 'infinity' and 'nan' name them. 'nan' is the one that DISCRIMINATES the clause: Infinity is caught by `effectiveWeight > 1.0` even with the finiteness test deleted (measured -- deleting !Number.isFinite from lokalized-js leaves the infinity row passing), while NaN > 1.0 and NaN <= 0.0 are both false in Java and in JS, so only NaN separates !Double.isFinite(w) from the two bounds. Closed set of two -- both runners refuse any other string rather than coercing it, since Number(typo) is NaN and would land on the same arm while testing the wrong input.",
-                    "oneOf": [{ "type": "number" }, { "enum": ["infinity", "nan"] }]
+                    "oneOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "enum": [
+                          "infinity",
+                          "nan"
+                        ]
+                      }
+                    ]
                   },
-                  "matchType": { "enum": ["NONE", "EXACT", "CANONICAL", "CLDR_FALLBACK", "LIKELY_SUBTAG", "EXTENDED_RANGE", "PRIMARY_LANGUAGE", "WILDCARD"] },
-                  "fallbackLocale": { "$ref": "#/$defs/languageTag" },
-                  "consideredLocales": { "type": "array", "items": { "$ref": "#/$defs/languageTag" } }
+                  "matchType": {
+                    "enum": [
+                      "NONE",
+                      "EXACT",
+                      "CANONICAL",
+                      "CLDR_FALLBACK",
+                      "LIKELY_SUBTAG",
+                      "EXTENDED_RANGE",
+                      "PRIMARY_LANGUAGE",
+                      "WILDCARD"
+                    ]
+                  },
+                  "fallbackLocale": {
+                    "$ref": "#/$defs/languageTag"
+                  },
+                  "consideredLocales": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/languageTag"
+                    }
+                  }
                 }
               }
             ]
           },
-          "bidiIsolation": { "oneOf": [{ "type": "null" }, { "enum": ["NONE", "ALWAYS", "RTL_LOCALES"] }] },
-          "runtimeLimits": { "$ref": "#/$defs/runtimeLimits" },
+          "bidiIsolation": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "enum": [
+                  "NONE",
+                  "ALWAYS",
+                  "RTL_LOCALES"
+                ]
+              }
+            ]
+          },
+          "runtimeLimits": {
+            "$ref": "#/$defs/runtimeLimits"
+          },
           "loadingOptions": {
             "description": "Loader limit overrides. Required by clauses that are unreachable under defaults; null means LocalizedStringLoadingOptions.defaults().",
             "oneOf": [
-              { "type": "null" },
+              {
+                "type": "null"
+              },
               {
                 "type": "object",
                 "additionalProperties": false,
                 "$comment": "Values are DELIBERATELY unconstrained. Section 8.3 requires zero and above-ceiling values for each limit so the library's own rejection can be observed; a schema that pre-rejected them would make those clauses unexpressible.",
                 "properties": {
-                  "maximumJsonNestingDepth": { "type": "integer" },
-                  "maximumTranslationNodes": { "type": "integer" },
-                  "maximumWarnings": { "type": "integer" },
-                  "maximumLocalizedStringsFiles": { "type": "integer" },
-                  "maximumInputBytes": { "type": "integer" },
-                  "maximumReaderCharacters": { "type": "integer" },
-                  "maximumDiscoveryEntries": { "type": "integer" },
-                  "maximumTotalInputBytes": { "type": "integer" },
-                  "exhaustiveClasspathSearch": { "type": "boolean" }
+                  "maximumJsonNestingDepth": {
+                    "type": "integer"
+                  },
+                  "maximumTranslationNodes": {
+                    "type": "integer"
+                  },
+                  "maximumWarnings": {
+                    "type": "integer"
+                  },
+                  "maximumLocalizedStringsFiles": {
+                    "type": "integer"
+                  },
+                  "maximumInputBytes": {
+                    "type": "integer"
+                  },
+                  "maximumReaderCharacters": {
+                    "type": "integer"
+                  },
+                  "maximumDiscoveryEntries": {
+                    "type": "integer"
+                  },
+                  "maximumTotalInputBytes": {
+                    "type": "integer"
+                  },
+                  "exhaustiveClasspathSearch": {
+                    "type": "boolean"
+                  }
                 }
               }
             ]
@@ -128,25 +279,53 @@
             "description": "When true no Strings instance is constructed. Set for fixtures that are DELIBERATELY unloadable, whose load failure is the observation."
           },
           "constructionOverrides": {
-            "type": ["object", "null"],
+            "type": [
+              "object",
+              "null"
+            ],
             "additionalProperties": false,
             "description": "Deliberately degenerate builder configurations that no well-formed fixture can express, each naming one DefaultStrings (or Strings.Builder) construction validation. Closed set; both the oracle and lokalized-js's runner refuse an unknown value rather than silently building a valid instance. MOST name a REFUSAL and require refusesConstruction; the two Strings.Builder null-argument arms and instanceCallbacks deliberately CONSTRUCT, and ingest.mjs checks that distinction in both directions.",
             "properties": {
-              "catalogSource": { "enum": ["omit", "returnsNull", "nullLocaleKey", "duplicateNormalizedTag", "nullCatalogValue", "nullEntry", "duplicateKey", "defined"] },
+              "catalogSource": {
+                "enum": [
+                  "omit",
+                  "returnsNull",
+                  "nullLocaleKey",
+                  "duplicateNormalizedTag",
+                  "nullCatalogValue",
+                  "nullEntry",
+                  "duplicateKey",
+                  "defined"
+                ]
+              },
               "definedCatalog": {
                 "description": "Required by, and only by, catalogSource 'defined': a PROGRAMMATIC catalog written in `define`'s model vocabulary (the strings-file vocabulary), supplied to Strings.Builder.localizedStringSupplier instead of a loaded one and keyed at the fixture's fallbackLocale. It is the sink DefaultStrings:297 needs: the constructor validates every supplied LocalizedString through LocalizedStringValidator, with no LocalizedStringLoader check in front of it to pre-empt the wording. A node the model decoder cannot BUILD fails the run rather than being banked as a construction refusal.",
                 "type": "array",
                 "minItems": 1,
-                "items": { "type": "object" }
+                "items": {
+                  "type": "object"
+                }
               },
-              "localeSource": { "enum": ["omit", "explicitNullLocaleSupplier", "explicitNullMatchSupplier"] },
+              "localeSource": {
+                "enum": [
+                  "omit",
+                  "explicitNullLocaleSupplier",
+                  "explicitNullMatchSupplier"
+                ]
+              },
               "tiebreakerSource": {
                 "description": "A degenerate tiebreaker map: shapes a JSON `tiebreakers` object cannot spell, each a DefaultStrings refusal a JS caller reaches through plan 3.1's TiebreakerMap -- only its Map half can carry a null key.",
-                "enum": ["nullList", "nullEntry", "nullLanguageCode"]
+                "enum": [
+                  "nullList",
+                  "nullEntry",
+                  "nullLanguageCode"
+                ]
               },
               "instanceCallbacks": {
                 "description": "'libraryDefaults' installs NEITHER the recording failure handler nor the recording fallback policy, so DefaultStrings:472 and :473 select the library's OWN defaults. The cost is the two observation channels, which is why it is an override and not the norm; such a fixture is observable only through `construct`'s probe.",
-                "enum": ["libraryDefaults"]
+                "enum": [
+                  "libraryDefaults"
+                ]
               }
             }
           },
@@ -157,18 +336,58 @@
           "files": {
             "type": "object",
             "description": "Strings-file contents keyed by locale tag, serialized as JSON. Written to disk under the tag as an extensionless filename.",
-            "propertyNames": { "$ref": "#/$defs/languageTag" },
-            "additionalProperties": { "type": "object" }
+            "propertyNames": {
+              "$ref": "#/$defs/languageTag"
+            },
+            "additionalProperties": {
+              "type": "object"
+            }
           },
           "rawFiles": {
             "type": "object",
             "description": "Verbatim file text keyed by FILENAME, for content JSON serialization cannot produce: duplicate members, unterminated structures, lone surrogate escapes.",
-            "additionalProperties": { "type": "string" }
+            "additionalProperties": {
+              "type": "string"
+            }
           },
           "rawFilesBase64": {
             "type": "object",
             "description": "Exact file bytes keyed by FILENAME, base64-encoded. The only way to express malformed UTF-8, which cannot survive a JS string.",
-            "additionalProperties": { "type": "string", "contentEncoding": "base64" }
+            "additionalProperties": {
+              "type": "string",
+              "contentEncoding": "base64"
+            }
+          },
+          "pathShape": {
+            "description": "The shape of the fixture path itself. 'directory' is the historical behaviour; 'absent' materializes nothing, and 'regular-file' materializes a file, so that LocalizedStringLoader's two Location guards can be reached at all. A non-directory shape carries no files and no entries.",
+            "enum": [
+              "directory",
+              "absent",
+              "regular-file"
+            ]
+          },
+          "entries": {
+            "description": "Child entries whose SHAPE is the point rather than their contents: a nested directory (which the loader must skip while still charging the discovery budget) or a FIFO (which reaches the not-a-regular-file guard). Keyed by plain file name.",
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "kind"
+              ],
+              "properties": {
+                "kind": {
+                  "enum": [
+                    "directory",
+                    "fifo"
+                  ]
+                },
+                "files": {
+                  "description": "Catalogs written INSIDE a nested directory entry, to prove the loader does not descend into it.",
+                  "type": "object"
+                }
+              }
+            }
           }
         }
       }
@@ -179,7 +398,15 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["expected", "fixture", "id", "input", "operation", "partition", "requirementIds"],
+        "required": [
+          "expected",
+          "fixture",
+          "id",
+          "input",
+          "operation",
+          "partition",
+          "requirementIds"
+        ],
         "properties": {
           "id": {
             "type": "string",
@@ -188,29 +415,55 @@
           },
           "requirementIds": {
             "type": "array",
-            "items": { "type": "string", "pattern": "^(LJ-[A-Z]+-[0-9]{3}|BOOT-M[0-9]-[0-9]{4})$" },
+            "items": {
+              "type": "string",
+              "pattern": "^(LJ-[A-Z]+-[0-9]{3}|BOOT-M[0-9]-[0-9]{4})$"
+            },
             "$comment": "Empty is currently permitted because production LJ-<AREA>-NNN identifiers are not minted yet. The corpus linter tightens this to minItems 1 once minting lands."
           },
-          "fixture": { "$ref": "#/$defs/identifier" },
+          "fixture": {
+            "$ref": "#/$defs/identifier"
+          },
           "operation": {
             "enum": [
-              "getResult", "get", "matchFor", "languageForms", "load", "parse", "loadClasspath", "loadClasspathResources",
-              "construct", "acceptLanguage", "define",
-              "cardinalityForNumber", "cardinalityForOperands", "cardinalityForRange",
-              "ordinalityForNumber", "ordinalityForOperands",
-              "supportedCardinalitiesForLocale", "supportedOrdinalitiesForLocale"
+              "getResult",
+              "get",
+              "matchFor",
+              "languageForms",
+              "load",
+              "parse",
+              "loadClasspath",
+              "loadClasspathResources",
+              "construct",
+              "acceptLanguage",
+              "define",
+              "cardinalityForNumber",
+              "cardinalityForOperands",
+              "cardinalityForRange",
+              "ordinalityForNumber",
+              "ordinalityForOperands",
+              "supportedCardinalitiesForLocale",
+              "supportedOrdinalitiesForLocale"
             ]
           },
           "input": {
             "type": "object",
             "$comment": "Open by design -- each operation reads its own keys. The two PER-CALL CALLBACK overrides are named because they were the hole: fixture-level callbacks have always been enum-checked here, per-call ones were not, so a misspelled behavior reached VectorOracle's decoder and its 'unknown ... behavior' IllegalArgumentException was banked as an `expected.thrown` block indistinguishable in shape from a library ingress refusal. Probed, not assumed: two typo'd cases were ingested and built, and both recorded exactly that. tools/vector-oracle/ingest.mjs reads these same enums so the mistake is refused before a JVM round trip.",
             "properties": {
-              "translationFailureHandler": { "$ref": "#/$defs/failureHandler" },
-              "translationFallbackPolicy": { "$ref": "#/$defs/fallbackPolicy" }
+              "translationFailureHandler": {
+                "$ref": "#/$defs/failureHandler"
+              },
+              "translationFallbackPolicy": {
+                "$ref": "#/$defs/fallbackPolicy"
+              }
             }
           },
           "partition": {
-            "enum": ["requiredPortableIds", "requiredImplementationIds", "informationalIds"],
+            "enum": [
+              "requiredPortableIds",
+              "requiredImplementationIds",
+              "informationalIds"
+            ],
             "description": "Portable cases gate cross-language parity. Implementation cases gate one family's release without inflating parity. Informational cases may be unsupported and never enter either numerator."
           },
           "implementationFamily": {
@@ -230,13 +483,33 @@
           "xfail": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["expiry", "owner", "reason", "severity"],
+            "required": [
+              "expiry",
+              "owner",
+              "reason",
+              "severity"
+            ],
             "description": "Permitted only during development. A strict parity-backed release requires an empty xfail set for the portable partition.",
             "properties": {
-              "severity": { "enum": ["low", "medium", "high"] },
-              "owner": { "type": "string", "minLength": 1 },
-              "reason": { "type": "string", "minLength": 1 },
-              "expiry": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" }
+              "severity": {
+                "enum": [
+                  "low",
+                  "medium",
+                  "high"
+                ]
+              },
+              "owner": {
+                "type": "string",
+                "minLength": 1
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1
+              },
+              "expiry": {
+                "type": "string",
+                "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+              }
             }
           },
           "expected": {
@@ -245,8 +518,12 @@
             "description": "EMITTED BY THE ORACLE. Hand-editing this block defeats the corpus: it would encode a belief about Java rather than an observation of it.",
             "additionalProperties": false,
             "properties": {
-              "result": { "$ref": "#/$defs/translationResult" },
-              "match": { "$ref": "#/$defs/localeMatchResult" },
+              "result": {
+                "$ref": "#/$defs/translationResult"
+              },
+              "match": {
+                "$ref": "#/$defs/localeMatchResult"
+              },
               "resolverCalls": {
                 "type": "array",
                 "minItems": 1,
@@ -254,15 +531,42 @@
                 "items": {
                   "type": "object",
                   "additionalProperties": false,
-                  "required": ["locale", "returned", "term", "threw"],
+                  "required": [
+                    "locale",
+                    "returned",
+                    "term",
+                    "threw"
+                  ],
                   "properties": {
-                    "term": { "type": ["string", "null"] },
+                    "term": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
                     "locale": {
-                      "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/languageTag" }],
+                      "oneOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "$ref": "#/$defs/languageTag"
+                        }
+                      ],
                       "$comment": "The locale the resolver was HANDED — the supplying locale for a fallback-served entry, not the requested one."
                     },
-                    "returned": { "type": ["string", "null"] },
-                    "threw": { "type": ["string", "null"] }
+                    "returned": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "threw": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
                   }
                 }
               },
@@ -273,11 +577,47 @@
                 "items": {
                   "type": "object",
                   "additionalProperties": false,
-                  "required": ["kind", "returnedLocale", "returnedMatchType"],
+                  "required": [
+                    "kind",
+                    "returnedLocale",
+                    "returnedMatchType"
+                  ],
                   "properties": {
-                    "kind": { "enum": ["localeSupplier", "localeMatchSupplier"] },
-                    "returnedLocale": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/languageTag" }] },
-                    "returnedMatchType": { "oneOf": [{ "type": "null" }, { "enum": ["NONE", "EXACT", "CANONICAL", "CLDR_FALLBACK", "LIKELY_SUBTAG", "EXTENDED_RANGE", "PRIMARY_LANGUAGE", "WILDCARD"] }] }
+                    "kind": {
+                      "enum": [
+                        "localeSupplier",
+                        "localeMatchSupplier"
+                      ]
+                    },
+                    "returnedLocale": {
+                      "oneOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "$ref": "#/$defs/languageTag"
+                        }
+                      ]
+                    },
+                    "returnedMatchType": {
+                      "oneOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "enum": [
+                            "NONE",
+                            "EXACT",
+                            "CANONICAL",
+                            "CLDR_FALLBACK",
+                            "LIKELY_SUBTAG",
+                            "EXTENDED_RANGE",
+                            "PRIMARY_LANGUAGE",
+                            "WILDCARD"
+                          ]
+                        }
+                      ]
+                    }
                   }
                 }
               },
@@ -288,33 +628,106 @@
                 "items": {
                   "type": "object",
                   "additionalProperties": false,
-                  "required": ["causeType", "decision", "locale", "reason"],
+                  "required": [
+                    "causeType",
+                    "decision",
+                    "locale",
+                    "reason"
+                  ],
                   "properties": {
-                    "reason": { "oneOf": [{ "type": "null" }, { "enum": ["MISSING_TRANSLATION", "NO_MATCHING_ALTERNATIVE", "RESOLUTION_FAILURE"] }] },
-                    "locale": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/languageTag" }] },
-                    "causeType": { "type": ["string", "null"] },
-                    "decision": { "type": ["boolean", "null"] },
-                    "threw": { "type": "string", "$comment": "Present ONLY when the policy delegate threw, in which case decision is null. Its absence with a null decision means the policy RETURNED null, which Java then rejects at DefaultStrings.java:735." }
+                    "reason": {
+                      "oneOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "enum": [
+                            "MISSING_TRANSLATION",
+                            "NO_MATCHING_ALTERNATIVE",
+                            "RESOLUTION_FAILURE"
+                          ]
+                        }
+                      ]
+                    },
+                    "locale": {
+                      "oneOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "$ref": "#/$defs/languageTag"
+                        }
+                      ]
+                    },
+                    "causeType": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "decision": {
+                      "type": [
+                        "boolean",
+                        "null"
+                      ]
+                    },
+                    "threw": {
+                      "type": "string",
+                      "$comment": "Present ONLY when the policy delegate threw, in which case decision is null. Its absence with a null decision means the policy RETURNED null, which Java then rejects at DefaultStrings.java:735."
+                    }
                   }
                 }
               },
               "construct": {
                 "type": "object",
                 "additionalProperties": false,
-                "required": ["constructed", "failureMessage", "failureType", "probe"],
+                "required": [
+                  "constructed",
+                  "failureMessage",
+                  "failureType",
+                  "probe"
+                ],
                 "description": "Strings CONSTRUCTION as an observation. The refusal identity -- failureType plus failureMessage -- is the discriminator; a port that accepts an input Java refuses, or refuses it differently, differs here and nowhere else.",
                 "properties": {
-                  "constructed": { "type": "boolean" },
-                  "failureType": { "type": ["string", "null"] },
-                  "failureMessage": { "type": ["string", "null"] },
+                  "constructed": {
+                    "type": "boolean"
+                  },
+                  "failureType": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "failureMessage": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
                   "probe": {
-                    "type": ["object", "null"],
+                    "type": [
+                      "object",
+                      "null"
+                    ],
                     "additionalProperties": false,
-                    "required": ["threwType", "value"],
+                    "required": [
+                      "threwType",
+                      "value"
+                    ],
                     "description": "Present when the case supplies input.probeKey, so a success row is backed by an answer rather than by the absence of a throw.",
                     "properties": {
-                      "value": { "type": ["string", "null"] },
-                      "threwType": { "type": ["string", "null"] }
+                      "value": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "threwType": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      }
                     }
                   }
                 }
@@ -322,34 +735,69 @@
               "acceptLanguage": {
                 "type": "object",
                 "additionalProperties": false,
-                "required": ["bestMatch"],
+                "required": [
+                  "bestMatch"
+                ],
                 "description": "The RAW Accept-Language field value negotiated end to end by LocaleMatcher#bestMatchForAcceptLanguage, whose contract is FAIL-SOFT: absent, blank, malformed, over-4,096-code-unit and over-32-expanded input return the configured fallback rather than throwing. One language tag is the entire channel because the method returns a bare Locale; the fixture supplies the discrimination by giving the fallback and the ambient instance locale different tags, so 'returned the fallback' and 'matched a catalog' are distinct answers. A port that throws where Java is fail-soft produces a `thrown` block instead of this one, which is by itself a defect.",
                 "properties": {
-                  "bestMatch": { "$ref": "#/$defs/languageTag" }
+                  "bestMatch": {
+                    "$ref": "#/$defs/languageTag"
+                  }
                 }
               },
               "define": {
                 "type": "object",
                 "additionalProperties": false,
-                "required": ["built", "catalogKeyPresent", "contains", "failureMessage", "failureType"],
+                "required": [
+                  "built",
+                  "catalogKeyPresent",
+                  "contains",
+                  "failureMessage",
+                  "failureType"
+                ],
                 "description": "A HAND-BUILT LocalizedString compared against a loaded catalog through DefaultStrings$LocalizedStringSet.contains, which is the only transport in this harness that reaches LocalizedString#equals and the equals methods of its four nested value types -- every other LocalizedString the corpus sees comes from a single loader run and is never compared to a second instance. `built: false` records a construction REFUSAL, which is the same operation specifying LocalizedString#<init> and ExpressionTranslation#<init>; contains and catalogKeyPresent are null there because contains is never reached.",
                 "properties": {
-                  "built": { "type": "boolean" },
-                  "failureType": { "type": ["string", "null"] },
-                  "failureMessage": { "type": ["string", "null"] },
+                  "built": {
+                    "type": "boolean"
+                  },
+                  "failureType": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "failureMessage": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
                   "contains": {
-                    "type": ["boolean", "null"],
+                    "type": [
+                      "boolean",
+                      "null"
+                    ],
                     "description": "Deep structural equality against the catalog entry with the same key."
                   },
                   "catalogKeyPresent": {
-                    "type": ["boolean", "null"],
+                    "type": [
+                      "boolean",
+                      "null"
+                    ],
                     "description": "Whether the catalog holds the probe's key at all. An INVARIANT the oracle re-checks at execution time, not a distinction any corpus row exercises: ingest.mjs refuses a constructible probe whose key the named locale does not define -- a missing key returns at LocalizedString:140 without comparing a single field, so such a row would look like discrimination and close nothing -- which makes this field true on every built row and null on a construction refusal, never false. It exists so that a weakened ingest gate would show up in the corpus rather than pass unnoticed."
                   }
                 }
               },
-              "load": { "$ref": "#/$defs/loadObservation" },
-              "parse": { "$ref": "#/$defs/parseObservation" },
-              "translation": { "type": "string", "description": "Emitted by the `get` operation, which applies the failure handler's response instead of returning a result object." },
+              "load": {
+                "$ref": "#/$defs/loadObservation"
+              },
+              "parse": {
+                "$ref": "#/$defs/parseObservation"
+              },
+              "translation": {
+                "type": "string",
+                "description": "Emitted by the `get` operation, which applies the failure handler's response instead of returning a result object."
+              },
               "failures": {
                 "type": "array",
                 "minItems": 1,
@@ -357,26 +805,91 @@
                 "items": {
                   "type": "object",
                   "additionalProperties": false,
-                  "required": ["attemptedLocales", "causeMessage", "causeType", "key", "localeMatchResult", "lookupLocale", "matchObjectIdenticalToResult", "message", "placeholderNames", "reason"],
+                  "required": [
+                    "attemptedLocales",
+                    "causeMessage",
+                    "causeType",
+                    "key",
+                    "localeMatchResult",
+                    "lookupLocale",
+                    "matchObjectIdenticalToResult",
+                    "message",
+                    "placeholderNames",
+                    "reason"
+                  ],
                   "properties": {
-                    "key": { "type": "string" },
-                    "reason": { "enum": ["MISSING_TRANSLATION", "NO_MATCHING_ALTERNATIVE", "RESOLUTION_FAILURE"] },
-                    "lookupLocale": { "$ref": "#/$defs/languageTag" },
-                    "attemptedLocales": { "type": "array", "items": { "$ref": "#/$defs/languageTag" } },
-                    "message": { "type": ["string", "null"] },
-                    "placeholderNames": { "type": "array", "items": { "type": "string" } },
-                    "causeType": { "type": ["string", "null"] },
-                    "causeMessage": { "type": ["string", "null"] },
-                    "localeMatchResult": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/localeMatchResult" }] },
+                    "key": {
+                      "type": "string"
+                    },
+                    "reason": {
+                      "enum": [
+                        "MISSING_TRANSLATION",
+                        "NO_MATCHING_ALTERNATIVE",
+                        "RESOLUTION_FAILURE"
+                      ]
+                    },
+                    "lookupLocale": {
+                      "$ref": "#/$defs/languageTag"
+                    },
+                    "attemptedLocales": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/$defs/languageTag"
+                      }
+                    },
+                    "message": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "placeholderNames": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "causeType": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "causeMessage": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "localeMatchResult": {
+                      "oneOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "$ref": "#/$defs/localeMatchResult"
+                        }
+                      ]
+                    },
                     "matchObjectIdenticalToResult": {
-                      "type": ["boolean", "null"],
+                      "type": [
+                        "boolean",
+                        "null"
+                      ],
                       "description": "Reference identity between the match object the handler saw and the one on the result. Section 8.3 requires these to be the same object; only Java can observe it. NULL means not comparable — the get() and thrown paths produce no result object, and reporting false there would invent a divergence."
                     }
                   }
                 }
               },
-              "classification": { "$ref": "#/$defs/languageForm" },
-              "classifications": { "type": "array", "items": { "$ref": "#/$defs/languageForm" } },
+              "classification": {
+                "$ref": "#/$defs/languageForm"
+              },
+              "classifications": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/languageForm"
+                }
+              },
               "tuples": {
                 "type": "array",
                 "minItems": 61,
@@ -384,25 +897,61 @@
                 "items": {
                   "type": "object",
                   "additionalProperties": false,
-                  "required": ["axis", "name", "renderName", "rendered"],
+                  "required": [
+                    "axis",
+                    "name",
+                    "renderName",
+                    "rendered"
+                  ],
                   "properties": {
-                    "axis": { "$ref": "#/$defs/languageFormAxis" },
-                    "name": { "type": "string", "pattern": "^[A-Z]+(?:_[A-Z0-9]+)*$" },
-                    "renderName": { "type": "string", "pattern": "^[A-Z]+(?:_[A-Z0-9]+)*$" },
-                    "rendered": { "type": "string", "minLength": 1 }
+                    "axis": {
+                      "$ref": "#/$defs/languageFormAxis"
+                    },
+                    "name": {
+                      "type": "string",
+                      "pattern": "^[A-Z]+(?:_[A-Z0-9]+)*$"
+                    },
+                    "renderName": {
+                      "type": "string",
+                      "pattern": "^[A-Z]+(?:_[A-Z0-9]+)*$"
+                    },
+                    "rendered": {
+                      "type": "string",
+                      "minLength": 1
+                    }
                   }
                 }
               },
               "thrown": {
                 "type": "object",
                 "additionalProperties": false,
-                "required": ["causeType", "identicalToRetainedCause", "message", "type"],
+                "required": [
+                  "causeType",
+                  "identicalToRetainedCause",
+                  "message",
+                  "type"
+                ],
                 "properties": {
-                  "type": { "type": "string" },
-                  "message": { "type": ["string", "null"] },
-                  "causeType": { "type": ["string", "null"] },
+                  "type": {
+                    "type": "string"
+                  },
+                  "message": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "causeType": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
                   "identicalToRetainedCause": {
-                    "type": ["boolean", "null"],
+                    "type": [
+                      "boolean",
+                      "null"
+                    ],
                     "description": "Whether the throwable that escaped IS the first cause the walk retained, by reference. Tri-state: null means no observed failure carried a cause, so the comparison could not be made. Text cannot answer this -- Java rethrows the retained cause on THROW_EXCEPTION and constructs a fresh exception of the same class with the same message on RETURN_KEY, both at TranslationResult's constructor."
                   }
                 }
@@ -413,10 +962,26 @@
         "allOf": [
           {
             "$comment": "An implementation-partition case must say which family it belongs to, or it cannot be scoped at release time.",
-            "if": { "properties": { "partition": { "const": "requiredImplementationIds" } }, "required": ["partition"] },
+            "if": {
+              "properties": {
+                "partition": {
+                  "const": "requiredImplementationIds"
+                }
+              },
+              "required": [
+                "partition"
+              ]
+            },
             "then": {
-              "required": ["implementationFamily"],
-              "properties": { "implementationFamily": { "type": "string", "minLength": 1 } }
+              "required": [
+                "implementationFamily"
+              ],
+              "properties": {
+                "implementationFamily": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
             }
           }
         ]
@@ -424,63 +989,193 @@
     }
   },
   "$defs": {
-    "identifier": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "identifier": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
     "warning": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["key", "locale", "message", "missingLanguageForms", "placeholder", "source", "type"],
+      "required": [
+        "key",
+        "locale",
+        "message",
+        "missingLanguageForms",
+        "placeholder",
+        "source",
+        "type"
+      ],
       "properties": {
-        "type": { "enum": ["INCOMPLETE_CARDINALITY_TRANSLATIONS", "INCOMPLETE_ORDINALITY_TRANSLATIONS", "INVALID_CLASSPATH_LOCALE_FILENAME"] },
-        "message": { "type": ["string", "null"] },
-        "source": { "type": ["string", "null"] },
-        "locale": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/languageTag" }] },
-        "key": { "type": ["string", "null"] },
-        "placeholder": { "type": ["string", "null"] },
-        "missingLanguageForms": { "type": "array", "items": { "type": "string" } }
+        "type": {
+          "enum": [
+            "INCOMPLETE_CARDINALITY_TRANSLATIONS",
+            "INCOMPLETE_ORDINALITY_TRANSLATIONS",
+            "INVALID_CLASSPATH_LOCALE_FILENAME"
+          ]
+        },
+        "message": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "locale": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/languageTag"
+            }
+          ]
+        },
+        "key": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "placeholder": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "missingLanguageForms": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
       }
     },
     "loadObservation": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["failed", "failureMessage", "failureType", "keysByLocale", "locales", "warnings"],
+      "required": [
+        "failed",
+        "failureMessage",
+        "failureType",
+        "keysByLocale",
+        "locales",
+        "warnings"
+      ],
       "description": "A whole-directory load recorded as an observation. A load that FAILS is the subject of several section 8.3 clauses, so failure is data here rather than an aborted run.",
       "properties": {
-        "locales": { "type": "array", "items": { "$ref": "#/$defs/languageTag" } },
-        "keysByLocale": { "type": "object", "additionalProperties": { "type": "array", "items": { "type": "string" } } },
-        "failed": { "type": "boolean" },
-        "failureType": { "type": ["string", "null"] },
+        "locales": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/languageTag"
+          }
+        },
+        "keysByLocale": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "failed": {
+          "type": "boolean"
+        },
+        "failureType": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
         "failureMessage": {
-          "type": ["string", "null"],
+          "type": [
+            "string",
+            "null"
+          ],
           "$comment": "Temporary fixture paths are replaced with <fixtures>/ so the corpus stays reproducible across runs."
         },
-        "warnings": { "type": "array", "items": { "$ref": "#/$defs/warning" } }
+        "warnings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/warning"
+          }
+        }
       }
     },
     "parseObservation": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["failed", "failureMessage", "failureType", "keys", "warnings"],
+      "required": [
+        "failed",
+        "failureMessage",
+        "failureType",
+        "keys",
+        "warnings"
+      ],
       "description": "A single-file parse. Reaches the parser with raw bytes, which is the only way to observe malformed UTF-8, lone surrogates, and duplicate JSON members.",
       "properties": {
-        "keys": { "type": "array", "items": { "type": "string" } },
-        "failed": { "type": "boolean" },
-        "failureType": { "type": ["string", "null"] },
-        "failureMessage": { "type": ["string", "null"] },
-        "warnings": { "type": "array", "items": { "$ref": "#/$defs/warning" } }
+        "keys": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "failed": {
+          "type": "boolean"
+        },
+        "failureType": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "failureMessage": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/warning"
+          }
+        }
       }
     },
     "failureHandler": {
       "description": "A named handler behavior. Section 8.2 forbids embedding executable code, so behaviors are referenced by name.",
       "oneOf": [
-        { "type": "null" },
+        {
+          "type": "null"
+        },
         {
           "type": "object",
           "additionalProperties": false,
-          "required": ["behavior"],
+          "required": [
+            "behavior"
+          ],
           "properties": {
-            "behavior": { "enum": ["return-key", "throw", "return-string", "throw-in-handler", "return-null"] },
-            "text": { "type": "string" },
-            "message": { "type": "string" }
+            "behavior": {
+              "enum": [
+                "return-key",
+                "throw",
+                "return-string",
+                "throw-in-handler",
+                "return-null"
+              ]
+            },
+            "text": {
+              "type": "string"
+            },
+            "message": {
+              "type": "string"
+            }
           }
         }
       ]
@@ -488,20 +1183,51 @@
     "fallbackPolicy": {
       "description": "A built-in policy by name, or a caller-supplied one by named behavior. Section 8.2 forbids embedding executable code, so custom policies are referenced rather than written.",
       "oneOf": [
-        { "type": "null" },
         {
-          "enum": ["missing-or-no-match", "any-failure", "never"],
+          "type": "null"
+        },
+        {
+          "enum": [
+            "missing-or-no-match",
+            "any-failure",
+            "never"
+          ],
           "$comment": "missing-or-no-match is the library default (DefaultStrings.java:473)."
         },
         {
           "type": "object",
           "additionalProperties": false,
-          "required": ["behavior"],
+          "required": [
+            "behavior"
+          ],
           "properties": {
-            "behavior": { "enum": ["continue-for-locales", "continue-for-reasons", "throw-in-policy", "return-null"] },
-            "locales": { "type": "array", "items": { "$ref": "#/$defs/languageTag" } },
-            "reasons": { "type": "array", "items": { "enum": ["MISSING_TRANSLATION", "NO_MATCHING_ALTERNATIVE", "RESOLUTION_FAILURE"] } },
-            "message": { "type": "string" }
+            "behavior": {
+              "enum": [
+                "continue-for-locales",
+                "continue-for-reasons",
+                "throw-in-policy",
+                "return-null"
+              ]
+            },
+            "locales": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/languageTag"
+              }
+            },
+            "reasons": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "MISSING_TRANSLATION",
+                  "NO_MATCHING_ALTERNATIVE",
+                  "RESOLUTION_FAILURE"
+                ]
+              }
+            },
+            "message": {
+              "type": "string"
+            }
           }
         }
       ]
@@ -509,39 +1235,88 @@
     "phoneticResolver": {
       "description": "A named PhoneticResolver behavior. Reached only when a phonetic placeholder receives a RAW term; an explicitly tagged PHONETIC_* value bypasses it (DefaultStrings.java:1159).",
       "oneOf": [
-        { "type": "null" },
+        {
+          "type": "null"
+        },
         {
           "type": "object",
           "additionalProperties": false,
-          "required": ["behavior"],
+          "required": [
+            "behavior"
+          ],
           "properties": {
-            "behavior": { "enum": ["constant", "by-term", "by-locale", "first-letter-vowel", "return-null", "throw"] },
-            "phonetic": { "type": "string", "pattern": "^PHONETIC_[A-Z_]+$" },
-            "mapping": { "type": "object", "additionalProperties": { "type": "string", "pattern": "^PHONETIC_[A-Z_]+$" } },
-            "default": { "type": "string", "pattern": "^PHONETIC_[A-Z_]+$" },
-            "message": { "type": "string" }
+            "behavior": {
+              "enum": [
+                "constant",
+                "by-term",
+                "by-locale",
+                "first-letter-vowel",
+                "return-null",
+                "throw"
+              ]
+            },
+            "phonetic": {
+              "type": "string",
+              "pattern": "^PHONETIC_[A-Z_]+$"
+            },
+            "mapping": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string",
+                "pattern": "^PHONETIC_[A-Z_]+$"
+              }
+            },
+            "default": {
+              "type": "string",
+              "pattern": "^PHONETIC_[A-Z_]+$"
+            },
+            "message": {
+              "type": "string"
+            }
           }
         }
       ]
     },
     "runtimeLimits": {
       "oneOf": [
-        { "type": "null" },
+        {
+          "type": "null"
+        },
         {
           "type": "object",
           "additionalProperties": false,
           "minProperties": 1,
           "properties": {
-            "maximumNumberPrecision": { "type": "integer" },
-            "maximumAbsoluteNumberScale": { "type": "integer" },
-            "maximumVisibleDecimalPlaces": { "type": "integer" },
-            "maximumCompactExponent": { "type": "integer" },
-            "maximumExpressionCharacters": { "type": "integer" },
-            "maximumExpressionTokens": { "type": "integer" },
-            "maximumExpressionNestingDepth": { "type": "integer" },
-            "maximumGeneratedPlaceholderDepth": { "type": "integer" },
-            "maximumInterpolatedOutputCharacters": { "type": "integer" },
-            "maximumGeneratedExpansionCharacters": { "type": "integer" }
+            "maximumNumberPrecision": {
+              "type": "integer"
+            },
+            "maximumAbsoluteNumberScale": {
+              "type": "integer"
+            },
+            "maximumVisibleDecimalPlaces": {
+              "type": "integer"
+            },
+            "maximumCompactExponent": {
+              "type": "integer"
+            },
+            "maximumExpressionCharacters": {
+              "type": "integer"
+            },
+            "maximumExpressionTokens": {
+              "type": "integer"
+            },
+            "maximumExpressionNestingDepth": {
+              "type": "integer"
+            },
+            "maximumGeneratedPlaceholderDepth": {
+              "type": "integer"
+            },
+            "maximumInterpolatedOutputCharacters": {
+              "type": "integer"
+            },
+            "maximumGeneratedExpansionCharacters": {
+              "type": "integer"
+            }
           }
         }
       ]
@@ -549,17 +1324,30 @@
     "languageRanges": {
       "description": "An Accept-Language style header string, or explicit range/weight pairs. The string form goes through Locale.LanguageRange.parse.",
       "oneOf": [
-        { "type": "string" },
+        {
+          "type": "string"
+        },
         {
           "type": "array",
           "items": {
             "oneOf": [
-              { "type": "string" },
+              {
+                "type": "string"
+              },
               {
                 "type": "object",
                 "additionalProperties": false,
-                "required": ["range"],
-                "properties": { "range": { "type": "string" }, "weight": { "type": "number" } }
+                "required": [
+                  "range"
+                ],
+                "properties": {
+                  "range": {
+                    "type": "string"
+                  },
+                  "weight": {
+                    "type": "number"
+                  }
+                }
               }
             ]
           }
@@ -567,51 +1355,161 @@
       ]
     },
     "languageFormAxis": {
-      "enum": ["cardinality", "ordinality", "gender", "grammatical-case", "definiteness", "classifier", "formality", "clusivity", "animacy", "phonetic"]
+      "enum": [
+        "cardinality",
+        "ordinality",
+        "gender",
+        "grammatical-case",
+        "definiteness",
+        "classifier",
+        "formality",
+        "clusivity",
+        "animacy",
+        "phonetic"
+      ]
     },
     "languageForm": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["axis", "name", "renderName"],
+      "required": [
+        "axis",
+        "name",
+        "renderName"
+      ],
       "properties": {
-        "axis": { "$ref": "#/$defs/languageFormAxis" },
-        "name": { "type": "string", "pattern": "^[A-Z]+(?:_[A-Z0-9]+)*$" },
-        "renderName": { "type": "string", "pattern": "^[A-Z]+(?:_[A-Z0-9]+)*$" }
+        "axis": {
+          "$ref": "#/$defs/languageFormAxis"
+        },
+        "name": {
+          "type": "string",
+          "pattern": "^[A-Z]+(?:_[A-Z0-9]+)*$"
+        },
+        "renderName": {
+          "type": "string",
+          "pattern": "^[A-Z]+(?:_[A-Z0-9]+)*$"
+        }
       }
     },
-    "languageTag": { "type": "string", "minLength": 1, "pattern": "^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$" },
+    "languageTag": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$"
+    },
     "translationResult": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["attemptedLocales", "failureCause", "failureReason", "isFallback", "key", "localeMatchResult", "lookupLocale", "resolvedLocale", "status", "translation"],
+      "required": [
+        "attemptedLocales",
+        "failureCause",
+        "failureReason",
+        "isFallback",
+        "key",
+        "localeMatchResult",
+        "lookupLocale",
+        "resolvedLocale",
+        "status",
+        "translation"
+      ],
       "properties": {
-        "key": { "type": "string" },
-        "translation": { "type": "string" },
-        "status": { "enum": ["TRANSLATED", "RETURNED_KEY", "RETURNED_STRING"] },
-        "lookupLocale": { "$ref": "#/$defs/languageTag" },
-        "resolvedLocale": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/languageTag" }] },
-        "attemptedLocales": { "type": "array", "items": { "$ref": "#/$defs/languageTag" } },
-        "isFallback": { "type": "boolean" },
-        "failureReason": { "oneOf": [{ "type": "null" }, { "enum": ["MISSING_TRANSLATION", "NO_MATCHING_ALTERNATIVE", "RESOLUTION_FAILURE"] }] },
+        "key": {
+          "type": "string"
+        },
+        "translation": {
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "TRANSLATED",
+            "RETURNED_KEY",
+            "RETURNED_STRING"
+          ]
+        },
+        "lookupLocale": {
+          "$ref": "#/$defs/languageTag"
+        },
+        "resolvedLocale": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/languageTag"
+            }
+          ]
+        },
+        "attemptedLocales": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/languageTag"
+          }
+        },
+        "isFallback": {
+          "type": "boolean"
+        },
+        "failureReason": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "enum": [
+                "MISSING_TRANSLATION",
+                "NO_MATCHING_ALTERNATIVE",
+                "RESOLUTION_FAILURE"
+              ]
+            }
+          ]
+        },
         "failureCause": {
           "description": "Identity of the throwable that caused resolution to fail, so a failure case asserts HOW it failed rather than merely that it did.",
           "oneOf": [
-            { "type": "null" },
+            {
+              "type": "null"
+            },
             {
               "type": "object",
               "additionalProperties": false,
-              "required": ["causeMessage", "causeType", "message", "type"],
+              "required": [
+                "causeMessage",
+                "causeType",
+                "message",
+                "type"
+              ],
               "properties": {
-                "type": { "type": "string" },
-                "message": { "type": ["string", "null"] },
-                "causeType": { "type": ["string", "null"] },
-                "causeMessage": { "type": ["string", "null"] }
+                "type": {
+                  "type": "string"
+                },
+                "message": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "causeType": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "causeMessage": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
               }
             }
           ]
         },
         "localeMatchResult": {
-          "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/localeMatchResult" }],
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/localeMatchResult"
+            }
+          ],
           "$comment": "The same match object must be observable here and through the failure, fallback-observer, and thrown-failure paths."
         }
       }
@@ -619,22 +1517,80 @@
     "localeMatchResult": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["consideredLocales", "effectiveWeight", "fallbackLocale", "isMatch", "languageRange", "locale", "matchType", "requestedLanguageRanges"],
+      "required": [
+        "consideredLocales",
+        "effectiveWeight",
+        "fallbackLocale",
+        "isMatch",
+        "languageRange",
+        "locale",
+        "matchType",
+        "requestedLanguageRanges"
+      ],
       "properties": {
-        "matchType": { "enum": ["NONE", "EXACT", "CANONICAL", "CLDR_FALLBACK", "LIKELY_SUBTAG", "EXTENDED_RANGE", "PRIMARY_LANGUAGE", "WILDCARD"] },
-        "locale": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/languageTag" }] },
-        "isMatch": { "type": "boolean" },
-        "fallbackLocale": { "$ref": "#/$defs/languageTag" },
-        "consideredLocales": { "type": "array", "items": { "$ref": "#/$defs/languageTag" } },
-        "effectiveWeight": { "type": ["number", "null"] },
-        "languageRange": { "type": ["string", "null"] },
+        "matchType": {
+          "enum": [
+            "NONE",
+            "EXACT",
+            "CANONICAL",
+            "CLDR_FALLBACK",
+            "LIKELY_SUBTAG",
+            "EXTENDED_RANGE",
+            "PRIMARY_LANGUAGE",
+            "WILDCARD"
+          ]
+        },
+        "locale": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/languageTag"
+            }
+          ]
+        },
+        "isMatch": {
+          "type": "boolean"
+        },
+        "fallbackLocale": {
+          "$ref": "#/$defs/languageTag"
+        },
+        "consideredLocales": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/languageTag"
+          }
+        },
+        "effectiveWeight": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "languageRange": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
         "requestedLanguageRanges": {
           "type": "array",
           "items": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["range", "weight"],
-            "properties": { "range": { "type": "string" }, "weight": { "type": "number" } }
+            "required": [
+              "range",
+              "weight"
+            ],
+            "properties": {
+              "range": {
+                "type": "string"
+              },
+              "weight": {
+                "type": "number"
+              }
+            }
           }
         }
       }

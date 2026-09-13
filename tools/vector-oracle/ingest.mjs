@@ -32,6 +32,20 @@ const CASE_ID = /^[a-z0-9]+(?:[.-][a-z0-9]+)*$/;
 const FIXTURE_ID = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 /**
+ * Every field a fixture may carry, reconciled against the writer below.
+ *
+ * This exists because the writer is a hand-listed projection and a hand-listed projection drops what
+ * it does not name. See the check at the end of the fixture loop for the measured failure that
+ * produced it.
+ */
+const KNOWN_FIXTURE_FIELDS = new Set([
+  "id", "description", "fallbackLocale", "instanceLocale", "tiebreakers", "loadingOptions",
+  "translationFailureHandler", "translationFallbackPolicy", "runtimeLimits", "phoneticResolver",
+  "localeSupplier", "localeMatchSupplier", "bidiIsolation", "loadOnly", "refusesConstruction",
+  "constructionOverrides", "files", "rawFiles", "rawFilesBase64", "pathShape", "entries",
+]);
+
+/**
  * The named callback vocabularies, READ FROM THE SCHEMA rather than restated here.
  *
  * A misspelled behavior name used to be the worst kind of authoring mistake this harness could make.
@@ -255,6 +269,10 @@ for (const family of families) {
       // silently change the meaning of every case already pointing at it, so that is refused.
       const onDisk = JSON.parse(readFileSync(join(spec, "fixtures", `${fixture.id}.json`), "utf8"));
       const identity = (f) => JSON.stringify({
+        // `pathShape` and `entries` are part of a fixture's IDENTITY, not decoration: two fixtures
+        // with the same files and different shapes are different inputs, and letting a redeclaration
+        // past this check would silently change what every case pointing at it means.
+        pathShape: f.pathShape ?? "directory", entries: f.entries ?? {},
         files: f.files, tiebreakers: f.tiebreakers ?? null, fallbackLocale: f.fallbackLocale,
         instanceLocale: f.instanceLocale ?? f.fallbackLocale, loadingOptions: f.loadingOptions ?? null,
         translationFailureHandler: f.translationFailureHandler ?? null,
@@ -265,9 +283,62 @@ for (const family of families) {
       if (!same) fail(where, "redeclares an existing fixture with different contents; rename it or reuse the existing one");
       continue;
     }
+    // ---- the fixture's PATH SHAPE, and the entries whose shape is the point (blocker B12) --------
+    //
+    // Three shapes, and the two that are not a directory carry NO files at all — a fixture that
+    // declared both would be describing two different inputs and only one of them would exist on
+    // disk. Refused rather than ignored, because the `expected` block the oracle banks would then
+    // describe a fixture the corpus does not contain.
+    const PATH_SHAPES = new Set(["directory", "absent", "regular-file"]);
+    const pathShape = fixture.pathShape ?? "directory";
+    if (!PATH_SHAPES.has(pathShape)) {
+      fail(where, `pathShape must be one of ${[...PATH_SHAPES].join(", ")}`); continue;
+    }
+
     const fileCount = Object.keys(fixture.files ?? {}).length
       + Object.keys(fixture.rawFiles ?? {}).length + Object.keys(fixture.rawFilesBase64 ?? {}).length;
-    if (fileCount === 0) { fail(where, "no files, rawFiles, or rawFilesBase64"); continue; }
+    const entries = fixture.entries ?? {};
+    const entryCount = Object.keys(entries).length;
+
+    if (pathShape === "directory") {
+      if (fileCount === 0 && entryCount === 0) { fail(where, "no files, rawFiles, rawFilesBase64, or entries"); continue; }
+    } else {
+      if (fileCount > 0 || entryCount > 0) {
+        fail(where, `pathShape '${pathShape}' names a path that is not a directory, so it can carry no files or entries`);
+        continue;
+      }
+    }
+
+    // Entry names are FILENAMES inside the fixture directory. The fixture id's own pattern forbids a
+    // slash, which is why every fixture directory has always been a flat leaf; these names need the
+    // same guarantee for the same reason, plus the two traversal spellings.
+    let badEntry = false;
+    for (const [name, entry] of Object.entries(entries)) {
+      const at = `${where} entry '${name}'`;
+      if (name.length === 0 || name.includes("/") || name === "." || name === "..") {
+        fail(at, "must be a plain file name inside the fixture directory"); badEntry = true; continue;
+      }
+      if (entry === null || typeof entry !== "object") { fail(at, "must be an object"); badEntry = true; continue; }
+      if (entry.kind !== "directory" && entry.kind !== "fifo") {
+        fail(at, "kind must be 'directory' or 'fifo'"); badEntry = true; continue;
+      }
+      if (entry.kind === "fifo" && entry.files !== undefined) {
+        fail(at, "a fifo entry carries no files"); badEntry = true; continue;
+      }
+      for (const childName of Object.keys(entry.files ?? {}))
+        if (childName.length === 0 || childName.includes("/")) {
+          fail(`${at} child '${childName}'`, "must be a plain file name"); badEntry = true;
+        }
+      // A name that both `files` and `entries` claim would race on materialization order, and which
+      // one won would depend on nothing a reader of the fixture can see.
+      if (Object.prototype.hasOwnProperty.call(fixture.files ?? {}, name)
+        || Object.prototype.hasOwnProperty.call(fixture.rawFiles ?? {}, name)
+        || Object.prototype.hasOwnProperty.call(fixture.rawFilesBase64 ?? {}, name)) {
+        fail(at, "is also declared as a file; one name cannot be both"); badEntry = true;
+      }
+    }
+    if (badEntry) continue;
+
     if (!fixture.fallbackLocale) { fail(where, "no fallbackLocale"); continue; }
 
     // Only JSON `files` are locale-tagged catalogs. rawFiles/rawFilesBase64 are named by FILENAME and
@@ -435,7 +506,21 @@ for (const family of families) {
       files: fixture.files ?? {},
       ...(fixture.rawFiles ? { rawFiles: fixture.rawFiles } : {}),
       ...(fixture.rawFilesBase64 ? { rawFilesBase64: fixture.rawFilesBase64 } : {}),
+      ...(fixture.pathShape && fixture.pathShape !== "directory" ? { pathShape: fixture.pathShape } : {}),
+      ...(fixture.entries ? { entries: fixture.entries } : {}),
     });
+
+    // **EVERY AUTHORED FIELD MUST BE ONE THIS WRITER KNOWS.** The projection above is hand-listed, and
+    // a hand-listed projection silently DROPS anything added beside it — which is not hypothetical:
+    // S14 added `pathShape` and `entries`, the validation above accepted them, this writer discarded
+    // them, and `build.mjs` then materialized a plain directory and banked a perfectly believable
+    // `expected` block for an input the corpus did not contain. An absent path recorded
+    // `failed: false`. That is the `define` decoder's lesson exactly — a recording operation turns an
+    // authoring mistake into a plausible observation — so the two lists are now reconciled here
+    // rather than by whoever notices the numbers look wrong.
+    for (const field of Object.keys(fixture))
+      if (!KNOWN_FIXTURE_FIELDS.has(field))
+        fail(where, `unknown fixture field '${field}'; add it to the writer AND to KNOWN_FIXTURE_FIELDS, or the oracle will record a fixture that was never materialized`);
   }
 
   const cases = [];

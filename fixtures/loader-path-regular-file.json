@@ -1,0 +1,9 @@
+{
+  "id": "loader-path-regular-file",
+  "description": "A load pointed at a REGULAR FILE rather than a directory. The file carries valid catalog content on purpose, so the refusal is unambiguously about the path's shape and not about what is in it. Reaches loadFromDirectory:1236, the twin of :1232; the two messages are pinned in the same pass so a port cannot collapse them into one.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {},
+  "pathShape": "regular-file"
+}

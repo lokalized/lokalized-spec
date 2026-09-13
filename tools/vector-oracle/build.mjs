@@ -85,6 +85,79 @@ function loadCases() {
  * The files go to disk rather than into the oracle as inlined data so that the real
  * LocalizedStringLoader parses them — loading is part of the behavior under test.
  */
+/**
+ * Put one fixture on disk, INCLUDING path shapes that are not "a directory of flat files".
+ *
+ * **WHY THIS EXISTS (blocker B12).** Until S14 every fixture directory was created by
+ * `mkdirSync(fixtureDir, {recursive: true})` and filled with `writeFileSync` alone, so four of Java's
+ * own filesystem-loader guards could not be reached by ANY case the corpus was able to express:
+ * `loadFromDirectory:1232` needs a path that does not exist, `:1236` a path that is a regular file,
+ * `:1247` a child DIRECTORY, and `parseLocalizedStringsFile:1757` a child that is not a regular file.
+ * Those are not port gaps — they are gaps in what the corpus is ALLOWED TO SAY, which is why the
+ * dispositions for all four recorded "the blocker is the FIXTURE TRANSPORT, not an operation".
+ *
+ * The four shapes were MEASURED on the pinned JDK before this was written, not read off the source:
+ * an absent path and a regular file produce the two `Location '%s'` messages; a child directory is
+ * skipped AND still costs a discovery entry (a two-entry directory refuses at budget 1 and loads at
+ * budget 2); and a FIFO reaches `:1757` with `%s is not a regular file` — the canonical path, and
+ * without hanging, because `Files.isRegularFile` is a stat and runs BEFORE `Files.newInputStream`.
+ *
+ * @param {string} fixtureDir @param {any} fixture
+ */
+function materializeFixture(fixtureDir, fixture) {
+  const shape = fixture.pathShape ?? "directory";
+
+  if (shape === "absent") {
+    // The PARENT exists and the path itself does not — otherwise the loader would fail on the parent
+    // and the message would name a path the fixture never chose.
+    mkdirSync(dirname(fixtureDir), { recursive: true });
+    return;
+  }
+
+  if (shape === "regular-file") {
+    mkdirSync(dirname(fixtureDir), { recursive: true });
+    // Valid catalog CONTENT on purpose: the refusal must be about the path's SHAPE, and a file that
+    // was also malformed would leave a reader unable to tell which property produced it.
+    writeFileSync(fixtureDir, `${JSON.stringify({ "Key.A": "a" }, null, 2)}\n`, "utf8");
+    return;
+  }
+
+  mkdirSync(fixtureDir, { recursive: true });
+  // Strings files are extensionless and named by locale tag, matching the loader's convention.
+  for (const [tag, contents] of Object.entries(fixture.files ?? {}))
+    writeFileSync(join(fixtureDir, tag), `${JSON.stringify(contents, null, 2)}\n`, "utf8");
+  // Verbatim text, for content JSON.stringify cannot produce: duplicate members, unclosed
+  // structures, magic keys that a JS object would swallow.
+  for (const [name, text] of Object.entries(fixture.rawFiles ?? {}))
+    writeFileSync(join(fixtureDir, name), text, "utf8");
+  // Exact bytes, for malformed UTF-8 and unpaired surrogates, which cannot survive a JS string.
+  for (const [name, base64] of Object.entries(fixture.rawFilesBase64 ?? {}))
+    writeFileSync(join(fixtureDir, name), Buffer.from(base64, "base64"));
+
+  // Entries whose SHAPE is the point, rather than their contents.
+  for (const [name, entry] of Object.entries(fixture.entries ?? {})) {
+    const path = join(fixtureDir, name);
+    if (entry.kind === "directory") {
+      mkdirSync(path, { recursive: true });
+      for (const [childName, contents] of Object.entries(entry.files ?? {}))
+        writeFileSync(join(path, childName), `${JSON.stringify(contents, null, 2)}\n`, "utf8");
+    } else if (entry.kind === "fifo") {
+      // FAILS rather than skips when `mkfifo` is unavailable. A generator that quietly produced a
+      // regular file here would emit an `expected` block describing a DIFFERENT input than the
+      // fixture declares — the corpus asserting the inverse of its own fixture, which is the exact
+      // defect class this project has now found five times.
+      const made = spawnSync("mkfifo", [path], { encoding: "utf8" });
+      if (made.error || made.status !== 0)
+        throw new Error(
+          `fixture ${fixture.id}: cannot create the FIFO entry '${name}'. ` +
+          `mkfifo is required to materialize a special-file fixture; ${made.error?.message ?? made.stderr}`,
+        );
+    } else {
+      throw new Error(`fixture ${fixture.id}: entry '${name}' has unknown kind ${JSON.stringify(entry.kind)}`);
+    }
+  }
+}
+
 function runOracle(fixtures, cases) {
   const classes = join(javaDir, "target/classes");
   if (!existsSync(classes))
@@ -96,17 +169,7 @@ function runOracle(fixtures, cases) {
     const request = { fixtures: {}, cases };
     for (const [id, fixture] of Object.entries(fixtures)) {
       const fixtureDir = join(work, "fixtures", id);
-      mkdirSync(fixtureDir, { recursive: true });
-      // Strings files are extensionless and named by locale tag, matching the loader's convention.
-      for (const [tag, contents] of Object.entries(fixture.files ?? {}))
-        writeFileSync(join(fixtureDir, tag), `${JSON.stringify(contents, null, 2)}\n`, "utf8");
-      // Verbatim text, for content JSON.stringify cannot produce: duplicate members, unclosed
-      // structures, magic keys that a JS object would swallow.
-      for (const [name, text] of Object.entries(fixture.rawFiles ?? {}))
-        writeFileSync(join(fixtureDir, name), text, "utf8");
-      // Exact bytes, for malformed UTF-8 and unpaired surrogates, which cannot survive a JS string.
-      for (const [name, base64] of Object.entries(fixture.rawFilesBase64 ?? {}))
-        writeFileSync(join(fixtureDir, name), Buffer.from(base64, "base64"));
+      materializeFixture(fixtureDir, fixture);
       request.fixtures[id] = {
         dir: fixtureDir,
         loadOnly: fixture.loadOnly ?? false,
@@ -285,7 +348,7 @@ const corpus = {
     ),
   },
   fixtures: Object.fromEntries(
-    Object.entries(fixtures).map(([id, f]) => [id, { description: f.description, fallbackLocale: f.fallbackLocale, instanceLocale: f.instanceLocale ?? f.fallbackLocale, tiebreakers: f.tiebreakers ?? null, loadingOptions: f.loadingOptions ?? null, translationFailureHandler: f.translationFailureHandler ?? null, translationFallbackPolicy: f.translationFallbackPolicy ?? null, phoneticResolver: f.phoneticResolver ?? null, localeSupplier: f.localeSupplier ?? null, localeMatchSupplier: f.localeMatchSupplier ?? null, runtimeLimits: f.runtimeLimits ?? null, bidiIsolation: f.bidiIsolation ?? null, loadOnly: f.loadOnly ?? false, refusesConstruction: f.refusesConstruction ?? false, constructionOverrides: f.constructionOverrides ?? null, files: f.files ?? {}, rawFiles: f.rawFiles ?? {}, rawFilesBase64: f.rawFilesBase64 ?? {} }]),
+    Object.entries(fixtures).map(([id, f]) => [id, { description: f.description, fallbackLocale: f.fallbackLocale, instanceLocale: f.instanceLocale ?? f.fallbackLocale, tiebreakers: f.tiebreakers ?? null, loadingOptions: f.loadingOptions ?? null, translationFailureHandler: f.translationFailureHandler ?? null, translationFallbackPolicy: f.translationFallbackPolicy ?? null, phoneticResolver: f.phoneticResolver ?? null, localeSupplier: f.localeSupplier ?? null, localeMatchSupplier: f.localeMatchSupplier ?? null, runtimeLimits: f.runtimeLimits ?? null, bidiIsolation: f.bidiIsolation ?? null, loadOnly: f.loadOnly ?? false, refusesConstruction: f.refusesConstruction ?? false, constructionOverrides: f.constructionOverrides ?? null, files: f.files ?? {}, rawFiles: f.rawFiles ?? {}, rawFilesBase64: f.rawFilesBase64 ?? {}, pathShape: f.pathShape ?? "directory", entries: f.entries ?? {} }]),
   ),
   cases: cases.map((c) => ({ ...c, expected: expectedById.get(c.id) })),
 };

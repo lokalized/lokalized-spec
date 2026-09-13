@@ -1,0 +1,25 @@
+{
+  "id": "loader-nested-directory-budget",
+  "description": "The same two-entry directory at maximumDiscoveryEntries 1. The OTHER half of what :1247's javadoc promises: the child directory is skipped AND still charges the discovery budget, so a two-entry directory refuses at 1 where it loads at 2. A port that skipped child directories before charging passes the sibling case and fails this one. The child's NAME is load-bearing: a first draft named it 'child', which the filename-to-tag test silently skips anyway, so ablating the directory skip changed nothing and the case was vacuous. Named de.json, the directory skip is the ONLY thing that skips it -- without it the walk reaches the not-a-regular-file guard instead.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadingOptions": {
+    "maximumDiscoveryEntries": 1
+  },
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "entries": {
+    "de.json": {
+      "kind": "directory",
+      "files": {
+        "fr": {
+          "Key.A": "b"
+        }
+      }
+    }
+  }
+}

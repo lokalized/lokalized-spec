@@ -1,0 +1,22 @@
+{
+  "id": "loader-nested-directory",
+  "description": "A directory holding one loadable catalog and one CHILD DIRECTORY NAMED LIKE A LOADABLE CATALOG (de.json) that itself holds one. Reaches loadFromDirectory:1247's skip arm: the child is not descended into, so fr never loads. Measured on the pinned JDK before authoring. The child's NAME is load-bearing: a first draft named it 'child', which the filename-to-tag test silently skips anyway, so ablating the directory skip changed nothing and the case was vacuous. Named de.json, the directory skip is the ONLY thing that skips it -- without it the walk reaches the not-a-regular-file guard instead.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "entries": {
+    "de.json": {
+      "kind": "directory",
+      "files": {
+        "fr": {
+          "Key.A": "b"
+        }
+      }
+    }
+  }
+}

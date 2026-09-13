@@ -1,0 +1,17 @@
+{
+  "id": "loader-special-file-entry",
+  "description": "A directory holding one loadable catalog and a FIFO named like a catalog. Reaches parseLocalizedStringsFile:1757 through the directory walk, which CONTRADICTS that branch's own disposition (it argued the guard was unreachable because :1247 had already skipped directories -- a FIFO is not a directory). Measured on the pinned JDK with a timeout: Files.isRegularFile is a stat and runs before Files.newInputStream, so the oracle refuses rather than blocking on an unopened pipe.",
+  "fallbackLocale": "en",
+  "tiebreakers": null,
+  "loadOnly": true,
+  "files": {
+    "en": {
+      "Key.A": "a"
+    }
+  },
+  "entries": {
+    "de.json": {
+      "kind": "fifo"
+    }
+  }
+}
