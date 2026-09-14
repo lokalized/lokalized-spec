@@ -104,6 +104,7 @@
         "forLocaleMatch",
         "pluralOperands"
       ],
+      "disownedSymbols": [],
       "unenumeratedCategories": [
         "construction/translation/result types",
         "match/configuration structural types",
@@ -125,6 +126,7 @@
         "mergeParsedStringsFiles",
         "parseStrings"
       ],
+      "disownedSymbols": [],
       "unenumeratedCategories": [
         "parsed/model/warning/limit types"
       ],
@@ -133,14 +135,16 @@
     {
       "owner": "load",
       "namedSymbols": [
-        "CatalogIdentity",
         "CatalogIdentityInputV1",
         "FetchEntry",
         "LoadedStrings",
-        "StringsLoadCoverage",
         "StringsManifestV1",
         "chain",
         "fetchSet"
+      ],
+      "disownedSymbols": [
+        "CatalogIdentity",
+        "StringsLoadCoverage"
       ],
       "unenumeratedCategories": [
         "manifest/load option and failure types",
@@ -156,6 +160,7 @@
         "createSsrStamp",
         "validateSsrStamp"
       ],
+      "disownedSymbols": [],
       "unenumeratedCategories": [
         "SSR stamp/context types"
       ],
@@ -168,9 +173,10 @@
         "LocaleMatcher",
         "LocaleNegotiator"
       ],
+      "disownedSymbols": [],
       "unenumeratedCategories": [
         "range parser/factory/option helpers",
-        "re-exports core's  type and IANA metadata"
+        "re-exports core's `LanguageRange` type and IANA metadata"
       ],
       "reExportedByRoot": false
     },
@@ -182,6 +188,7 @@
         "LoadStringsFromFilesOptions",
         "readStringsManifest"
       ],
+      "disownedSymbols": [],
       "unenumeratedCategories": [
         "file/whole-manifest loaders",
         "directory loader",
@@ -195,6 +202,7 @@
       "namedSymbols": [
         "ordinalData"
       ],
+      "disownedSymbols": [],
       "unenumeratedCategories": [
         "number/operand ordinal classifiers and support probes"
       ],
@@ -206,6 +214,7 @@
         "cardinalRangeData",
         "cardinalityForRange"
       ],
+      "disownedSymbols": [],
       "unenumeratedCategories": [],
       "reExportedByRoot": false
     }

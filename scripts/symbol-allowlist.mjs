@@ -97,20 +97,50 @@ async function build() {
     }));
 
   // Table 2: canonical owner | public symbols | re-exported by root?
+  //
+  // THE DISOWNING CLAUSE IS SPLIT OFF FIRST, AND THAT IS THE WHOLE CORRECTION HERE. Plan 3.1's
+  // `load` row ends "it consumes but does not re-own or re-export core's `CatalogIdentity` and
+  // `StringsLoadCoverage`" — a NEGATIVE claim naming two symbols. The previous parser scanned the
+  // whole cell for backticked names, so it hoisted both into `namedSymbols` and recorded `load` as
+  // OWNING exactly the two symbols the plan says it does not own. That is not a cosmetic loss: the
+  // port's delivery gate reads `namedSymbols` and DEMANDS every entry, so the inverted negation was
+  // enforced — ablated 2026-09-14, removing the two type re-exports from `lokalized/load` turns
+  // `test/declared-surface.test.js` red naming `load:CatalogIdentity` and `load:StringsLoadCoverage`.
+  // A parser that reads a prohibition as a promise is worse than one that ignores the clause.
+  const DISOWNING = /(?:it )?consumes but does not re-own or re-export [a-z]+'s\s*/i;
   const owners = rows
     .filter((r) => r.length === 3 && /^`[a-z/]+`$/.test(r[0]))
     .map((r) => {
-      const named = [...r[1].matchAll(/`([A-Za-z][A-Za-z0-9]*)`/g)].map((m) => m[1]);
-      // Prose groups that are not yet individually enumerable. Recorded verbatim so the linter
-      // knows its own coverage, rather than silently treating the owner as fully enumerated.
-      const categories = r[1]
-        .replace(/`[^`]*`/g, "")
-        .split(/[,;]/)
-        .map((s) => s.trim().replace(/^(and|it consumes but does not re-own or re-export core's)\s*/i, ""))
-        .filter((s) => s.length > 3);
+      const segments = r[1].split(";").map((segment) => segment.trim());
+      const owning = segments.filter((segment) => !DISOWNING.test(segment));
+      const disowning = segments.filter((segment) => DISOWNING.test(segment));
+      // REFUSE an unrecognised shape rather than approximate it. A second disowning clause, or one
+      // naming no symbol, means the plan says something this parser has not been taught to read, and
+      // a generator that guesses is how the inverted negation shipped in the first place.
+      if (disowning.length > 1)
+        throw new Error(`${r[0]}: two disowning clauses; this parser reads one`);
+      const disowned = disowning.length
+        ? [...disowning[0].matchAll(/`([A-Za-z][A-Za-z0-9]*)`/g)].map((m) => m[1])
+        : [];
+      if (disowning.length && !disowned.length)
+        throw new Error(`${r[0]}: a disowning clause naming no symbol: ${disowning[0]}`);
+
+      const named = owning.flatMap((segment) =>
+        [...segment.matchAll(/`([A-Za-z][A-Za-z0-9]*)`/g)].map((m) => m[1]));
+      // Prose groups that are not yet individually enumerable, recorded VERBATIM — which the
+      // previous version's comment claimed and its code did not do: it ran `.replace(/`[^`]*`/g, "")`
+      // over the cell first, deleting every backticked name from the prose. The one category whose
+      // content IS a name came out as "re-exports core's  type and IANA metadata", with a hole where
+      // `LanguageRange` had been, while a test's own comment quoted the intact sentence.
+      const categories = owning
+        .flatMap((segment) => segment.split(","))
+        .map((segment) => segment.trim().replace(/^and\s+/i, ""))
+        .filter((segment) => segment.length > 3 && !/^`[^`]*`$/.test(segment));
       return {
         owner: r[0].replace(/`/g, ""),
         namedSymbols: [...new Set(named)].sort(),
+        /** Named by the plan as explicitly NOT owned or re-exported. A prohibition, not a promise. */
+        disownedSymbols: [...new Set(disowned)].sort(),
         unenumeratedCategories: categories,
         reExportedByRoot: r[2].toLowerCase().startsWith("yes"),
       };
@@ -147,6 +177,8 @@ if (process.argv.includes("--write")) {
       subpaths: allowlist.subpaths.length,
       owners: allowlist.owners.length,
       namedSymbols: allowlist.owners.reduce((n, o) => n + o.namedSymbols.length, 0),
+      disownedSymbols: allowlist.owners.reduce((n, o) => n + o.disownedSymbols.length, 0),
+      unenumeratedCategories: allowlist.owners.reduce((n, o) => n + o.unenumeratedCategories.length, 0),
       languageFormConstants: allowlist.languageFormConstants.length,
     }),
   );
