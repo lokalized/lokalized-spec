@@ -94,8 +94,8 @@
         "locale": "en",
         "placeholders": {}
       },
-      "partition": "requiredPortableIds",
-      "notes": "The just-over side: a three-link chain reaches depth 3 and must fail. Paired with depth-two this pins the boundary to a single link, and the recorded cause identity pins that it fails as a depth violation contextualized by the OUTERMOST generated placeholder (r1) rather than the innermost, as a cycle, or as a missing value."
+      "partition": "informationalIds",
+      "notes": "The just-over side: a three-link chain reaches depth 3 and must fail. Paired with depth-two this pins the boundary to a single link, and the recorded cause identity pins that it fails as a depth violation contextualized by the OUTERMOST generated placeholder (r1) rather than the innermost, as a cycle, or as a missing value. Refused by design, not unimplemented: plan 4.6 fixes v1's runtime limits and makes a non-undefined `runtimeLimits` a construction-time error, so a case whose recorded answer depends on an overridden limit has no reachable JS configuration. Plan 8.2 requires every requiredPortableId to pass with an EMPTY unsupported set, so left required these made a strict parity-backed release permanently unreachable. Same reasoning and same fix as the 145 classpath cases. The 59 sibling cases whose fixture overrides a limit that does NOT change Java's answer stay requiredPortableIds and pass."
     },
     {
       "id": "runtime-limits.generated-depth.limit-two.depth-three-throws-through-get",
@@ -110,8 +110,8 @@
           "behavior": "throw"
         }
       },
-      "partition": "requiredPortableIds",
-      "notes": "Same breach through get() with a per-call throwing handler, which REPLACES the instance handler (DefaultStrings.java:684). Proves a runtime-limit breach is an ordinary RESOLUTION_FAILURE that flows through the failure handler rather than propagating out of resolution on its own, and records the thrown identity. Without it a port could satisfy the getResult case by swallowing the error and still throw the wrong thing from get()."
+      "partition": "informationalIds",
+      "notes": "Same breach through get() with a per-call throwing handler, which REPLACES the instance handler (DefaultStrings.java:684). Proves a runtime-limit breach is an ordinary RESOLUTION_FAILURE that flows through the failure handler rather than propagating out of resolution on its own, and records the thrown identity. Without it a port could satisfy the getResult case by swallowing the error and still throw the wrong thing from get(). Refused by design, not unimplemented: plan 4.6 fixes v1's runtime limits and makes a non-undefined `runtimeLimits` a construction-time error, so a case whose recorded answer depends on an overridden limit has no reachable JS configuration. Plan 8.2 requires every requiredPortableId to pass with an EMPTY unsupported set, so left required these made a strict parity-backed release permanently unreachable. Same reasoning and same fix as the 145 classpath cases. The 59 sibling cases whose fixture overrides a limit that does NOT change Java's answer stay requiredPortableIds and pass."
     },
     {
       "id": "runtime-limits.generated-depth.limit-zero.depth-zero",
@@ -136,8 +136,8 @@
         "locale": "en",
         "placeholders": {}
       },
-      "partition": "requiredPortableIds",
-      "notes": "At zero, a single generated placeholder is entered at depth 1 and must fail. This is the exact-zero boundary the clause asks for; it also proves the depth counter starts at 0 for the top-level template, which no other case can show."
+      "partition": "informationalIds",
+      "notes": "At zero, a single generated placeholder is entered at depth 1 and must fail. This is the exact-zero boundary the clause asks for; it also proves the depth counter starts at 0 for the top-level template, which no other case can show. Refused by design, not unimplemented: plan 4.6 fixes v1's runtime limits and makes a non-undefined `runtimeLimits` a construction-time error, so a case whose recorded answer depends on an overridden limit has no reachable JS configuration. Plan 8.2 requires every requiredPortableId to pass with an EMPTY unsupported set, so left required these made a strict parity-backed release permanently unreachable. Same reasoning and same fix as the 145 classpath cases. The 59 sibling cases whose fixture overrides a limit that does NOT change Java's answer stay requiredPortableIds and pass."
     },
     {
       "id": "runtime-limits.expansion.limit-six.six",
@@ -162,8 +162,8 @@
         "locale": "en",
         "placeholders": {}
       },
-      "partition": "requiredPortableIds",
-      "notes": "3 + 4 = 7 exceeds the same budget by one character. Paired with the six case this pins the cumulative budget to a single character and rules out an off-by-one or a >= comparison."
+      "partition": "informationalIds",
+      "notes": "3 + 4 = 7 exceeds the same budget by one character. Paired with the six case this pins the cumulative budget to a single character and rules out an off-by-one or a >= comparison. Refused by design, not unimplemented: plan 4.6 fixes v1's runtime limits and makes a non-undefined `runtimeLimits` a construction-time error, so a case whose recorded answer depends on an overridden limit has no reachable JS configuration. Plan 8.2 requires every requiredPortableId to pass with an EMPTY unsupported set, so left required these made a strict parity-backed release permanently unreachable. Same reasoning and same fix as the 145 classpath cases. The 59 sibling cases whose fixture overrides a limit that does NOT change Java's answer stay requiredPortableIds and pass."
     },
     {
       "id": "runtime-limits.expansion.limit-six.repeated",
@@ -192,8 +192,8 @@
           "text": "handler text"
         }
       },
-      "partition": "requiredPortableIds",
-      "notes": "The same budget breach through get() with a per-call return-string handler. Proves the handler is consulted for a runtime-limit failure and that its RESPONSE (not the key) is what get() returns, and records what the handler was handed — reason, attempted locales, and the cause chain — for a limit breach specifically."
+      "partition": "informationalIds",
+      "notes": "The same budget breach through get() with a per-call return-string handler. Proves the handler is consulted for a runtime-limit failure and that its RESPONSE (not the key) is what get() returns, and records what the handler was handed — reason, attempted locales, and the cause chain — for a limit breach specifically. Refused by design, not unimplemented: plan 4.6 fixes v1's runtime limits and makes a non-undefined `runtimeLimits` a construction-time error, so a case whose recorded answer depends on an overridden limit has no reachable JS configuration. Plan 8.2 requires every requiredPortableId to pass with an EMPTY unsupported set, so left required these made a strict parity-backed release permanently unreachable. Same reasoning and same fix as the 145 classpath cases. The 59 sibling cases whose fixture overrides a limit that does NOT change Java's answer stay requiredPortableIds and pass."
     },
     {
       "id": "runtime-limits.expansion.limit-six.nested-six",
@@ -218,8 +218,8 @@
         "locale": "en",
         "placeholders": {}
       },
-      "partition": "requiredPortableIds",
-      "notes": "The same chain with a four-character leaf costs 4 + 4 = 8 and must fail. This is what makes the nested pair discriminating: a port that billed only the final materialized value would see 4, stay under 6, and wrongly resolve — while still passing nested-six."
+      "partition": "informationalIds",
+      "notes": "The same chain with a four-character leaf costs 4 + 4 = 8 and must fail. This is what makes the nested pair discriminating: a port that billed only the final materialized value would see 4, stay under 6, and wrongly resolve — while still passing nested-six. Refused by design, not unimplemented: plan 4.6 fixes v1's runtime limits and makes a non-undefined `runtimeLimits` a construction-time error, so a case whose recorded answer depends on an overridden limit has no reachable JS configuration. Plan 8.2 requires every requiredPortableId to pass with an EMPTY unsupported set, so left required these made a strict parity-backed release permanently unreachable. Same reasoning and same fix as the 145 classpath cases. The 59 sibling cases whose fixture overrides a limit that does NOT change Java's answer stay requiredPortableIds and pass."
     },
     {
       "id": "runtime-limits.expansion.limit-zero.no-generated",
@@ -244,8 +244,8 @@
         "locale": "en",
         "placeholders": {}
       },
-      "partition": "requiredPortableIds",
-      "notes": "A single one-character generated fragment costs 1 > 0 and must fail. The exact-zero boundary for the cumulative budget; paired with no-generated it also proves depth-0 output is not charged."
+      "partition": "informationalIds",
+      "notes": "A single one-character generated fragment costs 1 > 0 and must fail. The exact-zero boundary for the cumulative budget; paired with no-generated it also proves depth-0 output is not charged. Refused by design, not unimplemented: plan 4.6 fixes v1's runtime limits and makes a non-undefined `runtimeLimits` a construction-time error, so a case whose recorded answer depends on an overridden limit has no reachable JS configuration. Plan 8.2 requires every requiredPortableId to pass with an EMPTY unsupported set, so left required these made a strict parity-backed release permanently unreachable. Same reasoning and same fix as the 145 classpath cases. The 59 sibling cases whose fixture overrides a limit that does NOT change Java's answer stay requiredPortableIds and pass."
     },
     {
       "id": "runtime-limits.expansion.default.at-the-budget",
@@ -283,8 +283,8 @@
         "locale": "fr",
         "placeholders": {}
       },
-      "partition": "requiredPortableIds",
-      "notes": "Under the library-default policy a budget breach is a RESOLUTION_FAILURE that halts the walk, so en is never attempted and the attempted-locale list stops at fr. Establishes the contrast the fresh-budget case depends on."
+      "partition": "informationalIds",
+      "notes": "Under the library-default policy a budget breach is a RESOLUTION_FAILURE that halts the walk, so en is never attempted and the attempted-locale list stops at fr. Establishes the contrast the fresh-budget case depends on. Refused by design, not unimplemented: plan 4.6 fixes v1's runtime limits and makes a non-undefined `runtimeLimits` a construction-time error, so a case whose recorded answer depends on an overridden limit has no reachable JS configuration. Plan 8.2 requires every requiredPortableId to pass with an EMPTY unsupported set, so left required these made a strict parity-backed release permanently unreachable. Same reasoning and same fix as the 145 classpath cases. The 59 sibling cases whose fixture overrides a limit that does NOT change Java's answer stay requiredPortableIds and pass."
     },
     {
       "id": "runtime-limits.expansion.fallback.fr-under-any-failure-reaches-en-on-a-fresh-budget",
@@ -297,8 +297,8 @@
         "placeholders": {},
         "translationFallbackPolicy": "any-failure"
       },
-      "partition": "requiredPortableIds",
-      "notes": "The per-call permissive policy keeps walking after fr blows the 6-character budget, and en then spends exactly 6. DefaultStrings.java:1203 builds a NEW GeneratedExpansionBudget inside each per-candidate attempt, so an implementation that carried one budget across the fallback walk would have nothing left and would return the key instead of the English translation. Plan section 4.6 states this reset explicitly; nothing else in the corpus tests budget lifetime."
+      "partition": "informationalIds",
+      "notes": "The per-call permissive policy keeps walking after fr blows the 6-character budget, and en then spends exactly 6. DefaultStrings.java:1203 builds a NEW GeneratedExpansionBudget inside each per-candidate attempt, so an implementation that carried one budget across the fallback walk would have nothing left and would return the key instead of the English translation. Plan section 4.6 states this reset explicitly; nothing else in the corpus tests budget lifetime. Refused by design, not unimplemented: plan 4.6 fixes v1's runtime limits and makes a non-undefined `runtimeLimits` a construction-time error, so a case whose recorded answer depends on an overridden limit has no reachable JS configuration. Plan 8.2 requires every requiredPortableId to pass with an EMPTY unsupported set, so left required these made a strict parity-backed release permanently unreachable. Same reasoning and same fix as the 145 classpath cases. The 59 sibling cases whose fixture overrides a limit that does NOT change Java's answer stay requiredPortableIds and pass."
     },
     {
       "id": "runtime-limits.expansion.fallback.fr-under-never-policy",
@@ -311,8 +311,8 @@
         "placeholders": {},
         "translationFallbackPolicy": "never"
       },
-      "partition": "requiredPortableIds",
-      "notes": "The third policy on the same breach. It is observationally identical to the default-policy case here, which is the point: it rules out a port that walks to en under neverFallback, and shows a limit breach is not special-cased into always-fatal or always-continuing behavior."
+      "partition": "informationalIds",
+      "notes": "The third policy on the same breach. It is observationally identical to the default-policy case here, which is the point: it rules out a port that walks to en under neverFallback, and shows a limit breach is not special-cased into always-fatal or always-continuing behavior. Refused by design, not unimplemented: plan 4.6 fixes v1's runtime limits and makes a non-undefined `runtimeLimits` a construction-time error, so a case whose recorded answer depends on an overridden limit has no reachable JS configuration. Plan 8.2 requires every requiredPortableId to pass with an EMPTY unsupported set, so left required these made a strict parity-backed release permanently unreachable. Same reasoning and same fix as the 145 classpath cases. The 59 sibling cases whose fixture overrides a limit that does NOT change Java's answer stay requiredPortableIds and pass."
     },
     {
       "id": "runtime-limits.expansion.fallback.en-direct-spends-the-whole-budget",
@@ -354,8 +354,8 @@
           "name": "Bobbys"
         }
       },
-      "partition": "requiredPortableIds",
-      "notes": "One more character in the caller value makes 9 and must fail. Paired with the previous case this pins the output cap to a single character and rules out measuring the template, the value alone, or a >= comparison. The cause is the bare interpolator overflow, with no placeholder contextualization — unlike the Fragment cases below."
+      "partition": "informationalIds",
+      "notes": "One more character in the caller value makes 9 and must fail. Paired with the previous case this pins the output cap to a single character and rules out measuring the template, the value alone, or a >= comparison. The cause is the bare interpolator overflow, with no placeholder contextualization — unlike the Fragment cases below. Refused by design, not unimplemented: plan 4.6 fixes v1's runtime limits and makes a non-undefined `runtimeLimits` a construction-time error, so a case whose recorded answer depends on an overridden limit has no reachable JS configuration. Plan 8.2 requires every requiredPortableId to pass with an EMPTY unsupported set, so left required these made a strict parity-backed release permanently unreachable. Same reasoning and same fix as the 145 classpath cases. The 59 sibling cases whose fixture overrides a limit that does NOT change Java's answer stay requiredPortableIds and pass."
     },
     {
       "id": "runtime-limits.interpolated-output.limit-eight.isolation-markers-are-charged-to-the-limit",
@@ -370,8 +370,8 @@
         },
         "bidiIsolation": "ALWAYS"
       },
-      "partition": "requiredPortableIds",
-      "notes": "Byte-for-byte the same input as output-at-the-limit, with only the per-call bidiIsolation override changed. StringInterpolator hands a BoundedReplacementValue the REMAINING budget (maximumOutputCharacters minus the builder length) and BidiUtils.BoundedIsolatedValue wraps the value in FSI and PDI, so the two added markers push the same value past the limit. A port that isolated values outside the output budget would render 10 characters and pass both cases; this pair is the only thing that catches it."
+      "partition": "informationalIds",
+      "notes": "Byte-for-byte the same input as output-at-the-limit, with only the per-call bidiIsolation override changed. StringInterpolator hands a BoundedReplacementValue the REMAINING budget (maximumOutputCharacters minus the builder length) and BidiUtils.BoundedIsolatedValue wraps the value in FSI and PDI, so the two added markers push the same value past the limit. A port that isolated values outside the output budget would render 10 characters and pass both cases; this pair is the only thing that catches it. Refused by design, not unimplemented: plan 4.6 fixes v1's runtime limits and makes a non-undefined `runtimeLimits` a construction-time error, so a case whose recorded answer depends on an overridden limit has no reachable JS configuration. Plan 8.2 requires every requiredPortableId to pass with an EMPTY unsupported set, so left required these made a strict parity-backed release permanently unreachable. Same reasoning and same fix as the 145 classpath cases. The 59 sibling cases whose fixture overrides a limit that does NOT change Java's answer stay requiredPortableIds and pass."
     },
     {
       "id": "runtime-limits.interpolated-output.limit-eight.isolated-value-at-the-limit",
@@ -402,8 +402,8 @@
         },
         "bidiIsolation": "ALWAYS"
       },
-      "partition": "requiredPortableIds",
-      "notes": "One character more under forced isolation makes 9 and must fail from inside BidiUtils.isolate rather than from the interpolator's own append check. DefaultStrings passes the FULL maximum to BidiUtils.isolatedValue while the interpolator passes the REMAINING budget to render(), and isolate() reports reportedMaximumCharacters, so the recorded message must name 8 — the original maximum — not the 5 characters that were actually left."
+      "partition": "informationalIds",
+      "notes": "One character more under forced isolation makes 9 and must fail from inside BidiUtils.isolate rather than from the interpolator's own append check. DefaultStrings passes the FULL maximum to BidiUtils.isolatedValue while the interpolator passes the REMAINING budget to render(), and isolate() reports reportedMaximumCharacters, so the recorded message must name 8 — the original maximum — not the 5 characters that were actually left. Refused by design, not unimplemented: plan 4.6 fixes v1's runtime limits and makes a non-undefined `runtimeLimits` a construction-time error, so a case whose recorded answer depends on an overridden limit has no reachable JS configuration. Plan 8.2 requires every requiredPortableId to pass with an EMPTY unsupported set, so left required these made a strict parity-backed release permanently unreachable. Same reasoning and same fix as the 145 classpath cases. The 59 sibling cases whose fixture overrides a limit that does NOT change Java's answer stay requiredPortableIds and pass."
     },
     {
       "id": "runtime-limits.interpolated-output.limit-eight.fragment-at-the-limit",
@@ -428,8 +428,8 @@
         "locale": "en",
         "placeholders": {}
       },
-      "partition": "requiredPortableIds",
-      "notes": "A nine-character fragment trips the cap inside the nested expansion, and the failure is wrapped by contextualizePlaceholderFailure so the cause names the placeholder — a different recorded identity from the bare overflow in output-one-past-the-limit. Without it a port could bound only the outermost interpolation and still pass every Greeting case."
+      "partition": "informationalIds",
+      "notes": "A nine-character fragment trips the cap inside the nested expansion, and the failure is wrapped by contextualizePlaceholderFailure so the cause names the placeholder — a different recorded identity from the bare overflow in output-one-past-the-limit. Without it a port could bound only the outermost interpolation and still pass every Greeting case. Refused by design, not unimplemented: plan 4.6 fixes v1's runtime limits and makes a non-undefined `runtimeLimits` a construction-time error, so a case whose recorded answer depends on an overridden limit has no reachable JS configuration. Plan 8.2 requires every requiredPortableId to pass with an EMPTY unsupported set, so left required these made a strict parity-backed release permanently unreachable. Same reasoning and same fix as the 145 classpath cases. The 59 sibling cases whose fixture overrides a limit that does NOT change Java's answer stay requiredPortableIds and pass."
     },
     {
       "id": "runtime-limits.interpolated-output.limit-eight.fragment-one-past-the-limit-throws-through-get",
@@ -444,8 +444,8 @@
           "behavior": "throw"
         }
       },
-      "partition": "requiredPortableIds",
-      "notes": "The nested overflow through get() with a throwing per-call handler, recording the thrown type, message and cause chain. getResult never throws for a translation failure, so only this case can pin what a limit breach looks like on the throwing path."
+      "partition": "informationalIds",
+      "notes": "The nested overflow through get() with a throwing per-call handler, recording the thrown type, message and cause chain. getResult never throws for a translation failure, so only this case can pin what a limit breach looks like on the throwing path. Refused by design, not unimplemented: plan 4.6 fixes v1's runtime limits and makes a non-undefined `runtimeLimits` a construction-time error, so a case whose recorded answer depends on an overridden limit has no reachable JS configuration. Plan 8.2 requires every requiredPortableId to pass with an EMPTY unsupported set, so left required these made a strict parity-backed release permanently unreachable. Same reasoning and same fix as the 145 classpath cases. The 59 sibling cases whose fixture overrides a limit that does NOT change Java's answer stay requiredPortableIds and pass."
     },
     {
       "id": "runtime-limits.interpolated-output.default.at-the-maximum",
@@ -485,8 +485,8 @@
           "name": "Bobby"
         }
       },
-      "partition": "requiredPortableIds",
-      "notes": "Same key, value and output limit as runtime-limits.interpolated-output.limit-eight.output-at-the-limit, but the INSTANCE declares bidiIsolation ALWAYS, so the two markers push the render past 8 and it fails. This is the case that proves the instance-level bidi setting is genuinely in force, and — read against the other fixture, where the same input renders — that the library default is not ALWAYS."
+      "partition": "informationalIds",
+      "notes": "Same key, value and output limit as runtime-limits.interpolated-output.limit-eight.output-at-the-limit, but the INSTANCE declares bidiIsolation ALWAYS, so the two markers push the render past 8 and it fails. This is the case that proves the instance-level bidi setting is genuinely in force, and — read against the other fixture, where the same input renders — that the library default is not ALWAYS. Refused by design, not unimplemented: plan 4.6 fixes v1's runtime limits and makes a non-undefined `runtimeLimits` a construction-time error, so a case whose recorded answer depends on an overridden limit has no reachable JS configuration. Plan 8.2 requires every requiredPortableId to pass with an EMPTY unsupported set, so left required these made a strict parity-backed release permanently unreachable. Same reasoning and same fix as the 145 classpath cases. The 59 sibling cases whose fixture overrides a limit that does NOT change Java's answer stay requiredPortableIds and pass."
     },
     {
       "id": "runtime-limits.interpolated-output.isolating-instance.per-call-none-overrides-and-fits",
@@ -547,8 +547,8 @@
           "name": "Bobby"
         }
       },
-      "partition": "requiredPortableIds",
-      "notes": "One character more makes 'Hey Bobby' 9, and interpolateFailureKey's catch(RuntimeException) returns the RAW, uninterpolated key 'Hey {{name}}'. This fail-soft behavior is required by section 8.3's 'missing keys containing placeholders and failure-key fail-soft behavior' clause and is exactly what a port is likely to get wrong: propagating the overflow, truncating, or emitting a partially interpolated string. Paired with the previous case the boundary is pinned to one character."
+      "partition": "informationalIds",
+      "notes": "One character more makes 'Hey Bobby' 9, and interpolateFailureKey's catch(RuntimeException) returns the RAW, uninterpolated key 'Hey {{name}}'. This fail-soft behavior is required by section 8.3's 'missing keys containing placeholders and failure-key fail-soft behavior' clause and is exactly what a port is likely to get wrong: propagating the overflow, truncating, or emitting a partially interpolated string. Paired with the previous case the boundary is pinned to one character. Refused by design, not unimplemented: plan 4.6 fixes v1's runtime limits and makes a non-undefined `runtimeLimits` a construction-time error, so a case whose recorded answer depends on an overridden limit has no reachable JS configuration. Plan 8.2 requires every requiredPortableId to pass with an EMPTY unsupported set, so left required these made a strict parity-backed release permanently unreachable. Same reasoning and same fix as the 145 classpath cases. The 59 sibling cases whose fixture overrides a limit that does NOT change Java's answer stay requiredPortableIds and pass."
     },
     {
       "id": "runtime-limits.failure-key.limit-eight.overflowing-key-through-get-with-a-throwing-handler",
@@ -834,8 +834,8 @@
           }
         }
       },
-      "partition": "requiredPortableIds",
-      "notes": "One significant digit more is precision 5 and must fail with a RESOLUTION_FAILURE whose cause is an IllegalArgumentException naming the precision check, contextualized by the LanguageFormTranslation placeholder. Paired with precision-four this pins the precision limit to a single digit and rules out counting characters or scale instead of significant digits."
+      "partition": "informationalIds",
+      "notes": "One significant digit more is precision 5 and must fail with a RESOLUTION_FAILURE whose cause is an IllegalArgumentException naming the precision check, contextualized by the LanguageFormTranslation placeholder. Paired with precision-four this pins the precision limit to a single digit and rules out counting characters or scale instead of significant digits. Refused by design, not unimplemented: plan 4.6 fixes v1's runtime limits and makes a non-undefined `runtimeLimits` a construction-time error, so a case whose recorded answer depends on an overridden limit has no reachable JS configuration. Plan 8.2 requires every requiredPortableId to pass with an EMPTY unsupported set, so left required these made a strict parity-backed release permanently unreachable. Same reasoning and same fix as the 145 classpath cases. The 59 sibling cases whose fixture overrides a limit that does NOT change Java's answer stay requiredPortableIds and pass."
     },
     {
       "id": "runtime-limits.numeric.lowered.scale-three",
@@ -870,8 +870,8 @@
           }
         }
       },
-      "partition": "requiredPortableIds",
-      "notes": "Scale 4 exceeds the limit while precision stays at 1, so a port that conflated precision with scale would wrongly accept it. The just-over half of the scale boundary."
+      "partition": "informationalIds",
+      "notes": "Scale 4 exceeds the limit while precision stays at 1, so a port that conflated precision with scale would wrongly accept it. The just-over half of the scale boundary. Refused by design, not unimplemented: plan 4.6 fixes v1's runtime limits and makes a non-undefined `runtimeLimits` a construction-time error, so a case whose recorded answer depends on an overridden limit has no reachable JS configuration. Plan 8.2 requires every requiredPortableId to pass with an EMPTY unsupported set, so left required these made a strict parity-backed release permanently unreachable. Same reasoning and same fix as the 145 classpath cases. The 59 sibling cases whose fixture overrides a limit that does NOT change Java's answer stay requiredPortableIds and pass."
     },
     {
       "id": "runtime-limits.numeric.lowered.negative-scale-three",
@@ -906,8 +906,8 @@
           }
         }
       },
-      "partition": "requiredPortableIds",
-      "notes": "Scale -4 exceeds an absolute-scale limit of 3 and must fail, while its precision is still 1, and the recorded message quotes the signed scale -4. Pins that the check is on the absolute value of the scale, which nothing else in the corpus shows."
+      "partition": "informationalIds",
+      "notes": "Scale -4 exceeds an absolute-scale limit of 3 and must fail, while its precision is still 1, and the recorded message quotes the signed scale -4. Pins that the check is on the absolute value of the scale, which nothing else in the corpus shows. Refused by design, not unimplemented: plan 4.6 fixes v1's runtime limits and makes a non-undefined `runtimeLimits` a construction-time error, so a case whose recorded answer depends on an overridden limit has no reachable JS configuration. Plan 8.2 requires every requiredPortableId to pass with an EMPTY unsupported set, so left required these made a strict parity-backed release permanently unreachable. Same reasoning and same fix as the 145 classpath cases. The 59 sibling cases whose fixture overrides a limit that does NOT change Java's answer stay requiredPortableIds and pass."
     },
     {
       "id": "runtime-limits.numeric.lowered.visible-decimal-places-two",
@@ -944,8 +944,8 @@
           }
         }
       },
-      "partition": "requiredPortableIds",
-      "notes": "Three explicit visible decimal places exceed the instance limit and must fail even though the operands object constructs fine under the defaults, and the message says 'exceeds the configured maximum' — the DefaultStrings wording, not the builder's. Pins that Strings re-validates caller-supplied operands against ITS limits rather than trusting the operands' own construction."
+      "partition": "informationalIds",
+      "notes": "Three explicit visible decimal places exceed the instance limit and must fail even though the operands object constructs fine under the defaults, and the message says 'exceeds the configured maximum' — the DefaultStrings wording, not the builder's. Pins that Strings re-validates caller-supplied operands against ITS limits rather than trusting the operands' own construction. Refused by design, not unimplemented: plan 4.6 fixes v1's runtime limits and makes a non-undefined `runtimeLimits` a construction-time error, so a case whose recorded answer depends on an overridden limit has no reachable JS configuration. Plan 8.2 requires every requiredPortableId to pass with an EMPTY unsupported set, so left required these made a strict parity-backed release permanently unreachable. Same reasoning and same fix as the 145 classpath cases. The 59 sibling cases whose fixture overrides a limit that does NOT change Java's answer stay requiredPortableIds and pass."
     },
     {
       "id": "runtime-limits.numeric.lowered.compact-exponent-two",
@@ -982,8 +982,8 @@
           }
         }
       },
-      "partition": "requiredPortableIds",
-      "notes": "Compact exponent 3 exceeds the instance limit while remaining legal for the operands builder under the defaults, so the failure can only come from DefaultStrings.validatePluralOperands. Distinguishes an implementation that only enforces exponent bounds at operand construction."
+      "partition": "informationalIds",
+      "notes": "Compact exponent 3 exceeds the instance limit while remaining legal for the operands builder under the defaults, so the failure can only come from DefaultStrings.validatePluralOperands. Distinguishes an implementation that only enforces exponent bounds at operand construction. Refused by design, not unimplemented: plan 4.6 fixes v1's runtime limits and makes a non-undefined `runtimeLimits` a construction-time error, so a case whose recorded answer depends on an overridden limit has no reachable JS configuration. Plan 8.2 requires every requiredPortableId to pass with an EMPTY unsupported set, so left required these made a strict parity-backed release permanently unreachable. Same reasoning and same fix as the 145 classpath cases. The 59 sibling cases whose fixture overrides a limit that does NOT change Java's answer stay requiredPortableIds and pass."
     },
     {
       "id": "runtime-limits.numeric.lowered.expression-operand-precision-four",
@@ -1018,8 +1018,8 @@
           }
         }
       },
-      "partition": "requiredPortableIds",
-      "notes": "The over-limit value through the expression path fails as a com.lokalized.ExpressionEvaluationException ('Unable to extract numeric value from...'), a different type and message from the java.lang.IllegalArgumentException on the language-form path in precision-five. Without this pair a port could bound numbers only where cardinality is computed and leave expression operands unbounded."
+      "partition": "informationalIds",
+      "notes": "The over-limit value through the expression path fails as a com.lokalized.ExpressionEvaluationException ('Unable to extract numeric value from...'), a different type and message from the java.lang.IllegalArgumentException on the language-form path in precision-five. Without this pair a port could bound numbers only where cardinality is computed and leave expression operands unbounded. Refused by design, not unimplemented: plan 4.6 fixes v1's runtime limits and makes a non-undefined `runtimeLimits` a construction-time error, so a case whose recorded answer depends on an overridden limit has no reachable JS configuration. Plan 8.2 requires every requiredPortableId to pass with an EMPTY unsupported set, so left required these made a strict parity-backed release permanently unreachable. Same reasoning and same fix as the 145 classpath cases. The 59 sibling cases whose fixture overrides a limit that does NOT change Java's answer stay requiredPortableIds and pass."
     },
     {
       "id": "runtime-limits.numeric.lowered.literal-at-precision-four-and-scale-three-matches",
@@ -1090,8 +1090,8 @@
           }
         }
       },
-      "partition": "requiredPortableIds",
-      "notes": "The BigInteger one digit past the limit fails with the same precision message as the tagged-decimal case, pinning that integral types are not exempt. A port that bounded only its decimal type would pass every other numeric case here and fail this one."
+      "partition": "informationalIds",
+      "notes": "The BigInteger one digit past the limit fails with the same precision message as the tagged-decimal case, pinning that integral types are not exempt. A port that bounded only its decimal type would pass every other numeric case here and fail this one. Refused by design, not unimplemented: plan 4.6 fixes v1's runtime limits and makes a non-undefined `runtimeLimits` a construction-time error, so a case whose recorded answer depends on an overridden limit has no reachable JS configuration. Plan 8.2 requires every requiredPortableId to pass with an EMPTY unsupported set, so left required these made a strict parity-backed release permanently unreachable. Same reasoning and same fix as the 145 classpath cases. The 59 sibling cases whose fixture overrides a limit that does NOT change Java's answer stay requiredPortableIds and pass."
     },
     {
       "id": "runtime-limits.visible-decimal-places.limit-zero.implicit-decimal-place-is-not-checked",
@@ -1146,8 +1146,8 @@
           }
         }
       },
-      "partition": "requiredPortableIds",
-      "notes": "The same 1.5 as the implicit case, but with one visible decimal place requested explicitly, must fail at a limit of zero. The pair isolates 'explicitly requested' from 'materially present' with the value held constant."
+      "partition": "informationalIds",
+      "notes": "The same 1.5 as the implicit case, but with one visible decimal place requested explicitly, must fail at a limit of zero. The pair isolates 'explicitly requested' from 'materially present' with the value held constant. Refused by design, not unimplemented: plan 4.6 fixes v1's runtime limits and makes a non-undefined `runtimeLimits` a construction-time error, so a case whose recorded answer depends on an overridden limit has no reachable JS configuration. Plan 8.2 requires every requiredPortableId to pass with an EMPTY unsupported set, so left required these made a strict parity-backed release permanently unreachable. Same reasoning and same fix as the 145 classpath cases. The 59 sibling cases whose fixture overrides a limit that does NOT change Java's answer stay requiredPortableIds and pass."
     },
     {
       "id": "runtime-limits.absolute-number-scale.limit-zero.integer-scale-zero",
@@ -1182,8 +1182,8 @@
           }
         }
       },
-      "partition": "requiredPortableIds",
-      "notes": "Scale 1 must fail at a limit of zero. The exact-zero boundary on the positive-scale side."
+      "partition": "informationalIds",
+      "notes": "Scale 1 must fail at a limit of zero. The exact-zero boundary on the positive-scale side. Refused by design, not unimplemented: plan 4.6 fixes v1's runtime limits and makes a non-undefined `runtimeLimits` a construction-time error, so a case whose recorded answer depends on an overridden limit has no reachable JS configuration. Plan 8.2 requires every requiredPortableId to pass with an EMPTY unsupported set, so left required these made a strict parity-backed release permanently unreachable. Same reasoning and same fix as the 145 classpath cases. The 59 sibling cases whose fixture overrides a limit that does NOT change Java's answer stay requiredPortableIds and pass."
     },
     {
       "id": "runtime-limits.absolute-number-scale.limit-zero.negative-scale-one",
@@ -1200,8 +1200,8 @@
           }
         }
       },
-      "partition": "requiredPortableIds",
-      "notes": "Scale -1 must fail identically, because the limit bounds Math.abs(scale). A port that compared the signed scale would accept 1E+1 at limit zero and still pass the other two cases in this fixture."
+      "partition": "informationalIds",
+      "notes": "Scale -1 must fail identically, because the limit bounds Math.abs(scale). A port that compared the signed scale would accept 1E+1 at limit zero and still pass the other two cases in this fixture. Refused by design, not unimplemented: plan 4.6 fixes v1's runtime limits and makes a non-undefined `runtimeLimits` a construction-time error, so a case whose recorded answer depends on an overridden limit has no reachable JS configuration. Plan 8.2 requires every requiredPortableId to pass with an EMPTY unsupported set, so left required these made a strict parity-backed release permanently unreachable. Same reasoning and same fix as the 145 classpath cases. The 59 sibling cases whose fixture overrides a limit that does NOT change Java's answer stay requiredPortableIds and pass."
     },
     {
       "id": "runtime-limits.compact-exponent.limit-zero.exponent-zero",
@@ -1256,8 +1256,8 @@
           }
         }
       },
-      "partition": "requiredPortableIds",
-      "notes": "Exponent 1 must fail at a limit of zero, from the instance-level check ('exceeds the configured maximum') rather than the operands builder, whose own limit is still the default 64. The just-over half of the zero boundary."
+      "partition": "informationalIds",
+      "notes": "Exponent 1 must fail at a limit of zero, from the instance-level check ('exceeds the configured maximum') rather than the operands builder, whose own limit is still the default 64. The just-over half of the zero boundary. Refused by design, not unimplemented: plan 4.6 fixes v1's runtime limits and makes a non-undefined `runtimeLimits` a construction-time error, so a case whose recorded answer depends on an overridden limit has no reachable JS configuration. Plan 8.2 requires every requiredPortableId to pass with an EMPTY unsupported set, so left required these made a strict parity-backed release permanently unreachable. Same reasoning and same fix as the 145 classpath cases. The 59 sibling cases whose fixture overrides a limit that does NOT change Java's answer stay requiredPortableIds and pass."
     },
     {
       "id": "runtime-limits.numeric.default.absolute-scale-1024",
@@ -1386,8 +1386,8 @@
           }
         }
       },
-      "partition": "requiredPortableIds",
-      "notes": "The exact value that fails in runtime-limits-numeric-defaults resolves here, because this instance raised maximumAbsoluteNumberScale toward its ceiling. Proves the configured limit rather than a hardcoded constant governs at runtime; a port that validated against its defaults regardless of configuration passes the defaults fixture and fails this one."
+      "partition": "informationalIds",
+      "notes": "The exact value that fails in runtime-limits-numeric-defaults resolves here, because this instance raised maximumAbsoluteNumberScale toward its ceiling. Proves the configured limit rather than a hardcoded constant governs at runtime; a port that validated against its defaults regardless of configuration passes the defaults fixture and fails this one. Refused by design, not unimplemented: plan 4.6 fixes v1's runtime limits and makes a non-undefined `runtimeLimits` a construction-time error, so a case whose recorded answer depends on an overridden limit has no reachable JS configuration. Plan 8.2 requires every requiredPortableId to pass with an EMPTY unsupported set, so left required these made a strict parity-backed release permanently unreachable. Same reasoning and same fix as the 145 classpath cases. The 59 sibling cases whose fixture overrides a limit that does NOT change Java's answer stay requiredPortableIds and pass."
     },
     {
       "id": "runtime-limits.ceilings.generated-depth-33-is-accepted-above-the-default",
@@ -1399,8 +1399,8 @@
         "locale": "en",
         "placeholders": {}
       },
-      "partition": "requiredPortableIds",
-      "notes": "A 33-link generated chain — the exact shape that fails under the default limit of 32 in the existing generated-placeholders family — resolves once maximumGeneratedPlaceholderDepth is raised to its ceiling of 64. Pins that the depth limit is configurable upward and that the hard ceiling of 64 is genuinely accepted by the builder."
+      "partition": "informationalIds",
+      "notes": "A 33-link generated chain — the exact shape that fails under the default limit of 32 in the existing generated-placeholders family — resolves once maximumGeneratedPlaceholderDepth is raised to its ceiling of 64. Pins that the depth limit is configurable upward and that the hard ceiling of 64 is genuinely accepted by the builder. Refused by design, not unimplemented: plan 4.6 fixes v1's runtime limits and makes a non-undefined `runtimeLimits` a construction-time error, so a case whose recorded answer depends on an overridden limit has no reachable JS configuration. Plan 8.2 requires every requiredPortableId to pass with an EMPTY unsupported set, so left required these made a strict parity-backed release permanently unreachable. Same reasoning and same fix as the 145 classpath cases. The 59 sibling cases whose fixture overrides a limit that does NOT change Java's answer stay requiredPortableIds and pass."
     },
     {
       "id": "runtime-limits.ceilings.operand-builder-still-rejects-visible-decimal-places-1025",
@@ -1431,8 +1431,8 @@
         "locale": "fr",
         "placeholders": {}
       },
-      "partition": "requiredPortableIds",
-      "notes": "Plan section 4.6: 'Generated depth and cumulative expansion budgets reset for each locale attempt.' Only the expansion half of that sentence was covered. This is the depth half's baseline: fr's three-link chain breaches the limit of 2 and, under the library-default policy, the walk halts at fr."
+      "partition": "informationalIds",
+      "notes": "Plan section 4.6: 'Generated depth and cumulative expansion budgets reset for each locale attempt.' Only the expansion half of that sentence was covered. This is the depth half's baseline: fr's three-link chain breaches the limit of 2 and, under the library-default policy, the walk halts at fr. Refused by design, not unimplemented: plan 4.6 fixes v1's runtime limits and makes a non-undefined `runtimeLimits` a construction-time error, so a case whose recorded answer depends on an overridden limit has no reachable JS configuration. Plan 8.2 requires every requiredPortableId to pass with an EMPTY unsupported set, so left required these made a strict parity-backed release permanently unreachable. Same reasoning and same fix as the 145 classpath cases. The 59 sibling cases whose fixture overrides a limit that does NOT change Java's answer stay requiredPortableIds and pass."
     },
     {
       "id": "runtime-limits.generated-depth.fallback.fr-under-any-failure-reaches-en-on-a-fresh-depth-counter",
@@ -1445,8 +1445,8 @@
         "placeholders": {},
         "translationFallbackPolicy": "any-failure"
       },
-      "partition": "requiredPortableIds",
-      "notes": "Under the permissive policy the walk continues to en, whose two-link chain sits exactly at the limit and resolves. The depth counter is a call parameter seeded to 0 in each per-candidate getInternal, so an implementation that made it a mutable instance or per-request field would arrive at en already at depth 3 and return the key. Nothing else in the corpus tests depth lifetime across a fallback walk."
+      "partition": "informationalIds",
+      "notes": "Under the permissive policy the walk continues to en, whose two-link chain sits exactly at the limit and resolves. The depth counter is a call parameter seeded to 0 in each per-candidate getInternal, so an implementation that made it a mutable instance or per-request field would arrive at en already at depth 3 and return the key. Nothing else in the corpus tests depth lifetime across a fallback walk. Refused by design, not unimplemented: plan 4.6 fixes v1's runtime limits and makes a non-undefined `runtimeLimits` a construction-time error, so a case whose recorded answer depends on an overridden limit has no reachable JS configuration. Plan 8.2 requires every requiredPortableId to pass with an EMPTY unsupported set, so left required these made a strict parity-backed release permanently unreachable. Same reasoning and same fix as the 145 classpath cases. The 59 sibling cases whose fixture overrides a limit that does NOT change Java's answer stay requiredPortableIds and pass."
     },
     {
       "id": "runtime-limits.generated-depth.fallback.en-direct-uses-the-whole-depth",

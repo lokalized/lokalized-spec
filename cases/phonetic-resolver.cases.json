@@ -1274,8 +1274,8 @@
           "term": "aaaaaaaaa"
         }
       },
-      "partition": "requiredPortableIds",
-      "notes": "One character over. Executed: \"Phonetic input for placeholder 'term' in key 'Article' exceeds the maximum of 8 characters\" and NO resolverCalls -- the CharSequence conversion runs BEFORE the resolver. A port that length-checked after resolving would record a call."
+      "partition": "informationalIds",
+      "notes": "One character over. Executed: \"Phonetic input for placeholder 'term' in key 'Article' exceeds the maximum of 8 characters\" and NO resolverCalls -- the CharSequence conversion runs BEFORE the resolver. A port that length-checked after resolving would record a call. Refused by design, not unimplemented: plan 4.6 fixes v1's runtime limits and makes a non-undefined `runtimeLimits` a construction-time error, so a case whose recorded answer depends on an overridden limit has no reachable JS configuration. Plan 8.2 requires every requiredPortableId to pass with an EMPTY unsupported set, so left required these made a strict parity-backed release permanently unreachable. Same reasoning and same fix as the 145 classpath cases. The 59 sibling cases whose fixture overrides a limit that does NOT change Java's answer stay requiredPortableIds and pass."
     },
     {
       "id": "phonetic-resolver.expression.first-alternative-matches",
@@ -1458,8 +1458,8 @@
           "noun": "aaaaaaaaaaaa"
         }
       },
-      "partition": "requiredPortableIds",
-      "notes": "The length guard on the expression path. Executed: com.lokalized.ExpressionEvaluationException wrapping java.lang.IllegalArgumentException, message \"Phonetic input for placeholder 'noun' exceeds the maximum of 8 characters\" -- the key is omitted, unlike the placeholder path. No resolver call happens, so the absent channel pairs with limit.term-over-the-limit."
+      "partition": "informationalIds",
+      "notes": "The length guard on the expression path. Executed: com.lokalized.ExpressionEvaluationException wrapping java.lang.IllegalArgumentException, message \"Phonetic input for placeholder 'noun' exceeds the maximum of 8 characters\" -- the key is omitted, unlike the placeholder path. No resolver call happens, so the absent channel pairs with limit.term-over-the-limit. Refused by design, not unimplemented: plan 4.6 fixes v1's runtime limits and makes a non-undefined `runtimeLimits` a construction-time error, so a case whose recorded answer depends on an overridden limit has no reachable JS configuration. Plan 8.2 requires every requiredPortableId to pass with an EMPTY unsupported set, so left required these made a strict parity-backed release permanently unreachable. Same reasoning and same fix as the 145 classpath cases. The 59 sibling cases whose fixture overrides a limit that does NOT change Java's answer stay requiredPortableIds and pass."
     },
     {
       "id": "phonetic-resolver.expression.donor-locale",

@@ -957,8 +957,8 @@
           "name": "Wednesdays"
         }
       },
-      "partition": "requiredPortableIds",
-      "notes": "The clause's 'failure-key fail-soft behavior' proper. One character longer than the previous case makes the guard fire (10 > 9), StringInterpolator raises IllegalStateException 'Interpolated output exceeds the maximum of 12 characters', and interpolateFailureKey's catch-all (DefaultStrings.java:1414-1416) returns the RAW key rather than a truncated string or a propagated exception. Three plausible ports diverge here: one that throws, one that truncates at the limit, and one that emits a partially-interpolated prefix."
+      "partition": "informationalIds",
+      "notes": "The clause's 'failure-key fail-soft behavior' proper. One character longer than the previous case makes the guard fire (10 > 9), StringInterpolator raises IllegalStateException 'Interpolated output exceeds the maximum of 12 characters', and interpolateFailureKey's catch-all (DefaultStrings.java:1414-1416) returns the RAW key rather than a truncated string or a propagated exception. Three plausible ports diverge here: one that throws, one that truncates at the limit, and one that emits a partially-interpolated prefix. Refused by design, not unimplemented: plan 4.6 fixes v1's runtime limits and makes a non-undefined `runtimeLimits` a construction-time error, so a case whose recorded answer depends on an overridden limit has no reachable JS configuration. Plan 8.2 requires every requiredPortableId to pass with an EMPTY unsupported set, so left required these made a strict parity-backed release permanently unreachable. Same reasoning and same fix as the 145 classpath cases. The 59 sibling cases whose fixture overrides a limit that does NOT change Java's answer stay requiredPortableIds and pass."
     },
     {
       "id": "failure-handler.fail-soft.bidi-isolation-always-pushes-value-over-limit",
@@ -973,8 +973,8 @@
         },
         "bidiIsolation": "ALWAYS"
       },
-      "partition": "requiredPortableIds",
-      "notes": "The same value that fit exactly in the baseline case, now wrapped by BidiUtils.isolatedValue because the per-call option forces isolation on a non-RTL locale. BoundedIsolatedValue.render is handed the 9 characters still available and BidiUtils.appendChecked refuses the closing PDI once the builder holds 9 (FSI plus eight letters), so the isolation setting ALONE flips the outcome from 'Hi Wednesday' to the raw key. A port that isolates after the length check, or that exempts the control characters from it, keeps the interpolated form."
+      "partition": "informationalIds",
+      "notes": "The same value that fit exactly in the baseline case, now wrapped by BidiUtils.isolatedValue because the per-call option forces isolation on a non-RTL locale. BoundedIsolatedValue.render is handed the 9 characters still available and BidiUtils.appendChecked refuses the closing PDI once the builder holds 9 (FSI plus eight letters), so the isolation setting ALONE flips the outcome from 'Hi Wednesday' to the raw key. A port that isolates after the length check, or that exempts the control characters from it, keeps the interpolated form. Refused by design, not unimplemented: plan 4.6 fixes v1's runtime limits and makes a non-undefined `runtimeLimits` a construction-time error, so a case whose recorded answer depends on an overridden limit has no reachable JS configuration. Plan 8.2 requires every requiredPortableId to pass with an EMPTY unsupported set, so left required these made a strict parity-backed release permanently unreachable. Same reasoning and same fix as the 145 classpath cases. The 59 sibling cases whose fixture overrides a limit that does NOT change Java's answer stay requiredPortableIds and pass."
     },
     {
       "id": "failure-handler.fail-soft.bidi-isolation-always-emits-isolate-markers",
@@ -1057,8 +1057,8 @@
           "name": "Wednesdays"
         }
       },
-      "partition": "requiredPortableIds",
-      "notes": "The get() half of the overflow case, so the fail-soft string is pinned on both accessors. If a port implemented get() as an independent shortcut rather than as getResult().getTranslation(), the interpolation-limit branch is exactly the sort of edge it would forget to reproduce."
+      "partition": "informationalIds",
+      "notes": "The get() half of the overflow case, so the fail-soft string is pinned on both accessors. If a port implemented get() as an independent shortcut rather than as getResult().getTranslation(), the interpolation-limit branch is exactly the sort of edge it would forget to reproduce. Refused by design, not unimplemented: plan 4.6 fixes v1's runtime limits and makes a non-undefined `runtimeLimits` a construction-time error, so a case whose recorded answer depends on an overridden limit has no reachable JS configuration. Plan 8.2 requires every requiredPortableId to pass with an EMPTY unsupported set, so left required these made a strict parity-backed release permanently unreachable. Same reasoning and same fix as the 145 classpath cases. The 59 sibling cases whose fixture overrides a limit that does NOT change Java's answer stay requiredPortableIds and pass."
     },
     {
       "id": "failure-handler.final-reason.no-match-then-resolution-failure-reports-resolution-failure",

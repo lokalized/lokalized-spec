@@ -385,8 +385,8 @@
         },
         "locale": "en"
       },
-      "partition": "requiredPortableIds",
-      "notes": "BidiUtils$BoundedIsolatedValue.render:210. Pins BOTH that the failure happens on the second occurrence and that the reported maximum is 11 (the full limit) rather than 5 (the remaining budget) -- a port that reported the budget it was handed would produce a different message."
+      "partition": "informationalIds",
+      "notes": "BidiUtils$BoundedIsolatedValue.render:210. Pins BOTH that the failure happens on the second occurrence and that the reported maximum is 11 (the full limit) rather than 5 (the remaining budget) -- a port that reported the budget it was handed would produce a different message. Refused by design, not unimplemented: plan 4.6 fixes v1's runtime limits and makes a non-undefined `runtimeLimits` a construction-time error, so a case whose recorded answer depends on an overridden limit has no reachable JS configuration. Plan 8.2 requires every requiredPortableId to pass with an EMPTY unsupported set, so left required these made a strict parity-backed release permanently unreachable. Same reasoning and same fix as the 145 classpath cases. The 59 sibling cases whose fixture overrides a limit that does NOT change Java's answer stay requiredPortableIds and pass."
     },
     {
       "id": "owed.m3b.bidi.value-longer-than-remaining-budget-rejected-before-scanning",
@@ -400,8 +400,8 @@
         },
         "locale": "en"
       },
-      "partition": "requiredPortableIds",
-      "notes": "BidiUtils.isolate:98 `valueLength > maximumCharacters` TRUE -- the PRE-SCAN rejection. Every output-limit case in the corpus overruns during the copy instead: at limit 10 the template's leading '[' leaves 9 characters of budget, and the existing values are 6 and 7 characters long. A 10-character value is rejected before the isolate scan starts, which is the work-limit ordering this pins."
+      "partition": "informationalIds",
+      "notes": "BidiUtils.isolate:98 `valueLength > maximumCharacters` TRUE -- the PRE-SCAN rejection. Every output-limit case in the corpus overruns during the copy instead: at limit 10 the template's leading '[' leaves 9 characters of budget, and the existing values are 6 and 7 characters long. A 10-character value is rejected before the isolate scan starts, which is the work-limit ordering this pins. Refused by design, not unimplemented: plan 4.6 fixes v1's runtime limits and makes a non-undefined `runtimeLimits` a construction-time error, so a case whose recorded answer depends on an overridden limit has no reachable JS configuration. Plan 8.2 requires every requiredPortableId to pass with an EMPTY unsupported set, so left required these made a strict parity-backed release permanently unreachable. Same reasoning and same fix as the 145 classpath cases. The 59 sibling cases whose fixture overrides a limit that does NOT change Java's answer stay requiredPortableIds and pass."
     },
     {
       "id": "owed.m3b.bidi.pre-isolated-value-longer-than-budget-rejected-before-early-return",
@@ -415,8 +415,8 @@
         },
         "locale": "en"
       },
-      "partition": "requiredPortableIds",
-      "notes": "The pre-isolated variant of the same overrun. A value that is already isolated returns early at isolate line 106, so ONLY the line-98 pre-check can reject it -- a port that moved the length test after the isolated-value fast path would return this value unchecked."
+      "partition": "informationalIds",
+      "notes": "The pre-isolated variant of the same overrun. A value that is already isolated returns early at isolate line 106, so ONLY the line-98 pre-check can reject it -- a port that moved the length test after the isolated-value fast path would return this value unchecked. Refused by design, not unimplemented: plan 4.6 fixes v1's runtime limits and makes a non-undefined `runtimeLimits` a construction-time error, so a case whose recorded answer depends on an overridden limit has no reachable JS configuration. Plan 8.2 requires every requiredPortableId to pass with an EMPTY unsupported set, so left required these made a strict parity-backed release permanently unreachable. Same reasoning and same fix as the 145 classpath cases. The 59 sibling cases whose fixture overrides a limit that does NOT change Java's answer stay requiredPortableIds and pass."
     },
     {
       "id": "owed.m3b.loader.duplicate-rendered-language-tag-refused",

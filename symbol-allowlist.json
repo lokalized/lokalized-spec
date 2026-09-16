@@ -1,6 +1,949 @@
 {
   "formatVersion": 1,
   "planSection": "3.1",
+  "planDeclaredSymbols": [
+    {
+      "name": "AnimacyFormName",
+      "kind": "type",
+      "section": "3.7",
+      "line": 1320
+    },
+    {
+      "name": "behavioralVectorsVersion",
+      "kind": "const",
+      "section": "3.2",
+      "line": 449
+    },
+    {
+      "name": "BidiIsolation",
+      "kind": "type",
+      "section": "3.2",
+      "line": 394
+    },
+    {
+      "name": "BuiltinFallbackPolicy",
+      "kind": "type",
+      "section": "3.2",
+      "line": 410
+    },
+    {
+      "name": "CardinalityFormName",
+      "kind": "type",
+      "section": "3.7",
+      "line": 1298
+    },
+    {
+      "name": "cardinalityForNumber",
+      "kind": "function",
+      "section": "3.7",
+      "line": 1364
+    },
+    {
+      "name": "cardinalityForOperands",
+      "kind": "function",
+      "section": "3.7",
+      "line": 1368
+    },
+    {
+      "name": "cardinalityForRange",
+      "kind": "function",
+      "section": "3.7",
+      "line": 1394
+    },
+    {
+      "name": "cardinalityMode",
+      "kind": "const",
+      "section": "3.2",
+      "line": 451
+    },
+    {
+      "name": "CardinalityValue",
+      "kind": "type",
+      "section": "3.7",
+      "line": 1355
+    },
+    {
+      "name": "cardinalRangeData",
+      "kind": "const",
+      "section": "3.7",
+      "line": 1393
+    },
+    {
+      "name": "CardinalRangeData",
+      "kind": "interface",
+      "section": "3.2",
+      "line": 460
+    },
+    {
+      "name": "CatalogIdentity",
+      "kind": "interface",
+      "section": "3.2",
+      "line": 465
+    },
+    {
+      "name": "CatalogIdentityInputV1",
+      "kind": "interface",
+      "section": "6.1",
+      "line": 1837
+    },
+    {
+      "name": "CatalogInput",
+      "kind": "type",
+      "section": "3.2",
+      "line": 517
+    },
+    {
+      "name": "CatalogMap",
+      "kind": "type",
+      "section": "3.2",
+      "line": 523
+    },
+    {
+      "name": "chain",
+      "kind": "function",
+      "section": "6.1",
+      "line": 1853
+    },
+    {
+      "name": "chooseBrowserLocale",
+      "kind": "function",
+      "section": "3.4",
+      "line": 945
+    },
+    {
+      "name": "chooseLocaleForPreferredLanguages",
+      "kind": "function",
+      "section": "3.4",
+      "line": 941
+    },
+    {
+      "name": "ClassifierFormName",
+      "kind": "type",
+      "section": "3.7",
+      "line": 1312
+    },
+    {
+      "name": "cldrVersion",
+      "kind": "const",
+      "section": "3.2",
+      "line": 447
+    },
+    {
+      "name": "ClusivityFormName",
+      "kind": "type",
+      "section": "3.7",
+      "line": 1319
+    },
+    {
+      "name": "CommonCreateStringsOptions",
+      "kind": "type",
+      "section": "3.2",
+      "line": 565
+    },
+    {
+      "name": "computeCatalogIdentity",
+      "kind": "function",
+      "section": "6.1",
+      "line": 1880
+    },
+    {
+      "name": "ConfigurationError",
+      "kind": "interface",
+      "section": "3.5",
+      "line": 1082
+    },
+    {
+      "name": "createLocaleNegotiator",
+      "kind": "function",
+      "section": "3.4",
+      "line": 901
+    },
+    {
+      "name": "createSsrStamp",
+      "kind": "function",
+      "section": "6.4",
+      "line": 2227
+    },
+    {
+      "name": "createStrings",
+      "kind": "function",
+      "section": "3.2",
+      "line": 590
+    },
+    {
+      "name": "CreateStringsBehaviorOptions",
+      "kind": "interface",
+      "section": "3.2",
+      "line": 531
+    },
+    {
+      "name": "createStringsManifestFromDirectory",
+      "kind": "function",
+      "section": "6.2",
+      "line": 2036
+    },
+    {
+      "name": "CreateStringsOptions",
+      "kind": "type",
+      "section": "3.2",
+      "line": 586
+    },
+    {
+      "name": "dataFingerprint",
+      "kind": "const",
+      "section": "3.2",
+      "line": 448
+    },
+    {
+      "name": "DataProvenance",
+      "kind": "interface",
+      "section": "3.2",
+      "line": 443
+    },
+    {
+      "name": "decimal",
+      "kind": "function",
+      "section": "3.7",
+      "line": 1258
+    },
+    {
+      "name": "DecimalValue",
+      "kind": "interface",
+      "section": "3.7",
+      "line": 1246
+    },
+    {
+      "name": "defineCatalog",
+      "kind": "function",
+      "section": "3.6",
+      "line": 1207
+    },
+    {
+      "name": "defineLocalizedString",
+      "kind": "function",
+      "section": "3.6",
+      "line": 1203
+    },
+    {
+      "name": "DefinitenessFormName",
+      "kind": "type",
+      "section": "3.7",
+      "line": 1310
+    },
+    {
+      "name": "DigestUnavailableError",
+      "kind": "interface",
+      "section": "3.5",
+      "line": 1078
+    },
+    {
+      "name": "DirectCreateStringsOptions",
+      "kind": "type",
+      "section": "3.2",
+      "line": 568
+    },
+    {
+      "name": "DirectLocaleContext",
+      "kind": "interface",
+      "section": "3.3",
+      "line": 664
+    },
+    {
+      "name": "DirectoryManifestOptions",
+      "kind": "interface",
+      "section": "6.2",
+      "line": 2028
+    },
+    {
+      "name": "ExpressionEvaluationError",
+      "kind": "interface",
+      "section": "3.5",
+      "line": 1054
+    },
+    {
+      "name": "ExpressionTranslationInput",
+      "kind": "interface",
+      "section": "3.6",
+      "line": 1194
+    },
+    {
+      "name": "FailureHandler",
+      "kind": "type",
+      "section": "3.5",
+      "line": 997
+    },
+    {
+      "name": "FailureReason",
+      "kind": "type",
+      "section": "3.2",
+      "line": 395
+    },
+    {
+      "name": "FailureResponse",
+      "kind": "type",
+      "section": "3.5",
+      "line": 976
+    },
+    {
+      "name": "FailureResult",
+      "kind": "interface",
+      "section": "3.4",
+      "line": 817
+    },
+    {
+      "name": "FallbackEvent",
+      "kind": "interface",
+      "section": "3.5",
+      "line": 998
+    },
+    {
+      "name": "FallbackObserver",
+      "kind": "type",
+      "section": "3.5",
+      "line": 1010
+    },
+    {
+      "name": "FallbackPolicy",
+      "kind": "type",
+      "section": "2.5",
+      "line": 230
+    },
+    {
+      "name": "FetchEntry",
+      "kind": "interface",
+      "section": "6.1",
+      "line": 1830
+    },
+    {
+      "name": "fetchSet",
+      "kind": "function",
+      "section": "6.1",
+      "line": 1859
+    },
+    {
+      "name": "forAcceptLanguage",
+      "kind": "function",
+      "section": "3.4",
+      "line": 908
+    },
+    {
+      "name": "forLanguageRanges",
+      "kind": "function",
+      "section": "3.4",
+      "line": 904
+    },
+    {
+      "name": "forLocale",
+      "kind": "function",
+      "section": "3.3",
+      "line": 659
+    },
+    {
+      "name": "forLocaleMatch",
+      "kind": "function",
+      "section": "3.3",
+      "line": 660
+    },
+    {
+      "name": "FormalityFormName",
+      "kind": "type",
+      "section": "3.7",
+      "line": 1316
+    },
+    {
+      "name": "GENDER_FEMININE",
+      "kind": "const",
+      "section": "3.7",
+      "line": 1401
+    },
+    {
+      "name": "GenderFormName",
+      "kind": "type",
+      "section": "3.7",
+      "line": 1304
+    },
+    {
+      "name": "getSupportedCardinalityLocaleTags",
+      "kind": "function",
+      "section": "3.7",
+      "line": 1375
+    },
+    {
+      "name": "getSupportedOrdinalityLocaleTags",
+      "kind": "function",
+      "section": "3.7",
+      "line": 1390
+    },
+    {
+      "name": "GrammaticalCaseFormName",
+      "kind": "type",
+      "section": "3.7",
+      "line": 1306
+    },
+    {
+      "name": "ianaDataFingerprint",
+      "kind": "const",
+      "section": "3.2",
+      "line": 453
+    },
+    {
+      "name": "ianaRegistryDate",
+      "kind": "const",
+      "section": "3.2",
+      "line": 452
+    },
+    {
+      "name": "LanguageFormAxis",
+      "kind": "type",
+      "section": "3.7",
+      "line": 1286
+    },
+    {
+      "name": "LanguageFormName",
+      "kind": "type",
+      "section": "3.7",
+      "line": 1328
+    },
+    {
+      "name": "LanguageFormTranslationInput",
+      "kind": "interface",
+      "section": "3.6",
+      "line": 1187
+    },
+    {
+      "name": "LanguageFormValue",
+      "kind": "type",
+      "section": "3.7",
+      "line": 1343
+    },
+    {
+      "name": "LanguageRange",
+      "kind": "interface",
+      "section": "3.2",
+      "line": 415
+    },
+    {
+      "name": "LoadedCreateStringsOptions",
+      "kind": "type",
+      "section": "3.2",
+      "line": 577
+    },
+    {
+      "name": "LoadedStrings",
+      "kind": "interface",
+      "section": "6.2",
+      "line": 1974
+    },
+    {
+      "name": "loadEntireManifest",
+      "kind": "function",
+      "section": "6.2",
+      "line": 1996
+    },
+    {
+      "name": "loadEntireManifestFromFiles",
+      "kind": "function",
+      "section": "6.2",
+      "line": 2023
+    },
+    {
+      "name": "LoadFailure",
+      "kind": "interface",
+      "section": "6.2",
+      "line": 1960
+    },
+    {
+      "name": "loadStrings",
+      "kind": "function",
+      "section": "6.2",
+      "line": 1990
+    },
+    {
+      "name": "loadStringsFromDirectory",
+      "kind": "function",
+      "section": "6.2",
+      "line": 2045
+    },
+    {
+      "name": "LoadStringsFromDirectoryOptions",
+      "kind": "type",
+      "section": "6.2",
+      "line": 2041
+    },
+    {
+      "name": "loadStringsFromFiles",
+      "kind": "function",
+      "section": "6.2",
+      "line": 2017
+    },
+    {
+      "name": "LoadStringsFromFilesOptions",
+      "kind": "interface",
+      "section": "6.2",
+      "line": 2001
+    },
+    {
+      "name": "LoadStringsOptions",
+      "kind": "interface",
+      "section": "6.2",
+      "line": 1950
+    },
+    {
+      "name": "LocaleConfiguration",
+      "kind": "interface",
+      "section": "3.2",
+      "line": 498
+    },
+    {
+      "name": "localeConfigurationForManifest",
+      "kind": "function",
+      "section": "6.1",
+      "line": 1875
+    },
+    {
+      "name": "localeDataMode",
+      "kind": "const",
+      "section": "3.2",
+      "line": 450
+    },
+    {
+      "name": "LocaleMatcher",
+      "kind": "interface",
+      "section": "3.4",
+      "line": 883
+    },
+    {
+      "name": "LocaleMatchResult",
+      "kind": "interface",
+      "section": "3.4",
+      "line": 789
+    },
+    {
+      "name": "LocaleMatchType",
+      "kind": "type",
+      "section": "3.4",
+      "line": 779
+    },
+    {
+      "name": "LocaleNegotiator",
+      "kind": "interface",
+      "section": "3.4",
+      "line": 888
+    },
+    {
+      "name": "LocaleSourceOptions",
+      "kind": "type",
+      "section": "3.2",
+      "line": 548
+    },
+    {
+      "name": "LocaleTag",
+      "kind": "type",
+      "section": "3.2",
+      "line": 393
+    },
+    {
+      "name": "LocalizedStringInput",
+      "kind": "interface",
+      "section": "3.6",
+      "line": 1175
+    },
+    {
+      "name": "LocalizedStringNodeInput",
+      "kind": "interface",
+      "section": "3.6",
+      "line": 1166
+    },
+    {
+      "name": "LocalizedStringWarning",
+      "kind": "interface",
+      "section": "3.2",
+      "line": 424
+    },
+    {
+      "name": "LocalizedStringWarningType",
+      "kind": "type",
+      "section": "3.2",
+      "line": 420
+    },
+    {
+      "name": "LokalizedError",
+      "kind": "interface",
+      "section": "3.5",
+      "line": 1039
+    },
+    {
+      "name": "LokalizedErrorCode",
+      "kind": "type",
+      "section": "3.2",
+      "line": 400
+    },
+    {
+      "name": "LokalizedSsrStampV1",
+      "kind": "interface",
+      "section": "6.4",
+      "line": 2195
+    },
+    {
+      "name": "ManifestValidationOptions",
+      "kind": "interface",
+      "section": "6.1",
+      "line": 1845
+    },
+    {
+      "name": "mergeParsedStringsFiles",
+      "kind": "function",
+      "section": "4.1",
+      "line": 1477
+    },
+    {
+      "name": "MissingTranslationError",
+      "kind": "interface",
+      "section": "3.5",
+      "line": 1044
+    },
+    {
+      "name": "ordinalData",
+      "kind": "const",
+      "section": "3.7",
+      "line": 1378
+    },
+    {
+      "name": "OrdinalData",
+      "kind": "interface",
+      "section": "3.2",
+      "line": 455
+    },
+    {
+      "name": "OrdinalityFormName",
+      "kind": "type",
+      "section": "3.7",
+      "line": 1301
+    },
+    {
+      "name": "ordinalityForNumber",
+      "kind": "function",
+      "section": "3.7",
+      "line": 1379
+    },
+    {
+      "name": "ordinalityForOperands",
+      "kind": "function",
+      "section": "3.7",
+      "line": 1383
+    },
+    {
+      "name": "OrdinalityValue",
+      "kind": "type",
+      "section": "3.7",
+      "line": 1357
+    },
+    {
+      "name": "ParsedCatalogLimits",
+      "kind": "type",
+      "section": "4.1",
+      "line": 1458
+    },
+    {
+      "name": "ParsedStringsFile",
+      "kind": "interface",
+      "section": "3.2",
+      "line": 508
+    },
+    {
+      "name": "parseLanguageRanges",
+      "kind": "function",
+      "section": "3.4",
+      "line": 900
+    },
+    {
+      "name": "parseStrings",
+      "kind": "function",
+      "section": "4.1",
+      "line": 1472
+    },
+    {
+      "name": "parseStringsManifest",
+      "kind": "function",
+      "section": "6.1",
+      "line": 1865
+    },
+    {
+      "name": "ParseStringsManifestOptions",
+      "kind": "interface",
+      "section": "6.1",
+      "line": 1849
+    },
+    {
+      "name": "ParseStringsOptions",
+      "kind": "interface",
+      "section": "4.1",
+      "line": 1465
+    },
+    {
+      "name": "PartialFailurePolicy",
+      "kind": "type",
+      "section": "6.2",
+      "line": 1948
+    },
+    {
+      "name": "PhoneticFormName",
+      "kind": "type",
+      "section": "3.7",
+      "line": 1321
+    },
+    {
+      "name": "PhoneticResolver",
+      "kind": "type",
+      "section": "3.5",
+      "line": 1011
+    },
+    {
+      "name": "PhoneticValue",
+      "kind": "type",
+      "section": "3.7",
+      "line": 1359
+    },
+    {
+      "name": "PlaceholderDefinition",
+      "kind": "type",
+      "section": "3.6",
+      "line": 1183
+    },
+    {
+      "name": "Placeholders",
+      "kind": "type",
+      "section": "3.2",
+      "line": 504
+    },
+    {
+      "name": "PluralNumber",
+      "kind": "type",
+      "section": "3.7",
+      "line": 1361
+    },
+    {
+      "name": "pluralOperands",
+      "kind": "function",
+      "section": "3.7",
+      "line": 1259
+    },
+    {
+      "name": "PluralOperandValue",
+      "kind": "interface",
+      "section": "3.7",
+      "line": 1251
+    },
+    {
+      "name": "readStringsManifest",
+      "kind": "function",
+      "section": "6.2",
+      "line": 2009
+    },
+    {
+      "name": "ResolutionError",
+      "kind": "interface",
+      "section": "3.5",
+      "line": 1058
+    },
+    {
+      "name": "RETURN_KEY",
+      "kind": "const",
+      "section": "3.5",
+      "line": 981
+    },
+    {
+      "name": "ReturnKeyResponse",
+      "kind": "interface",
+      "section": "3.5",
+      "line": 966
+    },
+    {
+      "name": "returnString",
+      "kind": "function",
+      "section": "3.5",
+      "line": 983
+    },
+    {
+      "name": "ReturnStringResponse",
+      "kind": "interface",
+      "section": "3.5",
+      "line": 969
+    },
+    {
+      "name": "SourceDataProvenance",
+      "kind": "interface",
+      "section": "3.2",
+      "line": 436
+    },
+    {
+      "name": "SsrLocaleContext",
+      "kind": "type",
+      "section": "6.4",
+      "line": 2217
+    },
+    {
+      "name": "SsrLocaleMatchV1",
+      "kind": "interface",
+      "section": "6.4",
+      "line": 2212
+    },
+    {
+      "name": "Strings",
+      "kind": "interface",
+      "section": "3.3",
+      "line": 669
+    },
+    {
+      "name": "StringsLoadCoverage",
+      "kind": "type",
+      "section": "3.2",
+      "line": 470
+    },
+    {
+      "name": "StringsLoadingError",
+      "kind": "interface",
+      "section": "3.5",
+      "line": 1073
+    },
+    {
+      "name": "StringsLoadingLimits",
+      "kind": "interface",
+      "section": "4.1",
+      "line": 1448
+    },
+    {
+      "name": "StringsLoadVerification",
+      "kind": "interface",
+      "section": "3.2",
+      "line": 478
+    },
+    {
+      "name": "StringsManifestV1",
+      "kind": "interface",
+      "section": "6.1",
+      "line": 1814
+    },
+    {
+      "name": "StringsParseError",
+      "kind": "interface",
+      "section": "3.5",
+      "line": 1065
+    },
+    {
+      "name": "supportedCardinalitiesForLocale",
+      "kind": "function",
+      "section": "3.7",
+      "line": 1372
+    },
+    {
+      "name": "supportedOrdinalitiesForLocale",
+      "kind": "function",
+      "section": "3.7",
+      "line": 1387
+    },
+    {
+      "name": "TaggedLanguageFormValue",
+      "kind": "interface",
+      "section": "3.7",
+      "line": 1333
+    },
+    {
+      "name": "THROW_EXCEPTION",
+      "kind": "const",
+      "section": "3.5",
+      "line": 982
+    },
+    {
+      "name": "ThrowResponse",
+      "kind": "interface",
+      "section": "3.5",
+      "line": 973
+    },
+    {
+      "name": "TiebreakerMap",
+      "kind": "type",
+      "section": "3.2",
+      "line": 527
+    },
+    {
+      "name": "TranslatedResult",
+      "kind": "interface",
+      "section": "3.4",
+      "line": 810
+    },
+    {
+      "name": "TranslationBehaviorOptions",
+      "kind": "interface",
+      "section": "3.3",
+      "line": 647
+    },
+    {
+      "name": "TranslationFailure",
+      "kind": "interface",
+      "section": "3.5",
+      "line": 985
+    },
+    {
+      "name": "TranslationOptions",
+      "kind": "type",
+      "section": "3.3",
+      "line": 654
+    },
+    {
+      "name": "TranslationResult",
+      "kind": "type",
+      "section": "3.4",
+      "line": 824
+    },
+    {
+      "name": "TranslationResultBase",
+      "kind": "interface",
+      "section": "3.4",
+      "line": 800
+    },
+    {
+      "name": "TranslationStatus",
+      "kind": "type",
+      "section": "3.2",
+      "line": 399
+    },
+    {
+      "name": "UnsupportedLocaleError",
+      "kind": "interface",
+      "section": "3.5",
+      "line": 1049
+    },
+    {
+      "name": "validateSsrStamp",
+      "kind": "function",
+      "section": "6.4",
+      "line": 2232
+    },
+    {
+      "name": "validateStringsManifest",
+      "kind": "function",
+      "section": "6.1",
+      "line": 1870
+    },
+    {
+      "name": "WholeMessageAlternativeInput",
+      "kind": "interface",
+      "section": "3.6",
+      "line": 1179
+    }
+  ],
+  "planExampleBindings": [
+    "directLoaded",
+    "directStrings",
+    "match",
+    "matchedLoaded",
+    "matchedLookup",
+    "matchedStrings"
+  ],
+  "notPackageExports": [
+    "CatchOnlyErrorClass"
+  ],
   "generatedFrom": {
     "plan": "IMPLEMENTATION-PLAN-v7.md",
     "javaEnums": [

@@ -146,11 +146,82 @@ async function build() {
       };
     });
 
+  // --- THE WHOLE PLAN'S DECLARED SURFACE, not just section 3.1's table ---------------------------
+  //
+  // `owners` above is derived from ONE markdown table in section 3.1, and for five milestones that
+  // was the only thing any surface gate could see. MEASURED 2026-09-14: the plan declares 156 more
+  // symbols by SIGNATURE, across eleven sections — §2.5, 3.2-3.7, 4.1, 6.1, 6.2 and 6.4 — and
+  // nothing had ever compared that set to what the port delivers. What it cost: `createStrings({
+  // loaded })`, M8's flagship call, did not typecheck for a consumer, and plan 3.5's nine declared
+  // error classes had shipped as three.
+  //
+  // A DECLARATION IS NOT AN EXAMPLE, and the two share a fence. `const X: Type;` is a declaration;
+  // `const x = await loadStrings(...)` is a usage snippet in the same `~~~ts` block. Keyed on the
+  // colon, which is what separates them — verified against §6.2's example fence, whose six bindings
+  // are excluded and named below so the exclusion is visible rather than silent.
+  const declared = [];
+  const examples = [];
+  {
+    const lines = plan.split("\n");
+    let open = false, info = "", start = 0, section = "";
+    for (let index = 0; index < lines.length; index++) {
+      const line = lines[index];
+      if (/^#{2,3} /.test(line) && !open) section = line.replace(/^#+\s*/, "").split(" ")[0];
+      const fence = line.match(/^~~~(\w*)/);
+      if (!fence) continue;
+      if (!open) { open = true; info = fence[1]; start = index; continue; }
+      open = false;
+      if (info !== "ts") continue;
+      for (let offset = 1; start + offset < index; offset++) {
+        const body = lines[start + offset];
+        const at = start + offset + 1;
+        let match;
+        if ((match = body.match(/^\s*(?:export\s+)?(interface|class|enum)\s+([A-Za-z_]\w*)/)))
+          declared.push({ name: match[2], kind: match[1], section, line: at });
+        else if ((match = body.match(/^\s*(?:export\s+)?type\s+([A-Za-z_]\w*)\s*=/)))
+          declared.push({ name: match[1], kind: "type", section, line: at });
+        else if ((match = body.match(/^\s*(?:export\s+)?function\s+([A-Za-z_]\w*)\s*[(<]/)))
+          declared.push({ name: match[1], kind: "function", section, line: at });
+        else if ((match = body.match(/^\s*(?:export\s+)?const\s+([A-Za-z_]\w*)\s*:/)))
+          declared.push({ name: match[1], kind: "const", section, line: at });
+        else if ((match = body.match(/^\s*(?:export\s+)?const\s+([A-Za-z_]\w*)\s*=/)))
+          examples.push(match[1]);
+      }
+    }
+  }
+
+  // THE INVERSE TRAP, AND IT IS WHY THIS LIST EXISTS. A name can be declared in a fence exactly like
+  // an export and then narrowed to NON-export in PROSE only. `CatchOnlyErrorClass` is declared
+  // `interface` at 3.5:1086 and denied at :1109 — "a declaration-private helper, not a package
+  // export" — with nothing in the fence to say so. Each entry names the plan line that narrows it,
+  // and a name here that the plan STOPS narrowing fails the build rather than staying excluded.
+  const NOT_A_PACKAGE_EXPORT = {
+    CatchOnlyErrorClass: "is a declaration-private helper, not a package export",
+  };
+  for (const [name, sentence] of Object.entries(NOT_A_PACKAGE_EXPORT)) {
+    if (!plan.includes(`\`${name}\` ${sentence}`))
+      throw new Error(`NOT_A_PACKAGE_EXPORT claims the plan says "\`${name}\` ${sentence}" and it does not`);
+    if (!declared.some((entry) => entry.name === name))
+      throw new Error(`NOT_A_PACKAGE_EXPORT names '${name}', which no fence declares`);
+  }
+
+  const seen = new Set();
+  const planDeclaredSymbols = declared
+    .filter((entry) => !NOT_A_PACKAGE_EXPORT[entry.name])
+    .filter((entry) => (seen.has(entry.name) ? false : (seen.add(entry.name), true)))
+    .sort((a, b) => a.name.localeCompare(b.name));
+
   const forms = await languageFormConstants();
 
   return {
     formatVersion: 1,
     planSection: "3.1",
+    /** Every symbol the plan declares by SIGNATURE, in any section. See the derivation above. */
+    planDeclaredSymbols,
+    /** Bindings in example fences, excluded by the colon rule. Recorded so the exclusion is visible. */
+    planExampleBindings: [...new Set(examples)].sort(),
+    /** Declared in a fence and denied in prose. Keys are checked against the plan sentence. */
+    notPackageExports: Object.keys(NOT_A_PACKAGE_EXPORT).sort(),
     generatedFrom: {
       plan: "IMPLEMENTATION-PLAN-v7.md",
       javaEnums: Object.keys(FORM_AXES),
@@ -178,6 +249,7 @@ if (process.argv.includes("--write")) {
       owners: allowlist.owners.length,
       namedSymbols: allowlist.owners.reduce((n, o) => n + o.namedSymbols.length, 0),
       disownedSymbols: allowlist.owners.reduce((n, o) => n + o.disownedSymbols.length, 0),
+      planDeclaredSymbols: allowlist.planDeclaredSymbols.length,
       unenumeratedCategories: allowlist.owners.reduce((n, o) => n + o.unenumeratedCategories.length, 0),
       languageFormConstants: allowlist.languageFormConstants.length,
     }),
