@@ -1,0 +1,79 @@
+{
+  "$comment": "DERIVED from plan section 8.5 by scripts/parity-obligations.mjs. Do not edit. The report declares which of its fields discharge each obligation; the judgement of what discharges one belongs with the report, the obligation belongs with the plan.",
+  "formatVersion": 1,
+  "planSection": "8.5",
+  "obligations": [
+    {
+      "kind": "content",
+      "index": 0,
+      "sentence": "implementation and package version",
+      "statementSha256": "ba1100110be4a6f070672d9909e028d0db83a11dbec94cddb696adf5e34bdb6f"
+    },
+    {
+      "kind": "content",
+      "index": 1,
+      "sentence": "exact implementation, Java reference, and data commit SHAs plus the porting-contract archive digest",
+      "statementSha256": "b8547c673727fc95da284384709438dd08d14a2aab5d67a7582927b79e8fcdf8"
+    },
+    {
+      "kind": "content",
+      "index": 2,
+      "sentence": "the exact `requirements.json` SHA-256, selected release-profile ID, profile-registry SHA-256, selection-record SHA-256, and active release requirement/evidence ID sets",
+      "statementSha256": "c551717d8675156a22310efef28601068f88fbe7aa11b299ade3424981b32346"
+    },
+    {
+      "kind": "content",
+      "index": 3,
+      "sentence": "`cldrVersion`, `lokalizedCldrVersion`, `behavioralVectorsVersion`, and `dataFingerprint`",
+      "statementSha256": "88c13ff9469a864ba114b7b58a3abf399c83745685ae031ad83a281910590553"
+    },
+    {
+      "kind": "content",
+      "index": 4,
+      "sentence": "`ianaRegistryDate`, `ianaDataFingerprint`, and reference JDK vendor/version/image digest",
+      "statementSha256": "d0cf9465bc4a68c9c39fe9a865e78a27aeba451a2946dbd8d4005118bc2eeb65"
+    },
+    {
+      "kind": "content",
+      "index": 5,
+      "sentence": "exact `requiredPortableIds`, applicable `requiredImplementationIds`, passed, failed, xfailed, and unsupported ID sets",
+      "statementSha256": "61a68e9810676d0d05956e9df81d8720336898cde738f6b81f66e19ce4e660d0"
+    },
+    {
+      "kind": "content",
+      "index": 6,
+      "sentence": "xfail metadata and deterministic `sourceDateEpoch` derived from the release tag/commit",
+      "statementSha256": "b7c7bf39d37f023190aaa461e1528467523f8c975c28f39130a0fafbe7ddb249"
+    },
+    {
+      "kind": "embedded",
+      "index": 7,
+      "sentence": "The report is embedded in the packed npm artifact and attached to the immutable release.",
+      "statementSha256": "1ae09169fb2478f7c39e9c6627c578a7770558e6fba8bff0663d91520eb4e6b3"
+    },
+    {
+      "kind": "byteIdentity",
+      "index": 8,
+      "sentence": "CI verifies byte identity between the tested and published copies.",
+      "statementSha256": "ac52f0ea557de50e01462d1a44ebeaf7fa569c1019f26798a6db58995581b8c3"
+    },
+    {
+      "kind": "strictPartition",
+      "index": 9,
+      "sentence": "The strict required partition must show zero failed, xfailed, and unsupported IDs.",
+      "statementSha256": "7c927c2f082fbaccb50cbf98376dc2279344e0431171ed588feccec68ed9b7c0"
+    },
+    {
+      "kind": "divergences",
+      "index": 10,
+      "sentence": "`DIVERGENCES.md` is generated from the xfail/unsupported records.",
+      "statementSha256": "6bffcd610639a3ec5b0e4fc98c72ccdf2de0f3ec1a59c36addc23627511e859e"
+    },
+    {
+      "kind": "volatileOutside",
+      "index": 11,
+      "sentence": "Volatile wall-clock run times remain CI attestation metadata outside the canonical packed report, so they do not defeat reproducible tarballs.",
+      "statementSha256": "793b3576e7d3869697e74baad4c49c702b80cb85f0924fc54e991d06e3a52d63"
+    }
+  ]
+}
