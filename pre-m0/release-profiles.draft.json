@@ -20,7 +20,7 @@
         {
           "id": "CLAIM-RUNTIME-SURFACES",
           "sourceAnchor": "\u00a71.1 and \u00a73.1",
-          "statement": "The supported surfaces are ESM on Node 22+, the named exact-floor browsers, bundlers, and direct browser modules through only the declared package entry points."
+          "statement": "The supported surfaces are ESM on Node 20+, the named exact-floor browsers, bundlers, and direct browser modules through only the declared package entry points."
         },
         {
           "id": "CLAIM-CORE-FEATURES",

@@ -1,0 +1,43 @@
+{
+  "$comment": "DERIVED from the implementation plan's milestone rows by scripts/documentation-topics.mjs. Do not edit. A consumer compares its own documentation against this list; the judgement of what covers a topic belongs with the document, the obligation belongs with the plan.",
+  "formatVersion": 1,
+  "obligations": [
+    {
+      "milestone": "M-D",
+      "kind": "documentation",
+      "items": [
+        "tiebreakers",
+        "tagged values",
+        "loading",
+        "failures",
+        "accessibility",
+        "CSP",
+        "caching",
+        "data mismatch",
+        "RSC",
+        "Java migration",
+        "i18next differences"
+      ],
+      "sentence": "Documentation covers tiebreakers, tagged values, loading, failures, accessibility, CSP, caching, data mismatch, RSC, Java migration, and i18next differences."
+    },
+    {
+      "milestone": "M-D",
+      "kind": "quickstarts",
+      "items": [
+        "npm/bundler",
+        "direct browser",
+        "SSR",
+        "explicit-locale use"
+      ],
+      "sentence": "Executed quickstarts cover npm/bundler, direct browser, SSR, and explicit-locale use."
+    },
+    {
+      "milestone": "M-D",
+      "kind": "acceptance",
+      "items": [
+        "A design partner or maintainer unfamiliar with the implementation completes the quickstart and one realistic integration without hidden decisions."
+      ],
+      "sentence": "A design partner or maintainer unfamiliar with the implementation completes the quickstart and one realistic integration without hidden decisions."
+    }
+  ]
+}
