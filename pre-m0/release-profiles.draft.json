@@ -10,7 +10,7 @@
         {
           "id": "CLAIM-SEMANTIC-PARITY",
           "sourceAnchor": "\u00a71",
-          "statement": "Shared required vectors produce the same complete semantic result as lokalized-java 3.0.0 under the pinned data and reference-runtime versions."
+          "statement": "Shared required vectors produce the same complete semantic result as lokalized-java 3.1.0 under the pinned data and reference-runtime versions. (Was 3.0.0; the maintainer's decision of 2026-09-20 sets the parity target to 3.1.0, and the recorded corpus has been 3.1.0-SNAPSHOT's since M-R S12. 3.1.0 is not yet released.)"
         },
         {
           "id": "CLAIM-STRICT-DATA",
@@ -20,7 +20,7 @@
         {
           "id": "CLAIM-RUNTIME-SURFACES",
           "sourceAnchor": "\u00a71.1 and \u00a73.1",
-          "statement": "The supported surfaces are ESM on Node 20+, the named exact-floor browsers, bundlers, and direct browser modules through only the declared package entry points."
+          "statement": "The supported surfaces are ESM on Node 20+, browsers COMPILED for the named floors (Safari 16.4, Chrome 111, Firefox 111) and EXECUTED on one current engine, bundlers, and direct browser modules through only the declared package entry points. (Amendment A23, 2026-09-20: the claim was 'the named exact-floor browsers', which read as executed-at-the-floors and never was.)"
         },
         {
           "id": "CLAIM-CORE-FEATURES",
@@ -51,7 +51,8 @@
       "incompleteReasons": [
         "The machine-valid, agent-reconciled inventory has not yet received human approval of this claim list's completeness.",
         "No human reviewer has approved the claim boundaries.",
-        "No human decision owner has selected this profile."
+        "No human decision owner has selected this profile.",
+        "Two claims were restated on 2026-09-20 for amendments A23 and the 3.1.0 parity decision; the restatements have not themselves been human-reviewed."
       ]
     }
   ]

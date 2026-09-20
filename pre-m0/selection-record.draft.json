@@ -2,8 +2,8 @@
   "formatVersion": 1,
   "status": "draft-unapproved",
   "selectedProfileId": "strict-parity-0.x-draft",
-  "profileRegistrySha256": null,
-  "bootstrapRequirementsSha256": null,
+  "profileRegistrySha256": "56a9f8819947bbcf10bd67e02a2e94a50c5ea7f5061dad9f103ab34129a31cad",
+  "bootstrapRequirementsSha256": "649fabc4a99cac5798747ed17af05752d63388813ce4b54e084a74b632952136",
   "predecessorSelectionSha256": null,
   "approvals": {
     "humanReviewer": null,

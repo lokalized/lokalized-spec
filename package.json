@@ -14,7 +14,7 @@
     "check:surface": "node scripts/java-surface-audit.mjs",
     "check:schemas": "node scripts/validate-artifacts.mjs",
     "check:partitions": "node tools/partition-check.mjs",
-    "check": "npm run check:snapshot && npm run check:allowlist && npm run check:documentation-topics && npm run check:parity-obligations && npm run check:surface && npm run check:schemas && npm run check:partitions && npm run check:registry && npm run check:iana && npm run check:iana-registry && npm run check:provenance && npm run check:datalock && npm run check:archive && npm run check:vectors && npm run check:coverage",
+    "check": "npm run check:snapshot && npm run check:allowlist && npm run check:documentation-topics && npm run check:parity-obligations && npm run check:surface && npm run check:schemas && npm run check:partitions && npm run check:registry && npm run check:iana && npm run check:iana-registry && npm run check:provenance && npm run check:selection && npm run check:datalock && npm run check:archive && npm run check:vectors && npm run check:evidence && npm run check:coverage",
     "check:registry": "node pre-m0/registry-linter.mjs",
     "check:m0": "node scripts/check-m0.mjs",
     "check:iana-registry": "node tools/iana-oracle/registry.mjs",
@@ -24,7 +24,10 @@
     "check:vectors": "node tools/vector-oracle/build.mjs --check",
     "coverage": "node tools/coverage/run.mjs",
     "check:coverage": "node tools/coverage/check.mjs",
-    "check:provenance": "node tools/provenance-check.mjs"
+    "check:provenance": "node tools/provenance-check.mjs",
+    "check:selection": "node tools/selection-record-check.mjs",
+    "evidence": "node tools/evidence-closure.mjs --write",
+    "check:evidence": "node tools/evidence-closure.mjs --check"
   },
   "devDependencies": {
     "ajv": "^8.17.1"

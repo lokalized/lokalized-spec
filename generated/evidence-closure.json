@@ -1,0 +1,44 @@
+{
+  "formatVersion": 1,
+  "note": "Evidence closure over the bootstrap requirement registry. REPORTED, not gated (A27). The producer sweep reads four whole trees and costs ~36s, so it runs here and `--check` re-checks this record without sweeping — the same split as diff:all/diff:check.",
+  "measuredWith": "tools/evidence-closure.mjs",
+  "inputs": {
+    "registrySha256": "649fabc4a99cac5798747ed17af05752d63388813ce4b54e084a74b632952136",
+    "corpusSha256": "d39620811c5d867424261f5edca9bd3dbd355d113e7e5a38709cfd496dbb7868",
+    "toolSha256": "95238d6c10ca849778d5d53853e79bc93a4dd2ced3cb411a4be58260da581939"
+  },
+  "requirements": 1338,
+  "reviewed": 0,
+  "notActivatedAtM0": 119,
+  "distinctEvidenceIds": 762,
+  "corpusCases": 2379,
+  "corpusCasesCarryingARequirementId": 0,
+  "evidenceIdsWithAProducer": 6,
+  "closureEdges": 0,
+  "producers": {
+    "js.load.coverage-lookup-locale-not-in-manifest": [
+      "lokalized-spec/generated/evidence-closure.json",
+      "planning/M8-PLAN.md"
+    ],
+    "js.load.covered-locales-exact": [
+      "lokalized-spec/generated/evidence-closure.json",
+      "planning/M8-PLAN.md"
+    ],
+    "js.load.planned-locales-order": [
+      "lokalized-spec/generated/evidence-closure.json",
+      "planning/M8-PLAN.md"
+    ],
+    "js.loading.browser": [
+      "lokalized-spec/generated/evidence-closure.json",
+      "planning/M8-PLAN.md"
+    ],
+    "js.loading.node": [
+      "lokalized-spec/generated/evidence-closure.json",
+      "planning/M8-PLAN.md"
+    ],
+    "js.manifest-planning": [
+      "lokalized-spec/generated/evidence-closure.json",
+      "planning/M8-PLAN.md"
+    ]
+  }
+}
