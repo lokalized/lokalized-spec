@@ -1,6 +1,6 @@
 # IANA language-range equivalents — provenance
 
-Artifact: `generated/iana-language-range-equivalents.json` (806 entries, 21,338 bytes, canonical JCS)
+Artifact: `generated/iana-language-range-equivalents.json` (818 entries, 21,742 bytes, canonical JCS)
 Lock: `generated/iana-data-lock.json`
 Build: `node tools/iana-oracle/build.mjs --write | --check`
 
@@ -18,10 +18,134 @@ calls exactly that API. Deriving from the oracle makes divergence *structurally 
 nothing to reconcile, and `jdkCompatibilityOverrides` is empty because no override can be needed. The
 v7 route reaches the same place by a longer path that can leave residual differences.
 
-**What it costs:** `ianaRegistryFileDate` is `null`. The artifact is pinned to a JDK build, not to a
-registry release. If the project later wants IANA-release provenance — or wants to adopt newer IANA
-behavior than the JDK carries — that is a separately versioned contract, exactly as §5.1 says, and it
-would require the registry snapshot this build deliberately does not fetch.
+**What it costs:** `ianaRegistryFileDate` is `null` in THIS artifact. It is pinned to a JDK build,
+not to a registry release. If the project later wants IANA-release provenance — or wants to adopt
+newer IANA behavior than the JDK carries — that is a separately versioned contract, exactly as §5.1
+says, and it would require a registry snapshot this build does not fetch.
+
+## THE ORACLE MOVED — lokalized-java 3.1.0
+
+**Everything above describes the artifact as it was derived until now, and the paragraph beneath it
+is the reason this section exists.** `iana-language-range-equivalents.json` was derived from
+`java.util.Locale.LanguageRange.parse`, which was the right oracle while lokalized-java called it.
+As of 3.1.0 the library carries its own registry-sourced table, so the oracle moved and the
+artifact is now derived by probing THE LIBRARY: `tools/iana-oracle/library/com/lokalized/
+ExtractLibrary.java`, run by `node tools/iana-oracle/build.mjs --write --library`.
+
+The property the paragraphs above argue for is preserved rather than abandoned. Deriving from the
+oracle still makes divergence structurally impossible; it is a different oracle. The JDK mode is
+kept, because it produced every artifact before this and the comparison between the two IS the
+evidence for the change.
+
+**What moved, measured:** 806 entries to **818**, **zero removed and zero changed**. `source` is now
+`lokalized-java` and `ianaRegistryFileDate` is `2026-09-17`, a real date, where it was `null` for
+the life of this artifact.
+
+Twelve keys were added, and they arrived in two goes for two different reasons. **Eight** — `bh`,
+`bih`, `enm`, `mgp`, `mrd`, `mrh`, `shl`, `yol` — are the registry equivalences the library learned.
+**Four more** — `dyl`, `sgn-dyl`, `zhk`, `sgn-zhk` — were in the library's table all along and had
+simply never been PROBED: `candidates.mjs` seeded the probe space from the JDK's own equivalence
+keys, which was right while the JDK was the oracle and is a space derived from the wrong
+implementation once the library answers. `LibraryEquivalenceKeys` dumps the oracle's own 781 keys
+before the space is built, and `build.mjs` now requires an entry for every key of EITHER table.
+That is the same defect, one implementation over, as the four JDK keys (`cmn-hans`, `cmn-hant`,
+`lv-lvs`, `lv-ltg`) that made `jdk-equivalence-keys.txt` necessary in the first place.
+
+### AND THE ARTIFACT STILL PROBES THE JDK, because 3.1.0 has TWO tables
+
+`IanaLanguageEquivalents.parse` is not a replacement for `java.util.Locale.LanguageRange.parse`; it
+is a second table used in two specific places. lokalized-java 3.1.0 calls it from
+`LocaleMatcher#bestMatchForAcceptLanguage` and `DefaultStrings#addParsedLanguageRangeIdentities`,
+both INSIDE the library, and a caller who builds a `List<LanguageRange>` still uses the JDK's parse.
+`VectorOracle.languageRangesFrom` says the same thing from the corpus side: a `matchFor` case's
+string input is parsed "before the library is entered".
+
+So a consumer of this artifact needs to know which keys are the library's alone. Shipping two
+closures would double ~23 KB in every browser graph that reaches one, so the artifact carries ONE
+table plus `jdkAbsentTags`, **derived from a second real extraction against the JDK on every run**
+and never hand-maintained. Today that is twelve keys:
+
+<!-- iana:delta -->
+
+`bh`, `bih`, `dyl`, `enm`, `mgp`, `mrd`, `mrh`, `sgn-dyl`, `sgn-zhk`, `shl`, `yol`, `zhk`.
+
+**The encoding's precondition is asserted, not assumed.** `build.mjs` refuses to emit unless the
+library's closure is a strict SUPERSET of the JDK's with every shared class identical **in order**
+— order-exact because the port recovers the JDK's insertion sequence out of the stored class, so a
+class that was merely REORDERED would hand the public parse the wrong sequence under the right
+name. It also refuses an EMPTY delta, because two identical tables would mean nothing distinguishes
+the two channels and a consumer's split would be untestable. A key the JDK has and the library does
+not, or a shared class whose members moved, fails the run naming the key: the
+single-table-plus-delta form cannot express either.
+
+## THE SNAPSHOT NOW EXISTS — M-R S11, 2026-09-19
+
+**The maintainer asked for it**, having noticed that `ianaRegistryDate` reads `jdk-oracle:21.0.11`
+and that "oracle" is easy to read as the vendor rather than as the testing term it is. The paragraph
+above still describes `iana-language-range-equivalents.json` correctly; what follows is the other
+half §5.1 asks for, added WITHOUT changing what the port does.
+
+`tools/iana-oracle/language-subtag-registry.txt` is the real registry, fetched from
+`https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry`:
+**`File-Date: 2026-09-17`, 9,296 records, 731,819 bytes**, sha256
+`755fad43283be7b41ebe3c89ad054b6eaf928f404f9c0edb74799e0eab74beb1`.
+
+`tools/iana-oracle/registry.mjs` derives the registry's own closure from it — 781 entries, by
+union-find over every LANGUAGE-side `Preferred-Value` and every `extlang`'s `prefix-subtag`
+equivalence — and computes the difference against the JDK's 806.
+**`generated/iana-registry-overrides.json` is that difference: 142 rows, 81 order-only, 37
+JDK-only, 12 registry-only, 12 membership**, each row placed in a FAMILY whose cause is recorded
+and whose count is asserted against the table.
+
+**THE FIRST DERIVATION WAS WRONG AND THE NUMBER WAS 156.** It ran union-find over every record
+carrying a `Preferred-Value` without discriminating record TYPE, which flattened six REGION records
+(DD→DE, FX→FR, BU→MM, ZR→CD, TP→TL, YD→YE) and one VARIANT record (heploc→alalc97) into the same
+namespace as languages and emitted them as bare keys. That is not a keying nuance — it claimed `de`
+is equivalent to `dd`, so the range `de` (German) would expand to `dd` and `de-CH` to `dd-CH`, where
+the JDK expands neither. The JDK keeps exactly those fourteen in a separate map whose keys all carry
+a leading hyphen, confining them to non-initial subtag positions; they are now kept apart here too
+and listed as `regionVariantAliases`. Removing them took the table from 156 rows to 142, which is
+exactly the split two independent investigations predicted.
+
+**THE TABLE IS VERIFIED BY RECONSTRUCTION RATHER THAN BY INSPECTION**, which is what makes it
+trustworthy: applying all 156 overrides to the registry closure reproduces the JDK artifact
+byte-identically. A missing row would leave a difference and a redundant row is reported, so the
+table cannot be short and cannot be padded. `npm run check:iana-registry` re-derives it every run.
+
+**THE PORT'S BEHAVIOUR IS UNCHANGED AND THAT IS DELIBERATE.** Parity with lokalized-java 3.0.0 is
+the product, and lokalized-java calls `java.util.Locale.LanguageRange.parse`. Adopting the
+registry's closure would make this package disagree with a Java deployment on 69 tags. What the
+snapshot buys is provenance: a real `File-Date`, a pinned byte digest, and an enumerated,
+reconstruction-checked account of every place the JDK and IANA differ.
+
+**WHAT THE 142 ARE, in one line each, measured against the JDK's own `src.zip` rather than
+inferred.** 37 JDK-only rows are `LocaleMatcher.getEquivalentForRegionAndVariant` substituting a
+trailing region or variant by raw substring — it fires on `ar-de` and never on bare `de` — showing
+up as standalone keys only because the closure is built by exhaustive probe. 12 registry-only rows
+are version skew: `LocaleEquivalentMaps.java` is stamped `LSR Revision: 2025-05-15` in JDK 21 and
+`2026-05-05` in JDK 27, against this snapshot's 2026-09-17. 12 membership rows are the same region
+substitution one level deeper, synthesising `sgn-dd`, `sgn-fx`, `sgn-be-fx` and `sgn-ch-dd`, none of
+which appears in any registry record. 81 are order-only, because nothing in the registry determines
+an order and the JDK's is `parse`'s insertion sequence.
+
+**ORDER IS LOAD-BEARING, WHICH IS THE REASON A REGISTRY-DERIVED CLOSURE CANNOT SIMPLY BE ADOPTED.**
+Ablated: reversing the non-first members of every class takes conformance from 2,150/0 to 2,128/22
+and reds four tests. Every one of the 22 differs ONLY in the echoed `requestedLanguageRanges` and
+the selected locale is identical in all of them — so order is a compared public output rather than a
+catalog-selection input, and a replacement closure would have to reproduce it.
+
+**AND 37 OF THE 806 SHIPPED ROWS ARE INERT — 4.6% of the artifact.** Deleting the JDK-only rows from
+`lokalized-js/src/data/iana-range-equivalents.js` (806 → 769) leaves the port matching the real JDK
+on 115,178 of 115,178 parseable ranges, because `src/negotiate/index.js` already carries the same
+14-entry region/variant map inline and composes the two arms as `LocaleMatcher` does. The
+anti-vacuity control holds: removing the load-bearing `he` row reds 1. Recorded rather than acted
+on — deleting rows from a pinned parity artifact is a separate, reviewed change.
+
+**Measured while doing it, and worth knowing before anyone re-pins the oracle:** Corretto 27
+(27.0.0.35.1) yields 812 entries against Corretto 21's 806 — strictly six more (`dyl`, `enm`,
+`sgn-dyl`, `sgn-zhk`, `yol`, `zhk`), zero changed, zero removed — and zero of the corpus's 2,363
+cases touch any of them. Two of those six also appear in the registry-only column here, which is
+the registry being ahead of JDK 21 rather than a disagreement.
 
 ## The probe space — stated first, because every claim below is scoped to it
 

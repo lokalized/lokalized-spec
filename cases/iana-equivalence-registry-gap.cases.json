@@ -1,0 +1,180 @@
+{
+  "cases": [
+    {
+      "id": "iana-equivalence.control.bh-canonicalized-header",
+      "requirementIds": [],
+      "fixture": "iana-equivalence-preferred-catalogs",
+      "operation": "acceptLanguage",
+      "input": {
+        "header": "bh"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "MEASURED INERT FOR THE IANA TABLE, AND KEPT AS A CONTROL THAT SAYS SO. bh -> bih is BOTH an IANA deprecation (2026-06-14) and a CLDR languageAlias, and the CLDR one wins: canonicalization resolves it before the equivalence table is ever consulted, so re-recording against a build whose IANA table DOES know the deprecation changes nothing here. It was authored expecting to discriminate and does not \u2014 the zh-123 shape, where an earlier mechanism answers the probe. CORRECTED: this note used to offer the recorded matchType as the tell ('the recorded answer carries matchType CANONICAL'). An acceptLanguage case records ONLY bestMatch \u2014 this row's expected block is {\"acceptLanguage\":{\"bestMatch\":\"bih\"}} and carries no matchType at all \u2014 so the tell was a field the row does not have. The attribution stands; it rests on the CLDR alias data, not on anything this row records. Kept because it pins which mechanism owns this tag, and because a reader comparing it with the yol rows can see that two deprecations of the same vintage travel different paths."
+    },
+    {
+      "id": "iana-equivalence.control.bh-canonicalized-locale",
+      "requirementIds": [],
+      "fixture": "iana-equivalence-preferred-catalogs",
+      "operation": "matchFor",
+      "input": {
+        "locale": "bh"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The locale ingress for the same CLDR-canonicalized pair. CORRECTED: this note used to say its CANONICAL matchType is what separates the two mechanisms, 'where every discriminating row in this file records a fallback or a NONE'. It separates nothing \u2014 the IANA-sourced locale rows added beside it record matchType CANONICAL too, because canonicalization and the equivalence table produce the SAME match type by different routes. What makes this row a control is its insensitivity: deleting the registry delta from the port leaves it green while the mgp and mrd locale rows go red, which is the only statement of the difference that a machine re-derives."
+    },
+    {
+      "id": "iana-equivalence.control.bih-canonicalized-header",
+      "requirementIds": [],
+      "fixture": "iana-equivalence-deprecated-catalogs",
+      "operation": "acceptLanguage",
+      "input": {
+        "header": "bih"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The reverse of the bh row and inert for the same measured reason: CLDR canonicalization is symmetric here too."
+    },
+    {
+      "id": "iana-equivalence.control.enm-direct-header",
+      "requirementIds": [],
+      "fixture": "iana-equivalence-preferred-catalogs",
+      "operation": "acceptLanguage",
+      "input": {
+        "header": "enm"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "ANTI-VACUITY CONTROL, and it is read before every discriminating row below. A direct hit on a catalog this fixture actually carries: if this does not answer enm, the fixture's catalogs are not loading and every 'fell back to fr' result below means nothing, because falling back is what a fixture with no catalogs does too."
+    },
+    {
+      "id": "iana-equivalence.control.no-equivalence-header",
+      "requirementIds": [],
+      "fixture": "iana-equivalence-preferred-catalogs",
+      "operation": "acceptLanguage",
+      "input": {
+        "header": "xh"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "THE OTHER HALF OF THE CONTROL. Xhosa is a real language, has no catalog here and participates in no IANA equivalence class, so it must reach the configured fallback. Without it an implementation that answered SOME catalog for every input would pass the row above and every row below that expects a match."
+    },
+    {
+      "id": "iana-equivalence.control.no-equivalence-locale",
+      "requirementIds": [],
+      "fixture": "iana-equivalence-deprecated-catalogs",
+      "operation": "matchFor",
+      "input": {
+        "locale": "xh"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "THE CONTROL FOR THE TWO LOCALE ROWS, and not redundant with the header control: this is a different entry point with a different identity walk. Xhosa has no catalog here and participates in no IANA equivalence class, so an implementation that answered SOME catalog for every locale would pass both rows above without it."
+    },
+    {
+      "id": "iana-equivalence.control.yol-direct-header",
+      "requirementIds": [],
+      "fixture": "iana-equivalence-deprecated-catalogs",
+      "operation": "acceptLanguage",
+      "input": {
+        "header": "yol"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "THE MIRROR FIXTURE'S ANTI-VACUITY CONTROL: yol IS a catalog here, so this must answer yol by direct hit and not by equivalence. It is what makes the reversed rows below readable."
+    },
+    {
+      "id": "iana-equivalence.registry-gap.enm-header",
+      "requirementIds": [],
+      "fixture": "iana-equivalence-deprecated-catalogs",
+      "operation": "acceptLanguage",
+      "input": {
+        "header": "enm"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "THE REVERSE DIRECTION, and it is not redundant. An equivalence class is symmetric, so an implementation that mapped deprecated->preferred only would answer every row in the other fixture correctly and fail here. Requesting the preferred tag against a catalog for the deprecated one is the only way to see that."
+    },
+    {
+      "id": "iana-equivalence.registry-gap.mgp-locale",
+      "requirementIds": [],
+      "fixture": "iana-equivalence-deprecated-catalogs",
+      "operation": "matchFor",
+      "input": {
+        "locale": "mgp"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "THE SINGLE-LOCALE DOOR, which the header and range rows do not reach. lokalized-java calls its registry table from two sites, and DefaultStrings#addParsedLanguageRangeIdentities serves this door as well as the whole-list one; the port serves it from a separate REDUCED table inlined in src/internal/locale.js. Measured before authoring: deleting every registry-only row from that table left conformance at 2,162 passed / 0 FAILED with only a table-regeneration test red, and a port that KEEPS the rows and stops consulting them was green across the entire repository. Blinding the whole table reds one pre-existing case (browser-chooser.conflict.sgn-no-solvers-diverge.locale), so the door's use of the table was gated and the registry delta was not \u2014 which is the falsifiable statement this row exists for."
+    },
+    {
+      "id": "iana-equivalence.registry-gap.mgp-ranges",
+      "requirementIds": [],
+      "fixture": "iana-equivalence-deprecated-catalogs",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "mgp"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The reverse direction through the range door, so neither direction is covered by one entry point alone."
+    },
+    {
+      "id": "iana-equivalence.registry-gap.mrd-header",
+      "requirementIds": [],
+      "fixture": "iana-equivalence-preferred-catalogs",
+      "operation": "acceptLanguage",
+      "input": {
+        "header": "mrd"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "mrd -> mgp, deprecated 2026-08-08."
+    },
+    {
+      "id": "iana-equivalence.registry-gap.mrd-locale",
+      "requirementIds": [],
+      "fixture": "iana-equivalence-preferred-catalogs",
+      "operation": "matchFor",
+      "input": {
+        "locale": "mrd"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The mirror at the locale door, for the reason the header door already has four rows: one row proves the delta is consulted, and cannot tell 'knows this deprecation' from 'knows deprecations'. Deprecated tag requested against the preferred catalog, where the row above is the preferred tag requested against the deprecated one."
+    },
+    {
+      "id": "iana-equivalence.registry-gap.mrh-header",
+      "requirementIds": [],
+      "fixture": "iana-equivalence-deprecated-catalogs",
+      "operation": "acceptLanguage",
+      "input": {
+        "header": "mrh"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "THE MIRROR OF shl-header, and the pair that was authored one-way. This file argues that an equivalence class is symmetric, so an implementation mapping deprecated->preferred only would answer every row in the other fixture correctly and fail here \u2014 and it authored both directions for yol/enm and for mgp/mrd and only one for shl/mrh. Measured: before this row, a port that dropped `mrh` from its table reddened nothing."
+    },
+    {
+      "id": "iana-equivalence.registry-gap.shl-header",
+      "requirementIds": [],
+      "fixture": "iana-equivalence-preferred-catalogs",
+      "operation": "acceptLanguage",
+      "input": {
+        "header": "shl"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "shl -> mrh, deprecated 2026-08-08. Four deprecations rather than one because a single row cannot tell 'this implementation knows this deprecation' from 'this implementation knows deprecations'. Its mirror is iana-equivalence.registry-gap.mrh-header: the file's own rationale is that an equivalence class is SYMMETRIC, and shl/mrh was the one pair authored in a single direction."
+    },
+    {
+      "id": "iana-equivalence.registry-gap.yol-header",
+      "requirementIds": [],
+      "fixture": "iana-equivalence-preferred-catalogs",
+      "operation": "acceptLanguage",
+      "input": {
+        "header": "yol"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "yol was deprecated in favour of enm. The registry records the equivalence; the JDK's bundled snapshot is older than the deprecation, so LanguageRange.parse does not expand it and the header reaches the fallback instead of the enm catalog. THIS ROW IS WHY THE FAMILY EXISTS: the answer here is a function of which registry snapshot the implementation carries, and before these cases the corpus contained no tag whose answer depended on that."
+    },
+    {
+      "id": "iana-equivalence.registry-gap.yol-ranges",
+      "requirementIds": [],
+      "fixture": "iana-equivalence-preferred-catalogs",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": "yol"
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The same equivalence through the OTHER door, and what that buys is narrower than this note used to claim. IT READ: 'The Accept-Language rows above exercise LocaleMatcher's header entry point; this exercises DefaultStrings' range matching ... one door's rows cannot see it.' MEASURED AND FALSE on the half about the header rows. lokalized-java 3.1.0 reaches its registry table from two call sites \u2014 LocaleMatcher#bestMatchForAcceptLanguage and DefaultStrings#addParsedLanguageRangeIdentities \u2014 and the four acceptLanguage rows discriminate NEITHER: cutting either one alone leaves all four green, because the surviving site still finds the equivalence. Only cutting BOTH reds them. This row and its mgp twin are the ones that red under the identity channel alone. The header rows are kept and are not inert: with both sites cut, all four fall to the fr fallback, so they pin end-to-end knowledge of these deprecations through the header API, over four distinct tags so one row cannot pass for 'knows deprecations'. WHY NO CASE CAN DO BETTER: VectorOracle records one bare Locale for an acceptLanguage case, so no case of that operation can ever observe the parsed range list. Which call site supplies an expansion is a structural blind spot of the corpus, not an authoring gap \u2014 adding header rows will not close it. test/negotiate.test.js is the whole enforcement there."
+    }
+  ]
+}

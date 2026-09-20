@@ -1,0 +1,1805 @@
+{
+  "$comment": "DERIVED by tools/iana-oracle/registry.mjs. The port's behaviour is the JDK's, because parity with lokalized-java is the product. This records the REGISTRY provenance plan 5.1 asks for and the exact rows where the two disagree, verified by reconstruction.",
+  "formatVersion": 1,
+  "registrySnapshot": {
+    "path": "tools/iana-oracle/language-subtag-registry.txt",
+    "source": "https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry",
+    "fileDate": "2026-09-17",
+    "bytes": 731819,
+    "sha256": "755fad43283be7b41ebe3c89ad054b6eaf928f404f9c0edb74799e0eab74beb1",
+    "records": 9296
+  },
+  "registryClosureEntries": 781,
+  "regionVariantAliases": [
+    {
+      "from": "bu",
+      "to": "mm",
+      "type": "region"
+    },
+    {
+      "from": "dd",
+      "to": "de",
+      "type": "region"
+    },
+    {
+      "from": "fx",
+      "to": "fr",
+      "type": "region"
+    },
+    {
+      "from": "heploc",
+      "to": "alalc97",
+      "type": "variant"
+    },
+    {
+      "from": "tp",
+      "to": "tl",
+      "type": "region"
+    },
+    {
+      "from": "yd",
+      "to": "ye",
+      "type": "region"
+    },
+    {
+      "from": "zr",
+      "to": "cd",
+      "type": "region"
+    }
+  ],
+  "shippedClosureEntries": 818,
+  "overrideCounts": {
+    "order-only": 81,
+    "jdk-only": 37,
+    "membership": 12
+  },
+  "families": [
+    {
+      "kind": "jdk-only",
+      "count": 37,
+      "what": "`<prefix>-de|fr|tl`, plus `sw-cd`, `und-alalc97` and `und-hepburn-heploc`",
+      "why": "`LocaleMatcher.getEquivalentForRegionAndVariant` substitutes a trailing region or variant by raw substring against a 14-entry map whose keys ALL begin with a hyphen, so it fires on `ar-de` and never on bare `de`. These rows are not registry content: the closure is built by exhaustive probe, so wherever the probe space happened to pair a language with `-de`, `-fr`, `-tl` or `-cd`, a standalone key appeared. 34 come from 12 macrolanguage prefixes x 3 tails minus `sgn-de`/`sgn-fr`, which are registered IANA redundant tags and so exist on both sides.",
+      "consumerVisible": "constantly, not exotically: `parse(\"de-DE\")` returns `[de-de, de-dd]`"
+    },
+    {
+      "kind": "registry-only",
+      "count": 0,
+      "what": "registry equivalences the pinned closure cannot express",
+      "why": "WAS TWELVE, THEN FOUR, AND IS NOW ZERO — and the four were never inexpressible, which is what this entry used to say. The eight `bh`/`bih`/`enm`/`mgp`/`mrd`/`mrh`/`shl`/`yol` stopped being divergences the day lokalized-java 3.1.0 learned them. The last four — `dyl`/`sgn-dyl` and `zhk`/`sgn-zhk` — were recorded here as something 'no closure keyed on parse output can express', on the reasoning that `Locale#forLanguageTag` canonicalizes `sgn-dyl` to `dyl`. **MEASURED AND FALSE: `IanaLanguageEquivalents.parse(\"dyl\")` answers `[dyl, sgn-dyl]` and `parse(\"sgn-dyl\")` answers `[sgn-dyl, dyl]`.** They were simply never PROBED: the candidate space was seeded from the JDK's equivalence keys, and these four are the library's alone. `LibraryEquivalenceKeys` seeds from the oracle's own table now and the closure carries all four (814 -> 818 entries). The family is kept at zero rather than deleted because the count is the record of the repair.",
+      "consumerVisible": "no rows remain"
+    },
+    {
+      "kind": "membership",
+      "count": 12,
+      "what": "sign-language classes that gain a deprecated-region twin",
+      "why": "The same region substitution arriving one level deeper: `parse` runs it not only on the input range but on every language equivalent it produces, synthesising `sgn-dd`, `sgn-fx`, `sgn-be-fx` and `sgn-ch-dd`. `sgn-DD` and `sgn-FX` appear in ZERO registry records — the JDK is composing two deprecations in six of the rows and textually mangling a grandfathered tag in the other six.",
+      "consumerVisible": "only for a range naming a deprecated region beside a sign language"
+    },
+    {
+      "kind": "order-only",
+      "count": 81,
+      "what": "same membership, different sequence",
+      "why": "Nothing in the registry determines an order. The JDK's is `parse`'s insertion sequence — the input is element 0 and each derived range is spliced at index+1 — which a union-find cannot reproduce. Only 123 of the 806 classes have three or more members, so most classes cannot differ at all.",
+      "consumerVisible": "YES, and it is gated: reversing the non-member order takes conformance from 2,150/0 to 2,128/22 and reds 4 tests. Every one of the 22 differs ONLY in the echoed `requestedLanguageRanges` — the SELECTED locale is identical in all of them — so order is a compared public output, not a catalog-selection input."
+    }
+  ],
+  "overrides": [
+    {
+      "key": "aeb",
+      "kind": "order-only",
+      "registry": [
+        "aeb",
+        "ajt",
+        "ar-aeb"
+      ],
+      "shipped": [
+        "aeb",
+        "ar-aeb",
+        "ajt"
+      ]
+    },
+    {
+      "key": "ajp",
+      "kind": "order-only",
+      "registry": [
+        "ajp",
+        "apc",
+        "ar-ajp",
+        "ar-apc"
+      ],
+      "shipped": [
+        "ajp",
+        "ar-apc",
+        "ar-ajp",
+        "apc"
+      ]
+    },
+    {
+      "key": "ajt",
+      "kind": "order-only",
+      "registry": [
+        "ajt",
+        "aeb",
+        "ar-aeb"
+      ],
+      "shipped": [
+        "ajt",
+        "ar-aeb",
+        "aeb"
+      ]
+    },
+    {
+      "key": "apc",
+      "kind": "order-only",
+      "registry": [
+        "apc",
+        "ajp",
+        "ar-ajp",
+        "ar-apc"
+      ],
+      "shipped": [
+        "apc",
+        "ar-apc",
+        "ar-ajp",
+        "ajp"
+      ]
+    },
+    {
+      "key": "ar-aeb",
+      "kind": "order-only",
+      "registry": [
+        "ar-aeb",
+        "aeb",
+        "ajt"
+      ],
+      "shipped": [
+        "ar-aeb",
+        "ajt",
+        "aeb"
+      ]
+    },
+    {
+      "key": "ar-ajp",
+      "kind": "order-only",
+      "registry": [
+        "ar-ajp",
+        "ajp",
+        "apc",
+        "ar-apc"
+      ],
+      "shipped": [
+        "ar-ajp",
+        "ar-apc",
+        "ajp",
+        "apc"
+      ]
+    },
+    {
+      "key": "ar-apc",
+      "kind": "order-only",
+      "registry": [
+        "ar-apc",
+        "ajp",
+        "apc",
+        "ar-ajp"
+      ],
+      "shipped": [
+        "ar-apc",
+        "ar-ajp",
+        "ajp",
+        "apc"
+      ]
+    },
+    {
+      "key": "ar-de",
+      "kind": "jdk-only",
+      "registry": null,
+      "shipped": [
+        "ar-de",
+        "ar-dd"
+      ]
+    },
+    {
+      "key": "ar-fr",
+      "kind": "jdk-only",
+      "registry": null,
+      "shipped": [
+        "ar-fr",
+        "ar-fx"
+      ]
+    },
+    {
+      "key": "ar-tl",
+      "kind": "jdk-only",
+      "registry": null,
+      "shipped": [
+        "ar-tl",
+        "ar-tp"
+      ]
+    },
+    {
+      "key": "ase",
+      "kind": "order-only",
+      "registry": [
+        "ase",
+        "sgn-ase",
+        "sgn-us"
+      ],
+      "shipped": [
+        "ase",
+        "sgn-us",
+        "sgn-ase"
+      ]
+    },
+    {
+      "key": "bfi",
+      "kind": "order-only",
+      "registry": [
+        "bfi",
+        "sgn-bfi",
+        "sgn-gb"
+      ],
+      "shipped": [
+        "bfi",
+        "sgn-gb",
+        "sgn-bfi"
+      ]
+    },
+    {
+      "key": "blg",
+      "kind": "order-only",
+      "registry": [
+        "blg",
+        "iba",
+        "snb"
+      ],
+      "shipped": [
+        "blg",
+        "snb",
+        "iba"
+      ]
+    },
+    {
+      "key": "ccq",
+      "kind": "order-only",
+      "registry": [
+        "ccq",
+        "rki",
+        "ybd"
+      ],
+      "shipped": [
+        "ccq",
+        "ybd",
+        "rki"
+      ]
+    },
+    {
+      "key": "cmn",
+      "kind": "order-only",
+      "registry": [
+        "cmn",
+        "zh-cmn",
+        "zh-guoyu"
+      ],
+      "shipped": [
+        "cmn",
+        "zh-guoyu",
+        "zh-cmn"
+      ]
+    },
+    {
+      "key": "cmn-de",
+      "kind": "jdk-only",
+      "registry": null,
+      "shipped": [
+        "cmn-de",
+        "zh-guoyu-dd",
+        "zh-guoyu-de",
+        "zh-cmn-dd",
+        "zh-cmn-de",
+        "cmn-dd"
+      ]
+    },
+    {
+      "key": "cmn-fr",
+      "kind": "jdk-only",
+      "registry": null,
+      "shipped": [
+        "cmn-fr",
+        "zh-guoyu-fx",
+        "zh-guoyu-fr",
+        "zh-cmn-fx",
+        "zh-cmn-fr",
+        "cmn-fx"
+      ]
+    },
+    {
+      "key": "cmn-tl",
+      "kind": "jdk-only",
+      "registry": null,
+      "shipped": [
+        "cmn-tl",
+        "zh-guoyu-tp",
+        "zh-guoyu-tl",
+        "zh-cmn-tp",
+        "zh-cmn-tl",
+        "cmn-tp"
+      ]
+    },
+    {
+      "key": "drw",
+      "kind": "order-only",
+      "registry": [
+        "drw",
+        "prs",
+        "tnf"
+      ],
+      "shipped": [
+        "drw",
+        "tnf",
+        "prs"
+      ]
+    },
+    {
+      "key": "dse",
+      "kind": "order-only",
+      "registry": [
+        "dse",
+        "sgn-dse",
+        "sgn-nl"
+      ],
+      "shipped": [
+        "dse",
+        "sgn-nl",
+        "sgn-dse"
+      ]
+    },
+    {
+      "key": "dtp",
+      "kind": "order-only",
+      "registry": [
+        "dtp",
+        "ktr",
+        "kzj",
+        "kzt",
+        "tdu"
+      ],
+      "shipped": [
+        "dtp",
+        "tdu",
+        "kzt",
+        "kzj",
+        "ktr"
+      ]
+    },
+    {
+      "key": "fsl",
+      "kind": "membership",
+      "registry": [
+        "fsl",
+        "sgn-fr",
+        "sgn-fsl"
+      ],
+      "shipped": [
+        "fsl",
+        "sgn-fx",
+        "sgn-fr",
+        "sgn-fsl"
+      ]
+    },
+    {
+      "key": "gfx",
+      "kind": "order-only",
+      "registry": [
+        "gfx",
+        "mwj",
+        "oun",
+        "vaj"
+      ],
+      "shipped": [
+        "gfx",
+        "oun",
+        "mwj",
+        "vaj"
+      ]
+    },
+    {
+      "key": "gsg",
+      "kind": "membership",
+      "registry": [
+        "gsg",
+        "sgn-de",
+        "sgn-gsg"
+      ],
+      "shipped": [
+        "gsg",
+        "sgn-dd",
+        "sgn-de",
+        "sgn-gsg"
+      ]
+    },
+    {
+      "key": "hak",
+      "kind": "order-only",
+      "registry": [
+        "hak",
+        "i-hak",
+        "zh-hak",
+        "zh-hakka"
+      ],
+      "shipped": [
+        "hak",
+        "zh-hakka",
+        "i-hak",
+        "zh-hak"
+      ]
+    },
+    {
+      "key": "hsn",
+      "kind": "order-only",
+      "registry": [
+        "hsn",
+        "zh-hsn",
+        "zh-xiang"
+      ],
+      "shipped": [
+        "hsn",
+        "zh-xiang",
+        "zh-hsn"
+      ]
+    },
+    {
+      "key": "i-de",
+      "kind": "jdk-only",
+      "registry": null,
+      "shipped": [
+        "i-de",
+        "i-dd"
+      ]
+    },
+    {
+      "key": "i-fr",
+      "kind": "jdk-only",
+      "registry": null,
+      "shipped": [
+        "i-fr",
+        "i-fx"
+      ]
+    },
+    {
+      "key": "i-hak",
+      "kind": "order-only",
+      "registry": [
+        "i-hak",
+        "hak",
+        "zh-hak",
+        "zh-hakka"
+      ],
+      "shipped": [
+        "i-hak",
+        "zh-hakka",
+        "zh-hak",
+        "hak"
+      ]
+    },
+    {
+      "key": "i-tl",
+      "kind": "jdk-only",
+      "registry": null,
+      "shipped": [
+        "i-tl",
+        "i-tp"
+      ]
+    },
+    {
+      "key": "iba",
+      "kind": "order-only",
+      "registry": [
+        "iba",
+        "blg",
+        "snb"
+      ],
+      "shipped": [
+        "iba",
+        "snb",
+        "blg"
+      ]
+    },
+    {
+      "key": "ise",
+      "kind": "order-only",
+      "registry": [
+        "ise",
+        "sgn-ise",
+        "sgn-it"
+      ],
+      "shipped": [
+        "ise",
+        "sgn-it",
+        "sgn-ise"
+      ]
+    },
+    {
+      "key": "jeg",
+      "kind": "order-only",
+      "registry": [
+        "jeg",
+        "oyb",
+        "skk",
+        "thx"
+      ],
+      "shipped": [
+        "jeg",
+        "thx",
+        "skk",
+        "oyb"
+      ]
+    },
+    {
+      "key": "kok-de",
+      "kind": "jdk-only",
+      "registry": null,
+      "shipped": [
+        "kok-de",
+        "kok-dd"
+      ]
+    },
+    {
+      "key": "kok-fr",
+      "kind": "jdk-only",
+      "registry": null,
+      "shipped": [
+        "kok-fr",
+        "kok-fx"
+      ]
+    },
+    {
+      "key": "kok-tl",
+      "kind": "jdk-only",
+      "registry": null,
+      "shipped": [
+        "kok-tl",
+        "kok-tp"
+      ]
+    },
+    {
+      "key": "ktr",
+      "kind": "order-only",
+      "registry": [
+        "ktr",
+        "dtp",
+        "kzj",
+        "kzt",
+        "tdu"
+      ],
+      "shipped": [
+        "ktr",
+        "tdu",
+        "kzt",
+        "kzj",
+        "dtp"
+      ]
+    },
+    {
+      "key": "kzj",
+      "kind": "order-only",
+      "registry": [
+        "kzj",
+        "dtp",
+        "ktr",
+        "kzt",
+        "tdu"
+      ],
+      "shipped": [
+        "kzj",
+        "tdu",
+        "kzt",
+        "ktr",
+        "dtp"
+      ]
+    },
+    {
+      "key": "kzk",
+      "kind": "order-only",
+      "registry": [
+        "kzk",
+        "drr",
+        "gli"
+      ],
+      "shipped": [
+        "kzk",
+        "gli",
+        "drr"
+      ]
+    },
+    {
+      "key": "kzt",
+      "kind": "order-only",
+      "registry": [
+        "kzt",
+        "dtp",
+        "ktr",
+        "kzj",
+        "tdu"
+      ],
+      "shipped": [
+        "kzt",
+        "tdu",
+        "kzj",
+        "ktr",
+        "dtp"
+      ]
+    },
+    {
+      "key": "mfs",
+      "kind": "order-only",
+      "registry": [
+        "mfs",
+        "sgn-mfs",
+        "sgn-mx"
+      ],
+      "shipped": [
+        "mfs",
+        "sgn-mx",
+        "sgn-mfs"
+      ]
+    },
+    {
+      "key": "mry",
+      "kind": "order-only",
+      "registry": [
+        "mry",
+        "mst",
+        "myt"
+      ],
+      "shipped": [
+        "mry",
+        "myt",
+        "mst"
+      ]
+    },
+    {
+      "key": "ms-de",
+      "kind": "jdk-only",
+      "registry": null,
+      "shipped": [
+        "ms-de",
+        "ms-dd"
+      ]
+    },
+    {
+      "key": "ms-fr",
+      "kind": "jdk-only",
+      "registry": null,
+      "shipped": [
+        "ms-fr",
+        "ms-fx"
+      ]
+    },
+    {
+      "key": "ms-tl",
+      "kind": "jdk-only",
+      "registry": null,
+      "shipped": [
+        "ms-tl",
+        "ms-tp"
+      ]
+    },
+    {
+      "key": "mst",
+      "kind": "order-only",
+      "registry": [
+        "mst",
+        "mry",
+        "myt"
+      ],
+      "shipped": [
+        "mst",
+        "myt",
+        "mry"
+      ]
+    },
+    {
+      "key": "mwj",
+      "kind": "order-only",
+      "registry": [
+        "mwj",
+        "gfx",
+        "oun",
+        "vaj"
+      ],
+      "shipped": [
+        "mwj",
+        "oun",
+        "gfx",
+        "vaj"
+      ]
+    },
+    {
+      "key": "myt",
+      "kind": "order-only",
+      "registry": [
+        "myt",
+        "mry",
+        "mst"
+      ],
+      "shipped": [
+        "myt",
+        "mst",
+        "mry"
+      ]
+    },
+    {
+      "key": "ncs",
+      "kind": "order-only",
+      "registry": [
+        "ncs",
+        "sgn-ncs",
+        "sgn-ni"
+      ],
+      "shipped": [
+        "ncs",
+        "sgn-ni",
+        "sgn-ncs"
+      ]
+    },
+    {
+      "key": "no-de",
+      "kind": "jdk-only",
+      "registry": null,
+      "shipped": [
+        "no-de",
+        "no-dd"
+      ]
+    },
+    {
+      "key": "no-fr",
+      "kind": "jdk-only",
+      "registry": null,
+      "shipped": [
+        "no-fr",
+        "no-fx"
+      ]
+    },
+    {
+      "key": "no-tl",
+      "kind": "jdk-only",
+      "registry": null,
+      "shipped": [
+        "no-tl",
+        "no-tp"
+      ]
+    },
+    {
+      "key": "oun",
+      "kind": "order-only",
+      "registry": [
+        "oun",
+        "gfx",
+        "mwj",
+        "vaj"
+      ],
+      "shipped": [
+        "oun",
+        "mwj",
+        "gfx",
+        "vaj"
+      ]
+    },
+    {
+      "key": "oyb",
+      "kind": "order-only",
+      "registry": [
+        "oyb",
+        "jeg",
+        "skk",
+        "thx"
+      ],
+      "shipped": [
+        "oyb",
+        "thx",
+        "skk",
+        "jeg"
+      ]
+    },
+    {
+      "key": "pij",
+      "kind": "order-only",
+      "registry": [
+        "pij",
+        "coy",
+        "nts"
+      ],
+      "shipped": [
+        "pij",
+        "nts",
+        "coy"
+      ]
+    },
+    {
+      "key": "prs",
+      "kind": "order-only",
+      "registry": [
+        "prs",
+        "drw",
+        "tnf"
+      ],
+      "shipped": [
+        "prs",
+        "tnf",
+        "drw"
+      ]
+    },
+    {
+      "key": "psr",
+      "kind": "order-only",
+      "registry": [
+        "psr",
+        "sgn-psr",
+        "sgn-pt"
+      ],
+      "shipped": [
+        "psr",
+        "sgn-pt",
+        "sgn-psr"
+      ]
+    },
+    {
+      "key": "rki",
+      "kind": "order-only",
+      "registry": [
+        "rki",
+        "ccq",
+        "ybd"
+      ],
+      "shipped": [
+        "rki",
+        "ybd",
+        "ccq"
+      ]
+    },
+    {
+      "key": "sfb",
+      "kind": "membership",
+      "registry": [
+        "sfb",
+        "sgn-be-fr",
+        "sgn-sfb"
+      ],
+      "shipped": [
+        "sfb",
+        "sgn-be-fx",
+        "sgn-be-fr",
+        "sgn-sfb"
+      ]
+    },
+    {
+      "key": "sfs",
+      "kind": "order-only",
+      "registry": [
+        "sfs",
+        "sgn-sfs",
+        "sgn-za"
+      ],
+      "shipped": [
+        "sfs",
+        "sgn-za",
+        "sgn-sfs"
+      ]
+    },
+    {
+      "key": "sgg",
+      "kind": "membership",
+      "registry": [
+        "sgg",
+        "sgn-ch-de",
+        "sgn-sgg"
+      ],
+      "shipped": [
+        "sgg",
+        "sgn-ch-dd",
+        "sgn-ch-de",
+        "sgn-sgg"
+      ]
+    },
+    {
+      "key": "sgn-ase",
+      "kind": "order-only",
+      "registry": [
+        "sgn-ase",
+        "ase",
+        "sgn-us"
+      ],
+      "shipped": [
+        "sgn-ase",
+        "sgn-us",
+        "ase"
+      ]
+    },
+    {
+      "key": "sgn-be-fr",
+      "kind": "membership",
+      "registry": [
+        "sgn-be-fr",
+        "sfb",
+        "sgn-sfb"
+      ],
+      "shipped": [
+        "sgn-be-fr",
+        "sgn-sfb",
+        "sfb",
+        "sgn-be-fx"
+      ]
+    },
+    {
+      "key": "sgn-bfi",
+      "kind": "order-only",
+      "registry": [
+        "sgn-bfi",
+        "bfi",
+        "sgn-gb"
+      ],
+      "shipped": [
+        "sgn-bfi",
+        "sgn-gb",
+        "bfi"
+      ]
+    },
+    {
+      "key": "sgn-br",
+      "kind": "order-only",
+      "registry": [
+        "sgn-br",
+        "bzs",
+        "sgn-bzs"
+      ],
+      "shipped": [
+        "sgn-br",
+        "sgn-bzs",
+        "bzs"
+      ]
+    },
+    {
+      "key": "sgn-bzs",
+      "kind": "order-only",
+      "registry": [
+        "sgn-bzs",
+        "bzs",
+        "sgn-br"
+      ],
+      "shipped": [
+        "sgn-bzs",
+        "sgn-br",
+        "bzs"
+      ]
+    },
+    {
+      "key": "sgn-ch-de",
+      "kind": "membership",
+      "registry": [
+        "sgn-ch-de",
+        "sgg",
+        "sgn-sgg"
+      ],
+      "shipped": [
+        "sgn-ch-de",
+        "sgn-sgg",
+        "sgg",
+        "sgn-ch-dd"
+      ]
+    },
+    {
+      "key": "sgn-co",
+      "kind": "order-only",
+      "registry": [
+        "sgn-co",
+        "csn",
+        "sgn-csn"
+      ],
+      "shipped": [
+        "sgn-co",
+        "sgn-csn",
+        "csn"
+      ]
+    },
+    {
+      "key": "sgn-csn",
+      "kind": "order-only",
+      "registry": [
+        "sgn-csn",
+        "csn",
+        "sgn-co"
+      ],
+      "shipped": [
+        "sgn-csn",
+        "sgn-co",
+        "csn"
+      ]
+    },
+    {
+      "key": "sgn-de",
+      "kind": "membership",
+      "registry": [
+        "sgn-de",
+        "gsg",
+        "sgn-gsg"
+      ],
+      "shipped": [
+        "sgn-de",
+        "sgn-gsg",
+        "gsg",
+        "sgn-dd"
+      ]
+    },
+    {
+      "key": "sgn-dk",
+      "kind": "order-only",
+      "registry": [
+        "sgn-dk",
+        "dsl",
+        "sgn-dsl"
+      ],
+      "shipped": [
+        "sgn-dk",
+        "sgn-dsl",
+        "dsl"
+      ]
+    },
+    {
+      "key": "sgn-dse",
+      "kind": "order-only",
+      "registry": [
+        "sgn-dse",
+        "dse",
+        "sgn-nl"
+      ],
+      "shipped": [
+        "sgn-dse",
+        "sgn-nl",
+        "dse"
+      ]
+    },
+    {
+      "key": "sgn-dsl",
+      "kind": "order-only",
+      "registry": [
+        "sgn-dsl",
+        "dsl",
+        "sgn-dk"
+      ],
+      "shipped": [
+        "sgn-dsl",
+        "sgn-dk",
+        "dsl"
+      ]
+    },
+    {
+      "key": "sgn-fr",
+      "kind": "membership",
+      "registry": [
+        "sgn-fr",
+        "fsl",
+        "sgn-fsl"
+      ],
+      "shipped": [
+        "sgn-fr",
+        "sgn-fsl",
+        "fsl",
+        "sgn-fx"
+      ]
+    },
+    {
+      "key": "sgn-fsl",
+      "kind": "membership",
+      "registry": [
+        "sgn-fsl",
+        "fsl",
+        "sgn-fr"
+      ],
+      "shipped": [
+        "sgn-fsl",
+        "sgn-fx",
+        "sgn-fr",
+        "fsl"
+      ]
+    },
+    {
+      "key": "sgn-gb",
+      "kind": "order-only",
+      "registry": [
+        "sgn-gb",
+        "bfi",
+        "sgn-bfi"
+      ],
+      "shipped": [
+        "sgn-gb",
+        "sgn-bfi",
+        "bfi"
+      ]
+    },
+    {
+      "key": "sgn-gr",
+      "kind": "order-only",
+      "registry": [
+        "sgn-gr",
+        "gss",
+        "sgn-gss"
+      ],
+      "shipped": [
+        "sgn-gr",
+        "sgn-gss",
+        "gss"
+      ]
+    },
+    {
+      "key": "sgn-gsg",
+      "kind": "membership",
+      "registry": [
+        "sgn-gsg",
+        "gsg",
+        "sgn-de"
+      ],
+      "shipped": [
+        "sgn-gsg",
+        "sgn-dd",
+        "sgn-de",
+        "gsg"
+      ]
+    },
+    {
+      "key": "sgn-gss",
+      "kind": "order-only",
+      "registry": [
+        "sgn-gss",
+        "gss",
+        "sgn-gr"
+      ],
+      "shipped": [
+        "sgn-gss",
+        "sgn-gr",
+        "gss"
+      ]
+    },
+    {
+      "key": "sgn-ie",
+      "kind": "order-only",
+      "registry": [
+        "sgn-ie",
+        "isg",
+        "sgn-isg"
+      ],
+      "shipped": [
+        "sgn-ie",
+        "sgn-isg",
+        "isg"
+      ]
+    },
+    {
+      "key": "sgn-ise",
+      "kind": "order-only",
+      "registry": [
+        "sgn-ise",
+        "ise",
+        "sgn-it"
+      ],
+      "shipped": [
+        "sgn-ise",
+        "sgn-it",
+        "ise"
+      ]
+    },
+    {
+      "key": "sgn-isg",
+      "kind": "order-only",
+      "registry": [
+        "sgn-isg",
+        "isg",
+        "sgn-ie"
+      ],
+      "shipped": [
+        "sgn-isg",
+        "sgn-ie",
+        "isg"
+      ]
+    },
+    {
+      "key": "sgn-it",
+      "kind": "order-only",
+      "registry": [
+        "sgn-it",
+        "ise",
+        "sgn-ise"
+      ],
+      "shipped": [
+        "sgn-it",
+        "sgn-ise",
+        "ise"
+      ]
+    },
+    {
+      "key": "sgn-jp",
+      "kind": "order-only",
+      "registry": [
+        "sgn-jp",
+        "jsl",
+        "sgn-jsl"
+      ],
+      "shipped": [
+        "sgn-jp",
+        "sgn-jsl",
+        "jsl"
+      ]
+    },
+    {
+      "key": "sgn-jsl",
+      "kind": "order-only",
+      "registry": [
+        "sgn-jsl",
+        "jsl",
+        "sgn-jp"
+      ],
+      "shipped": [
+        "sgn-jsl",
+        "sgn-jp",
+        "jsl"
+      ]
+    },
+    {
+      "key": "sgn-mfs",
+      "kind": "order-only",
+      "registry": [
+        "sgn-mfs",
+        "mfs",
+        "sgn-mx"
+      ],
+      "shipped": [
+        "sgn-mfs",
+        "sgn-mx",
+        "mfs"
+      ]
+    },
+    {
+      "key": "sgn-mx",
+      "kind": "order-only",
+      "registry": [
+        "sgn-mx",
+        "mfs",
+        "sgn-mfs"
+      ],
+      "shipped": [
+        "sgn-mx",
+        "sgn-mfs",
+        "mfs"
+      ]
+    },
+    {
+      "key": "sgn-ncs",
+      "kind": "order-only",
+      "registry": [
+        "sgn-ncs",
+        "ncs",
+        "sgn-ni"
+      ],
+      "shipped": [
+        "sgn-ncs",
+        "sgn-ni",
+        "ncs"
+      ]
+    },
+    {
+      "key": "sgn-ni",
+      "kind": "order-only",
+      "registry": [
+        "sgn-ni",
+        "ncs",
+        "sgn-ncs"
+      ],
+      "shipped": [
+        "sgn-ni",
+        "sgn-ncs",
+        "ncs"
+      ]
+    },
+    {
+      "key": "sgn-nl",
+      "kind": "order-only",
+      "registry": [
+        "sgn-nl",
+        "dse",
+        "sgn-dse"
+      ],
+      "shipped": [
+        "sgn-nl",
+        "sgn-dse",
+        "dse"
+      ]
+    },
+    {
+      "key": "sgn-no",
+      "kind": "order-only",
+      "registry": [
+        "sgn-no",
+        "nsl",
+        "sgn-nsl"
+      ],
+      "shipped": [
+        "sgn-no",
+        "sgn-nsl",
+        "nsl"
+      ]
+    },
+    {
+      "key": "sgn-nsl",
+      "kind": "order-only",
+      "registry": [
+        "sgn-nsl",
+        "nsl",
+        "sgn-no"
+      ],
+      "shipped": [
+        "sgn-nsl",
+        "sgn-no",
+        "nsl"
+      ]
+    },
+    {
+      "key": "sgn-psr",
+      "kind": "order-only",
+      "registry": [
+        "sgn-psr",
+        "psr",
+        "sgn-pt"
+      ],
+      "shipped": [
+        "sgn-psr",
+        "sgn-pt",
+        "psr"
+      ]
+    },
+    {
+      "key": "sgn-pt",
+      "kind": "order-only",
+      "registry": [
+        "sgn-pt",
+        "psr",
+        "sgn-psr"
+      ],
+      "shipped": [
+        "sgn-pt",
+        "sgn-psr",
+        "psr"
+      ]
+    },
+    {
+      "key": "sgn-sfb",
+      "kind": "membership",
+      "registry": [
+        "sgn-sfb",
+        "sfb",
+        "sgn-be-fr"
+      ],
+      "shipped": [
+        "sgn-sfb",
+        "sgn-be-fx",
+        "sgn-be-fr",
+        "sfb"
+      ]
+    },
+    {
+      "key": "sgn-sfs",
+      "kind": "order-only",
+      "registry": [
+        "sgn-sfs",
+        "sfs",
+        "sgn-za"
+      ],
+      "shipped": [
+        "sgn-sfs",
+        "sgn-za",
+        "sfs"
+      ]
+    },
+    {
+      "key": "sgn-sgg",
+      "kind": "membership",
+      "registry": [
+        "sgn-sgg",
+        "sgg",
+        "sgn-ch-de"
+      ],
+      "shipped": [
+        "sgn-sgg",
+        "sgn-ch-dd",
+        "sgn-ch-de",
+        "sgg"
+      ]
+    },
+    {
+      "key": "sgn-tl",
+      "kind": "jdk-only",
+      "registry": null,
+      "shipped": [
+        "sgn-tl",
+        "sgn-tp"
+      ]
+    },
+    {
+      "key": "sgn-us",
+      "kind": "order-only",
+      "registry": [
+        "sgn-us",
+        "ase",
+        "sgn-ase"
+      ],
+      "shipped": [
+        "sgn-us",
+        "sgn-ase",
+        "ase"
+      ]
+    },
+    {
+      "key": "sgn-za",
+      "kind": "order-only",
+      "registry": [
+        "sgn-za",
+        "sfs",
+        "sgn-sfs"
+      ],
+      "shipped": [
+        "sgn-za",
+        "sgn-sfs",
+        "sfs"
+      ]
+    },
+    {
+      "key": "skk",
+      "kind": "order-only",
+      "registry": [
+        "skk",
+        "jeg",
+        "oyb",
+        "thx"
+      ],
+      "shipped": [
+        "skk",
+        "thx",
+        "jeg",
+        "oyb"
+      ]
+    },
+    {
+      "key": "sr-de",
+      "kind": "jdk-only",
+      "registry": null,
+      "shipped": [
+        "sr-de",
+        "sr-dd"
+      ]
+    },
+    {
+      "key": "sr-fr",
+      "kind": "jdk-only",
+      "registry": null,
+      "shipped": [
+        "sr-fr",
+        "sr-fx"
+      ]
+    },
+    {
+      "key": "sr-tl",
+      "kind": "jdk-only",
+      "registry": null,
+      "shipped": [
+        "sr-tl",
+        "sr-tp"
+      ]
+    },
+    {
+      "key": "sw-cd",
+      "kind": "jdk-only",
+      "registry": null,
+      "shipped": [
+        "sw-cd",
+        "sw-zr"
+      ]
+    },
+    {
+      "key": "sw-de",
+      "kind": "jdk-only",
+      "registry": null,
+      "shipped": [
+        "sw-de",
+        "sw-dd"
+      ]
+    },
+    {
+      "key": "sw-fr",
+      "kind": "jdk-only",
+      "registry": null,
+      "shipped": [
+        "sw-fr",
+        "sw-fx"
+      ]
+    },
+    {
+      "key": "sw-tl",
+      "kind": "jdk-only",
+      "registry": null,
+      "shipped": [
+        "sw-tl",
+        "sw-tp"
+      ]
+    },
+    {
+      "key": "tdu",
+      "kind": "order-only",
+      "registry": [
+        "tdu",
+        "dtp",
+        "ktr",
+        "kzj",
+        "kzt"
+      ],
+      "shipped": [
+        "tdu",
+        "kzt",
+        "kzj",
+        "ktr",
+        "dtp"
+      ]
+    },
+    {
+      "key": "thx",
+      "kind": "order-only",
+      "registry": [
+        "thx",
+        "jeg",
+        "oyb",
+        "skk"
+      ],
+      "shipped": [
+        "thx",
+        "skk",
+        "jeg",
+        "oyb"
+      ]
+    },
+    {
+      "key": "und-alalc97",
+      "kind": "jdk-only",
+      "registry": null,
+      "shipped": [
+        "und-alalc97",
+        "und-heploc"
+      ]
+    },
+    {
+      "key": "und-hepburn-heploc",
+      "kind": "jdk-only",
+      "registry": null,
+      "shipped": [
+        "und-hepburn-heploc",
+        "und-hepburn-alalc97"
+      ]
+    },
+    {
+      "key": "uz-de",
+      "kind": "jdk-only",
+      "registry": null,
+      "shipped": [
+        "uz-de",
+        "uz-dd"
+      ]
+    },
+    {
+      "key": "uz-fr",
+      "kind": "jdk-only",
+      "registry": null,
+      "shipped": [
+        "uz-fr",
+        "uz-fx"
+      ]
+    },
+    {
+      "key": "uz-tl",
+      "kind": "jdk-only",
+      "registry": null,
+      "shipped": [
+        "uz-tl",
+        "uz-tp"
+      ]
+    },
+    {
+      "key": "vaj",
+      "kind": "order-only",
+      "registry": [
+        "vaj",
+        "gfx",
+        "mwj",
+        "oun"
+      ],
+      "shipped": [
+        "vaj",
+        "oun",
+        "mwj",
+        "gfx"
+      ]
+    },
+    {
+      "key": "yue-de",
+      "kind": "jdk-only",
+      "registry": null,
+      "shipped": [
+        "yue-de",
+        "zh-yue-dd",
+        "zh-yue-de",
+        "yue-dd"
+      ]
+    },
+    {
+      "key": "yue-fr",
+      "kind": "jdk-only",
+      "registry": null,
+      "shipped": [
+        "yue-fr",
+        "zh-yue-fx",
+        "zh-yue-fr",
+        "yue-fx"
+      ]
+    },
+    {
+      "key": "yue-tl",
+      "kind": "jdk-only",
+      "registry": null,
+      "shipped": [
+        "yue-tl",
+        "zh-yue-tp",
+        "zh-yue-tl",
+        "yue-tp"
+      ]
+    },
+    {
+      "key": "zh-cmn",
+      "kind": "order-only",
+      "registry": [
+        "zh-cmn",
+        "cmn",
+        "zh-guoyu"
+      ],
+      "shipped": [
+        "zh-cmn",
+        "zh-guoyu",
+        "cmn"
+      ]
+    },
+    {
+      "key": "zh-de",
+      "kind": "jdk-only",
+      "registry": null,
+      "shipped": [
+        "zh-de",
+        "zh-dd"
+      ]
+    },
+    {
+      "key": "zh-fr",
+      "kind": "jdk-only",
+      "registry": null,
+      "shipped": [
+        "zh-fr",
+        "zh-fx"
+      ]
+    },
+    {
+      "key": "zh-guoyu",
+      "kind": "order-only",
+      "registry": [
+        "zh-guoyu",
+        "cmn",
+        "zh-cmn"
+      ],
+      "shipped": [
+        "zh-guoyu",
+        "zh-cmn",
+        "cmn"
+      ]
+    },
+    {
+      "key": "zh-hak",
+      "kind": "order-only",
+      "registry": [
+        "zh-hak",
+        "hak",
+        "i-hak",
+        "zh-hakka"
+      ],
+      "shipped": [
+        "zh-hak",
+        "zh-hakka",
+        "i-hak",
+        "hak"
+      ]
+    },
+    {
+      "key": "zh-hakka",
+      "kind": "order-only",
+      "registry": [
+        "zh-hakka",
+        "hak",
+        "i-hak",
+        "zh-hak"
+      ],
+      "shipped": [
+        "zh-hakka",
+        "i-hak",
+        "zh-hak",
+        "hak"
+      ]
+    },
+    {
+      "key": "zh-hsn",
+      "kind": "order-only",
+      "registry": [
+        "zh-hsn",
+        "hsn",
+        "zh-xiang"
+      ],
+      "shipped": [
+        "zh-hsn",
+        "zh-xiang",
+        "hsn"
+      ]
+    },
+    {
+      "key": "zh-min-nan",
+      "kind": "order-only",
+      "registry": [
+        "zh-min-nan",
+        "nan",
+        "zh-nan"
+      ],
+      "shipped": [
+        "zh-min-nan",
+        "zh-nan",
+        "nan"
+      ]
+    },
+    {
+      "key": "zh-nan",
+      "kind": "order-only",
+      "registry": [
+        "zh-nan",
+        "nan",
+        "zh-min-nan"
+      ],
+      "shipped": [
+        "zh-nan",
+        "zh-min-nan",
+        "nan"
+      ]
+    },
+    {
+      "key": "zh-tl",
+      "kind": "jdk-only",
+      "registry": null,
+      "shipped": [
+        "zh-tl",
+        "zh-tp"
+      ]
+    },
+    {
+      "key": "zh-xiang",
+      "kind": "order-only",
+      "registry": [
+        "zh-xiang",
+        "hsn",
+        "zh-hsn"
+      ],
+      "shipped": [
+        "zh-xiang",
+        "zh-hsn",
+        "hsn"
+      ]
+    }
+  ]
+}

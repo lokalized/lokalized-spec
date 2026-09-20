@@ -3,7 +3,7 @@
   "artifacts": [
     {
       "path": "generated/iana-language-range-equivalents.json",
-      "sha256": "f1cf0a11816f6488915b3935b31f6c70325dfa8ee388baab4434e5fe41222621"
+      "sha256": "5eee34a96a72902f608d5417fb498e010ad031e9e6a576e15395eefd3eaa395e"
     }
   ],
   "inputs": [
@@ -17,15 +17,19 @@
     },
     {
       "path": "tools/iana-oracle/candidates.mjs",
-      "sha256": "d80d069f5418d85c8a4941812ba86d8d84d111b709be0b88fc6d97edb29898c9"
+      "sha256": "4d1d0bf63983d9a758176067ac29ad47e38f87bbef1c8d889143c938a80e52e8"
     },
     {
       "path": "tools/iana-oracle/candidates.txt",
-      "sha256": "8afc74a9cf293c0c67ab1c2452c3868b1e47a949eb2b5c27c1bb21f9b47e1efe"
+      "sha256": "3122c15a816684621b8fa4ce6dda4f6a67e28186041c317c00c14bb93da9094d"
     },
     {
       "path": "tools/iana-oracle/jdk-equivalence-keys.txt",
       "sha256": "44e44241b25adb847267ec6e1e31cff6f3270060b45ab15c63e7961263259760"
+    },
+    {
+      "path": "tools/iana-oracle/library-equivalence-keys.txt",
+      "sha256": "4fdea09d99c1ae3da31aa3f58523eb46361c4058bb8a1791b0343e74dadb6c56"
     }
   ],
   "oracle": {
@@ -34,12 +38,12 @@
     "requiredMajor": 21
   },
   "probe": {
-    "probed": 115487,
+    "probed": 115491,
     "rejected": 309,
-    "rawClosureKeys": 18375,
-    "reducedEntries": 806,
+    "rawClosureKeys": 18387,
+    "reducedEntries": 818,
     "jdkEquivalenceKeys": 769
   },
   "jdkCompatibilityOverrides": [],
-  "ianaDataFingerprint": "34691dc14568d59012fb1e0265d81fac3fe13f4705eca97b3d65cd954c08505e"
+  "ianaDataFingerprint": "06991d8e1762fab1fa62995621018956dc2b2db0ae81e2001a780e0d0bb63353"
 }

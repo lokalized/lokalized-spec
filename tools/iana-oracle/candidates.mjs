@@ -38,7 +38,7 @@
  *   node tools/iana-oracle/candidates.mjs
  */
 import { spawnSync } from "node:child_process";
-import { readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -91,6 +91,17 @@ for (const prefix of PREFIXES) for (const l of languages) candidates.add(`${pref
 
 const fromCldr = candidates.size;
 for (const key of jdkKeys) candidates.add(key);
+
+// **AND THE ORACLE'S OWN KEYS, when lokalized-java is the oracle.** Seeding only from the JDK's
+// table is a probe space derived from a DIFFERENT implementation than the one being questioned:
+// measured, four of lokalized-java's 781 keys (`dyl`, `sgn-dyl`, `zhk`, `sgn-zhk`) were never
+// probed and so reached no closure entry, with every gate green — the same shape, one
+// implementation over, as the four JDK keys that made `jdk-equivalence-keys.txt` necessary.
+// Written by `LibraryEquivalenceKeys` before this script runs; absent in JDK-oracle mode.
+const libraryKeysPath = join(here, "library-equivalence-keys.txt");
+if (existsSync(libraryKeysPath))
+  for (const key of readFileSync(libraryKeysPath, "utf8").split("\n").filter(Boolean))
+    candidates.add(key);
 
 const clean = [...candidates].filter((c) => c && /^[A-Za-z0-9-]+$/.test(c)).sort();
 writeFileSync(join(here, "candidates.txt"), `${clean.join("\n")}\n`);

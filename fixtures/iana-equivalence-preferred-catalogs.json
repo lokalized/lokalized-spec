@@ -1,0 +1,15 @@
+{
+  "id": "iana-equivalence-preferred-catalogs",
+  "description": "Catalogs for the PREFERRED side of four IANA language deprecations -- enm, bih, mgp, mrh -- so that a request naming the DEPRECATED side (yol, bh, mrd, shl) is answered only if the implementation's equivalence table knows the deprecation. The four were chosen by measurement, not taste: they are exactly the language deprecations that postdate the registry snapshot bundled in the reference JDK, so today they discriminate a registry-sourced table from a JDK-sourced one. Fallback and instance locale are deliberately SPLIT (fr and en) on accept-language-chooser's reasoning: without the split, 'matched a catalog', 'fell back' and 'returned the ambient instance locale' collapse into one indistinguishable tag, and the whole observation channel here is one language tag per row. sgn-dyl/dyl and sgn-zhk/zhk are the other two affected pairs and are deliberately ABSENT: Locale#forLanguageTag canonicalizes sgn-dyl to dyl, so the two cannot be distinct catalogs and no fixture can make them discriminate.",
+  "fallbackLocale": "fr",
+  "instanceLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": { "Checkout.Title": "en" },
+    "fr": { "Checkout.Title": "fr" },
+    "enm": { "Checkout.Title": "enm" },
+    "bih": { "Checkout.Title": "bih" },
+    "mgp": { "Checkout.Title": "mgp" },
+    "mrh": { "Checkout.Title": "mrh" }
+  }
+}

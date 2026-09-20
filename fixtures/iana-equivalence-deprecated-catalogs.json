@@ -1,0 +1,15 @@
+{
+  "id": "iana-equivalence-deprecated-catalogs",
+  "description": "The mirror of iana-equivalence-preferred-catalogs: catalogs for the DEPRECATED side (yol, bh, mrd, shl) so that a request naming the preferred side (enm, bih, mgp, mrh) discriminates. Both directions are needed because an equivalence class is symmetric and an implementation that mapped only deprecated->preferred would pass the other fixture entirely. Fallback fr, instance en, split for the same reason.",
+  "fallbackLocale": "fr",
+  "instanceLocale": "en",
+  "tiebreakers": null,
+  "files": {
+    "en": { "Checkout.Title": "en" },
+    "fr": { "Checkout.Title": "fr" },
+    "yol": { "Checkout.Title": "yol" },
+    "bh": { "Checkout.Title": "bh" },
+    "mrd": { "Checkout.Title": "mrd" },
+    "shl": { "Checkout.Title": "shl" }
+  }
+}
