@@ -70,9 +70,13 @@ public class ExtractLibrary {
     @SuppressWarnings("unchecked")
     Map<String, List<String>> table = (Map<String, List<String>>) handle.get(null);
 
-    System.err.printf("probed=%d rejected=%d closureKeys=%d libraryKeys=%d javaVersion=%s registryFileDate=%s%n",
+    // **THE SNAPSHOT'S DIGEST TRAVELS WITH ITS DATE.** A File-Date names a registry RELEASE and
+    // does not identify bytes: two fetches stamped alike, or a snapshot edited after fetching, are
+    // indistinguishable by date. The library records both beside its generated table, so the
+    // closure derived from it can record which snapshot it actually came from.
+    System.err.printf("probed=%d rejected=%d closureKeys=%d libraryKeys=%d javaVersion=%s registryFileDate=%s registrySha256=%s%n",
         probed, failed, closure.size(), table.size(), System.getProperty("java.version"),
-        IanaLanguageEquivalents.REGISTRY_FILE_DATE);
+        IanaLanguageEquivalents.REGISTRY_FILE_DATE, IanaLanguageEquivalents.REGISTRY_SHA256);
   }
 
   private static String quote(String s) {

@@ -1,6 +1,6 @@
 # IANA language-range equivalents — provenance
 
-Artifact: `generated/iana-language-range-equivalents.json` (818 entries, 21,742 bytes, canonical JCS)
+Artifact: `generated/iana-language-range-equivalents.json` (818 entries, 21,830 bytes, canonical JCS)
 Lock: `generated/iana-data-lock.json`
 Build: `node tools/iana-oracle/build.mjs --write | --check`
 
@@ -13,15 +13,23 @@ oracle lane proving equality.
 This artifact is instead derived **directly from the JDK oracle** by exhaustive probe of
 `java.util.Locale.LanguageRange.parse`.
 
-**Why:** the artifact exists so the JS negotiator reproduces lokalized-java 3.0.0, whose negotiation
-calls exactly that API. Deriving from the oracle makes divergence *structurally impossible* — there is
-nothing to reconcile, and `jdkCompatibilityOverrides` is empty because no override can be needed. The
-v7 route reaches the same place by a longer path that can leave residual differences.
+**Why:** the artifact exists so the JS negotiator reproduces lokalized-java, whose negotiation called
+exactly that API. Deriving from the oracle makes divergence *structurally impossible* — there is
+nothing to reconcile. The v7 route reaches the same place by a longer path that can leave residual
+differences.
 
-**What it costs:** `ianaRegistryFileDate` is `null` in THIS artifact. It is pinned to a JDK build,
-not to a registry release. If the project later wants IANA-release provenance — or wants to adopt
-newer IANA behavior than the JDK carries — that is a separately versioned contract, exactly as §5.1
-says, and it would require a registry snapshot this build does not fetch.
+**What it cost:** `ianaRegistryFileDate` was `null` in this artifact. It was pinned to a JDK build,
+not to a registry release. If the project later wanted IANA-release provenance — or wanted to adopt
+newer IANA behavior than the JDK carried — that would be a separately versioned contract, exactly as
+§5.1 says, and it would require a registry snapshot this build did not fetch.
+
+> **EVERYTHING IN THIS SECTION IS PAST TENSE AS OF M-R S11 AND S13, and it was written in the
+> present for a day after it stopped being true.** Two sentences above were outright false while
+> they stood: "`jdkCompatibilityOverrides` is empty because no override can be needed" (130 rows
+> exist, and the lock now records their digest and count) and "`ianaRegistryFileDate` is `null`"
+> (it is `2026-09-17`, beside `ianaRegistrySha256`). They are kept, re-tensed, because the sections
+> below are the record of what replaced them — deleting the old reasoning would leave the new
+> sections answering a question no longer on the page.
 
 ## THE ORACLE MOVED — lokalized-java 3.1.0
 
@@ -93,9 +101,11 @@ half §5.1 asks for, added WITHOUT changing what the port does.
 `tools/iana-oracle/registry.mjs` derives the registry's own closure from it — 781 entries, by
 union-find over every LANGUAGE-side `Preferred-Value` and every `extlang`'s `prefix-subtag`
 equivalence — and computes the difference against the JDK's 806.
-**`generated/iana-registry-overrides.json` is that difference: 142 rows, 81 order-only, 37
-JDK-only, 12 registry-only, 12 membership**, each row placed in a FAMILY whose cause is recorded
-and whose count is asserted against the table.
+**`generated/iana-registry-overrides.json` is that difference: 130 rows, 81 order-only, 37
+JDK-only, 0 registry-only, 12 membership**, each row placed in a FAMILY whose cause is recorded
+and whose count is asserted against the table. It was 142 until M-R S13 retired the registry-only
+family: those four rows were never inexpressible, only unprobed, and seeding the candidate space
+from the oracle's own keys brought them into the closure.
 
 **THE FIRST DERIVATION WAS WRONG AND THE NUMBER WAS 156.** It ran union-find over every record
 carrying a `Preferred-Value` without discriminating record TYPE, which flattened six REGION records
@@ -108,8 +118,9 @@ and listed as `regionVariantAliases`. Removing them took the table from 156 rows
 exactly the split two independent investigations predicted.
 
 **THE TABLE IS VERIFIED BY RECONSTRUCTION RATHER THAN BY INSPECTION**, which is what makes it
-trustworthy: applying all 156 overrides to the registry closure reproduces the JDK artifact
-byte-identically. A missing row would leave a difference and a redundant row is reported, so the
+trustworthy: applying all 130 overrides to the registry closure reproduces the SHIPPED artifact
+byte-identically. (It said "all 156 … the JDK artifact" four lines below its own account of why 156
+was the wrong number, and against a shipped closure that is the library's rather than the JDK's.) A missing row would leave a difference and a redundant row is reported, so the
 table cannot be short and cannot be padded. `npm run check:iana-registry` re-derives it every run.
 
 **THE PORT'S BEHAVIOUR IS UNCHANGED AND THAT IS DELIBERATE.** Parity with lokalized-java 3.0.0 is
@@ -118,12 +129,14 @@ registry's closure would make this package disagree with a Java deployment on 69
 snapshot buys is provenance: a real `File-Date`, a pinned byte digest, and an enumerated,
 reconstruction-checked account of every place the JDK and IANA differ.
 
-**WHAT THE 142 ARE, in one line each, measured against the JDK's own `src.zip` rather than
+**WHAT THE 130 ARE, in one line each, measured against the JDK's own `src.zip` rather than
 inferred.** 37 JDK-only rows are `LocaleMatcher.getEquivalentForRegionAndVariant` substituting a
 trailing region or variant by raw substring — it fires on `ar-de` and never on bare `de` — showing
-up as standalone keys only because the closure is built by exhaustive probe. 12 registry-only rows
-are version skew: `LocaleEquivalentMaps.java` is stamped `LSR Revision: 2025-05-15` in JDK 21 and
-`2026-05-05` in JDK 27, against this snapshot's 2026-09-17. 12 membership rows are the same region
+up as standalone keys only because the closure is built by exhaustive probe. The registry-only
+family is now ZERO rows: it held 12 version-skew entries (`LocaleEquivalentMaps.java` is stamped
+`LSR Revision: 2025-05-15` in JDK 21 and `2026-05-05` in JDK 27, against this snapshot's
+2026-09-17), and every one of them stopped being a divergence when lokalized-java adopted the
+registry table in 3.1.0. 12 membership rows are the same region
 substitution one level deeper, synthesising `sgn-dd`, `sgn-fx`, `sgn-be-fx` and `sgn-ch-dd`, none of
 which appears in any registry record. 81 are order-only, because nothing in the registry determines
 an order and the JDK's is `parse`'s insertion sequence.

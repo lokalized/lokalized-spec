@@ -364,7 +364,25 @@ if (mode === "write") {
   if (!readFileSync(ARTIFACT).equals(bytes)) {
     const onDisk = JSON.parse(readFileSync(ARTIFACT, "utf8"));
     const drifted = corpus.cases.filter((c) => jcs(c.expected) !== jcs(onDisk.cases?.find((/** @type {any} */ o) => o.id === c.id)?.expected)).map((c) => c.id);
-    console.error(JSON.stringify({ status: "stale", driftedCases: drifted, detail: "Java behavior differs from the recorded corpus; run --write and review the diff" }, null, 2));
+    // **THE DETAIL IS DERIVED FROM `drifted`, AND IT USED TO BE A CONSTANT SENTENCE.** It always
+    // read "Java behavior differs from the recorded corpus" — including when `driftedCases` is
+    // EMPTY, which is the common case: `librarySourcesSha256` hashes every file under
+    // `src/main/java/com/lokalized`, so adding a CONSTANT to one of them restamps the corpus while
+    // no recorded answer moves. Measured 2026-09-20, adding `REGISTRY_SHA256` to
+    // IanaLanguageEquivalents: `{"status":"stale","driftedCases":[],"detail":"Java behavior
+    // differs…"}` — the tool contradicting itself in one object, and sending a reader to look for
+    // a behavioural change that had not happened.
+    //
+    // The two are different events and want different responses: a drifted case is a finding to
+    // review one by one, a moved source digest with no drift is a deliberate re-record.
+    const detail = drifted.length > 0
+      ? `Java behavior differs from the recorded corpus in ${drifted.length} case(s); run --write ` +
+        `and review the diff case by case`
+      : "no recorded ANSWER moved — the corpus's provenance stamp did. Its `librarySourcesSha256` " +
+        "covers every file under lokalized-java's src/main/java/com/lokalized, so a comment or a " +
+        "constant restamps it. Re-record with --write; the empty driftedCases list above is the " +
+        "evidence that nothing behavioural changed";
+    console.error(JSON.stringify({ status: "stale", driftedCases: drifted, detail }, null, 2));
     process.exit(1);
   }
   console.log(JSON.stringify({ status: "current", cases: cases.length, seedRowsVerified: seed.checked, sha256: sha256(bytes) }));

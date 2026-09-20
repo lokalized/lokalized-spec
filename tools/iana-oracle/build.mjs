@@ -3,16 +3,30 @@
 /**
  * Builds `generated/iana-language-range-equivalents.json` and its external lock.
  *
- * PROVENANCE, stated plainly because it differs from plan v7 section 5.1's design:
- * v7 specifies generating the closure from a pinned IANA Language Subtag Registry snapshot and then
- * adding JDK-compatibility override rows wherever the snapshot and the JDK disagree. This build
- * instead derives the closure DIRECTLY FROM THE JDK 21 ORACLE by exhaustive probe.
+ * PROVENANCE. Plan v7 section 5.1 specifies generating the closure from a pinned IANA Language
+ * Subtag Registry snapshot and recording JDK-compatibility override rows wherever the snapshot and
+ * the JDK disagree. **That is what this build now does, transitively, and this docblock said the
+ * opposite for a day after it stopped being true.**
  *
- * Why: the artifact's stated purpose is parity with lokalized-java 3.0.0, whose negotiation calls
- * `java.util.Locale.LanguageRange.parse`. Deriving from the oracle makes divergence structurally
- * impossible — there is nothing to reconcile and no override rows exist. The cost is that the
- * artifact records no IANA `File-Date`; it is pinned to a JDK build rather than to a registry
- * release. See generated/IANA-PROVENANCE.md.
+ * It read: "This build instead derives the closure DIRECTLY FROM THE JDK 21 ORACLE by exhaustive
+ * probe … Deriving from the oracle makes divergence structurally impossible — there is nothing to
+ * reconcile and no override rows exist. The cost is that the artifact records no IANA `File-Date`."
+ * Every clause of that is false today and three of them were contradicted THIRTY LINES BELOW, in
+ * this same file: `LIBRARY` mode is selected at :44 by reading the artifact's own `source`, the
+ * artifact records `ianaRegistryFileDate` and `ianaRegistrySha256`, and
+ * `generated/iana-registry-overrides.json` holds 130 rows that `check:iana-registry` enumerates on
+ * every run.
+ *
+ * WHAT IT ACTUALLY DOES, since lokalized-java 3.1.0. The library generates its own equivalence
+ * table from the pinned registry snapshot (`IanaEquivalencesGenerator`), and this build derives the
+ * closure by exhaustively probing THAT — so the chain from snapshot to artifact is
+ * registry -> library -> closure, and the JDK is no longer in it. The JDK is probed a second time
+ * as a CROSS-CHECK, producing the `jdkAbsentTags` delta the port's public parse needs.
+ *
+ * The property the old text argued for is preserved rather than abandoned: deriving from the
+ * ORACLE still makes divergence structurally impossible. It is a different oracle, and the cost the
+ * old text named — no registry date — is gone, because the oracle is now anchored to a snapshot.
+ * See generated/IANA-PROVENANCE.md.
  *
  *   node tools/iana-oracle/build.mjs --write
  *   node tools/iana-oracle/build.mjs --check
@@ -275,6 +289,7 @@ function build() {
   if (run.status !== 0) throw new Error(`oracle extraction failed: ${run.stderr}`);
   const probeStats = /probed=(\d+) rejected=(\d+) closureKeys=(\d+)/.exec(run.stderr);
   const registryFileDate = /registryFileDate=(\S+)/.exec(run.stderr)?.[1] ?? null;
+  const registrySha256 = /registrySha256=([0-9a-f]{64})/.exec(run.stderr)?.[1] ?? null;
 
   // TWO INDEPENDENT READS OF THE SAME FIELD must agree, or a stale keys file seeded a narrower
   // probe space than the table the extraction just questioned — and the completeness assertion
@@ -283,6 +298,10 @@ function build() {
   if (LIBRARY && probedLibraryKeys !== dumpedLibraryKeys)
     throw new Error(`the key dump saw ${dumpedLibraryKeys} equivalence keys and the extraction saw ` +
       `${probedLibraryKeys}; ${LIBRARY_KEYS} is stale relative to the classes being probed`);
+
+  if (LIBRARY && registrySha256 === null)
+    throw new Error("the library probe reported no registrySha256; the closure would record a " +
+      "registry RELEASE with no identification of its bytes, which is the gap plan 5.1 names");
 
   const raw = JSON.parse(readFileSync(rawPath, "utf8"));
 
@@ -321,6 +340,11 @@ function build() {
     jdkVersion: jdk.version,
     jdkVendor: jdk.vendor,
     ianaRegistryFileDate: registryFileDate,
+    // Plan 5.1 asks the closure to record the snapshot's `File-Date` AND its source SHA-256. The
+    // date shipped from M-R S11 and the digest did not, so the artifact named a registry RELEASE
+    // and identified no bytes — M9 clause 33's second conjunct, open on exactly that. Read out of
+    // the library's own `REGISTRY_SHA256`, which its generator computes from the snapshot it read.
+    ...(LIBRARY ? { ianaRegistrySha256: registrySha256 } : {}),
     // Present ONLY on a library-derived artifact: a JDK-derived one IS the JDK's table, so the
     // delta would be empty and an empty list reads as "checked and equal" rather than "not asked".
     ...(LIBRARY ? { jdkAbsentTags: crossCheck.absent, libraryVersion: libraryVersion() } : {}),
@@ -354,7 +378,29 @@ function build() {
           jdkEquivalenceKeys: jdkKeys.length,
         }
       : null,
-    jdkCompatibilityOverrides: [],
+    // **THIS WAS A HARD-CODED `[]` WHILE 130 REAL ROWS SAT ONE FILE OVER.** Plan 5.1 names this
+    // lock as where the JDK-compatibility overrides are recorded, and it was written as an empty
+    // literal on the reasoning — true at the time, in `IANA-PROVENANCE.md`'s words — that
+    // "deriving from the oracle makes divergence structurally impossible, so no override can be
+    // needed". `registry.mjs` has enumerated the registry-vs-shipped differences since M-R S11 and
+    // the lock never learned. An empty list in the artifact a reader is pointed at, beside a
+    // populated one they are not, is worse than no list: it answers the question wrongly.
+    //
+    // Recorded by REFERENCE and DIGEST rather than by copying the rows: the override table is
+    // 31 KB and duplicating it here would create a second copy to drift. The count and the digest
+    // are what a lock is for, and `check:iana-registry` regenerates the rows themselves.
+    jdkCompatibilityOverrides: (() => {
+      const path = join(generatedDir, "iana-registry-overrides.json");
+      if (!existsSync(path)) return { recorded: false, reason: "iana-registry-overrides.json has not been generated" };
+      const bytes = readFileSync(path);
+      const overrides = JSON.parse(bytes.toString("utf8"));
+      return {
+        path: "generated/iana-registry-overrides.json",
+        sha256: sha256(bytes),
+        rows: overrides.overrides.length,
+        counts: overrides.overrideCounts,
+      };
+    })(),
   };
   // Fingerprint excludes itself, matching the CLDR lock's construction.
   lock.ianaDataFingerprint = sha256(Buffer.from(jcs({ formatVersion: lock.formatVersion, artifacts: lock.artifacts }), "utf8"));

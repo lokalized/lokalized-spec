@@ -156,7 +156,7 @@ for (const row of overrides)
  * library's generated table inherits verbatim — and renaming those would claim the library invented
  * them.
  *
- * A table of 142 rows with no account of them is a list, not an explanation, and the first
+ * A table of 130 rows with no account of them is a list, not an explanation, and the first
  * question anyone asks of a divergence table is "which of these is a bug". None of them is. Two
  * independent investigations read `LocaleEquivalentMaps.java` and `LocaleMatcher.java` out of each
  * JDK's own `src.zip`, reproduced the closure with a JS port of `parse`, and placed every row —

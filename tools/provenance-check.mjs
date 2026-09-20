@@ -16,7 +16,7 @@
  *
  *   node tools/provenance-check.mjs
  */
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -88,7 +88,44 @@ if (artifact.source === "lokalized-java") {
       `names ${unmentioned.length === 1 ? "it" : "them"}`);
 }
 
-/* 3. The oracle and the registry date, which the artifact records about itself. */
+/* 3. The override total, which is the figure that actually rotted. */
+//
+// **THE COUNTS IN THIS DOCUMENT WENT 156 -> 142 -> 130 AND THE PROSE KEPT ALL THREE.** At one
+// point line 111 asserted "applying all 156 overrides" four lines below its own account of why 156
+// was wrong, and line 96 said 142 while the artifact held 130. The document's whole job is to
+// explain a derived table; a count it states about that table is derivable and therefore checkable.
+//
+// Keyed on the SENTENCE SHAPE rather than a marker, because unlike the delta enumeration this
+// figure is quoted in several places on purpose — the summary, the family breakdown, the
+// reconstruction claim — and all of them must agree with the artifact.
+{
+  const overridesPath = join(spec, "generated/iana-registry-overrides.json");
+  if (existsSync(overridesPath)) {
+    const overrides = JSON.parse(readFileSync(overridesPath, "utf8"));
+    const rows = overrides.overrides.length;
+
+    const quoted = [...doc.matchAll(/(?:is that difference: |applying all |WHAT THE )([\d,]+)(?= rows| overrides| ARE)/g)]
+      .map((match) => Number(match[1].replace(/,/g, "")));
+
+    if (quoted.length === 0)
+      problems.push(`the document states the override total nowhere, and ${rows} rows exist; ` +
+        `the figure was reworded out from under this rule or the explanation was dropped`);
+
+    for (const stated of quoted)
+      if (stated !== rows)
+        problems.push(`the document states an override total of ${stated}; the table holds ${rows}`);
+
+    // The per-family counts too: a family that empties must not keep its old row count in prose.
+    for (const [family, count] of Object.entries(overrides.overrideCounts ?? {})) {
+      const claim = new RegExp(`(\\d+) ${family.replace("-", "[- ]")} rows?`, "i");
+      const found = claim.exec(doc);
+      if (found !== null && Number(found[1]) !== count)
+        problems.push(`the document says ${found[1]} ${family} row(s); the table holds ${count}`);
+    }
+  }
+}
+
+/* 4. The oracle and the registry date, which the artifact records about itself. */
 if (!doc.includes(`\`${artifact.source}\``))
   problems.push(`the artifact's source is "${artifact.source}" and the document never names it`);
 if (artifact.ianaRegistryFileDate !== null && !doc.includes(artifact.ianaRegistryFileDate))
@@ -105,4 +142,5 @@ console.log(JSON.stringify({
   status: "current", entries, bytes: artifactBytes.length,
   source: artifact.source, jdkAbsentTags: declared.length,
   deltaEnumerationChecked: artifact.source === "lokalized-java",
+  overrideTotalsChecked: existsSync(join(spec, "generated/iana-registry-overrides.json")),
 }));
