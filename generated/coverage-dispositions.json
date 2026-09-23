@@ -1,6 +1,6 @@
 {
   "formatVersion": 1,
-  "note": "M3b requires every reachable portable branch in the named semantic classes to carry a reviewed disposition. This file IS that review. A branch with no entry fails tools/coverage/check.mjs; an entry for a branch that has since become covered is STALE and also fails, so the table cannot rot into a list of excuses.",
+  "note": "M3b requires every reachable portable branch in the named semantic classes to carry a reviewed disposition. This file IS that review. A branch with no entry fails tools/coverage/check.mjs; an entry for a branch that has since become covered is STALE and also fails, so the table cannot rot into a list of excuses. A30 (lokalized-java 3.1.0) moved DefaultStrings' lines; entries whose branch only moved were re-keyed to the new line by a line map derived from the staged Java diff, with the method name and the (branches, covered) shape required to match. Line numbers QUOTED inside a `why` are as of the source the entry was written against and were not rewritten.",
   "dispositions": [
     "required",
     "excluded",
@@ -2457,16 +2457,16 @@
     {
       "class": "com.lokalized.DefaultStrings",
       "method": "<init>",
-      "signature": "(Ljava/util/Locale;Ljava/util/function/Supplier;Ljava/util/function/Function;Ljava/util/function/Function;Ljava/util/Map;Lcom/lokalized/TranslationFailureHandler;Lcom/lokalized/PhoneticResolver;Lcom/lokalized/BidiIsolation;Lcom/lokalized/TranslationFallbackPolicy;Lcom/lokalized/TranslationRuntimeLimits;)V",
-      "line": 424,
+      "signature": "(Ljava/util/Locale;Ljava/util/function/Supplier;Ljava/util/function/Function;Ljava/util/function/Function;Ljava/util/Map;Lcom/lokalized/TranslationFailureHandler;Lcom/lokalized/PhoneticResolver;Lcom/lokalized/BidiIsolation;Lcom/lokalized/TranslationFallbackPolicy;Lcom/lokalized/TranslationRuntimeLimits;Lcom/lokalized/LanguageRangeEquivalents;)V",
+      "line": 453,
       "disposition": "excluded",
       "why": "The size==0 arm leading to the 'No locales match language code' IllegalStateException. supportedLocalesByLanguageCode entries are created only when a locale is added to them, so the set is never empty; the arm is an assert-style guard."
     },
     {
       "class": "com.lokalized.DefaultStrings",
       "method": "<init>",
-      "signature": "(Ljava/util/Locale;Ljava/util/function/Supplier;Ljava/util/function/Function;Ljava/util/function/Function;Ljava/util/Map;Lcom/lokalized/TranslationFailureHandler;Lcom/lokalized/PhoneticResolver;Lcom/lokalized/BidiIsolation;Lcom/lokalized/TranslationFallbackPolicy;Lcom/lokalized/TranslationRuntimeLimits;)V",
-      "line": 426,
+      "signature": "(Ljava/util/Locale;Ljava/util/function/Supplier;Ljava/util/function/Function;Ljava/util/function/Function;Ljava/util/Map;Lcom/lokalized/TranslationFailureHandler;Lcom/lokalized/PhoneticResolver;Lcom/lokalized/BidiIsolation;Lcom/lokalized/TranslationFallbackPolicy;Lcom/lokalized/TranslationRuntimeLimits;Lcom/lokalized/LanguageRangeEquivalents;)V",
+      "line": 455,
       "disposition": "excluded",
       "why": "PARTLY CLOSED, AND THE RESIDUE IS UNREACHABLE. `providedTiebreakerLocales == null || providedTiebreakerLocales.size() == 0`. The NULL arm -- the ambiguity refusal, and M5b defect 1 exactly -- is now taken by owed-init.refusal.ambiguous-catalogs-without-tiebreakers (fixture owed-init-ambiguity-no-tiebreakers: catalogs `en` and `en-US`, no tiebreakers). Ablation: deleting that fixture and its case returns this point to 2/4. The EMPTY-LIST arm cannot be reached, and this is MEASURED on the pinned JDK rather than argued: an empty list for a language code with more than one loaded locale trips the permutation check at :394 first (probed directly -- `tiebreakerLocalesByLanguageCode({en: []})` over catalogs {en, en-US} answers \"must be an exact permutation of loaded locales [en, en-US]; missing: [en, en-US]; unrelated: []\"), and an empty list for a language code with NO loaded locale trips :388 before that. The identity rule at :420 only ever inserts a ONE-element list, so nothing else can put an empty list into this map. Excluded rather than required: the arm is unreachable in Java, so no case in any language can discriminate it.",
       "owed": "a construction case loading en and en-US with no tiebreakerLocalesByLanguageCode, expecting the 'You must specify tiebreaker locales ... for language code' refusal naming both locales || BLOCKED, NOT DEFERRED (M3b owed-case authoring pass, DefaultStrings group). The construction-refusal shapes below are BLOCKED, not deferred: VectorOracle materializes one Strings per fixture BEFORE any case runs (VectorOracle.java:65-77), and a case naming a fixture that failed to construct throws out of main (VectorOracle.java:88-93), aborting the whole run. A refusal is therefore only recordable as a fixture nobody references -- which the JS conformance runner never touches, because it is driven by cases (tools/conformance.mjs:998) -- so such a fixture would close the branch while specifying nothing. Closing these needs an ADDITIVE 'construct' observation in VectorOracle.execute that records the refusal the way the 'load' operation already records a loader refusal, plus the matching ingest.mjs/schema entries. Out of scope for a case-authoring pass, which may not edit the oracle."
@@ -2474,8 +2474,8 @@
     {
       "class": "com.lokalized.DefaultStrings",
       "method": "<init>",
-      "signature": "(Ljava/util/Locale;Ljava/util/function/Supplier;Ljava/util/function/Function;Ljava/util/function/Function;Ljava/util/Map;Lcom/lokalized/TranslationFailureHandler;Lcom/lokalized/PhoneticResolver;Lcom/lokalized/BidiIsolation;Lcom/lokalized/TranslationFallbackPolicy;Lcom/lokalized/TranslationRuntimeLimits;)V",
-      "line": 458,
+      "signature": "(Ljava/util/Locale;Ljava/util/function/Supplier;Ljava/util/function/Function;Ljava/util/function/Function;Ljava/util/Map;Lcom/lokalized/TranslationFailureHandler;Lcom/lokalized/PhoneticResolver;Lcom/lokalized/BidiIsolation;Lcom/lokalized/TranslationFallbackPolicy;Lcom/lokalized/TranslationRuntimeLimits;Lcom/lokalized/LanguageRangeEquivalents;)V",
+      "line": 487,
       "disposition": "excluded",
       "why": "PARTLY CLOSED, AND THE RESIDUE IS UNREACHABLE. The walk over the fallback language's tiebreaker list. Its ENTERED arm was already covered; :457's no-list arm and :465's refusal are now closed by owed-init.refusal.fallback-equivalent-to-multiple-catalogs. What is left is the EXHAUSTED arm -- the loop running out without any member being an equivalent fallback candidate -- and it cannot happen. The list this loop walks is `finalizedTiebreakerLocalesByLanguageCode.get(fallbackLanguageCode)`, which :394 has already forced to be an exact permutation of the loaded locales whose `LocaleUtils.normalizedLanguage` equals that code. Every member of `equivalentFallbackLocales` shares the fallback's CANONICAL tag by definition, hence its canonical language subtag, so its normalizedLanguage equals fallbackLanguageCode and it is in that list -- unless normalizedLanguage is EMPTY, in which case the locale enters no bucket at all and the list is null, which is :457's other arm, not this one. MEASURED, not argued: over the 903 tags of CldrLocaleData's own language-alias table, `normalizedLanguage(T)` and `normalizedLanguageCode(canonical(T).split(\"-\")[0])` disagree for exactly 16, and all 16 are `<EMPTY>` against `und` or `x` -- undetermined and private-use tags. Region and variant aliases cannot create a counterexample because they do not change the language subtag. THE 903-TAG FIGURE ABOVE IS A SAME-TAG MEASUREMENT AND DOES NOT BY ITSELF CARRY THE ARGUMENT -- recorded 2026-09-06 so the entry is not read as measuring more than it did. It compares normalizedLanguage(T) against normalizedLanguageCode(canonical(T).split(\"-\")[0]) for the SAME T, whereas the claim needs the property to hold BETWEEN a locale and the DIFFERENT fallback tag CldrLocaleData.equivalent pairs it with. THAT cross-tag step was probed separately on the pinned Corretto 21, against lokalized-3.0.0.jar, iterating CldrLocaleData.equivalent over every ordered pair of {no, nb, nn, no-NO, no-NO-x-lvariant-NY, in, id, iw, he, ji, yi, mo, ro, sh, sr, sr-Latn, tl, fil, zh-cmn, cmn, zh, zh-Hans, zh-Hant, und, und-bokmal, und-nynorsk, en, de, de-DD, de-DE, fr, fr-FX, jw, jv, x-private, aam, aas, ayx, nun}: 24 ordered equivalent pairs, and ZERO of them differ in LocaleUtils.normalizedLanguage. Two rows are worth naming because they are the shapes that would have broken it: `sh` canonicalizes to sr-Latn and normalizes to `sr`, the same as sr-Latn; and `no` and `nb` are NOT equivalent to each other at all, so the Norwegian bridge never produces a cross-language equivalent pair. The `und-*` pairs are equivalent with normalizedLanguage <EMPTY> on BOTH sides, which is :457's null-list arm rather than this one. Attempted directly on the pinned JDK and it does NOT reach the arm: catalogs {und-bokmal, und-nynorsk, en} with fallback `und` still take :457's null arm even though `en` has a populated bucket, because `und` never has one; and {de-DD, de-DE, fr} with fallback `de-DD` resolves through the list rather than exhausting it.",
       "owed": "a construction case where the fallback tag is equivalent to two loaded catalogs whose tiebreaker list does not contain either of them || BLOCKED, NOT DEFERRED (M3b owed-case authoring pass, DefaultStrings group). The construction-refusal shapes below are BLOCKED, not deferred: VectorOracle materializes one Strings per fixture BEFORE any case runs (VectorOracle.java:65-77), and a case naming a fixture that failed to construct throws out of main (VectorOracle.java:88-93), aborting the whole run. A refusal is therefore only recordable as a fixture nobody references -- which the JS conformance runner never touches, because it is driven by cases (tools/conformance.mjs:998) -- so such a fixture would close the branch while specifying nothing. Closing these needs an ADDITIVE 'construct' observation in VectorOracle.execute that records the refusal the way the 'load' operation already records a loader refusal, plus the matching ingest.mjs/schema entries. Out of scope for a case-authoring pass, which may not edit the oracle."
@@ -2484,7 +2484,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "compileExpressions",
       "signature": "(Lcom/lokalized/LocalizedString;Ljava/util/Locale;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;Ljava/util/Map;Ljava/util/Set;)V",
-      "line": 555,
+      "line": 587,
       "disposition": "required",
       "why": "ACCEPTED M7-CLOSE RESIDUE, and the reason is that the two arms differ in COST and in nothing else. Identity memoization during construction: a node reached a second time is not recompiled. Re-examined this slice with the three additive operations that did not exist when this entry was written (`construct`, `acceptLanguage`, `define`) and with the oracle's new `constructionOverrides`, and the arm IS now trivially reachable -- a `catalogSource` handing the same `LocalizedString` object to two locales would take it. It was NOT authored, because compilation is deterministic and the first-encounter failure message wins either way, so the case would close the branch and specify NOTHING: the only observable difference between a memoizing and a re-compiling port is TIME on a deep shared DAG, and no channel in behavioral-vectors.json carries time. Authoring it would delete this entry and make the real gap invisible, which is the failure mode this table exists to prevent. What DOES hold the property on the JS side is `src/internal/catalog.js`'s own `built` and `validatedDepth` identity memos, whose header states the exponential case in as many words. Stays `required`: the behaviour is portable and reachable, and calling it `excluded` would be over-declining.",
       "owed": "a fixture whose two catalogs are handed the SAME catalog/alternative object, proving construction succeeds and stays linear || BLOCKED. All three memoization guards need the SAME object graph node to be reached twice, and every catalog the oracle can supply is parsed independently from its own file on disk (build.mjs:101-109), so no LocalizedString and no ExpressionAlternative instance is ever shared between two keys or two locales. Identity sharing is reachable only from a hand-built catalog map, which the fixture format cannot express. || RE-DERIVED 2026-09-09 against the operations that exist TODAY (construct, acceptLanguage, define, perCallOverrideOrder) rather than against the harness as it stood when this entry was written. UNCHANGED, and the re-derivation makes the reason SHARPER rather than moving the entry. The previous note said the arm 'IS now trivially reachable -- a catalogSource handing the same LocalizedString object to two locales would take it', and this slice's catalogSource 'defined' makes that concrete: the oracle now builds LocalizedString graphs from a model. It STILL was not authored, for the reason recorded and not a new one -- the two arms differ in COST and in nothing else, no channel in behavioral-vectors.json carries time, and a case that closed the branch would delete this entry and make the real gap invisible. One thing IS newly known and belongs here: a definedCatalog model is JSON, so MinimalJson gives every node its own identity and the model vocabulary cannot express object sharing anyway -- the same gap recorded at LocalizedStringValidator#validate:132, and the same shared-node spelling would unblock both."
@@ -2493,7 +2493,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "compileExpressions",
       "signature": "(Lcom/lokalized/LocalizedString;Ljava/util/Locale;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;Ljava/util/Map;Ljava/util/Set;)V",
-      "line": 571,
+      "line": 603,
       "disposition": "required",
       "why": "ACCEPTED M7-CLOSE RESIDUE, and the reason is that the two arms differ in COST and in nothing else. Identity memoization during construction: a node reached a second time is not recompiled. Re-examined this slice with the three additive operations that did not exist when this entry was written (`construct`, `acceptLanguage`, `define`) and with the oracle's new `constructionOverrides`, and the arm IS now trivially reachable -- a `catalogSource` handing the same `LocalizedString` object to two locales would take it. It was NOT authored, because compilation is deterministic and the first-encounter failure message wins either way, so the case would close the branch and specify NOTHING: the only observable difference between a memoizing and a re-compiling port is TIME on a deep shared DAG, and no channel in behavioral-vectors.json carries time. Authoring it would delete this entry and make the real gap invisible, which is the failure mode this table exists to prevent. What DOES hold the property on the JS side is `src/internal/catalog.js`'s own `built` and `validatedDepth` identity memos, whose header states the exponential case in as many words. Stays `required`: the behaviour is portable and reachable, and calling it `excluded` would be over-declining.",
       "owed": "a fixture whose two catalogs are handed the SAME catalog/alternative object, proving construction succeeds and stays linear || BLOCKED. All three memoization guards need the SAME object graph node to be reached twice, and every catalog the oracle can supply is parsed independently from its own file on disk (build.mjs:101-109), so no LocalizedString and no ExpressionAlternative instance is ever shared between two keys or two locales. Identity sharing is reachable only from a hand-built catalog map, which the fixture format cannot express. || RE-DERIVED 2026-09-09 against the operations that exist TODAY (construct, acceptLanguage, define, perCallOverrideOrder) rather than against the harness as it stood when this entry was written. UNCHANGED, and the re-derivation makes the reason SHARPER rather than moving the entry. The previous note said the arm 'IS now trivially reachable -- a catalogSource handing the same LocalizedString object to two locales would take it', and this slice's catalogSource 'defined' makes that concrete: the oracle now builds LocalizedString graphs from a model. It STILL was not authored, for the reason recorded and not a new one -- the two arms differ in COST and in nothing else, no channel in behavioral-vectors.json carries time, and a case that closed the branch would delete this entry and make the real gap invisible. One thing IS newly known and belongs here: a definedCatalog model is JSON, so MinimalJson gives every node its own identity and the model vocabulary cannot express object sharing anyway -- the same gap recorded at LocalizedStringValidator#validate:132, and the same shared-node spelling would unblock both."
@@ -2502,7 +2502,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "compileExpressions",
       "signature": "(Lcom/lokalized/LocalizedString;Ljava/util/Locale;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;Ljava/util/Map;Ljava/util/Set;)V",
-      "line": 591,
+      "line": 623,
       "disposition": "required",
       "why": "ACCEPTED M7-CLOSE RESIDUE, and the reason is that the two arms differ in COST and in nothing else. Identity memoization during construction: a node reached a second time is not recompiled. Re-examined this slice with the three additive operations that did not exist when this entry was written (`construct`, `acceptLanguage`, `define`) and with the oracle's new `constructionOverrides`, and the arm IS now trivially reachable -- a `catalogSource` handing the same `LocalizedString` object to two locales would take it. It was NOT authored, because compilation is deterministic and the first-encounter failure message wins either way, so the case would close the branch and specify NOTHING: the only observable difference between a memoizing and a re-compiling port is TIME on a deep shared DAG, and no channel in behavioral-vectors.json carries time. Authoring it would delete this entry and make the real gap invisible, which is the failure mode this table exists to prevent. What DOES hold the property on the JS side is `src/internal/catalog.js`'s own `built` and `validatedDepth` identity memos, whose header states the exponential case in as many words. Stays `required`: the behaviour is portable and reachable, and calling it `excluded` would be over-declining.",
       "owed": "a fixture whose two catalogs are handed the SAME catalog/alternative object, proving construction succeeds and stays linear || BLOCKED. All three memoization guards need the SAME object graph node to be reached twice, and every catalog the oracle can supply is parsed independently from its own file on disk (build.mjs:101-109), so no LocalizedString and no ExpressionAlternative instance is ever shared between two keys or two locales. Identity sharing is reachable only from a hand-built catalog map, which the fixture format cannot express. || RE-DERIVED 2026-09-09 against the operations that exist TODAY (construct, acceptLanguage, define, perCallOverrideOrder) rather than against the harness as it stood when this entry was written. UNCHANGED, and the re-derivation makes the reason SHARPER rather than moving the entry. The previous note said the arm 'IS now trivially reachable -- a catalogSource handing the same LocalizedString object to two locales would take it', and this slice's catalogSource 'defined' makes that concrete: the oracle now builds LocalizedString graphs from a model. It STILL was not authored, for the reason recorded and not a new one -- the two arms differ in COST and in nothing else, no channel in behavioral-vectors.json carries time, and a case that closed the branch would delete this entry and make the real gap invisible. One thing IS newly known and belongs here: a definedCatalog model is JSON, so MinimalJson gives every node its own identity and the model vocabulary cannot express object sharing anyway -- the same gap recorded at LocalizedStringValidator#validate:132, and the same shared-node spelling would unblock both."
@@ -2511,7 +2511,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "getResult",
       "signature": "(Ljava/lang/String;Ljava/util/Map;Lcom/lokalized/TranslationOptions;)Lcom/lokalized/TranslationResult;",
-      "line": 699,
+      "line": 731,
       "disposition": "excluded",
       "why": "The fallback-candidate loop's exit condition. localeFallbackCandidates never returns an empty list, and the loop always leaves through the explicit break at 731 on the final candidate, so the for-condition's false arm is unreachable."
     },
@@ -2519,7 +2519,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "getResult",
       "signature": "(Ljava/lang/String;Ljava/util/Map;Lcom/lokalized/TranslationOptions;)Lcom/lokalized/TranslationResult;",
-      "line": 752,
+      "line": 784,
       "disposition": "excluded",
       "why": "AUDIT CORRECTION (was 'required', flagged by the original reviewer as an anomaly they could not resolve). The switch on TranslationFailureResponse.Action reports 2/4, but all THREE handled arms are provably executed by the corpus run, so the only genuinely untaken outcome is the unreachable 'default:' on an exhaustive 3-constant enum -- the same shape already dispositioned excluded at shouldApplyBidiIsolation:1424. Proof chain, each leg from the coverage data plus a whole-source grep for callers: (1) RETURN_KEY at 754 calls interpolateFailureKey, whose ONLY call site is 754; interpolateFailureKey has branch points (its placeholder loop and the 'value != null && shouldApplyBidiIsolation' conjunction) yet does not appear in coverage-branches at all, i.e. it is FULLY covered, so 754 ran -- consistent with the corpus's 311 RETURNED_KEY results. (2) RETURN_STRING at 759 calls TranslationFailureResponse.getTranslation, whose only call site is 759; that method reports 98 at 1/2, which requires execution, and the corpus has 5 RETURNED_STRING results (failure-handler.return-string.instance..., ...per-call..., bidi-isolation.failure-response.return-string-is-not-interpolated-or-isolated, and two callback-interaction rows). (3) THROW_EXCEPTION at 762 calls throwExceptionFor, whose only call site is 762; it reports 3203 and 3206 at 1/2, which requires execution, and 23 corpus cases expect MissingTranslationException. The residual 2-vs-3 discrepancy is a JaCoCo tableswitch-probe artifact, not an unexercised behavior. Reclassified because the original 'owed' (one case per action) would only re-execute arms three named case groups already discriminate, and no case can ever reach 'default:' -- an owed case that cannot exist is not an owed case."
     },
@@ -2527,7 +2527,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "getInternal",
       "signature": "(Ljava/lang/String;Lcom/lokalized/LocalizedString;Ljava/util/Map;Ljava/util/Map;Ljava/util/Locale;Lcom/lokalized/BidiIsolation;Ljava/lang/String;)Ljava/util/Optional;",
-      "line": 830,
+      "line": 862,
       "disposition": "excluded",
       "why": "'already resolved' re-entry in the generated-placeholder work queue. enqueueGeneratedPlaceholderDependencies (1293-1296) filters names already in resolvedGeneratedPlaceholderNames and the pending collection is a set, so a name can never be popped twice."
     },
@@ -2535,7 +2535,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "getInternal",
       "signature": "(Ljava/lang/String;Lcom/lokalized/LocalizedString;Ljava/util/Map;Ljava/util/Map;Ljava/util/Locale;Lcom/lokalized/BidiIsolation;Ljava/lang/String;)Ljava/util/Optional;",
-      "line": 834,
+      "line": 866,
       "disposition": "excluded",
       "why": "Defensive invariant: a name is enqueued only when it is a key of effectivePlaceholderBindings, so the binding lookup cannot be null. The IllegalStateException is an assert."
     },
@@ -2543,7 +2543,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "getInternal",
       "signature": "(Ljava/lang/String;Lcom/lokalized/LocalizedString;Ljava/util/Map;Ljava/util/Map;Ljava/util/Locale;Lcom/lokalized/BidiIsolation;Ljava/lang/String;)Ljava/util/Optional;",
-      "line": 856,
+      "line": 888,
       "disposition": "excluded",
       "why": "The 'unsupported generated placeholder definition type' arm. PlaceholderDefinition has exactly two implementations, ExpressionTranslation (handled at 839) and LanguageFormTranslation; the JSON model cannot introduce a third."
     },
@@ -2551,7 +2551,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "getInternal",
       "signature": "(Ljava/lang/String;Lcom/lokalized/LocalizedString;Ljava/util/Map;Ljava/util/Map;Ljava/util/Locale;Lcom/lokalized/BidiIsolation;Ljava/lang/String;)Ljava/util/Optional;",
-      "line": 907,
+      "line": 939,
       "disposition": "excluded",
       "why": "The final instanceof in the language-form dispatch, whose false arm throws 'unrecognized language form'. LanguageForm has exactly ten implementations (Animacy, Cardinality, Classifier, Clusivity, Definiteness, Formality, Gender, GrammaticalCase, Ordinality, Phonetic) and all ten are handled above; the catalog grammar cannot name an eleventh."
     },
@@ -2559,7 +2559,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "getInternal",
       "signature": "(Ljava/lang/String;Lcom/lokalized/LocalizedString;Ljava/util/Map;Ljava/util/Map;Ljava/util/Locale;Lcom/lokalized/BidiIsolation;Ljava/lang/String;)Ljava/util/Optional;",
-      "line": 924,
+      "line": 956,
       "disposition": "excluded",
       "why": "'You cannot mix-and-match language forms' - unreachable because LocalizedStringValidator.validateLanguageFormTranslation (line 230) already refuses a placeholder that mixes language-form types at construction. This is a post-validation restatement."
     },
@@ -2567,7 +2567,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "getInternal",
       "signature": "(Ljava/lang/String;Lcom/lokalized/LocalizedString;Ljava/util/Map;Ljava/util/Map;Ljava/util/Locale;Lcom/lokalized/BidiIsolation;Ljava/lang/String;)Ljava/util/Optional;",
-      "line": 927,
+      "line": 959,
       "disposition": "excluded",
       "why": "distinctLanguageForms == 0 - unreachable because the validator (line 212) refuses a generated placeholder with an empty translations map at construction."
     },
@@ -2575,7 +2575,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "getInternal",
       "signature": "(Ljava/lang/String;Lcom/lokalized/LocalizedString;Ljava/util/Map;Ljava/util/Map;Ljava/util/Locale;Lcom/lokalized/BidiIsolation;Ljava/lang/String;)Ljava/util/Optional;",
-      "line": 930,
+      "line": 962,
       "disposition": "excluded",
       "why": "'Range-based translations are only supported for Cardinality' - unreachable because the validator (line 233) already refuses a range-driven placeholder whose forms are not cardinalities."
     },
@@ -2583,7 +2583,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "getInternal",
       "signature": "(Ljava/lang/String;Lcom/lokalized/LocalizedString;Ljava/util/Map;Ljava/util/Map;Ljava/util/Locale;Lcom/lokalized/BidiIsolation;Ljava/lang/String;)Ljava/util/Optional;",
-      "line": 1150,
+      "line": 1182,
       "disposition": "excluded",
       "why": "'Phonetic translations cannot use ranges' - unreachable because LocalizedStringValidator line 233 refuses a range-driven placeholder whose forms are not cardinalities, and phonetic forms are not."
     },
@@ -2591,7 +2591,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "getInternal",
       "signature": "(Ljava/lang/String;Lcom/lokalized/LocalizedString;Ljava/util/Map;Ljava/util/Map;Ljava/util/Locale;Lcom/lokalized/BidiIsolation;Ljava/lang/String;)Ljava/util/Optional;",
-      "line": 1190,
+      "line": 1222,
       "disposition": "excluded",
       "why": "Defensive type test on the just-written generated value. generatedContext is a fresh map written only in this loop and every writer stores a String, so the non-String arm is unreachable."
     },
@@ -2599,7 +2599,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "getInternal",
       "signature": "(Ljava/lang/String;Lcom/lokalized/LocalizedString;Ljava/util/Map;Ljava/util/Map;Ljava/util/Locale;Lcom/lokalized/BidiIsolation;Ljava/lang/String;)Ljava/util/Optional;",
-      "line": 1192,
+      "line": 1224,
       "disposition": "excluded",
       "why": "The 'language-form translation' fallback selection description. Every family that writes a generated value also sets selectionDescription (cardinality 961/979, ordinality 998, ... phonetic 1185), so the null arm is unreachable."
     },
@@ -2607,7 +2607,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "resolveExpressionTranslation",
       "signature": "(Lcom/lokalized/LocalizedString$ExpressionTranslation;Ljava/util/Map;Ljava/util/Locale;)Lcom/lokalized/DefaultStrings$ResolvedFragment;",
-      "line": 1217,
+      "line": 1249,
       "disposition": "excluded",
       "why": "'No compiled expression was found for generated-fragment alternative'. Every ExpressionAlternative is compiled during construction (compileExpressions 571-576) and the map is identity-keyed on the same objects, so the lookup cannot miss. Assert-style guard."
     },
@@ -2615,7 +2615,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "contextualizePlaceholderFailure",
       "signature": "(Ljava/lang/String;Ljava/lang/String;Lcom/lokalized/DefaultStrings$PlaceholderBinding;Ljava/lang/String;Ljava/lang/RuntimeException;)Ljava/lang/RuntimeException;",
-      "line": 1263,
+      "line": 1295,
       "disposition": "required",
       "why": "ACCEPTED M7-CLOSE RESIDUE, blocked on ONE named plan decision. A cause with a NULL message, where the contextualized message names the exception's simple class name instead. The oracle CAN express it -- a `throw` phonetic-resolver behaviour raising `new IllegalStateException()` with no message is a two-line change -- so this is not a harness limit. The port raises a BARE `Error` for every resolution failure -- `tools/conformance.mjs`'s `CAUSE_NAME` records that collapse explicitly, because plan 3.5's `ResolutionError` with its RESOLUTION_INVALID_STATE / RESOLUTION_INVALID_ARGUMENT codes has not landed (plan OPEN QUESTION 4, the LokalizedError hierarchy). So both arms of this ladder project onto the SAME `causeType` on the JS side, and the only channel that could carry the distinction is `causeMessage`, which the runner routes to a ratchet rather than to the gated comparison. A case authored today would close the Java branch while pinning the distinction in a channel that does not gate it. Stays `required`, and it becomes authorable the moment open question 4 is answered -- that is the specific unblocking event, not 'a harder case'.",
       "owed": "a case whose phonetic resolver (or failure handler) throws an exception carrying no message, asserting the composed 'Unable to resolve generated placeholder ...: <ClassName>' text || BLOCKED. The only exception the oracle can inject into generated-placeholder resolution is IllegalStateException carrying a non-null message: the 'throw' phonetic resolver and 'throw-in-handler' handler both build one from config.getString(\"message\", <non-null default>) (VectorOracle.java:632-634, 769-773). Line 1263 needs a cause whose getMessage() is null and line 1276 needs a RuntimeException that is neither ExpressionEvaluationException, IllegalArgumentException nor IllegalStateException; neither is expressible without a new named callback behavior in the oracle. || RE-DERIVED 2026-09-09 against the operations that exist TODAY (construct, acceptLanguage, define, perCallOverrideOrder) rather than against the harness as it stood when this entry was written. UNCHANGED AND STILL BLOCKED on the same two things, re-checked. None of the four operations adds an exception-shaping channel: the only exception the oracle can inject into generated-placeholder resolution is still an IllegalStateException carrying a NON-null message, built from config.getString(\"message\", <non-null default>) by the `throw` phonetic resolver and the `throw-in-handler` handler. :1263 needs a cause whose getMessage() is null and :1276 a RuntimeException that is none of the three named types. And the JS-side blocker is untouched: plan OPEN QUESTION 4 (the LokalizedError hierarchy with RESOLUTION_INVALID_STATE / RESOLUTION_INVALID_ARGUMENT) has not landed, so both arms of the ladder still project onto one bare `Error` in the port and a case authored today would pin a distinction in `causeMessage`, which the runner routes to a ratchet rather than to the gated comparison."
@@ -2624,7 +2624,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "contextualizePlaceholderFailure",
       "signature": "(Ljava/lang/String;Ljava/lang/String;Lcom/lokalized/DefaultStrings$PlaceholderBinding;Ljava/lang/String;Ljava/lang/RuntimeException;)Ljava/lang/RuntimeException;",
-      "line": 1276,
+      "line": 1308,
       "disposition": "required",
       "why": "ACCEPTED M7-CLOSE RESIDUE, blocked on the SAME plan decision as :1263. The tail of the rewrap ladder: a cause that is neither ExpressionEvaluationException, IllegalArgumentException nor IllegalStateException is returned UNWRAPPED, preserving an application exception's identity and type. The oracle could raise a plain `java.lang.RuntimeException` from a named resolver behaviour. The port raises a BARE `Error` for every resolution failure -- `tools/conformance.mjs`'s `CAUSE_NAME` records that collapse explicitly, because plan 3.5's `ResolutionError` with its RESOLUTION_INVALID_STATE / RESOLUTION_INVALID_ARGUMENT codes has not landed (plan OPEN QUESTION 4, the LokalizedError hierarchy). So both arms of this ladder project onto the SAME `causeType` on the JS side, and the only channel that could carry the distinction is `causeMessage`, which the runner routes to a ratchet rather than to the gated comparison. A case authored today would close the Java branch while pinning the distinction in a channel that does not gate it. Stays `required`, and it becomes authorable the moment open question 4 is answered -- that is the specific unblocking event, not 'a harder case'.",
       "owed": "a case whose injected phonetic resolver throws an application-defined error type, asserting the error reaching the failure handler is that exact type with its ORIGINAL message, not a contextualized wrapper || BLOCKED. The only exception the oracle can inject into generated-placeholder resolution is IllegalStateException carrying a non-null message: the 'throw' phonetic resolver and 'throw-in-handler' handler both build one from config.getString(\"message\", <non-null default>) (VectorOracle.java:632-634, 769-773). Line 1263 needs a cause whose getMessage() is null and line 1276 needs a RuntimeException that is neither ExpressionEvaluationException, IllegalArgumentException nor IllegalStateException; neither is expressible without a new named callback behavior in the oracle. || RE-DERIVED 2026-09-09 against the operations that exist TODAY (construct, acceptLanguage, define, perCallOverrideOrder) rather than against the harness as it stood when this entry was written. UNCHANGED AND STILL BLOCKED on the same two things, re-checked. None of the four operations adds an exception-shaping channel: the only exception the oracle can inject into generated-placeholder resolution is still an IllegalStateException carrying a NON-null message, built from config.getString(\"message\", <non-null default>) by the `throw` phonetic resolver and the `throw-in-handler` handler. :1263 needs a cause whose getMessage() is null and :1276 a RuntimeException that is none of the three named types. And the JS-side blocker is untouched: plan OPEN QUESTION 4 (the LokalizedError hierarchy with RESOLUTION_INVALID_STATE / RESOLUTION_INVALID_ARGUMENT) has not landed, so both arms of the ladder still project onto one bare `Error` in the port and a case authored today would pin a distinction in `causeMessage`, which the runner routes to a ratchet rather than to the gated comparison."
@@ -2633,7 +2633,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "interpolateTemplate",
       "signature": "(Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;Ljava/util/Locale;Lcom/lokalized/BidiIsolation;Ljava/util/Map;Ljava/util/List;Lcom/lokalized/DefaultStrings$GeneratedExpansionBudget;I)Ljava/lang/String;",
-      "line": 1347,
+      "line": 1379,
       "disposition": "excluded",
       "why": "Mirror of 1190: the generated value for a bound placeholder was written as a String by the resolution loop before interpolation reaches it, so the non-String arm is unreachable."
     },
@@ -2641,7 +2641,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "shouldApplyBidiIsolation",
       "signature": "(Ljava/util/Locale;Lcom/lokalized/BidiIsolation;)Z",
-      "line": 1424,
+      "line": 1456,
       "disposition": "excluded",
       "why": "The switch's default: arm. BidiIsolation has exactly NONE, ALWAYS and RTL_LOCALES and all three are handled and exercised."
     },
@@ -2649,7 +2649,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "alternativeMatches",
       "signature": "(Lcom/lokalized/LocalizedString;Ljava/util/Map;Ljava/util/Locale;)Z",
-      "line": 1522,
+      "line": 1554,
       "disposition": "excluded",
       "why": "'No compiled expression was found for alternative'. Every whole-message alternative is compiled during construction (compileExpressions 591-594) into an identity-keyed map, so the lookup cannot miss."
     },
@@ -2657,7 +2657,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "matchFor",
       "signature": "(Ljava/util/List;)Lcom/lokalized/LocaleMatchResult;",
-      "line": 1676,
+      "line": 1721,
       "disposition": "excluded",
       "why": "AUDIT: reclassified from required. The equal-specificity weight tie-break is UNREACHABLE, not merely unexercised. matchFor sorts its members by DESCENDING weight before anything else (DefaultStrings:1561, `sortedLanguageRanges.sort(comparingDouble(LanguageRange::getWeight).reversed())`), and bestAnchorWeight is only ever assigned inside this branch — so it always holds the weight of an EARLIER member, which by the sort is >= every later member's. `comparison == 0 && members[memberIndex].weight > bestAnchorWeight` therefore cannot be true. Corroborated empirically: cases/m3b-negotiation.cases.json already carries a targeted mirrored pair (equal-anchors-higher-weight-governs and its reverse) authored for exactly this arm, and the branch stayed 5/6 after it landed. The observable rule the pair pins — the higher-weighted of two equally specific anchors governs — is real and is decided by the SORT, which those cases do discriminate.",
       "owed": "a header with two equally specific anchor ranges for one locale at different q values, in both orders, asserting the higher q governs regardless of position"
@@ -2666,7 +2666,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "matchFor",
       "signature": "(Ljava/util/List;)Lcom/lokalized/LocaleMatchResult;",
-      "line": 1754,
+      "line": 1799,
       "disposition": "excluded",
       "why": "AUDIT: reclassified from required. The governor sweep's twin of 1676, and unreachable for the same reason: `effectiveWeight` starts at -1.0 and is only assigned inside this branch, so it always carries an earlier member's weight, and members are pre-sorted by descending weight at DefaultStrings:1561. `comparison == 0 && weight > effectiveWeight` cannot be true. The reported effectiveWeight for a multiply-matched locale is pinned by the same already-authored m3b-negotiation pair; what decides it is the sort, not this tie-break.",
       "owed": "a header where one locale is matched by two equally specific ranges at different q, asserting the reported effectiveWeight is the larger"
@@ -2675,7 +2675,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "matchFor",
       "signature": "(Ljava/util/List;)Lcom/lokalized/LocaleMatchResult;",
-      "line": 1772,
+      "line": 1817,
       "disposition": "excluded",
       "why": "AUDIT: reclassified from required, and the outcome label corrected on review. The uncovered outcome is `!bestSpecificity.isSyntactic()` evaluating TRUE (the earlier text said FALSE, which is the covered one): reaching that sub-expression at all requires `semanticMember` false, and it can then only be TRUE if the governing cell is non-syntactic. That combination cannot occur. The cell-population loop at DefaultStrings:1640-1647 refuses to store a non-syntactic specificity for any member that is not its group's semantic member (`if (specificity != null && !specificity.isSyntactic() && memberIndex != semanticMemberIndicesByRepresentative[...]) continue;`), so a non-syntactic governor is always the semantic member and short-circuits before isSyntactic() is reached. The three reachable outcomes are all covered, and the port-visible rule (syntactic alias matches select at the member's own position, everything else at the group's) is fully pinned by them.",
       "owed": "a header interleaving a legacy alias, an unrelated equal-weight range, and the canonical spelling, asserting which range id the result reports as languageRange"
@@ -2684,7 +2684,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "matchFor",
       "signature": "(Ljava/util/List;)Lcom/lokalized/LocaleMatchResult;",
-      "line": 1803,
+      "line": 1848,
       "disposition": "excluded",
       "why": "AUDIT REVERSAL (was 'required'). The selection loop cannot exit without returning. It advances past a member only at 1819 (undetermined and not private-use), 1841 (wildcard with an empty structural filter), 1855 (private-use) or 1896 (empty primary-language candidates), and each of those is itself unreachable FOR A MEMBER THAT HAS SURVIVORS: 1819 and 1855 because languageRangeSpecificityFor refuses those members a cell (2027) or gives them only an EXACT cell that line 1823 returns on first; 1841 because a wildcard member's cells are produced by the same structurallyMatches predicate the filter uses, so a survivor implies a non-empty filter; 1896 because the whole tail below 1882 is unreachable (see the entries on lines 1882-1920). A member with no survivors is skipped before any of these, at the `languageRangeLocales == null` guard. Every no-match therefore leaves through the highestEffectiveWeight <= 0 return at 1778, which is what the corpus already records."
     },
@@ -2692,7 +2692,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "matchFor",
       "signature": "(Ljava/util/List;)Lcom/lokalized/LocaleMatchResult;",
-      "line": 1812,
+      "line": 1857,
       "disposition": "excluded",
       "why": "AUDIT: reclassified from required. `member.weight <= 0` at the head of the survivor-serving loop cannot be true for a member that HAS survivors. Members are sorted by descending weight (DefaultStrings:1561), so a group's representative holds the group maximum, and `activeMembers[i]` is set only when `Double.compare(members[i].weight, members[representative].weight) == 0` — every active member therefore carries exactly the representative's weight. A survivor exists only where the governor sweep found `effectiveWeight > 0`, and its selection index is either the governor itself or that governor's representative, both of which carry that same positive weight. The original disposition's premise — 'the governing member and the selection-position member differ across an alias group' — is right about the divergence but the two members still share a weight, so the guard is defensive.",
       "owed": "a header where an alias group's representative carries q=0 while a later group member governs a locale at positive weight"
@@ -2701,7 +2701,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "matchFor",
       "signature": "(Ljava/util/List;)Lcom/lokalized/LocaleMatchResult;",
-      "line": 1819,
+      "line": 1864,
       "disposition": "excluded",
       "why": "AUDIT REVERSAL (was 'required'; the owed case was authored and covers the reachable combination). `member.undetermined && !member.privateUse` is now 3/4: m3b-canonicalization.private-use-not-maximized supplies the undetermined-AND-private-use member that must fall through, and ordinary ranges supply the not-undetermined arm. The fourth combination -- undetermined and NOT private-use, the skip this line exists for -- cannot occur, because languageRangeSpecificityFor line 2027 refuses a cell to exactly that member under the IDENTICAL condition. A member with no cell never enters survivorsBySelectionIndex, so it never reaches line 1819 at all. m3b-negotiation.undetermined-range-selects-nothing pins the resulting behaviour (a loaded und-Latn catalog is unreachable by an und-Latn request) at the level where it IS observable."
     },
@@ -2709,7 +2709,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "matchFor",
       "signature": "(Ljava/util/List;)Lcom/lokalized/LocaleMatchResult;",
-      "line": 1841,
+      "line": 1886,
       "disposition": "excluded",
       "why": "AUDIT REVERSAL (was 'required'). A wildcard member's survivors and its structural filter are computed by the SAME predicate: cells come from structurallyMatches(member.rangeSubtags, localeStatics.tagSubtags) at languageRangeSpecificityFor:2041, and structurallyFilteredLocales re-runs structurallyMatches(range, locale.toLanguageTag()) over those same locales. A wildcard member therefore cannot own a survivor that its own filter rejects, and the empty-filter arm has no input. What the entry wanted to protect -- that a wildcard range is never broadened into semantic matching -- is instead pinned by m3b-negotiation.extension-singleton-stops-structural-walk, where `de-*-phonebk` structurally fails against a loaded de-u-co-phonebk and the answer is NONE rather than a CLDR-inferred locale. The entry previously also cited .structural-filter-rejects-nonmatching as covering structurallyFilteredLocales' rejecting arm directly. That was FALSE and is removed: the coverage data reports :2343 at 1 of 2 branches with that case in the corpus, and this table's own :2343 entry concludes the rejecting arm has no reachable call site. The case is still valuable -- it discriminates a port that skips structural filtering -- but it does not close that branch, and its own note has been corrected too."
     },
@@ -2717,7 +2717,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "matchFor",
       "signature": "(Ljava/util/List;)Lcom/lokalized/LocaleMatchResult;",
-      "line": 1855,
+      "line": 1900,
       "disposition": "excluded",
       "why": "AUDIT REVERSAL (was 'required'). A private-use member without a wildcard is given a cell by languageRangeSpecificityFor ONLY through the EXACT test at 2038 (`localeStatics.languageTag.equalsIgnoreCase(member.structuralRange)`); every later rung is cut off by the private-use return at 2035. So any survivor of such a member has a tag equal to the range, and line 1823's exact-source loop returns it before line 1855 is reached. The behaviour the entry wanted -- that `x-foo` never broadens into an ordinary primary language `x` -- is pinned instead by m3b-canonicalization.private-use-not-maximized (x-private selects only its own catalog) and m3b-negotiation.private-use-wildcard-matches-structurally (a wildcard is what re-admits a private-use range to extended filtering)."
     },
@@ -2725,7 +2725,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "matchFor",
       "signature": "(Ljava/util/List;)Lcom/lokalized/LocaleMatchResult;",
-      "line": 1882,
+      "line": 1927,
       "disposition": "excluded",
       "why": "AUDIT REVERSAL (was 'required'). The primary-language tail of matchFor (lines 1886-1925) is UNREACHABLE, so no case can be owed for it. Proof, and it contradicts the original entry's suggested case: (1) control reaches line 1882 only for a member that is not a bare wildcard (1826), not undetermined-without-private-use (1819), not wildcard-bearing (1841) and not private-use (1855); (2) for such a member `CldrLocaleData.languageScriptForLikelySubtag(semanticRange)` is ALWAYS present -- likelySubtagCandidateTags always ends with `und`, `und` is in the pinned likely-subtags table, and all 7,788 entries in that table carry a script (verified against vendor/lokalized-java/src/build/resources/cldr/cldr-locale-data.json), so the only way lookupMatchByLikelySubtag returns empty is an empty matchingLocales; (3) getting past 1893 with a non-empty `candidates` then requires some survivor with normalizedLanguage == primary AND hasCompatibleLikelyScript, and compatibleLikelyScripts is equality-or-null while neither side can be null for a locale with a non-empty language -- so compatible implies equal, and that survivor would already have been in matchingLocales, contradicting (2). The coverage data agrees: line 1882 is 1/2 and every line below it is 0/2, i.e. the tail is not merely unsatisfied but never entered. Empirically I drove the review's own suggested input, `pt-AO`/`pt-MZ` against loaded pt-BR/pt-PT, plus zxx (a language absent from the likely-subtags table) with three regional catalogs, plus sr-Latn against a Cyrillic-only sr catalog: every one resolves through CLDR parent fallback or likely-subtag matching, or returns NONE at 1896's precondition, and none reaches the tail. What the tail's tiebreaker walk was owed to protect IS covered elsewhere -- lookupMatchByLikelySubtag and preferredLocaleForRange both consult the same tiebreaker list, and construction guarantees a list for every loaded language."
     },
@@ -2733,7 +2733,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "matchFor",
       "signature": "(Ljava/util/List;)Lcom/lokalized/LocaleMatchResult;",
-      "line": 1896,
+      "line": 1941,
       "disposition": "excluded",
       "why": "AUDIT REVERSAL (was 'required'). The primary-language tail of matchFor (lines 1886-1925) is UNREACHABLE, so no case can be owed for it. Proof, and it contradicts the original entry's suggested case: (1) control reaches line 1882 only for a member that is not a bare wildcard (1826), not undetermined-without-private-use (1819), not wildcard-bearing (1841) and not private-use (1855); (2) for such a member `CldrLocaleData.languageScriptForLikelySubtag(semanticRange)` is ALWAYS present -- likelySubtagCandidateTags always ends with `und`, `und` is in the pinned likely-subtags table, and all 7,788 entries in that table carry a script (verified against vendor/lokalized-java/src/build/resources/cldr/cldr-locale-data.json), so the only way lookupMatchByLikelySubtag returns empty is an empty matchingLocales; (3) getting past 1893 with a non-empty `candidates` then requires some survivor with normalizedLanguage == primary AND hasCompatibleLikelyScript, and compatibleLikelyScripts is equality-or-null while neither side can be null for a locale with a non-empty language -- so compatible implies equal, and that survivor would already have been in matchingLocales, contradicting (2). The coverage data agrees: line 1882 is 1/2 and every line below it is 0/2, i.e. the tail is not merely unsatisfied but never entered. Empirically I drove the review's own suggested input, `pt-AO`/`pt-MZ` against loaded pt-BR/pt-PT, plus zxx (a language absent from the likely-subtags table) with three regional catalogs, plus sr-Latn against a Cyrillic-only sr catalog: every one resolves through CLDR parent fallback or likely-subtag matching, or returns NONE at 1896's precondition, and none reaches the tail. What the tail's tiebreaker walk was owed to protect IS covered elsewhere -- lookupMatchByLikelySubtag and preferredLocaleForRange both consult the same tiebreaker list, and construction guarantees a list for every loaded language."
     },
@@ -2741,7 +2741,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "matchFor",
       "signature": "(Ljava/util/List;)Lcom/lokalized/LocaleMatchResult;",
-      "line": 1901,
+      "line": 1946,
       "disposition": "excluded",
       "why": "AUDIT REVERSAL (was 'required'). The primary-language tail of matchFor (lines 1886-1925) is UNREACHABLE, so no case can be owed for it. Proof, and it contradicts the original entry's suggested case: (1) control reaches line 1882 only for a member that is not a bare wildcard (1826), not undetermined-without-private-use (1819), not wildcard-bearing (1841) and not private-use (1855); (2) for such a member `CldrLocaleData.languageScriptForLikelySubtag(semanticRange)` is ALWAYS present -- likelySubtagCandidateTags always ends with `und`, `und` is in the pinned likely-subtags table, and all 7,788 entries in that table carry a script (verified against vendor/lokalized-java/src/build/resources/cldr/cldr-locale-data.json), so the only way lookupMatchByLikelySubtag returns empty is an empty matchingLocales; (3) getting past 1893 with a non-empty `candidates` then requires some survivor with normalizedLanguage == primary AND hasCompatibleLikelyScript, and compatibleLikelyScripts is equality-or-null while neither side can be null for a locale with a non-empty language -- so compatible implies equal, and that survivor would already have been in matchingLocales, contradicting (2). The coverage data agrees: line 1882 is 1/2 and every line below it is 0/2, i.e. the tail is not merely unsatisfied but never entered. Empirically I drove the review's own suggested input, `pt-AO`/`pt-MZ` against loaded pt-BR/pt-PT, plus zxx (a language absent from the likely-subtags table) with three regional catalogs, plus sr-Latn against a Cyrillic-only sr catalog: every one resolves through CLDR parent fallback or likely-subtag matching, or returns NONE at 1896's precondition, and none reaches the tail. What the tail's tiebreaker walk was owed to protect IS covered elsewhere -- lookupMatchByLikelySubtag and preferredLocaleForRange both consult the same tiebreaker list, and construction guarantees a list for every loaded language."
     },
@@ -2749,7 +2749,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "matchFor",
       "signature": "(Ljava/util/List;)Lcom/lokalized/LocaleMatchResult;",
-      "line": 1903,
+      "line": 1948,
       "disposition": "excluded",
       "why": "AUDIT REVERSAL (was 'required'). The primary-language tail of matchFor (lines 1886-1925) is UNREACHABLE, so no case can be owed for it. Proof, and it contradicts the original entry's suggested case: (1) control reaches line 1882 only for a member that is not a bare wildcard (1826), not undetermined-without-private-use (1819), not wildcard-bearing (1841) and not private-use (1855); (2) for such a member `CldrLocaleData.languageScriptForLikelySubtag(semanticRange)` is ALWAYS present -- likelySubtagCandidateTags always ends with `und`, `und` is in the pinned likely-subtags table, and all 7,788 entries in that table carry a script (verified against vendor/lokalized-java/src/build/resources/cldr/cldr-locale-data.json), so the only way lookupMatchByLikelySubtag returns empty is an empty matchingLocales; (3) getting past 1893 with a non-empty `candidates` then requires some survivor with normalizedLanguage == primary AND hasCompatibleLikelyScript, and compatibleLikelyScripts is equality-or-null while neither side can be null for a locale with a non-empty language -- so compatible implies equal, and that survivor would already have been in matchingLocales, contradicting (2). The coverage data agrees: line 1882 is 1/2 and every line below it is 0/2, i.e. the tail is not merely unsatisfied but never entered. Empirically I drove the review's own suggested input, `pt-AO`/`pt-MZ` against loaded pt-BR/pt-PT, plus zxx (a language absent from the likely-subtags table) with three regional catalogs, plus sr-Latn against a Cyrillic-only sr catalog: every one resolves through CLDR parent fallback or likely-subtag matching, or returns NONE at 1896's precondition, and none reaches the tail. What the tail's tiebreaker walk was owed to protect IS covered elsewhere -- lookupMatchByLikelySubtag and preferredLocaleForRange both consult the same tiebreaker list, and construction guarantees a list for every loaded language."
     },
@@ -2757,7 +2757,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "matchFor",
       "signature": "(Ljava/util/List;)Lcom/lokalized/LocaleMatchResult;",
-      "line": 1905,
+      "line": 1950,
       "disposition": "excluded",
       "why": "AUDIT REVERSAL (was 'required'). The primary-language tail of matchFor (lines 1886-1925) is UNREACHABLE, so no case can be owed for it. Proof, and it contradicts the original entry's suggested case: (1) control reaches line 1882 only for a member that is not a bare wildcard (1826), not undetermined-without-private-use (1819), not wildcard-bearing (1841) and not private-use (1855); (2) for such a member `CldrLocaleData.languageScriptForLikelySubtag(semanticRange)` is ALWAYS present -- likelySubtagCandidateTags always ends with `und`, `und` is in the pinned likely-subtags table, and all 7,788 entries in that table carry a script (verified against vendor/lokalized-java/src/build/resources/cldr/cldr-locale-data.json), so the only way lookupMatchByLikelySubtag returns empty is an empty matchingLocales; (3) getting past 1893 with a non-empty `candidates` then requires some survivor with normalizedLanguage == primary AND hasCompatibleLikelyScript, and compatibleLikelyScripts is equality-or-null while neither side can be null for a locale with a non-empty language -- so compatible implies equal, and that survivor would already have been in matchingLocales, contradicting (2). The coverage data agrees: line 1882 is 1/2 and every line below it is 0/2, i.e. the tail is not merely unsatisfied but never entered. Empirically I drove the review's own suggested input, `pt-AO`/`pt-MZ` against loaded pt-BR/pt-PT, plus zxx (a language absent from the likely-subtags table) with three regional catalogs, plus sr-Latn against a Cyrillic-only sr catalog: every one resolves through CLDR parent fallback or likely-subtag matching, or returns NONE at 1896's precondition, and none reaches the tail. What the tail's tiebreaker walk was owed to protect IS covered elsewhere -- lookupMatchByLikelySubtag and preferredLocaleForRange both consult the same tiebreaker list, and construction guarantees a list for every loaded language."
     },
@@ -2765,7 +2765,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "matchFor",
       "signature": "(Ljava/util/List;)Lcom/lokalized/LocaleMatchResult;",
-      "line": 1907,
+      "line": 1952,
       "disposition": "excluded",
       "why": "AUDIT REVERSAL (was 'required'). The primary-language tail of matchFor (lines 1886-1925) is UNREACHABLE, so no case can be owed for it. Proof, and it contradicts the original entry's suggested case: (1) control reaches line 1882 only for a member that is not a bare wildcard (1826), not undetermined-without-private-use (1819), not wildcard-bearing (1841) and not private-use (1855); (2) for such a member `CldrLocaleData.languageScriptForLikelySubtag(semanticRange)` is ALWAYS present -- likelySubtagCandidateTags always ends with `und`, `und` is in the pinned likely-subtags table, and all 7,788 entries in that table carry a script (verified against vendor/lokalized-java/src/build/resources/cldr/cldr-locale-data.json), so the only way lookupMatchByLikelySubtag returns empty is an empty matchingLocales; (3) getting past 1893 with a non-empty `candidates` then requires some survivor with normalizedLanguage == primary AND hasCompatibleLikelyScript, and compatibleLikelyScripts is equality-or-null while neither side can be null for a locale with a non-empty language -- so compatible implies equal, and that survivor would already have been in matchingLocales, contradicting (2). The coverage data agrees: line 1882 is 1/2 and every line below it is 0/2, i.e. the tail is not merely unsatisfied but never entered. Empirically I drove the review's own suggested input, `pt-AO`/`pt-MZ` against loaded pt-BR/pt-PT, plus zxx (a language absent from the likely-subtags table) with three regional catalogs, plus sr-Latn against a Cyrillic-only sr catalog: every one resolves through CLDR parent fallback or likely-subtag matching, or returns NONE at 1896's precondition, and none reaches the tail. What the tail's tiebreaker walk was owed to protect IS covered elsewhere -- lookupMatchByLikelySubtag and preferredLocaleForRange both consult the same tiebreaker list, and construction guarantees a list for every loaded language."
     },
@@ -2773,7 +2773,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "matchFor",
       "signature": "(Ljava/util/List;)Lcom/lokalized/LocaleMatchResult;",
-      "line": 1911,
+      "line": 1956,
       "disposition": "excluded",
       "why": "AUDIT REVERSAL (was 'required'). The primary-language tail of matchFor (lines 1886-1925) is UNREACHABLE, so no case can be owed for it. Proof, and it contradicts the original entry's suggested case: (1) control reaches line 1882 only for a member that is not a bare wildcard (1826), not undetermined-without-private-use (1819), not wildcard-bearing (1841) and not private-use (1855); (2) for such a member `CldrLocaleData.languageScriptForLikelySubtag(semanticRange)` is ALWAYS present -- likelySubtagCandidateTags always ends with `und`, `und` is in the pinned likely-subtags table, and all 7,788 entries in that table carry a script (verified against vendor/lokalized-java/src/build/resources/cldr/cldr-locale-data.json), so the only way lookupMatchByLikelySubtag returns empty is an empty matchingLocales; (3) getting past 1893 with a non-empty `candidates` then requires some survivor with normalizedLanguage == primary AND hasCompatibleLikelyScript, and compatibleLikelyScripts is equality-or-null while neither side can be null for a locale with a non-empty language -- so compatible implies equal, and that survivor would already have been in matchingLocales, contradicting (2). The coverage data agrees: line 1882 is 1/2 and every line below it is 0/2, i.e. the tail is not merely unsatisfied but never entered. Empirically I drove the review's own suggested input, `pt-AO`/`pt-MZ` against loaded pt-BR/pt-PT, plus zxx (a language absent from the likely-subtags table) with three regional catalogs, plus sr-Latn against a Cyrillic-only sr catalog: every one resolves through CLDR parent fallback or likely-subtag matching, or returns NONE at 1896's precondition, and none reaches the tail. What the tail's tiebreaker walk was owed to protect IS covered elsewhere -- lookupMatchByLikelySubtag and preferredLocaleForRange both consult the same tiebreaker list, and construction guarantees a list for every loaded language."
     },
@@ -2781,7 +2781,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "matchFor",
       "signature": "(Ljava/util/List;)Lcom/lokalized/LocaleMatchResult;",
-      "line": 1918,
+      "line": 1963,
       "disposition": "excluded",
       "why": "AUDIT REVERSAL (was 'required'). The primary-language tail of matchFor (lines 1886-1925) is UNREACHABLE, so no case can be owed for it. Proof, and it contradicts the original entry's suggested case: (1) control reaches line 1882 only for a member that is not a bare wildcard (1826), not undetermined-without-private-use (1819), not wildcard-bearing (1841) and not private-use (1855); (2) for such a member `CldrLocaleData.languageScriptForLikelySubtag(semanticRange)` is ALWAYS present -- likelySubtagCandidateTags always ends with `und`, `und` is in the pinned likely-subtags table, and all 7,788 entries in that table carry a script (verified against vendor/lokalized-java/src/build/resources/cldr/cldr-locale-data.json), so the only way lookupMatchByLikelySubtag returns empty is an empty matchingLocales; (3) getting past 1893 with a non-empty `candidates` then requires some survivor with normalizedLanguage == primary AND hasCompatibleLikelyScript, and compatibleLikelyScripts is equality-or-null while neither side can be null for a locale with a non-empty language -- so compatible implies equal, and that survivor would already have been in matchingLocales, contradicting (2). The coverage data agrees: line 1882 is 1/2 and every line below it is 0/2, i.e. the tail is not merely unsatisfied but never entered. Empirically I drove the review's own suggested input, `pt-AO`/`pt-MZ` against loaded pt-BR/pt-PT, plus zxx (a language absent from the likely-subtags table) with three regional catalogs, plus sr-Latn against a Cyrillic-only sr catalog: every one resolves through CLDR parent fallback or likely-subtag matching, or returns NONE at 1896's precondition, and none reaches the tail. What the tail's tiebreaker walk was owed to protect IS covered elsewhere -- lookupMatchByLikelySubtag and preferredLocaleForRange both consult the same tiebreaker list, and construction guarantees a list for every loaded language."
     },
@@ -2789,7 +2789,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "matchFor",
       "signature": "(Ljava/util/List;)Lcom/lokalized/LocaleMatchResult;",
-      "line": 1919,
+      "line": 1964,
       "disposition": "excluded",
       "why": "AUDIT REVERSAL (was 'required'). The primary-language tail of matchFor (lines 1886-1925) is UNREACHABLE, so no case can be owed for it. Proof, and it contradicts the original entry's suggested case: (1) control reaches line 1882 only for a member that is not a bare wildcard (1826), not undetermined-without-private-use (1819), not wildcard-bearing (1841) and not private-use (1855); (2) for such a member `CldrLocaleData.languageScriptForLikelySubtag(semanticRange)` is ALWAYS present -- likelySubtagCandidateTags always ends with `und`, `und` is in the pinned likely-subtags table, and all 7,788 entries in that table carry a script (verified against vendor/lokalized-java/src/build/resources/cldr/cldr-locale-data.json), so the only way lookupMatchByLikelySubtag returns empty is an empty matchingLocales; (3) getting past 1893 with a non-empty `candidates` then requires some survivor with normalizedLanguage == primary AND hasCompatibleLikelyScript, and compatibleLikelyScripts is equality-or-null while neither side can be null for a locale with a non-empty language -- so compatible implies equal, and that survivor would already have been in matchingLocales, contradicting (2). The coverage data agrees: line 1882 is 1/2 and every line below it is 0/2, i.e. the tail is not merely unsatisfied but never entered. Empirically I drove the review's own suggested input, `pt-AO`/`pt-MZ` against loaded pt-BR/pt-PT, plus zxx (a language absent from the likely-subtags table) with three regional catalogs, plus sr-Latn against a Cyrillic-only sr catalog: every one resolves through CLDR parent fallback or likely-subtag matching, or returns NONE at 1896's precondition, and none reaches the tail. What the tail's tiebreaker walk was owed to protect IS covered elsewhere -- lookupMatchByLikelySubtag and preferredLocaleForRange both consult the same tiebreaker list, and construction guarantees a list for every loaded language."
     },
@@ -2797,7 +2797,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "matchFor",
       "signature": "(Ljava/util/List;)Lcom/lokalized/LocaleMatchResult;",
-      "line": 1920,
+      "line": 1965,
       "disposition": "excluded",
       "why": "AUDIT REVERSAL (was 'required'). The primary-language tail of matchFor (lines 1886-1925) is UNREACHABLE, so no case can be owed for it. Proof, and it contradicts the original entry's suggested case: (1) control reaches line 1882 only for a member that is not a bare wildcard (1826), not undetermined-without-private-use (1819), not wildcard-bearing (1841) and not private-use (1855); (2) for such a member `CldrLocaleData.languageScriptForLikelySubtag(semanticRange)` is ALWAYS present -- likelySubtagCandidateTags always ends with `und`, `und` is in the pinned likely-subtags table, and all 7,788 entries in that table carry a script (verified against vendor/lokalized-java/src/build/resources/cldr/cldr-locale-data.json), so the only way lookupMatchByLikelySubtag returns empty is an empty matchingLocales; (3) getting past 1893 with a non-empty `candidates` then requires some survivor with normalizedLanguage == primary AND hasCompatibleLikelyScript, and compatibleLikelyScripts is equality-or-null while neither side can be null for a locale with a non-empty language -- so compatible implies equal, and that survivor would already have been in matchingLocales, contradicting (2). The coverage data agrees: line 1882 is 1/2 and every line below it is 0/2, i.e. the tail is not merely unsatisfied but never entered. Empirically I drove the review's own suggested input, `pt-AO`/`pt-MZ` against loaded pt-BR/pt-PT, plus zxx (a language absent from the likely-subtags table) with three regional catalogs, plus sr-Latn against a Cyrillic-only sr catalog: every one resolves through CLDR parent fallback or likely-subtag matching, or returns NONE at 1896's precondition, and none reaches the tail. What the tail's tiebreaker walk was owed to protect IS covered elsewhere -- lookupMatchByLikelySubtag and preferredLocaleForRange both consult the same tiebreaker list, and construction guarantees a list for every loaded language."
     },
@@ -2805,7 +2805,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "preferredLocaleForWildcard",
       "signature": "(Ljava/util/List;)Ljava/util/Locale;",
-      "line": 1958,
+      "line": 2003,
       "disposition": "excluded",
       "why": "'At least one available locale is required'. Both call sites guarantee non-empty input: 1816 passes a non-null survivor list and 1846 passes filteredCandidates already proven non-empty at 1841. Assert-style guard."
     },
@@ -2813,7 +2813,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "languageRangeMatchTypeFor",
       "signature": "(Ljava/util/Locale;Ljava/util/Locale$LanguageRange;Ljava/lang/String;Ljava/util/Set;)Lcom/lokalized/LocaleMatchType;",
-      "line": 2005,
+      "line": 2050,
       "disposition": "excluded",
       "why": "AUDIT REVERSAL (was 'required'). Falling past the likely-subtag rung requires the selected locale's likely language-script to differ from the range's, and a locale is only SELECTED through exact/identity/canonical/CLDR-fallback/likely-subtag/structural matching or the primary-language tail. The tail is unreachable (see matchFor:1882-1920), and for every other route the reported type is decided above this line. The PRIMARY_LANGUAGE rung is therefore never computed, which is exactly what the corpus shows: all three PRIMARY_LANGUAGE values in it are caller-SUPPLIED match results."
     },
@@ -2821,7 +2821,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "languageRangeMatchTypeFor",
       "signature": "(Ljava/util/Locale;Ljava/util/Locale$LanguageRange;Ljava/lang/String;Ljava/util/Set;)Lcom/lokalized/LocaleMatchType;",
-      "line": 2007,
+      "line": 2052,
       "disposition": "excluded",
       "why": "AUDIT REVERSAL (was 'required'). Same reachability argument as line 2005: this line is only evaluated after the likely-subtag rung has failed for a locale that was nonetheless selected, which requires the unreachable primary-language tail. The EXTENDED_RANGE type a wildcard-free range would earn here is instead produced by the wildcard shortcut at 1990, which the corpus's eight EXTENDED_RANGE values already exercise and which m3b-negotiation.leading-wildcard-prefers-fallback-choice and .structural-filter-rejects-nonmatching extend."
     },
@@ -2829,7 +2829,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "languageRangeSpecificityFor",
       "signature": "(Lcom/lokalized/DefaultStrings$SupportedLocaleStatics;Lcom/lokalized/DefaultStrings$MemberStatics;)Lcom/lokalized/DefaultStrings$LanguageRangeSpecificity;",
-      "line": 2071,
+      "line": 2117,
       "disposition": "excluded",
       "why": "AUDIT: reclassified from required. The owed case WAS authored (cases/owed-m3b-defaultstrings-core.cases.json, fixture owed-ds-undetermined-catalog: a bare `und` catalog whose CLDR-maximized likely subtag en-Latn exactly equals an en-US request's, so only SupportedLocaleStatics' undetermined-suppression stops it being claimed). It did not move the branch: the `availableLanguageScript != null` FALSE outcome was already covered. The one remaining outcome is `member.requestedLikelyLanguageScript != null` evaluating FALSE, and that is unreachable — MemberStatics leaves requestedLikelyLanguageScript null ONLY for wildcard, undetermined or private-use members (DefaultStrings:3050-3057), and all three return before this line: undetermined-and-not-private at :2027, private-and-not-wildcard at :2035, wildcard at :2044. The authored cases are kept: they discriminate a real port hazard (reading an undetermined catalog's raw likely subtag) even though the Java branch was already reached.",
       "owed": "a case matching a range against a loaded 'und'-family or script-less catalog, asserting no likely-subtag relationship is claimed"
@@ -2838,7 +2838,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "languageRangeSpecificityFor",
       "signature": "(Lcom/lokalized/DefaultStrings$SupportedLocaleStatics;Lcom/lokalized/DefaultStrings$MemberStatics;)Lcom/lokalized/DefaultStrings$LanguageRangeSpecificity;",
-      "line": 2077,
+      "line": 2123,
       "disposition": "excluded",
       "why": "AUDIT: reclassified from required. The original entry had the arms backwards. The uncovered outcome is compatibleLikelyScripts returning TRUE here, i.e. an actual PRIMARY_LANGUAGE cell — and that is unreachable. Reaching :2077 requires localeStatics.normalizedLanguage non-null, which excludes undetermined and private-use locales and therefore guarantees localeStatics.likelyLanguageScript is non-null; member.requestedLikelyLanguageScript is likewise non-null on every path that gets here (see :2071). Two non-null scripts that are EQUAL would have returned LIKELY_SUBTAG at :2071 already, so at :2077 they always differ and compatibleLikelyScripts always returns false. Corroborated: fixtures/m3b-negotiation-sr-cyrillic.json was authored specifically for this line (a Cyrillic sr catalog against a sr-Latn request) and the branch stayed 1/2. The rule the fixture pins — same language, incompatible script, no relationship — is real; it is simply the covered arm.",
       "owed": "a case whose range shares a language with a loaded locale but implies a different script, asserting no match rather than a primary-language match"
@@ -2847,7 +2847,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "extlangEquivalentLanguageRangeFor",
       "signature": "(Ljava/lang/String;)Ljava/lang/String;",
-      "line": 2111,
+      "line": 2159,
       "disposition": "excluded",
       "why": "AUDIT: reclassified from required. `!isAlphabeticSubtag(subtags[0])` cannot be true. The sole caller is MemberStatics via languageRangeIdentitiesFor(range), where `range` is `LanguageRange.getRange()` from a validated java.util.Locale.LanguageRange, whose grammar is `1*8ALPHA *(\"-\" 1*8alphanum)` or `*`; the wildcard form is refused two lines earlier by `if (range.contains(\"*\")) return null`. Re-verified on the pinned JDK 21 during audit: `new Locale.LanguageRange(\"12-abc\")` and `new Locale.LanguageRange(\"1a-abc\")` both throw IllegalArgumentException, so a non-alphabetic FIRST subtag cannot exist in a MemberStatics range. NOTE, corrected on review: the earlier text claimed owed-ds.alias-ladder-nonalphabetic-extlang (range zh-123) as the owed case for the second alphabetic conjunct at :2113. That is not so on two counts — :2113 was already fully covered before that case landed, and the case does not discriminate, because a port omitting the alphabetic test on subtags[1] would build the candidate \"123\", fail `isKnownLanguageTag` at :2123 and return null anyway, producing the same NONE. It is kept as a cheap control, not as a discriminator.",
       "owed": "a case with a range such as 'zh-123' or 'ab-1cd', asserting no extlang equivalence is derived"
@@ -2856,7 +2856,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "semanticLanguageRangeForDerivedMatching",
       "signature": "(Ljava/lang/String;ZZLjava/util/Set;)Ljava/lang/String;",
-      "line": 2208,
+      "line": 2283,
       "disposition": "excluded",
       "why": "AUDIT: reclassified from required. Two of this branch point's 20 outcomes are unreachable, so it can never become covered. The ladder can only compare a candidate's constraint count against the incumbent's when both are KNOWN tags and both are jdk-semantic-equal, and no IANA equivalence class contains two known members whose canonical tags carry a different number of subtags: verified by enumerating Locale.LanguageRange.parse over every 2- and 3-letter tag under six suffix shapes (zero such classes) and by running an instrumented replica of the ladder over 879,768 range spellings -- 24 language prefixes x every three-letter subtag x five suffix shapes, plus 42 grandfathered stems x 11 suffixes -- which never produced `candidateConstraintCount > constraintCount` nor `candidateConstraintCount < constraintCount`. The same sweep DID find the third missing outcome, `candidateKnownLanguageTag == knownLanguageTag` FALSE, reachable at exactly one shape, and it is now authored: owed-ds.semantic-ladder-known-identity-survives-later-unknown-alias uses the range sgn-be-fr-x-a, whose identity set is [sgn-be-fr-x-a, sgn-sfb-x-a, sfb-x-a, sgn-be-fx-x-a] and whose lossy JDK rendering sgn-BE appears in none of them. That case discriminates: the range resolves to the sfb catalog by CLDR fallback while a direct sgn-BE request resolves to sgn.",
       "owed": "a case per untaken rung: an equivalence class whose members differ in JDK-semantic status only, one differing in known-tag status only, and one that ties on both so the lower rungs decide"
@@ -2865,7 +2865,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "assignPreferredSpecificHeuristicLocales",
       "signature": "(Lcom/lokalized/DefaultStrings$LanguageRangeMatchCategory;Ljava/util/List;[Lcom/lokalized/DefaultStrings$MemberStatics;[I[[Lcom/lokalized/DefaultStrings$LanguageRangeSpecificity;[ZLjava/util/Map;)V",
-      "line": 2297,
+      "line": 2372,
       "disposition": "excluded",
       "why": "AUDIT REVERSAL (was 'required'). The untaken arm belongs to the PRIMARY_LANGUAGE assignment pass, whose cells are never constructed (see LanguageRangeSpecificity.isHeuristic:3131 and languageRangeSpecificityFor:2077). The original entry hedged on this -- 'consistent with PRIMARY_LANGUAGE assignment never happening' -- and that is now the established reason rather than a coincidence."
     },
@@ -2873,7 +2873,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "structurallyFilteredLocales",
       "signature": "(Ljava/lang/String;Ljava/util/List;)Ljava/util/List;",
-      "line": 2343,
+      "line": 2418,
       "disposition": "excluded",
       "why": "AUDIT REVERSAL (was 'required'). The rejecting arm has no reachable call site, and this is a direct consequence of three reversals already recorded in this table. structurallyFilteredLocales is called from exactly three places. (1) matchFor:1839, the wildcard probe: matchFor:1841's audit established that a wildcard member's survivors are computed by the SAME predicate the filter re-runs, so it cannot own a survivor the filter rejects. Verified independently here: for a wildcard member languageRangeSpecificityFor returns null at line 2043 unless the member matched structurally at 2040 or matched EXACTLY at 2033, and an EXACT match means structuralRange (the range with noninitial wildcards removed) equals the locale tag, which makes structurallyMatches true as well -- the algorithm skips '*' subtags, so deleting them cannot turn a match into a non-match. (2) matchFor:1899, inside the primary-language tail that matchFor:1896's audit proved unreachable. (3) languageRangeMatchTypeFor:2007, which that entry's own audit proved unreachable for the same reason. With all three sites either unreachable or pre-filtered, no input can make this branch take its rejecting arm."
     },
@@ -2881,7 +2881,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "compatibleLikelyScripts",
       "signature": "(Ljava/lang/String;Ljava/lang/String;)Z",
-      "line": 2427,
+      "line": 2502,
       "disposition": "excluded",
       "why": "AUDIT: reclassified from required. Both uncovered outcomes are the null short-circuits, and neither side can be null at any of the three call sites. (1) :2077 — requestedLikelyLanguageScript is non-null there for the reason given on :2071, and localeStatics.likelyLanguageScript is non-null because :2075 already required a non-null normalizedLanguage. (2) hasCompatibleLikelyScript at :1893 — its candidates were pre-filtered by `LocaleUtils.normalizedLanguage(locale).map(...).orElse(false)`, which drops every undetermined and private-use locale, and its requested side is a non-private semanticRange. (3) matchesLikelyLanguageScript at :2486 — guarded by `LocaleUtils.normalizedLanguage(locale).map(...)`, and its other argument is a loaded locale drawn from that same language's tiebreaker list. Verified that no non-private, non-undetermined tag lacks likely-subtag data at all: an exhaustive sweep of every 2-, 3- and 4-letter language subtag against CldrLocaleData.languageScriptForLikelySubtag on the pinned JDK returned a script for all 18,278 of them, because likelySubtagCandidateTags falls through to und.",
       "owed": "a pair of cases: one where the requested likely script is unknown (so compatibility is asserted anyway) and one where both are known and differ"
@@ -2890,7 +2890,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "lookupMatchByFallbackCandidates",
       "signature": "(Ljava/lang/String;Ljava/util/List;)Ljava/util/Optional;",
-      "line": 2533,
+      "line": 2608,
       "disposition": "excluded",
       "why": "The wildcard early-out. Both call sites are unreachable for a wildcard range: matchFor handles containsWildcard members at 1838-1851 and returns before 1873, and languageRangeMatchTypeFor returns EXTENDED_RANGE at 1990 before reaching 2003. Defensive guard."
     },
@@ -2898,7 +2898,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "lookupMatchByLikelySubtag",
       "signature": "(Ljava/lang/String;Ljava/util/List;)Ljava/util/Optional;",
-      "line": 2591,
+      "line": 2666,
       "disposition": "excluded",
       "why": "The wildcard early-out. All four call sites (1880, 2005, 2303, 2480) pass a semantic range or a locale tag, never a wildcard range: matchFor returns for wildcard members before 1880, languageRangeMatchTypeFor returns at 1990, heuristic assignment sees only non-syntactic relationships, and 2480 passes a locale's own tag. Defensive guard."
     },
@@ -2906,7 +2906,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "lookupMatchByLikelySubtag",
       "signature": "(Ljava/lang/String;Ljava/util/List;)Ljava/util/Optional;",
-      "line": 2599,
+      "line": 2674,
       "disposition": "excluded",
       "why": "AUDIT: reclassified from required. `!likelySubtag.isPresent()` cannot be true here. CldrLocaleData.languageScriptForLikelySubtag returns empty only for a private-use tag or one whose canonical language is empty (likelySubtagFor:184), and both are already excluded before this line: `range.contains(\"*\")` and `CldrLocaleData.hasUndeterminedLanguage(range)` return two and five lines earlier, and hasUndeterminedLanguage is true for every private-use tag (its TagParts language is empty). The three entry points agree: matchFor:1878 skips undetermined and private-use members, matchTypeFor:2005 is reached only for a non-wildcard governor, and assignPreferredSpecificHeuristicLocales:2303 only sees members with recognizedDepth > 1, which a private-use or undetermined tag can never have (recognizedLanguageTagConstraintCountFor floors at 1 for them, since Locale.forLanguageTag of their canonical tag has empty language, script and country). Backed by the same exhaustive 2/3/4-letter sweep recorded on :2427: no ordinary language subtag lacks likely-subtag data.",
       "owed": "a case whose range is a well-formed but unmapped language ('qaa', 'zxx'), asserting no likely-subtag match"
@@ -2915,7 +2915,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "lookupMatchByLikelySubtag",
       "signature": "(Ljava/lang/String;Ljava/util/List;)Ljava/util/Optional;",
-      "line": 2610,
+      "line": 2685,
       "disposition": "excluded",
       "why": "AUDIT: reclassified from required. The uncovered outcome is `availableLikelySubtag.isPresent()` FALSE — a loaded catalog with no likely-subtag data — and the loop has already `continue`d past every such locale one line earlier: `if (CldrLocaleData.hasUndeterminedLanguage(locale.toLanguageTag())) continue;`. languageScriptForLikelySubtag is empty only for private-use or empty-language tags, and hasUndeterminedLanguage is true for both. Any other loaded tag resolves — verified by the exhaustive 2/3/4-letter language sweep recorded on :2427. The owed case (a likely-subtag-bearing range against an undetermined catalog) is nevertheless authored as owed-ds.undetermined-catalog-not-claimed-by-likely-subtag, because the SKIP itself is the port-visible behaviour.",
       "owed": "a case matching a likely-subtag-bearing range against a loaded 'und'/private-use catalog alongside a real one"
@@ -2924,7 +2924,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "unwrapOptional",
       "signature": "(Ljava/lang/Object;)Ljava/lang/Object;",
-      "line": 2678,
+      "line": 2753,
       "disposition": "nonportable",
       "why": "java.util.Optional as a placeholder VALUE, unwrapped to its content or null. There is no JS counterpart type; the port's placeholder values are plain values, and the plan models explicit absence differently."
     },
@@ -2932,7 +2932,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "getKeysForLocale",
       "signature": "(Ljava/util/Locale;)Ljava/util/Set;",
-      "line": 2718,
+      "line": 2793,
       "disposition": "required",
       "why": "ACCEPTED M7-CLOSE RESIDUE, and the blocker is NOT the harness. CORRECTED 2026-09-06: this entry previously said \"THE PORT DOES NOT IMPLEMENT THIS METHOD\" and that getKeysForLocale and getMissingKeys are \"the only two members of plan 3.3's `Strings` interface missing from lokalized-js\". BOTH SENTENCES WERE FALSE. `getKeysForLocale` SHIPS -- src/core/index.js:1271 and types/core/index.d.ts:51 -- so only `getMissingKeys` is missing. The correction makes the entry WORSE, not better: what was recorded as an unwritten method is a live divergence in shipped code that no gate sees. Probed on the built port 2026-09-06, catalogs {en:{B,A}, de}: (1) `getKeysForLocale(\"fr\")` returns `[]` where Java throws IllegalArgumentException \"Locale 'fr' is not supported\" (DefaultStrings.java:2718-2720) and plan 3.3:771 requires UnsupportedLocaleError -- the port refuses nothing at all; (2) `getKeysForLocale(\"en\")` returns `[\"B\",\"A\"]` (catalog insertion order) where Java's TreeSet returns `[A, B]`, so the pinned ordering plan 3.3 names is not delivered. THE PLAN/CORPUS CONFLICT UNDER IT IS UNCHANGED AND STILL NEEDS THE USER: plan 3.3:771 says \"throws `UnsupportedLocaleError` unless the exact tag is supported\", Java throws IllegalArgumentException, and tools/conformance.mjs's ERROR_NAME maps that Java type to TypeError|RangeError, so a port following the plan would FAIL the row written to satisfy it. Which of the two is the contract is a user decision, not an authoring one. The branch stays `required` and stays BLOCKED at the harness: VectorOracle.execute has no inspection operation, ingest.mjs's OPERATIONS set has no name for one, and neither does the operation enum in schema/behavioral-vectors.schema.json. Adding one without settling the refusal type would close a Java branch against a JS row whose expected refusal nobody has chosen. This entry covers getKeysForLocale's supported-locale guard, whose two arms are both owed -- and whose rejecting arm the port does not implement AT ALL, which is the newly recorded fact. || FIXED 2026-09-06 (M7 decision 3, maintainer's call). Both measured port defects are closed: an unsupported locale now THROWS (`UnsupportedLocaleError`, per plan 3.3:771) where it returned `[]`, and keys come back SORTED where they came back in catalog insertion order — `sort()` on UTF-16 code units is Java's `String.compareTo` ordering, so the port and `TreeSet` agree. `getMissingKeys` now EXISTS, applying the support rule independently to source and target. The THROWN TYPE follows the PLAN, not Java: Java raises `IllegalArgumentException`, plan 3.3 names `UnsupportedLocaleError`, and no corpus row arbitrates. Deliberately NOT settled by widening conformance.mjs's shared `IllegalArgumentException` row, which would weaken 34 unrelated comparisons. The branch remains `required`: fixing the PORT closes no JAVA branch, and authoring a case here still needs an operation that can observe an inspection call.",
       "owed": "a case calling getKeysForLocale on a loaded locale (asserting sorted keys) and one on an unloaded locale (asserting the refusal) || BLOCKED. VectorOracle.execute has no getKeysForLocale operation, ingest.mjs's OPERATIONS set has no name for one, and neither does the operation enum in schema/behavioral-vectors.schema.json. Both arms of this guard need an ADDITIVE inspection operation in the oracle. Worth doing before M7: getKeysForLocale is on the JS Strings interface with a pinned UTF-16 code-unit ordering and neither its success shape nor its refusal is specified today. || RE-DERIVED 2026-09-09 against the operations that exist TODAY (construct, acceptLanguage, define, perCallOverrideOrder) rather than against the harness as it stood when this entry was written. UNCHANGED AND STILL BLOCKED at the harness, re-checked against all four operations. None of them is an INSPECTION operation: VectorOracle.execute still has no getKeysForLocale or getMissingKeys arm, ingest.mjs's OPERATIONS set has no name for one, and neither does the operation enum in schema/behavioral-vectors.schema.json. `construct`'s probe does call `get`, not an inspection method, so this slice's catalogSource 'defined' does not reach it either. The work is additive and small -- one execute arm, one OPERATIONS entry, one enum value -- and it is the cheapest remaining required cluster; what makes it a decision rather than a chore is unchanged, that plan 3.3:771 names UnsupportedLocaleError where Java raises IllegalArgumentException and conformance.mjs's ERROR_NAME maps that Java type to TypeError|RangeError, so the row's expected refusal has to be chosen before it is written. SEE ALSO the role-naming loss recorded against getMissingKeys:2738 and :2741 this slice."
@@ -2941,7 +2941,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "getMissingKeys",
       "signature": "(Ljava/util/Locale;Ljava/util/Locale;)Ljava/util/Set;",
-      "line": 2738,
+      "line": 2813,
       "disposition": "required",
       "why": "ACCEPTED M7-CLOSE RESIDUE, and the blocker is NOT the harness. CORRECTED 2026-09-06: this entry previously said \"THE PORT DOES NOT IMPLEMENT THIS METHOD\" and that getKeysForLocale and getMissingKeys are \"the only two members of plan 3.3's `Strings` interface missing from lokalized-js\". BOTH SENTENCES WERE FALSE. `getKeysForLocale` SHIPS -- src/core/index.js:1271 and types/core/index.d.ts:51 -- so only `getMissingKeys` is missing. The correction makes the entry WORSE, not better: what was recorded as an unwritten method is a live divergence in shipped code that no gate sees. Probed on the built port 2026-09-06, catalogs {en:{B,A}, de}: (1) `getKeysForLocale(\"fr\")` returns `[]` where Java throws IllegalArgumentException \"Locale 'fr' is not supported\" (DefaultStrings.java:2718-2720) and plan 3.3:771 requires UnsupportedLocaleError -- the port refuses nothing at all; (2) `getKeysForLocale(\"en\")` returns `[\"B\",\"A\"]` (catalog insertion order) where Java's TreeSet returns `[A, B]`, so the pinned ordering plan 3.3 names is not delivered. THE PLAN/CORPUS CONFLICT UNDER IT IS UNCHANGED AND STILL NEEDS THE USER: plan 3.3:771 says \"throws `UnsupportedLocaleError` unless the exact tag is supported\", Java throws IllegalArgumentException, and tools/conformance.mjs's ERROR_NAME maps that Java type to TypeError|RangeError, so a port following the plan would FAIL the row written to satisfy it. Which of the two is the contract is a user decision, not an authoring one. The branch stays `required` and stays BLOCKED at the harness: VectorOracle.execute has no inspection operation, ingest.mjs's OPERATIONS set has no name for one, and neither does the operation enum in schema/behavioral-vectors.schema.json. Adding one without settling the refusal type would close a Java branch against a JS row whose expected refusal nobody has chosen. This entry covers getMissingKeys' SOURCE-locale guard, whose two arms are both owed. getMissingKeys is the one member genuinely absent from the port. || FIXED 2026-09-06 (M7 decision 3, maintainer's call). Both measured port defects are closed: an unsupported locale now THROWS (`UnsupportedLocaleError`, per plan 3.3:771) where it returned `[]`, and keys come back SORTED where they came back in catalog insertion order — `sort()` on UTF-16 code units is Java's `String.compareTo` ordering, so the port and `TreeSet` agree. `getMissingKeys` now EXISTS, applying the support rule independently to source and target. The THROWN TYPE follows the PLAN, not Java: Java raises `IllegalArgumentException`, plan 3.3 names `UnsupportedLocaleError`, and no corpus row arbitrates. Deliberately NOT settled by widening conformance.mjs's shared `IllegalArgumentException` row, which would weaken 34 unrelated comparisons. The branch remains `required`: fixing the PORT closes no JAVA branch, and authoring a case here still needs an operation that can observe an inspection call.",
       "owed": "a case calling getMissingKeys with an unloaded source locale, expecting the 'Source locale ... is not supported' refusal || BLOCKED, same reason as getKeysForLocale:2718 -- VectorOracle.execute, ingest.mjs's OPERATIONS set and the schema's operation enum all lack a getMissingKeys operation, so neither locale-support guard nor the sorted difference can be observed. Additive oracle work, and owed before M7 implements the inspection surface. || RE-DERIVED 2026-09-09 against the operations that exist TODAY (construct, acceptLanguage, define, perCallOverrideOrder) rather than against the harness as it stood when this entry was written. UNCHANGED AND STILL BLOCKED at the harness, re-checked against all four operations. None of them is an INSPECTION operation: VectorOracle.execute still has no getKeysForLocale or getMissingKeys arm, ingest.mjs's OPERATIONS set has no name for one, and neither does the operation enum in schema/behavioral-vectors.schema.json. `construct`'s probe does call `get`, not an inspection method, so this slice's catalogSource 'defined' does not reach it either. The work is additive and small -- one execute arm, one OPERATIONS entry, one enum value -- and it is the cheapest remaining required cluster; what makes it a decision rather than a chore is unchanged, that plan 3.3:771 names UnsupportedLocaleError where Java raises IllegalArgumentException and conformance.mjs's ERROR_NAME maps that Java type to TypeError|RangeError, so the row's expected refusal has to be chosen before it is written. SEE ALSO the role-naming loss recorded against getMissingKeys:2738 and :2741 this slice."
@@ -2950,7 +2950,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "getMissingKeys",
       "signature": "(Ljava/util/Locale;Ljava/util/Locale;)Ljava/util/Set;",
-      "line": 2741,
+      "line": 2816,
       "disposition": "required",
       "why": "ACCEPTED M7-CLOSE RESIDUE, and the blocker is NOT the harness. CORRECTED 2026-09-06: this entry previously said \"THE PORT DOES NOT IMPLEMENT THIS METHOD\" and that getKeysForLocale and getMissingKeys are \"the only two members of plan 3.3's `Strings` interface missing from lokalized-js\". BOTH SENTENCES WERE FALSE. `getKeysForLocale` SHIPS -- src/core/index.js:1271 and types/core/index.d.ts:51 -- so only `getMissingKeys` is missing. The correction makes the entry WORSE, not better: what was recorded as an unwritten method is a live divergence in shipped code that no gate sees. Probed on the built port 2026-09-06, catalogs {en:{B,A}, de}: (1) `getKeysForLocale(\"fr\")` returns `[]` where Java throws IllegalArgumentException \"Locale 'fr' is not supported\" (DefaultStrings.java:2718-2720) and plan 3.3:771 requires UnsupportedLocaleError -- the port refuses nothing at all; (2) `getKeysForLocale(\"en\")` returns `[\"B\",\"A\"]` (catalog insertion order) where Java's TreeSet returns `[A, B]`, so the pinned ordering plan 3.3 names is not delivered. THE PLAN/CORPUS CONFLICT UNDER IT IS UNCHANGED AND STILL NEEDS THE USER: plan 3.3:771 says \"throws `UnsupportedLocaleError` unless the exact tag is supported\", Java throws IllegalArgumentException, and tools/conformance.mjs's ERROR_NAME maps that Java type to TypeError|RangeError, so a port following the plan would FAIL the row written to satisfy it. Which of the two is the contract is a user decision, not an authoring one. The branch stays `required` and stays BLOCKED at the harness: VectorOracle.execute has no inspection operation, ingest.mjs's OPERATIONS set has no name for one, and neither does the operation enum in schema/behavioral-vectors.schema.json. Adding one without settling the refusal type would close a Java branch against a JS row whose expected refusal nobody has chosen. This entry covers getMissingKeys' TARGET-locale guard, whose two arms are both owed. getMissingKeys is the one member genuinely absent from the port. || FIXED 2026-09-06 (M7 decision 3, maintainer's call). Both measured port defects are closed: an unsupported locale now THROWS (`UnsupportedLocaleError`, per plan 3.3:771) where it returned `[]`, and keys come back SORTED where they came back in catalog insertion order — `sort()` on UTF-16 code units is Java's `String.compareTo` ordering, so the port and `TreeSet` agree. `getMissingKeys` now EXISTS, applying the support rule independently to source and target. The THROWN TYPE follows the PLAN, not Java: Java raises `IllegalArgumentException`, plan 3.3 names `UnsupportedLocaleError`, and no corpus row arbitrates. Deliberately NOT settled by widening conformance.mjs's shared `IllegalArgumentException` row, which would weaken 34 unrelated comparisons. The branch remains `required`: fixing the PORT closes no JAVA branch, and authoring a case here still needs an operation that can observe an inspection call.",
       "owed": "a case calling getMissingKeys with a loaded source and an unloaded target, plus the success case asserting the sorted difference || BLOCKED, same reason as getKeysForLocale:2718 -- VectorOracle.execute, ingest.mjs's OPERATIONS set and the schema's operation enum all lack a getMissingKeys operation, so neither locale-support guard nor the sorted difference can be observed. Additive oracle work, and owed before M7 implements the inspection surface. || RE-DERIVED 2026-09-09 against the operations that exist TODAY (construct, acceptLanguage, define, perCallOverrideOrder) rather than against the harness as it stood when this entry was written. UNCHANGED AND STILL BLOCKED at the harness, re-checked against all four operations. None of them is an INSPECTION operation: VectorOracle.execute still has no getKeysForLocale or getMissingKeys arm, ingest.mjs's OPERATIONS set has no name for one, and neither does the operation enum in schema/behavioral-vectors.schema.json. `construct`'s probe does call `get`, not an inspection method, so this slice's catalogSource 'defined' does not reach it either. The work is additive and small -- one execute arm, one OPERATIONS entry, one enum value -- and it is the cheapest remaining required cluster; what makes it a decision rather than a chore is unchanged, that plan 3.3:771 names UnsupportedLocaleError where Java raises IllegalArgumentException and conformance.mjs's ERROR_NAME maps that Java type to TypeError|RangeError, so the row's expected refusal has to be chosen before it is written. SEE ALSO the role-naming loss recorded against getMissingKeys:2738 and :2741 this slice."
@@ -2959,7 +2959,7 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "throwExceptionFor",
       "signature": "(Lcom/lokalized/TranslationFailure;Ljava/lang/String;)V",
-      "line": 3203,
+      "line": 3291,
       "disposition": "excluded",
       "why": "'cause is not a RuntimeException'. The cause recorded on a translation failure is captured in 'catch (RuntimeException e)' at getResult:721, so it is always a RuntimeException and the false arm is unreachable."
     },
@@ -2967,23 +2967,39 @@
       "class": "com.lokalized.DefaultStrings",
       "method": "throwExceptionFor",
       "signature": "(Lcom/lokalized/TranslationFailure;Ljava/lang/String;)V",
-      "line": 3206,
+      "line": 3294,
       "disposition": "excluded",
       "why": "The Error rethrow. Unreachable for the same reason: an Error is never captured as a translation-failure cause."
     },
     {
       "class": "com.lokalized.DefaultStrings",
-      "method": "lambda$matchFor$4",
+      "method": "lambda$matchFor$10",
       "signature": "(Ljava/util/Locale;)Z",
-      "line": 1905,
+      "line": 1950,
       "disposition": "excluded",
       "why": "AUDIT REVERSAL (was 'required'). The primary-language tail of matchFor (lines 1886-1925) is UNREACHABLE, so no case can be owed for it. Proof, and it contradicts the original entry's suggested case: (1) control reaches line 1882 only for a member that is not a bare wildcard (1826), not undetermined-without-private-use (1819), not wildcard-bearing (1841) and not private-use (1855); (2) for such a member `CldrLocaleData.languageScriptForLikelySubtag(semanticRange)` is ALWAYS present -- likelySubtagCandidateTags always ends with `und`, `und` is in the pinned likely-subtags table, and all 7,788 entries in that table carry a script (verified against vendor/lokalized-java/src/build/resources/cldr/cldr-locale-data.json), so the only way lookupMatchByLikelySubtag returns empty is an empty matchingLocales; (3) getting past 1893 with a non-empty `candidates` then requires some survivor with normalizedLanguage == primary AND hasCompatibleLikelyScript, and compatibleLikelyScripts is equality-or-null while neither side can be null for a locale with a non-empty language -- so compatible implies equal, and that survivor would already have been in matchingLocales, contradicting (2). The coverage data agrees: line 1882 is 1/2 and every line below it is 0/2, i.e. the tail is not merely unsatisfied but never entered. Empirically I drove the review's own suggested input, `pt-AO`/`pt-MZ` against loaded pt-BR/pt-PT, plus zxx (a language absent from the likely-subtags table) with three regional catalogs, plus sr-Latn against a Cyrillic-only sr catalog: every one resolves through CLDR parent fallback or likely-subtag matching, or returns NONE at 1896's precondition, and none reaches the tail. What the tail's tiebreaker walk was owed to protect IS covered elsewhere -- lookupMatchByLikelySubtag and preferredLocaleForRange both consult the same tiebreaker list, and construction guarantees a list for every loaded language. This entry is the hasSpecificMatch predicate body inside that tail."
+    },
+    {
+      "class": "com.lokalized.DefaultStrings",
+      "method": "<init>",
+      "signature": "(Ljava/util/Locale;Ljava/util/function/Supplier;Ljava/util/function/Function;Ljava/util/function/Function;Ljava/util/Map;Lcom/lokalized/TranslationFailureHandler;Lcom/lokalized/PhoneticResolver;Lcom/lokalized/BidiIsolation;Lcom/lokalized/TranslationFallbackPolicy;Lcom/lokalized/TranslationRuntimeLimits;Lcom/lokalized/LanguageRangeEquivalents;)V",
+      "line": 507,
+      "disposition": "nonportable",
+      "why": "lokalized-java 3.1.0's LanguageRangeEquivalents setting (amendment A30): the non-null arm is a caller who called Strings.Builder#languageRangeEquivalents. The oracle builds every fixture without that call, because the corpus records the default, IANA_REGISTRY, and the maintainer decided that lokalized-js gets NO equivalent setting (A30 point 5: JavaScript has no JDK, so a JDK setting could only mean JDK 21 forever). No JS door can reach this arm. The setting's JDK behaviour is checked instead by npm run check:iana, which requires the library's JDK setting to equal java.util.Locale.LanguageRange#parse on every probe."
+    },
+    {
+      "class": "com.lokalized.DefaultStrings",
+      "method": "parseLanguageRanges",
+      "signature": "(Ljava/lang/String;Lcom/lokalized/LanguageRangeEquivalents;)Ljava/util/List;",
+      "line": 2239,
+      "disposition": "nonportable",
+      "why": "The switch on the instance's LanguageRangeEquivalents setting (amendment A30). The corpus reaches only the IANA_REGISTRY arm, the default. The JDK arm has no JS counterpart by the maintainer's decision (A30 point 5: lokalized-js is registry-only) and is checked by npm run check:iana against java.util.Locale.LanguageRange#parse on every probe rather than by the corpus. The default arm throws for an enum constant that does not exist; LanguageRangeEquivalents has exactly two, so it is unreachable."
     },
     {
       "class": "com.lokalized.DefaultStrings$LanguageRangeSpecificity",
       "method": "isHeuristic",
       "signature": "()Z",
-      "line": 3131,
+      "line": 3219,
       "disposition": "excluded",
       "why": "AUDIT REVERSAL (was 'required'). The untaken disjunct is PRIMARY_LANGUAGE, and a PRIMARY_LANGUAGE specificity is never constructed: languageRangeSpecificityFor:2077 requires the available locale's likely language-script to be COMPATIBLE with the range's while line 2071 has already failed to find them EQUAL, and compatibleLikelyScripts is equality-or-null with neither side nullable for a locale carrying a non-empty language (every entry in the pinned likely-subtags table has a script). The one shape that could null the available side -- an undetermined locale, masked at 2075 -- fails 2077's own normalizedLanguage test unless the range is itself undetermined, and an undetermined range is refused a cell at 2027. The LIKELY_SUBTAG disjunct is exercised throughout the corpus."
     },
@@ -2991,7 +3007,7 @@
       "class": "com.lokalized.DefaultStrings$LanguageRangeSpecificity",
       "method": "hasCategory",
       "signature": "(Lcom/lokalized/DefaultStrings$LanguageRangeMatchCategory;)Z",
-      "line": 3141,
+      "line": 3229,
       "disposition": "excluded",
       "why": "AUDIT REVERSAL (was 'required'). hasCategory is called only by assignPreferredSpecificHeuristicLocales, once per assignment pass, for LIKELY_SUBTAG and then for PRIMARY_LANGUAGE. PRIMARY_LANGUAGE cells are never constructed (see LanguageRangeSpecificity.isHeuristic:3131), so the PRIMARY_LANGUAGE pass can never see a matching cell and the equal arm is reachable for one category only."
     },
@@ -2999,15 +3015,15 @@
       "class": "com.lokalized.DefaultStrings$LocalizedStringSet",
       "method": "contains",
       "signature": "(Ljava/lang/Object;)Z",
-      "line": 3187,
+      "line": 3275,
       "disposition": "nonportable",
       "why": "Set.contains on the inspection view of a locale's localized strings - a java.util.Set contract method, never called by the library itself; reached only by the harness's `define` operation, which is why this point moved from 0/2 to 1/2 and why the method is no longer wholly unexercised. The JS inspection surface returns key arrays (getKeysForLocale), not a Set of model objects, so there is no membership operation to port. (The keys behaviour it shadows is owed separately at getKeysForLocale:2718.)"
     },
     {
       "class": "com.lokalized.DefaultStrings$MemberStatics",
       "method": "<init>",
-      "signature": "(Ljava/util/Locale$LanguageRange;)V",
-      "line": 3051,
+      "signature": "(Ljava/util/Locale$LanguageRange;Lcom/lokalized/LanguageRangeEquivalents;)V",
+      "line": 3139,
       "disposition": "excluded",
       "why": "UNREACHABLE BY CONSTRUCTION -- reclassified required -> excluded on evidence, not convenience. The line is `if (!containsWildcard && !undetermined && !privateUse)`, and its one untaken arm is privateUse == true. That arm cannot be reached: CldrLocaleData.TagParts.forLanguageTag sets privateUse = true on exactly one return, the startsWith(\"x-\") early return at CldrLocaleData:590-592, and that same return also sets language = \"\" -- which makes CldrLocaleData.hasUndeterminedLanguage true, because it tests getLanguage().length() == 0. Every other return of forLanguageTag passes privateUse = false. So privateUse implies undetermined for every possible input, the second conjunct short-circuits first, and the third conjunct can only ever evaluate FALSE. Measured as well as read: a flag probe on the pinned JDK 21 over x-lokal, x-lokal-a, x-*, x-foo-*, und, und-latn, und-us, und-x-a, x-a-b, x, en, en-us, fr, sgn-be-fr-x-a, zxx-*-fr, *, zxx and mul produced privateUse=true only together with undetermined=true, and privateUse=false in every case where the third conjunct is evaluated at all. Five discriminating cases were authored while establishing this and are KEPT as behavioral coverage of the else arm even though they cannot close the branch (family owed-m3b-member-statics): a wildcard-free private-use range selects nothing though a prefix-matching catalog is loaded; the same range yields to a later equal-weight ordinary member; the exact private-use spelling still matches EXACTLY, so a port may not answer NONE for all private-use ranges; und-US selects nothing though CLDR's likely subtag for it is en-Latn and an en-US catalog is loaded; and the three shapes together in one list. The prior entry's 'owed' -- a range list with a private-use member and an undetermined member alongside an ordinary one -- is now IN the corpus and demonstrates the impossibility rather than resolving it."
     },
@@ -3851,6 +3867,38 @@
       "line": 265,
       "disposition": "excluded",
       "why": "AUDIT RECLASSIFICATION required -> excluded (M3b case authoring). The unexercised arm is `index >= 0` FALSE. Every call site passes either the scan cursor (initialised to 0 and only ever advanced) or cursor + 1, so a negative index cannot arise. StringInterpolator is package-private, so there is no external caller either.\n\nPRIOR REVIEW: `index >= 0 && string.startsWith(prefix, index)` — 3 of 4 branches taken, so one short-circuit arm is unexercised. The negative-index arm guards escape scanning near a string boundary."
+    },
+    {
+      "class": "com.lokalized.IanaLanguageEquivalents",
+      "method": "parse",
+      "signature": "(Ljava/lang/String;)Ljava/util/List;",
+      "line": 153,
+      "disposition": "required",
+      "why": "The leading 'accept-language:' prefix is dropped before splitting, as java.util.Locale.LanguageRange#parse does. Portable: lokalized-js's parseLanguageRanges and the header door both strip it, and tools/iana-oracle/model.mjs states it. Measured when this entry was written: none of the corpus's 176 language-range and header strings carries the prefix, so no case discriminates it. It IS checked outside the corpus: npm run check:iana runs the library's public parse on 'accept-language: en, fr', 'Accept-Language:en' and 'accept-language:' against the model. Owed a matchFor or acceptLanguage case. This class first appeared in the coverage record with amendment A30, so the entry is new rather than moved."
+    },
+    {
+      "class": "com.lokalized.IanaLanguageEquivalents",
+      "method": "parse",
+      "signature": "(Ljava/lang/String;)Ljava/util/List;",
+      "line": 174,
+      "disposition": "required",
+      "why": "The weight bound, w < 0.0 || w > 1.0. The corpus reaches w > 1.0 (browser-chooser.malformed.weight-above-one) and in-range weights; measured when this entry was written, none of its 176 range and header strings carries a negative weight, so the w < 0.0 arm is unobserved. Portable: lokalized-js refuses a negative weight with the same message. Checked outside the corpus by npm run check:iana ('en;q=-0.5', and 'en;q=-0', which is accepted because -0.0 < 0.0 is false). Owed a case."
+    },
+    {
+      "class": "com.lokalized.IanaLanguageEquivalents",
+      "method": "parse",
+      "signature": "(Ljava/lang/String;)Ljava/util/List;",
+      "line": 197,
+      "disposition": "required",
+      "why": "First-wins de-duplication of an EXPANSION that an earlier member already put in the list. The member itself is de-duplicated earlier (seen.contains(range)); this arm needs a new member whose expansion is already present, for example 'sgn-dd,gsg': sgn-dd's region substitution adds sgn-de, and gsg's class then offers sgn-de and its substitution sgn-dd again (computed with tools/iana-oracle/model.mjs, which npm run check:iana holds to this method). Portable: lokalized-js de-duplicates the same way. No corpus string reaches it. Owed a case."
+    },
+    {
+      "class": "com.lokalized.IanaLanguageEquivalents",
+      "method": "equivalentsForLanguage",
+      "signature": "(Ljava/lang/String;)Ljava/util/List;",
+      "line": 227,
+      "disposition": "excluded",
+      "why": "The while (!prefix.isEmpty()) exit. The walk strips from the last hyphen and breaks when none is left, so the prefix can only become empty for a range that begins with a hyphen, and the LanguageRange constructor has already refused that range (an empty first subtag) before expansion runs. Defensive; unreachable through any input."
     }
   ]
 }

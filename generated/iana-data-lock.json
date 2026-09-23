@@ -1,58 +1,42 @@
 {
-  "formatVersion": 1,
-  "artifacts": [
-    {
-      "path": "generated/iana-language-range-equivalents.json",
-      "sha256": "099145677b7c29a895895c23b5f57891bbbb1edf4919fe7c08910b9e95428f1d"
-    }
-  ],
+  "formatVersion": 2,
+  "ianaRegistryDate": "2026-09-17",
+  "sourceSha256": "755fad43283be7b41ebe3c89ad054b6eaf928f404f9c0edb74799e0eab74beb1",
+  "closureSchemaVersion": "lokalized-iana-language-equivalences/1",
+  "compatibilityOverridesSha256": "4ce249f3d5b47890ed367dc0f6ae61925c47eddbd18af26f9b612606ccb82c54",
+  "note": "IANA lock v2. ianaDataFingerprint is the SHA-256 of the JCS bytes of {formatVersion, ianaRegistryDate, sourceSha256, closureSchemaVersion, artifacts (each projected to {path, sha256}), compatibilityOverridesSha256} (plan v7 5.1 :1680-1682); note, generator, inputs and inputsSha256 are outside it. Written by tools/iana-oracle/generate.mjs --write; do not edit.",
+  "generator": {
+    "path": "tools/iana-oracle/generate.mjs",
+    "version": 1
+  },
   "inputs": [
     {
-      "path": "tools/iana-oracle/Extract.java",
-      "sha256": "da226893f817aadbad256a4e6f592e1a285bcecf2f42e5564ab9186957921582"
+      "role": "compatibility-overlay",
+      "path": "tools/iana-oracle/jdk-compatibility.json",
+      "sha256": "4ce249f3d5b47890ed367dc0f6ae61925c47eddbd18af26f9b612606ccb82c54"
     },
     {
-      "path": "tools/iana-oracle/EquivalenceKeys.java",
-      "sha256": "1c4e2b7387cdbb833c6bc506905033b3bb7e64b759131a4d0ce1a1e89d156db9"
+      "role": "generator",
+      "path": "tools/iana-oracle/generate.mjs",
+      "sha256": "7fb009dda84f5d0a339c2d26dbb4face4d210685390de259c9dca01efe8efa9a"
     },
     {
-      "path": "tools/iana-oracle/candidates.mjs",
-      "sha256": "4d1d0bf63983d9a758176067ac29ad47e38f87bbef1c8d889143c938a80e52e8"
+      "role": "schema",
+      "path": "schema/iana-language-equivalences.schema.json",
+      "sha256": "3f969e00ce0e6d9e2e0978d229d0cf1a03aca30ac6feac5e8057f15d3e7afaa7"
     },
     {
-      "path": "tools/iana-oracle/candidates.txt",
-      "sha256": "3122c15a816684621b8fa4ce6dda4f6a67e28186041c317c00c14bb93da9094d"
-    },
-    {
-      "path": "tools/iana-oracle/jdk-equivalence-keys.txt",
-      "sha256": "44e44241b25adb847267ec6e1e31cff6f3270060b45ab15c63e7961263259760"
-    },
-    {
-      "path": "tools/iana-oracle/library-equivalence-keys.txt",
-      "sha256": "4fdea09d99c1ae3da31aa3f58523eb46361c4058bb8a1791b0343e74dadb6c56"
+      "role": "source",
+      "path": "tools/iana-oracle/language-subtag-registry.txt",
+      "sha256": "755fad43283be7b41ebe3c89ad054b6eaf928f404f9c0edb74799e0eab74beb1"
     }
   ],
-  "oracle": {
-    "jdkVersion": "21.0.11",
-    "jdkVendor": "OpenJDK",
-    "requiredMajor": 21
-  },
-  "probe": {
-    "probed": 115491,
-    "rejected": 309,
-    "rawClosureKeys": 18387,
-    "reducedEntries": 818,
-    "jdkEquivalenceKeys": 769
-  },
-  "jdkCompatibilityOverrides": {
-    "path": "generated/iana-registry-overrides.json",
-    "sha256": "6fd1a345e4c899c95ee4948e8a123f23d9263c9fedd35e4d60e17a8c385fab45",
-    "rows": 130,
-    "counts": {
-      "order-only": 81,
-      "jdk-only": 37,
-      "membership": 12
+  "artifacts": [
+    {
+      "path": "generated/iana-language-equivalences.json",
+      "sha256": "2398b866e6739ae81d9484da929567e68e8255fe31aefe5bf2ef25846c611462",
+      "inputsSha256": "1437d79212e7f075b77a9a868e1de1d55edf7ad4f402f38a7ba2e211144f3ac4"
     }
-  },
-  "ianaDataFingerprint": "42a658b350903ec3697499ecce103a08021cc4588ef60014045cf391786073c0"
+  ],
+  "ianaDataFingerprint": "87b3a43b03f490206cead05d865357bd7cfc3953a52ec4d8405243f699385815"
 }

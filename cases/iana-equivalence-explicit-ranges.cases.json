@@ -1,0 +1,37 @@
+{
+  "formatVersion": 1,
+  "family": "iana-equivalence-explicit-ranges",
+  "description": "Plan v7 section 8.3 fixture family 'iana-equivalence-explicit-ranges'. Inputs only; the oracle emits expected.",
+  "cases": [
+    {
+      "id": "iana-equivalence.registry-gap.mgp-explicit-ranges",
+      "requirementIds": [],
+      "fixture": "iana-equivalence-deprecated-catalogs",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "mgp"
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "THE LIBRARY'S OWN EXPANSION, through the range door. An explicit range list is built with the LanguageRange constructor, which expands nothing, so mgp can meet this fixture's mrd catalog only inside the library: DefaultStrings#addParsedLanguageRangeIdentities parses each requested range with the instance's equivalence source (the pinned IANA registry by default). Added with amendment A30, when the string form (iana-equivalence.registry-gap.mgp-ranges) moved to the caller's recommended parse, LocaleMatcher#parseLanguageRanges, and began arriving pre-expanded, which stopped it reaching that channel. Measured when it was added, in a throwaway copy: rewriting that channel to call java.util.Locale.LanguageRange#parse drifts exactly four recorded answers, this row, .yol-explicit-ranges, .mgp-locale and .mrd-locale; the string-form rows do not move, so without these two rows the channel's registry use would rest on the two locale rows alone."
+    },
+    {
+      "id": "iana-equivalence.registry-gap.yol-explicit-ranges",
+      "requirementIds": [],
+      "fixture": "iana-equivalence-preferred-catalogs",
+      "operation": "matchFor",
+      "input": {
+        "languageRanges": [
+          {
+            "range": "yol"
+          }
+        ]
+      },
+      "partition": "requiredPortableIds",
+      "notes": "The yol/enm twin of iana-equivalence.registry-gap.mgp-explicit-ranges, in the other fixture and the other direction (the deprecated tag requested against the preferred tag's catalog). An explicit range expands nothing, so only the library's own identity channel, DefaultStrings#addParsedLanguageRangeIdentities, can find enm; the string form iana-equivalence.registry-gap.yol-ranges arrives pre-expanded since amendment A30 and no longer reaches it."
+    }
+  ]
+}

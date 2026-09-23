@@ -50,7 +50,7 @@ const MEMBERS = [
   [`${vendorRoot}/cldr-plural-data.json`, "cldr-plural-data.json"],
   [`${vendorRoot}/cldr-conformance-vectors.json`, "cldr-conformance-vectors.json"],
   ["generated/cldr-data-lock.json", "cldr-data-lock.json"],
-  ["generated/iana-language-range-equivalents.json", "iana-language-range-equivalents.json"],
+  ["generated/iana-language-equivalences.json", "iana-language-equivalences.json"],
   ["generated/iana-data-lock.json", "iana-data-lock.json"],
   ["generated/IANA-PROVENANCE.md", "IANA-PROVENANCE.md"],
   ["THIRD-PARTY-NOTICES.md", "THIRD-PARTY-NOTICES.md"],

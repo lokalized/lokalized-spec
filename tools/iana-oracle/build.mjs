@@ -1,412 +1,82 @@
 #!/usr/bin/env node
 // @ts-check
 /**
- * Builds `generated/iana-language-range-equivalents.json` and its external lock.
+ * THE JDK CHECK on `generated/iana-language-equivalences.json`. It produces no data: the artifact is
+ * generated from the pinned registry with no JDK by `generate.mjs` (amendment A30), and this holds
+ * it to the two implementations that must agree with it — lokalized-java, which does not read the
+ * artifact but derives its own table from its own copy of the same registry snapshot, and the JDK 21
+ * whose `LanguageRange#parse` lokalized-java 3.0.0 used and whose region/variant order the artifact's
+ * one authored input records.
  *
- * PROVENANCE. Plan v7 section 5.1 specifies generating the closure from a pinned IANA Language
- * Subtag Registry snapshot and recording JDK-compatibility override rows wherever the snapshot and
- * the JDK disagree. **That is what this build now does, transitively, and this docblock said the
- * opposite for a day after it stopped being true.**
+ * It needs the pinned JDK 21 (`LOKALIZED_ORACLE_JDK`) and lokalized-java's built classes
+ * (`LOKALIZED_JAVA_DIR`, default `../lokalized-java`, `target/classes`). It writes ONLY its record,
+ * `generated/iana-jdk-check.json`, and only when every gate passes; `--check` re-runs it and requires
+ * the committed record byte for byte. `generate.mjs --check` holds that record to the current
+ * artifact and to these tools' digests with no JDK, which is what makes this binding in CI.
  *
- * It read: "This build instead derives the closure DIRECTLY FROM THE JDK 21 ORACLE by exhaustive
- * probe … Deriving from the oracle makes divergence structurally impossible — there is nothing to
- * reconcile and no override rows exist. The cost is that the artifact records no IANA `File-Date`."
- * Every clause of that is false today and three of them were contradicted THIRTY LINES BELOW, in
- * this same file: `LIBRARY` mode is selected at :44 by reading the artifact's own `source`, the
- * artifact records `ianaRegistryFileDate` and `ianaRegistrySha256`, and
- * `generated/iana-registry-overrides.json` holds 130 rows that `check:iana-registry` enumerates on
- * every run.
+ * GATES — every one fails the run:
+ *   table            lokalized-java's reflected LANGUAGE_EQUIVALENTS equals the artifact's classes read
+ *                    as "each member to the class without it", key for key, ORDER INCLUDED;
+ *   pairs            its REGION_VARIANT_EQUIVALENTS equals the artifact's pairs, in order;
+ *   jdkOrder         the JDK's regionVariantEquivMap, in iteration order, equals the artifact's pairs —
+ *                    the authored order's source label, verified rather than trusted;
+ *   constants        its REGISTRY_FILE_DATE and REGISTRY_SHA256 equal the artifact's registry block;
+ *   vendoredCopies   every copy lokalized-java keeps of this repository's inputs is byte-identical
+ *                    (exit 2 when it keeps none, because then nothing ties the two together);
+ *   libraryDefault   the library's PUBLIC `parseLanguageRanges`, on an instance that never sets
+ *                    `languageRangeEquivalents`, equals `model.mjs` on every probe: ranges, weights,
+ *                    and for a refusal the exception class and message;
+ *   libraryJdkMode   the same method with `LanguageRangeEquivalents.JDK` equals the JDK's own
+ *                    `LanguageRange#parse` on every probe;
+ *   probed           every artifact member and every library and JDK table key is in the probe space.
  *
- * WHAT IT ACTUALLY DOES, since lokalized-java 3.1.0. The library generates its own equivalence
- * table from the pinned registry snapshot (`IanaEquivalencesGenerator`), and this build derives the
- * closure by exhaustively probing THAT — so the chain from snapshot to artifact is
- * registry -> library -> closure, and the JDK is no longer in it. The JDK is probed a second time
- * as a CROSS-CHECK, producing the `jdkAbsentTags` delta the port's public parse needs.
+ * ANTI-VACUITY — each also fails the run: the ordered region/variant pair probes are all present
+ * (without them a reordering of the substitutions is invisible — measured, 0 of 116,229 probes moved);
+ * some probe is refused; and the JDK's parse differs from the model on at least one probe, or the
+ * default and JDK channels would be indistinguishable and `libraryJdkMode` would prove nothing.
  *
- * The property the old text argued for is preserved rather than abandoned: deriving from the
- * ORACLE still makes divergence structurally impossible. It is a different oracle, and the cost the
- * old text named — no registry date — is gone, because the oracle is now anchored to a snapshot.
- * See generated/IANA-PROVENANCE.md.
+ * INFORMATIONAL, re-derived every run and recorded: `jdkParseDiffers`, the probes where the JDK's
+ * parse and the registry's disagree, with their first ranges.
  *
- *   node tools/iana-oracle/build.mjs --write
- *   node tools/iana-oracle/build.mjs --check
+ *   node tools/iana-oracle/build.mjs --write | --check
  */
 import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
-import { existsSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { cldrCandidates, classHeaders, grammarProbes, orderedPairProbes, probeSpace } from "./candidates.mjs";
+import { modelFor } from "./model.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const spec = resolve(here, "../..");
-const generatedDir = join(spec, "generated");
-const ARTIFACT = join(generatedDir, "iana-language-range-equivalents.json");
-const LOCK = join(generatedDir, "iana-data-lock.json");
-
 const JDK = process.env.LOKALIZED_ORACLE_JDK ?? "/Users/agents/Java/amazon-corretto-21.jdk/Contents/Home";
-
-/**
- * Probe lokalized-java's own table rather than the JDK's.
- *
- * **THE MODE IS READ BACK OUT OF THE ARTIFACT, not left to whoever types the command.** `--check`
- * has to regenerate the same way `--write` did or it compares a library-derived artifact against a
- * JDK-derived regeneration and reports drift that is not there — measured, it did exactly that
- * once. The artifact records its own `source`, so it can say which oracle produced it; the flag
- * only has to be passed the first time, when the source is being changed deliberately.
- */
-const LIBRARY = process.argv.includes("--library") || (() => {
-  try {
-    return JSON.parse(readFileSync(join(spec, "generated/iana-language-range-equivalents.json"), "utf8"))
-      .source === "lokalized-java";
-  } catch { return false; }
-})();
-const JAVA_DIR = process.env.LOKALIZED_JAVA_DIR ?? resolve(spec, "../lokalized-java");
-/** Written by the library probe: the oracle table's own key set, for the completeness assertion. */
-const LIBRARY_KEYS = join(here, "library-equivalence-keys.txt");
-
-/**
- * Compile and run the library probe against lokalized-java's built classes.
- *
- * `IanaLanguageEquivalents` is package-private, so the probe lives in `com.lokalized` and is
- * compiled against `target/classes`. Making the class public to suit a build tool would widen the
- * library's API surface for the convenience of a probe.
- */
-/**
- * Dump the oracle table's own keys, BEFORE the candidate space is generated from them.
- *
- * Ordering is the whole point and it is why this is a separate class rather than a second output of
- * the extraction: `candidates.mjs` has to be able to READ these keys, and the extraction runs after
- * `candidates.mjs`. A dump produced by the extraction could only ever seed the NEXT run's probe
- * space, which is a bootstrapping trap dressed as a check.
- */
-/**
- * The oracle's VERSION, read from its own pom rather than restated here.
- *
- * `source: "lokalized-java"` alone cannot distinguish two builds of the library whose tables
- * differ, and the port ships a `ianaClosureSource` constant naming where its closure came from —
- * which read `jdk-corretto:21.0.11` for a slice after the oracle stopped being the JDK, because
- * nothing derived it. A hand-maintained provenance string is the thing this whole file exists to
- * avoid.
- */
-function libraryVersion() {
-  const pom = readFileSync(join(JAVA_DIR, "pom.xml"), "utf8");
-  // The FIRST <version> after the artifactId, i.e. the project's own — not a dependency's.
-  const version = /<artifactId>lokalized<\/artifactId>\s*<version>([^<]+)<\/version>/.exec(pom)?.[1];
-  if (!version)
-    throw new Error(`could not read lokalized-java's own version from ${join(JAVA_DIR, "pom.xml")}; ` +
-      `the artifact would record an oracle it cannot name`);
-  return version.trim();
-}
-
-function dumpLibraryKeys() {
-  const classes = join(JAVA_DIR, "target/classes");
-  if (!existsSync(join(classes, "com/lokalized/IanaLanguageEquivalents.class")))
-    throw new Error(`--library needs lokalized-java built with its IANA table: ${classes} has no ` +
-      `com/lokalized/IanaLanguageEquivalents.class. Run 'mvn -q compile' there first.`);
-
-  const source = join(here, "library/com/lokalized/LibraryEquivalenceKeys.java");
-  const out = mkdtempSync(join(tmpdir(), "lokalized-library-keys-"));
-  const compile = spawnSync(join(JDK, "bin/javac"), ["-nowarn", "-cp", classes, "-d", out, source], { encoding: "utf8" });
-  if (compile.status !== 0) throw new Error(`library key dumper did not compile: ${compile.stderr}`);
-
-  const run = spawnSync(join(JDK, "bin/java"), ["-cp", `${classes}:${out}`,
-    "com.lokalized.LibraryEquivalenceKeys", LIBRARY_KEYS], { encoding: "utf8" });
-  if (run.status !== 0) throw new Error(`library key dump failed: ${run.stderr}`);
-
-  return Number(/libraryEquivalenceKeys=(\d+)/.exec(run.stderr)?.[1] ?? 0);
-}
-
-function extractFromLibrary(candidatesPath, rawPath) {
-  const classes = join(JAVA_DIR, "target/classes");
-  if (!existsSync(join(classes, "com/lokalized/IanaLanguageEquivalents.class")))
-    throw new Error(`--library needs lokalized-java built with its IANA table: ${classes} has no ` +
-      `com/lokalized/IanaLanguageEquivalents.class. Run 'mvn -q compile' there first.`);
-
-  const source = join(here, "library/com/lokalized/ExtractLibrary.java");
-  const out = mkdtempSync(join(tmpdir(), "lokalized-extract-library-"));
-  const compile = spawnSync(join(JDK, "bin/javac"), ["-nowarn", "-cp", classes, "-d", out, source], { encoding: "utf8" });
-  if (compile.status !== 0) throw new Error(`library probe did not compile: ${compile.stderr}`);
-
-  return spawnSync(join(JDK, "bin/java"), ["-cp", `${classes}:${out}`, "com.lokalized.ExtractLibrary",
-    candidatesPath, rawPath], { encoding: "utf8" });
-}
+const JAVA_DIR = process.env.LOKALIZED_JAVA_DIR ? resolve(process.env.LOKALIZED_JAVA_DIR) : resolve(spec, "../lokalized-java");
 const REQUIRED_MAJOR = 21;
 
-const sha256 = (bytes) => createHash("sha256").update(bytes).digest("hex");
-/** Canonical JSON: sorted keys, no whitespace. Same rule as every other artifact here. */
-const jcs = (v) => {
-  if (v === null || typeof v !== "object") return JSON.stringify(v);
-  if (Array.isArray(v)) return `[${v.map(jcs).join(",")}]`;
-  return `{${Object.keys(v).sort().map((k) => `${JSON.stringify(k)}:${jcs(v[k])}`).join(",")}}`;
+const ARTIFACT = "generated/iana-language-equivalences.json";
+const RECORD = "generated/iana-jdk-check.json";
+/** Kept identical to generate.mjs's CHECK_TOOLS; its record arm fails on any difference. */
+const CHECK_TOOLS = [
+  "tools/iana-oracle/build.mjs",
+  "tools/iana-oracle/candidates.mjs",
+  "tools/iana-oracle/library/com/lokalized/IanaCheckProbe.java",
+  "tools/iana-oracle/model.mjs",
+];
+/** Inputs of this repository that lokalized-java may keep its own copy of, under src/build/resources/iana/. */
+const VENDORABLE = [
+  { spec: ARTIFACT, java: "src/build/resources/iana/iana-language-equivalences.json" },
+  { spec: "tools/iana-oracle/language-subtag-registry.txt", java: "src/build/resources/iana/language-subtag-registry.txt" },
+];
+
+const sha256 = (/** @type {Buffer | string} */ bytes) => createHash("sha256").update(bytes).digest("hex");
+const jcs = (/** @type {any} */ value) => {
+  if (value === null || typeof value !== "object") return JSON.stringify(value);
+  if (Array.isArray(value)) return `[${value.map(jcs).join(",")}]`;
+  return `{${Object.keys(value).sort().map((k) => `${JSON.stringify(k)}:${jcs(value[k])}`).join(",")}}`;
 };
-
-function jdkVersion() {
-  const run = spawnSync(join(JDK, "bin/java"), ["-version"], { encoding: "utf8" });
-  const text = `${run.stderr}${run.stdout}`;
-  const version = /version "([^"]+)"/.exec(text)?.[1];
-  if (!version) throw new Error(`cannot determine JDK version at ${JDK}`);
-  const major = Number(version.split(".")[0]);
-  if (major !== REQUIRED_MAJOR)
-    throw new Error(`oracle requires JDK ${REQUIRED_MAJOR}; found ${version}. The equivalence table is JDK-version-dependent, which is the whole reason it is pinned.`);
-  return { version, vendor: /(\w[\w ]*?)\s+Runtime Environment/.exec(text)?.[1] ?? "unknown" };
-}
-
-/** An entry is derived when a shorter entry yields it by prefix substitution. */
-const isDerived = (key, values, table) => {
-  const parts = key.split("-");
-  for (let n = 1; n < parts.length; n++) {
-    const prefix = parts.slice(0, n).join("-");
-    const rest = parts.slice(n).join("-");
-    const base = table[prefix];
-    if (!base) continue;
-    const expected = base.map((p) => `${p}-${rest}`).sort();
-    const actual = [...values].sort();
-    if (expected.length === actual.length && expected.every((v, i) => v === actual[i])) return true;
-  }
-  return false;
-};
-
-/** Reconstruct any probed range from the reduced table, applying prefix substitution. */
-const expand = (key, table) => {
-  if (table[key]) return table[key];
-  const parts = key.split("-");
-  for (let n = parts.length - 1; n >= 1; n--) {
-    const base = table[parts.slice(0, n).join("-")];
-    if (base) return base.map((p) => `${p}-${parts.slice(n).join("-")}`);
-  }
-  return [key];
-};
-
-/**
- * Reduce a probed closure to genuine table entries, shortest key first so a base is available when
- * testing longer keys, then verify the reduction is LOSSLESS -- every probed expansion reconstructs
- * exactly. Factored out of `build` when the JDK cross-check below arrived, because comparing two
- * closures is only meaningful if both were reduced by the same operation; a second hand-written
- * copy of this loop is exactly the drift `tools/graph-walk.mjs`'s extraction was done to avoid.
- */
-function reduce(raw) {
-  const table = {};
-  for (const key of Object.keys(raw).sort((a, b) => a.split("-").length - b.split("-").length || a.localeCompare(b))) {
-    if (!isDerived(key, raw[key], table)) table[key] = raw[key];
-  }
-
-  const lossy = Object.keys(raw).filter((k) => jcs([...expand(k, table)].sort()) !== jcs([...raw[k]].sort()));
-  if (lossy.length > 0) throw new Error(`reduction is lossy for ${lossy.length} range(s), e.g. ${lossy.slice(0, 3)}`);
-
-  return table;
-}
-
-/**
- * **WHY A LIBRARY-DERIVED ARTIFACT STILL HAS TO PROBE THE JDK.**
- *
- * lokalized-java 3.1.0 carries TWO expansion tables and uses them in different places:
- * `java.util.Locale.LanguageRange.parse` -- the JDK's -- is what a CALLER uses to build the list it
- * hands `matchFor`, and `IanaLanguageEquivalents.parse` -- the registry's -- is what
- * `bestMatchForAcceptLanguage` and `DefaultStrings#addParsedLanguageRangeIdentities` use INSIDE the
- * library. `VectorOracle.languageRangesFrom` says so in its own comment: a `matchFor` case's string
- * input is parsed "before the library is entered". So the port needs both tables too, or its public
- * `parseLanguageRanges` -- which the conformance runner calls exactly where the oracle calls
- * `LanguageRange.parse` -- answers a question the recorded Java answer was not asked.
- *
- * Shipping two closures would double ~23 KB in every browser graph. Measured instead: on this probe
- * space the library's table is a strict SUPERSET of the JDK's, so the artifact carries one table
- * plus the list of tags the JDK's lacks. **That superset property is the assertion, not the
- * assumption** -- a shared key whose class MOVED, or a key the JDK has and the library does not,
- * fails here rather than silently giving the public parse the wrong answer. The delta is derived
- * from a real second extraction every run; it is never hand-maintained.
- */
-function jdkAbsentTagsFor(libraryTable, candidatesPath) {
-  const rawPath = join(mkdtempSync(join(tmpdir(), "lokalized-jdk-crosscheck-")), "closure.raw.json");
-  const run = spawnSync(join(JDK, "bin/java"), [join(here, "Extract.java"), candidatesPath, rawPath], { encoding: "utf8" });
-  if (run.status !== 0) throw new Error(`JDK cross-check extraction failed: ${run.stderr}`);
-
-  const jdkTable = reduce(JSON.parse(readFileSync(rawPath, "utf8")));
-
-  const jdkOnly = Object.keys(jdkTable).filter((key) => !Object.hasOwn(libraryTable, key));
-  if (jdkOnly.length > 0)
-    throw new Error(
-      `${jdkOnly.length} equivalence key(s) exist in the JDK's table and not in the library's, e.g. ` +
-        `${jdkOnly.slice(0, 5).join(", ")}. The artifact carries ONE table plus the tags the JDK ` +
-        `lacks, which can only represent a library table that is a superset. Ship both closures, or ` +
-        `find out why the library stopped expanding a range the JDK expands.`,
-    );
-
-  // **ORDER-EXACT, AND SORTING BOTH SIDES WAS A REAL HOLE.** The first version compared
-  // `jcs([...a].sort())` against `jcs([...b].sort())`, i.e. the classes as SETS — while the port
-  // recovers the JDK's insertion order OUT OF the stored class (`recoverLanguageEquivalents` in
-  // `src/negotiate/index.js`) and `parseLanguageRanges` returns members in that order, which the
-  // JDK differential compares position by position. A shared key whose class was REORDERED would
-  // have passed this check and handed the port's public parse the library's order under the name
-  // of the JDK's. The encoding cannot express that either, so it fails here.
-  const moved = Object.keys(jdkTable).filter((key) =>
-    jcs(jdkTable[key]) !== jcs(libraryTable[key]));
-  if (moved.length > 0)
-    throw new Error(
-      `${moved.length} equivalence class(es) differ between the JDK's table and the library's, e.g. ` +
-        `${moved.slice(0, 5).map((k) => `${k}: ${JSON.stringify(jdkTable[k])} vs ` +
-          `${JSON.stringify(libraryTable[k])}`).join("; ")}. The single-table-plus-delta encoding ` +
-        `cannot express a class that MOVED, only one the JDK is missing entirely.`,
-    );
-
-  const absent = Object.keys(libraryTable).filter((key) => !Object.hasOwn(jdkTable, key)).sort();
-  if (absent.length === 0)
-    throw new Error(
-      "the library's table and the JDK's are identical, so nothing distinguishes the two parse " +
-        "channels and the port's split would be untestable. Either the library lost its registry " +
-        "table or this probed the wrong classes.",
-    );
-
-  return { absent, jdkEntries: Object.keys(jdkTable).length };
-}
-
-function build() {
-  const jdk = jdkVersion();
-
-  // Regenerate the candidate space so it is never stale relative to the CLDR data it derives from,
-  // nor relative to the pinned JDK's own equivalence tables, which it now also draws on.
-  const dumpedLibraryKeys = LIBRARY ? dumpLibraryKeys() : 0;
-
-  const candGen = spawnSync("node", [join(here, "candidates.mjs")], { encoding: "utf8" });
-  if (candGen.status !== 0) throw new Error(`candidate generation failed: ${candGen.stderr}`);
-  const candidatesPath = join(here, "candidates.txt");
-  const candidateBytes = readFileSync(candidatesPath);
-  const keysPath = join(here, "jdk-equivalence-keys.txt");
-  const jdkKeys = readFileSync(keysPath, "utf8").split("\n").filter(Boolean);
-
-  const rawPath = join(here, "closure.raw.json");
-
-  // **WHICH ORACLE.** Until lokalized-java 3.1.0 the library called
-  // `java.util.Locale.LanguageRange.parse`, so the JDK was the oracle and `Extract.java` probed it.
-  // 3.1.0 carries its own registry-sourced table, so the oracle moved and `ExtractLibrary.java`
-  // probes the library. Deriving from the oracle rather than reconciling against it is the property
-  // IANA-PROVENANCE.md argues for; it is preserved, just pointed at the implementation that now
-  // decides the answer. The JDK mode is kept because it is what produced every artifact before this
-  // and a comparison between the two is the whole evidence for the change.
-  const run = LIBRARY
-    ? extractFromLibrary(candidatesPath, rawPath)
-    : spawnSync(join(JDK, "bin/java"), [join(here, "Extract.java"), candidatesPath, rawPath], { encoding: "utf8" });
-  if (run.status !== 0) throw new Error(`oracle extraction failed: ${run.stderr}`);
-  const probeStats = /probed=(\d+) rejected=(\d+) closureKeys=(\d+)/.exec(run.stderr);
-  const registryFileDate = /registryFileDate=(\S+)/.exec(run.stderr)?.[1] ?? null;
-  const registrySha256 = /registrySha256=([0-9a-f]{64})/.exec(run.stderr)?.[1] ?? null;
-
-  // TWO INDEPENDENT READS OF THE SAME FIELD must agree, or a stale keys file seeded a narrower
-  // probe space than the table the extraction just questioned — and the completeness assertion
-  // below would then be checking the artifact against yesterday's key list.
-  const probedLibraryKeys = Number(/libraryKeys=(\d+)/.exec(run.stderr)?.[1] ?? 0);
-  if (LIBRARY && probedLibraryKeys !== dumpedLibraryKeys)
-    throw new Error(`the key dump saw ${dumpedLibraryKeys} equivalence keys and the extraction saw ` +
-      `${probedLibraryKeys}; ${LIBRARY_KEYS} is stale relative to the classes being probed`);
-
-  if (LIBRARY && registrySha256 === null)
-    throw new Error("the library probe reported no registrySha256; the closure would record a " +
-      "registry RELEASE with no identification of its bytes, which is the gap plan 5.1 names");
-
-  const raw = JSON.parse(readFileSync(rawPath, "utf8"));
-
-  // COMPLETENESS, checked rather than argued. The losslessness check below verifies that every
-  // PROBED range reconstructs, which says nothing about a range nobody probed — and for four keys
-  // (`cmn-hans`, `cmn-hant`, `lv-lvs`, `lv-ltg`) nobody did, so the artifact shipped without them
-  // and every gate stayed green. The fix is not "a wider guess": it is this assertion, that the
-  // extracted closure carries an entry for EVERY key of the JDK's own equivalence tables. Those keys
-  // come from `LocaleEquivalentMaps` by reflection — the JDK's input data, not this artifact — so
-  // this cannot be satisfied by a probe space derived from the artifact under test.
-  // **AND THE ORACLE'S OWN KEYS, not just the JDK's.** `jdkKeys` is the JDK's input data, which was
-  // the right probe space while the JDK was the oracle. lokalized-java 3.1.0 carries its own
-  // 781-key table, so a space derived only from the JDK's is blind to a key the LIBRARY has and the
-  // JDK does not — measured, four of them reached no closure entry. Both lists are required now, so
-  // the assertion is keyed on whichever implementation is answering.
-  const libraryKeys = LIBRARY
-    ? readFileSync(LIBRARY_KEYS, "utf8").split("\n").filter(Boolean)
-    : [];
-  const unprobed = [...new Set([...jdkKeys, ...libraryKeys])].filter((key) => !Object.hasOwn(raw, key));
-  if (unprobed.length > 0)
-    throw new Error(
-      `${unprobed.length} of the oracle's own equivalence keys produced no closure entry, e.g. ` +
-        `${unprobed.slice(0, 5).join(", ")}. Either candidates.mjs stopped emitting them or the ` +
-        `oracle rejected them; a missing key is a range the port will answer differently from Java.`,
-    );
-
-  const table = reduce(raw);
-
-  // A SECOND EXTRACTION, against the JDK, whenever the library is the oracle. See jdkAbsentTagsFor.
-  const crossCheck = LIBRARY ? jdkAbsentTagsFor(table, candidatesPath) : null;
-
-  const artifact = {
-    formatVersion: 1,
-    closureSchema: "prefix-substituting-equivalence-table/1",
-    source: LIBRARY ? "lokalized-java" : "jdk-oracle",
-    jdkVersion: jdk.version,
-    jdkVendor: jdk.vendor,
-    ianaRegistryFileDate: registryFileDate,
-    // Plan 5.1 asks the closure to record the snapshot's `File-Date` AND its source SHA-256. The
-    // date shipped from M-R S11 and the digest did not, so the artifact named a registry RELEASE
-    // and identified no bytes — M9 clause 33's second conjunct, open on exactly that. Read out of
-    // the library's own `REGISTRY_SHA256`, which its generator computes from the snapshot it read.
-    ...(LIBRARY ? { ianaRegistrySha256: registrySha256 } : {}),
-    // Present ONLY on a library-derived artifact: a JDK-derived one IS the JDK's table, so the
-    // delta would be empty and an empty list reads as "checked and equal" rather than "not asked".
-    ...(LIBRARY ? { jdkAbsentTags: crossCheck.absent, libraryVersion: libraryVersion() } : {}),
-    equivalents: table,
-  };
-
-  const artifactBytes = Buffer.from(jcs(artifact), "utf8");
-  const lock = {
-    formatVersion: 1,
-    artifacts: [{ path: "generated/iana-language-range-equivalents.json", sha256: sha256(artifactBytes) }],
-    inputs: [
-      { path: "tools/iana-oracle/Extract.java", sha256: sha256(readFileSync(join(here, "Extract.java"))) },
-      { path: "tools/iana-oracle/EquivalenceKeys.java", sha256: sha256(readFileSync(join(here, "EquivalenceKeys.java"))) },
-      { path: "tools/iana-oracle/candidates.mjs", sha256: sha256(readFileSync(join(here, "candidates.mjs"))) },
-      { path: "tools/iana-oracle/candidates.txt", sha256: sha256(candidateBytes) },
-      // The probe space's second source is locked too: a JDK whose table changed shape would
-      // otherwise change the artifact with nothing in the lock recording that it had.
-      { path: "tools/iana-oracle/jdk-equivalence-keys.txt", sha256: sha256(readFileSync(keysPath)) },
-      // The oracle's own key list joins the lock for the same reason the JDK's is in it: it is half
-      // the probe space, and a probe space that moved without the artifact moving is exactly the
-      // drift this lock exists to record.
-      ...(LIBRARY ? [{ path: "tools/iana-oracle/library-equivalence-keys.txt", sha256: sha256(readFileSync(LIBRARY_KEYS)) }] : []),
-    ],
-    oracle: { jdkVersion: jdk.version, jdkVendor: jdk.vendor, requiredMajor: REQUIRED_MAJOR },
-    probe: probeStats
-      ? {
-          probed: Number(probeStats[1]),
-          rejected: Number(probeStats[2]),
-          rawClosureKeys: Number(probeStats[3]),
-          reducedEntries: Object.keys(table).length,
-          jdkEquivalenceKeys: jdkKeys.length,
-        }
-      : null,
-    // **THIS WAS A HARD-CODED `[]` WHILE 130 REAL ROWS SAT ONE FILE OVER.** Plan 5.1 names this
-    // lock as where the JDK-compatibility overrides are recorded, and it was written as an empty
-    // literal on the reasoning — true at the time, in `IANA-PROVENANCE.md`'s words — that
-    // "deriving from the oracle makes divergence structurally impossible, so no override can be
-    // needed". `registry.mjs` has enumerated the registry-vs-shipped differences since M-R S11 and
-    // the lock never learned. An empty list in the artifact a reader is pointed at, beside a
-    // populated one they are not, is worse than no list: it answers the question wrongly.
-    //
-    // Recorded by REFERENCE and DIGEST rather than by copying the rows: the override table is
-    // 31 KB and duplicating it here would create a second copy to drift. The count and the digest
-    // are what a lock is for, and `check:iana-registry` regenerates the rows themselves.
-    jdkCompatibilityOverrides: (() => {
-      const path = join(generatedDir, "iana-registry-overrides.json");
-      if (!existsSync(path)) return { recorded: false, reason: "iana-registry-overrides.json has not been generated" };
-      const bytes = readFileSync(path);
-      const overrides = JSON.parse(bytes.toString("utf8"));
-      return {
-        path: "generated/iana-registry-overrides.json",
-        sha256: sha256(bytes),
-        rows: overrides.overrides.length,
-        counts: overrides.overrideCounts,
-      };
-    })(),
-  };
-  // Fingerprint excludes itself, matching the CLDR lock's construction.
-  lock.ianaDataFingerprint = sha256(Buffer.from(jcs({ formatVersion: lock.formatVersion, artifacts: lock.artifacts }), "utf8"));
-
-  return { artifactBytes, lock };
-}
+const bytewise = (/** @type {string} */ a, /** @type {string} */ b) => (a < b ? -1 : a > b ? 1 : 0);
 
 const mode = process.argv.includes("--write") ? "write" : process.argv.includes("--check") ? "check" : null;
 if (!mode) {
@@ -414,22 +84,275 @@ if (!mode) {
   process.exit(2);
 }
 
-const { artifactBytes, lock } = build();
-const lockBytes = Buffer.from(`${JSON.stringify(lock, null, 2)}\n`, "utf8");
+/**
+ * The temporary work directory, once one exists. Module scope and declared BEFORE the first call to
+ * `cannotRun`, which reads it.
+ * @type {string | null}
+ */
+let work = null;
+
+/**
+ * Stop with exit 2: the check could not run, which is never a pass. @param {string} message
+ *
+ * **IT REMOVES THE WORK DIRECTORY ITSELF, because `process.exit` does not run `finally`.** Three of
+ * these calls sit inside the `try` whose `finally` removes it, and before this each one left a
+ * `lokalized-iana-check-*` directory in the system temp folder — measured, a compile failure moved
+ * their count from 1 to 2, and a 1 MB directory from an earlier run was still there. The same class
+ * as the 2.0 GB conformance temp-dir leak. `tools/iana-oracle/cannot-run-cleanup.mjs` forces each of
+ * the three and counts the directories left behind.
+ */
+function cannotRun(message) {
+  if (work !== null) rmSync(work, { recursive: true, force: true });
+  console.error(JSON.stringify({ status: "cannot-run", detail: message }, null, 2));
+  process.exit(2);
+}
+
+/* ------------------------------------------------------------------------------ the oracles */
+
+const javaVersionText = (() => {
+  const run = spawnSync(join(JDK, "bin/java"), ["-version"], { encoding: "utf8" });
+  return `${run.stderr ?? ""}${run.stdout ?? ""}`;
+})();
+const jdkVersion = /version "([^"]+)"/.exec(javaVersionText)?.[1];
+if (!jdkVersion) cannotRun(`no JDK at ${JDK}; set LOKALIZED_ORACLE_JDK to the pinned JDK 21`);
+if (Number(/** @type {string} */ (jdkVersion).split(".")[0]) !== REQUIRED_MAJOR)
+  cannotRun(`this check requires JDK ${REQUIRED_MAJOR}; found ${jdkVersion}. The JDK's table and region/variant order are version-dependent, which is why the source label names one.`);
+
+const classes = join(JAVA_DIR, "target/classes");
+if (!existsSync(join(classes, "com/lokalized/IanaLanguageEquivalents.class")) || !existsSync(join(classes, "com/lokalized/LanguageRangeEquivalents.class")))
+  cannotRun(`lokalized-java is not built with its IANA table and LanguageRangeEquivalents at ${classes}; run 'mvn -o -q compile' there`);
+
+const libraryVersion = /<artifactId>lokalized<\/artifactId>\s*<version>([^<]+)<\/version>/.exec(readFileSync(join(JAVA_DIR, "pom.xml"), "utf8"))?.[1]?.trim();
+if (!libraryVersion) cannotRun(`cannot read lokalized-java's own version from ${join(JAVA_DIR, "pom.xml")}`);
+
+/** The same recipe as tools/vector-oracle/build.mjs, so the two records can be matched. */
+const librarySourcesSha256 = (() => {
+  const sources = join(JAVA_DIR, "src/main/java/com/lokalized");
+  return sha256(Buffer.from(jcs(readdirSync(sources).sort().map((file) => ({ path: file, sha256: sha256(readFileSync(join(sources, file))) }))), "utf8"));
+})();
+
+const artifactBytes = readFileSync(join(spec, ARTIFACT));
+/** @type {{ registry: { fileDate: string, sha256: string }, languageEquivalenceClasses: string[][], regionVariantEquivalents: [string, string][] }} */
+const artifact = JSON.parse(artifactBytes.toString("utf8"));
+const model = modelFor(artifact);
+const artifactMembers = artifact.languageEquivalenceClasses.flat();
+
+const workDirectory = mkdtempSync(join(tmpdir(), "lokalized-iana-check-"));
+work = workDirectory;
+/** @type {any} */
+let dump;
+/** @type {string[]} */
+let probes;
+/** @type {any[]} */
+let rows;
+try {
+  const compiled = join(workDirectory, "classes");
+  const compile = spawnSync(join(JDK, "bin/javac"), ["-nowarn", "-cp", classes, "-d", compiled,
+    join(here, "library/com/lokalized/IanaCheckProbe.java")], { encoding: "utf8" });
+  if (compile.status !== 0) cannotRun(`IanaCheckProbe did not compile against ${classes}:\n${compile.stderr}`);
+  const java = (/** @type {string[]} */ args) => spawnSync(join(JDK, "bin/java"), [
+    "--add-exports", "java.base/sun.util.locale=ALL-UNNAMED",
+    "--add-opens", "java.base/sun.util.locale=ALL-UNNAMED",
+    "-cp", `${classes}:${compiled}`, "com.lokalized.IanaCheckProbe", ...args], { encoding: "utf8", maxBuffer: 1 << 26 });
+
+  const dumpPath = join(workDirectory, "dump.json");
+  const dumped = java(["dump", dumpPath]);
+  if (dumped.status !== 0) cannotRun(`IanaCheckProbe dump failed (exit ${dumped.status}):\n${dumped.stderr}`);
+  dump = JSON.parse(readFileSync(dumpPath, "utf8"));
+
+  const libraryKeys = Object.keys(dump.library.languageEquivalents);
+  const jdkKeys = [...dump.jdk.singleEquivKeys, ...dump.jdk.multiEquivsKeys];
+  const members = new Set(artifactMembers);
+  const extraKeys = [...new Set([...libraryKeys, ...jdkKeys])].filter((key) => !members.has(key)).sort(bytewise);
+  probes = probeSpace(artifact, extraKeys);
+
+  const probesPath = join(workDirectory, "probes.json");
+  writeFileSync(probesPath, JSON.stringify(probes));
+  const outPath = join(workDirectory, "parsed.jsonl");
+  const parsed = java(["parse", probesPath, outPath]);
+  if (parsed.status !== 0) cannotRun(`IanaCheckProbe parse failed (exit ${parsed.status}):\n${parsed.stderr}`);
+  rows = readFileSync(outPath, "utf8").split("\n").filter(Boolean).map((line) => JSON.parse(line));
+  dump.extraKeys = extraKeys;
+  dump.libraryKeys = libraryKeys;
+  dump.jdkKeys = [...new Set(jdkKeys)];
+} finally {
+  rmSync(workDirectory, { recursive: true, force: true });
+  work = null;
+}
+
+/* ---------------------------------------------------------------------------------- gates */
+
+/** @type {string[]} */
+const problems = [];
+/** @type {string[]} */
+const samples = [];
+const sample = (/** @type {string} */ text) => { if (samples.length < 12) samples.push(text); };
+
+// table
+const expectedTable = new Map();
+for (const members of artifact.languageEquivalenceClasses)
+  for (const key of members) expectedTable.set(key, members.filter((member) => member !== key));
+const tableKeys = [...new Set([...expectedTable.keys(), ...Object.keys(dump.library.languageEquivalents)])].sort(bytewise);
+let tableDifferences = 0;
+for (const key of tableKeys) {
+  const expected = expectedTable.get(key) ?? null;
+  const actual = dump.library.languageEquivalents[key] ?? null;
+  if (jcs(expected) !== jcs(actual)) {
+    tableDifferences++;
+    sample(`table ${key}: artifact ${JSON.stringify(expected)}, lokalized-java ${JSON.stringify(actual)}`);
+  }
+}
+if (tableDifferences > 0) problems.push(`lokalized-java's language table differs from the artifact on ${tableDifferences} key(s)`);
+
+// pairs, jdkOrder
+const artifactPairs = jcs(artifact.regionVariantEquivalents);
+const libraryPairsEqual = jcs(dump.library.regionVariantEquivalents) === artifactPairs;
+if (!libraryPairsEqual) problems.push(`lokalized-java's REGION_VARIANT_EQUIVALENTS ${JSON.stringify(dump.library.regionVariantEquivalents)} is not the artifact's ${artifactPairs}`);
+const jdkOrderEqual = jcs(dump.jdk.regionVariantOrder) === artifactPairs;
+if (!jdkOrderEqual) problems.push(`JDK ${jdkVersion}'s regionVariantEquivMap iterates ${JSON.stringify(dump.jdk.regionVariantOrder)}, not the authored ${artifactPairs}; the compatibility file's source label is false for this JDK`);
+
+// constants
+const constantsEqual = dump.library.registryFileDate === artifact.registry.fileDate && dump.library.registrySha256 === artifact.registry.sha256;
+if (!constantsEqual) problems.push(`lokalized-java names registry ${dump.library.registryFileDate} ${dump.library.registrySha256}; the artifact names ${artifact.registry.fileDate} ${artifact.registry.sha256}`);
+
+// vendoredCopies
+const vendoredCopies = VENDORABLE.filter(({ java }) => existsSync(join(JAVA_DIR, java))).map(({ spec: specPath, java }) => ({
+  path: java,
+  equal: readFileSync(join(JAVA_DIR, java)).equals(readFileSync(join(spec, specPath))),
+}));
+if (vendoredCopies.length === 0)
+  cannotRun(`lokalized-java keeps neither ${VENDORABLE.map(({ java }) => java).join(" nor ")}; nothing ties its table to this repository's inputs`);
+for (const copy of vendoredCopies) if (!copy.equal) problems.push(`lokalized-java's ${copy.path} is not byte-identical to this repository's copy`);
+
+// the three parse columns
+const describeModel = (/** @type {string} */ header) => {
+  try {
+    return { ok: model.parse(header) };
+  } catch (error) {
+    const refusal = /** @type {any} */ (error);
+    if (!refusal.javaClass) throw error;
+    return { refused: refusal.javaClass, message: refusal.message };
+  }
+};
+const agrees = (/** @type {any} */ expected, /** @type {any} */ java) => {
+  if (expected.refused !== undefined || java.refused !== undefined)
+    return expected.refused === java.refused && expected.message === java.message;
+  if (expected.ok.length !== java.ok.length) return false;
+  return expected.ok.every((/** @type {{ range: string, weight: number }} */ entry, /** @type {number} */ index) =>
+    entry.range === java.ok[index][0] && Object.is(entry.weight, Number(java.ok[index][1])));
+};
+const show = (/** @type {any} */ outcome) => (outcome.refused !== undefined
+  ? `refused ${outcome.refused}: ${outcome.message}`
+  : outcome.ok.map((/** @type {any} */ entry) => (Array.isArray(entry) ? `${entry[0]};${entry[1]}` : `${entry.range};${entry.weight}`)).join(","));
+
+if (rows.length !== probes.length) cannotRun(`IanaCheckProbe answered ${rows.length} probes of ${probes.length}`);
+let refused = 0;
+let defaultMismatches = 0;
+let jdkModeMismatches = 0;
+let jdkParseDiffers = 0;
+const jdkDifferFirstRanges = new Set();
+const refusalClasses = new Set();
+for (const [index, registry, jdkSetting, jdkParse] of rows) {
+  const header = /** @type {string} */ (probes[index]);
+  const expected = describeModel(header);
+  if (registry.refused !== undefined) { refused++; refusalClasses.add(registry.refused); }
+  if (!agrees(expected, registry)) {
+    defaultMismatches++;
+    sample(`default ${JSON.stringify(header)}: model ${show(expected)} | lokalized-java ${show(registry)}`);
+  }
+  if (jcs(jdkSetting) !== jcs(jdkParse)) {
+    jdkModeMismatches++;
+    sample(`JDK setting ${JSON.stringify(header)}: lokalized-java ${show(jdkSetting)} | LanguageRange.parse ${show(jdkParse)}`);
+  }
+  if (!agrees(expected, jdkParse)) {
+    jdkParseDiffers++;
+    jdkDifferFirstRanges.add(expected.ok?.[0]?.range ?? header);
+  }
+}
+if (defaultMismatches > 0) problems.push(`lokalized-java's parseLanguageRanges (default setting) differs from model.mjs on ${defaultMismatches} probe(s)`);
+if (jdkModeMismatches > 0) problems.push(`lokalized-java's parseLanguageRanges with LanguageRangeEquivalents.JDK differs from LanguageRange.parse on ${jdkModeMismatches} probe(s)`);
+
+// probed
+const probeSet = new Set(probes);
+const unprobed = [...new Set([...artifactMembers, ...dump.libraryKeys, ...dump.jdkKeys])].filter((key) => !probeSet.has(key));
+if (unprobed.length > 0) problems.push(`${unprobed.length} table key(s) were not probed, e.g. ${unprobed.slice(0, 5).join(", ")}`);
+
+// anti-vacuity
+const pairProbes = orderedPairProbes(artifact);
+const distinctFrom = new Set(artifact.regionVariantEquivalents.map(([from]) => from)).size;
+if (distinctFrom < 2 || pairProbes.length !== distinctFrom * (distinctFrom - 1) * 2 || !pairProbes.every((probe) => probeSet.has(probe)))
+  problems.push(`the ordered region/variant pair probes are incomplete (${pairProbes.length} for ${distinctFrom} subtags); a reordering of the substitutions would be invisible without them`);
+if (refused === 0) problems.push("no probe was refused; the grammar arm exercised nothing");
+if (jdkParseDiffers === 0) problems.push("the JDK's LanguageRange.parse agrees with the model on every probe, so the default and JDK channels are indistinguishable and the JDK-setting arm proves nothing");
+const allowedRefusals = new Set(["java.lang.IllegalArgumentException", "java.lang.ArrayIndexOutOfBoundsException"]);
+for (const refusal of refusalClasses)
+  if (!allowedRefusals.has(refusal)) problems.push(`the default parse refused a probe with ${refusal}, which its contract does not name`);
+
+/* --------------------------------------------------------------------------------- the record */
+
+const record = {
+  formatVersion: 1,
+  note: "Written by tools/iana-oracle/build.mjs --write (npm run iana:jdk-check) on the pinned JDK 21, only when every gate passes. NOT fingerprinted. tools/iana-oracle/generate.mjs --check (npm run check:iana-registry, no JDK) requires artifact.sha256 and every tools[].sha256 to be current and every mismatch count to be zero, rebuilds the probe space from probeSpace.extraKeys and requires its count, its sha256 and model.mjs's refusal count over it, and requires JDK 21, libraryRegionVariantOrder.equal, a non-zero jdkParseDiffers and the librarySourcesSha256 of generated/behavioral-vectors.json.",
+  artifact: { path: ARTIFACT, sha256: sha256(artifactBytes) },
+  tools: CHECK_TOOLS.map((path) => ({ path, sha256: sha256(readFileSync(join(spec, path))) })),
+  oracle: {
+    jdkVersion,
+    jdkVendor: dump.javaVendor,
+    jdkRuntimeVersion: dump.javaRuntimeVersion,
+    libraryVersion,
+    librarySourcesSha256,
+  },
+  probeSpace: {
+    probes: probes.length,
+    sha256: sha256(Buffer.from(JSON.stringify(probes), "utf8")),
+    cldrDerived: cldrCandidates().length,
+    artifactMembers: artifactMembers.length,
+    libraryKeys: dump.libraryKeys.length,
+    jdkKeys: dump.jdkKeys.length,
+    extraKeys: dump.extraKeys,
+    compoundClassHeaders: classHeaders(artifact).length,
+    orderedPairProbes: pairProbes.length,
+    grammarProbes: grammarProbes().length,
+    recipe: "candidates.mjs probeSpace(artifact, extraKeys): the sorted, de-duplicated union of cldrCandidates(), every artifact member, extraKeys, classHeaders(artifact), orderedPairProbes(artifact) and grammarProbes(); sha256 is over JSON.stringify of that array",
+  },
+  results: {
+    table: { keys: tableKeys.length, classes: artifact.languageEquivalenceClasses.length, regionVariantPairs: artifact.regionVariantEquivalents.length, differences: tableDifferences },
+    registryConstants: { equal: constantsEqual },
+    libraryRegionVariantOrder: { equal: libraryPairsEqual },
+    jdkRegionVariantOrder: { equal: jdkOrderEqual },
+    vendoredCopies,
+    libraryDefault: { probes: rows.length, refused, refusalClasses: [...refusalClasses].sort(bytewise), mismatches: defaultMismatches },
+    libraryJdkMode: { probes: rows.length, mismatchesAgainstJdkParse: jdkModeMismatches },
+    jdkParseDiffers: { probes: jdkParseDiffers, firstRanges: [...jdkDifferFirstRanges].sort(bytewise) },
+  },
+};
+const recordBytes = Buffer.from(`${JSON.stringify(record, null, 2)}\n`, "utf8");
+
+if (problems.length > 0) {
+  console.error(JSON.stringify({ status: "failed", detail: mode === "write" ? "the record was NOT written" : "gates failed", problems, samples, results: record.results }, null, 2));
+  process.exit(1);
+}
 
 if (mode === "write") {
-  writeFileSync(ARTIFACT, artifactBytes);
-  writeFileSync(LOCK, lockBytes);
-  console.log(JSON.stringify({ status: "written", entries: Object.keys(JSON.parse(artifactBytes.toString()).equivalents).length, bytes: artifactBytes.length, ianaDataFingerprint: lock.ianaDataFingerprint }));
-} else {
-  const problems = [];
-  if (!existsSync(ARTIFACT)) problems.push("artifact missing; run --write");
-  else if (!readFileSync(ARTIFACT).equals(artifactBytes)) problems.push("artifact bytes differ from regeneration");
-  if (!existsSync(LOCK)) problems.push("lock missing; run --write");
-  else if (!readFileSync(LOCK).equals(lockBytes)) problems.push("lock differs from regeneration");
-  if (problems.length) {
-    console.error(JSON.stringify({ status: "stale", problems }, null, 2));
-    process.exit(1);
-  }
-  console.log(JSON.stringify({ status: "current", ianaDataFingerprint: lock.ianaDataFingerprint }));
+  writeFileSync(join(spec, RECORD), recordBytes);
+  console.log(JSON.stringify({ status: "written", probes: probes.length, refused, jdkParseDiffers, recordSha256: sha256(recordBytes) }));
+  process.exit(0);
 }
+
+const onDisk = existsSync(join(spec, RECORD)) ? readFileSync(join(spec, RECORD)) : null;
+if (!onDisk || !onDisk.equals(recordBytes)) {
+  /** @type {string[]} */
+  const drift = [];
+  if (onDisk) {
+    const committed = JSON.parse(onDisk.toString("utf8"));
+    const walk = (/** @type {any} */ a, /** @type {any} */ b, /** @type {string} */ path) => {
+      if (a !== null && b !== null && typeof a === "object" && typeof b === "object" && !Array.isArray(a) && !Array.isArray(b)) {
+        for (const key of new Set([...Object.keys(a), ...Object.keys(b)])) walk(a[key], b[key], path ? `${path}.${key}` : key);
+      } else if (jcs(a) !== jcs(b)) drift.push(path);
+    };
+    walk(committed, record, "");
+  }
+  console.error(JSON.stringify({ status: "stale", detail: onDisk ? "the committed record differs from this run; re-run npm run iana:jdk-check and review" : `${RECORD} is missing; run npm run iana:jdk-check`, drift }, null, 2));
+  process.exit(1);
+}
+console.log(JSON.stringify({ status: "current", probes: probes.length, refused, jdkParseDiffers }));

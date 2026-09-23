@@ -13,7 +13,7 @@
     },
     {
       "what": "The deprecated spelling ji (Yiddish) in the legacy-alias arm",
-      "why": "ji sits in exactly the same two layers as iw and in — Locale.forLanguageTag rewrites it to yi, and the pinned IANA table lists ji and yi as equivalents (verified in generated/iana-language-range-equivalents.json). Every channel would restate the iw row on a different pair of tags, so it adds catalog and fixture weight without a new proposition. The arm keeps the four spellings that behave differently from one another: iw and in (JDK rewrite), mo and tl (CLDR canonicalization only), sh (neither)."
+      "why": "ji sits in exactly the same two layers as iw and in — Locale.forLanguageTag rewrites it to yi, and the pinned IANA table lists ji and yi as equivalents (verified in generated/iana-language-equivalences.json). Every channel would restate the iw row on a different pair of tags, so it adds catalog and fixture weight without a new proposition. The arm keeps the four spellings that behave differently from one another: iw and in (JDK rewrite), mo and tl (CLDR canonicalization only), sh (neither)."
     },
     {
       "what": "Fabricated (public-constructor) LocaleMatchResult anywhere in this family",

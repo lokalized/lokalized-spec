@@ -33,7 +33,7 @@
  */
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
+import { dirname, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const spec = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -155,8 +155,11 @@ if (process.argv.includes("--write")) {
     ...cheap(),
     evidenceIdsWithAProducer: withProducer.length,
     closureEdges: Math.min(withProducer.length, casesWithRequirement.length),
+    // Relative to the directory holding the four trees. It sliced at the first "/lokalized" in the
+    // absolute path, which named `planning/...` correctly only when that directory's own path
+    // contained "/lokalized"; in any other checkout location the record carried absolute paths.
     producers: Object.fromEntries(withProducer.map((id) =>
-      [id, index.get(id).map((/** @type {string} */ f) => f.slice(f.indexOf("/lokalized") + 1).replace(/^lokalized\//, ""))])),
+      [id, index.get(id).map((/** @type {string} */ f) => relative(resolve(spec, ".."), f).split(sep).join("/"))])),
   };
   writeFileSync(recordPath, `${JSON.stringify(record, null, 2)}\n`);
   if (process.argv.includes("--json")) console.log(JSON.stringify(record, null, 2));

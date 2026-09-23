@@ -1,0 +1,23 @@
+{
+  "formatVersion": 1,
+  "regionVariantEquivalents": {
+    "rule": "Each region or variant record carrying a Preferred-Value yields a substitution in both directions. The generator derives that set from the registry and refuses a mismatch; only the order below is authored. A consumer tries the pairs in this order and applies the first that matches.",
+    "source": "sun.util.locale.LocaleEquivalentMaps.regionVariantEquivMap iteration order, Amazon Corretto 21.0.11, verified by npm run check:iana",
+    "pairs": [
+      ["-bu", "-mm"],
+      ["-tl", "-tp"],
+      ["-zr", "-cd"],
+      ["-tp", "-tl"],
+      ["-dd", "-de"],
+      ["-mm", "-bu"],
+      ["-cd", "-zr"],
+      ["-de", "-dd"],
+      ["-heploc", "-alalc97"],
+      ["-alalc97", "-heploc"],
+      ["-yd", "-ye"],
+      ["-fr", "-fx"],
+      ["-ye", "-yd"],
+      ["-fx", "-fr"]
+    ]
+  }
+}

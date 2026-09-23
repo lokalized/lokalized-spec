@@ -5,11 +5,16 @@
  * v7 section 8.2/8.3.
  *
  * The governing principle: NO `expected` BLOCK IS EVER WRITTEN BY HAND. Case files under `cases/`
- * carry inputs only. This driver materializes each fixture's strings files, runs them through an
- * unmodified lokalized-java 3.0.0 on the pinned JDK, and records what that implementation actually
- * does. A JS/Python/Go implementation is then compared against Java's real behavior rather than
- * against someone's reading of it — the same reason the IANA table is derived from the JDK oracle
- * instead of reconciled with it.
+ * carry inputs only. This driver materializes each fixture's strings files, runs them through the
+ * pinned lokalized-java (its sources named by `oracle.librarySourcesSha256`) on the pinned JDK, and
+ * records what that implementation actually does. A JS/Python/Go implementation is then compared
+ * against Java's real behavior rather than against someone's reading of it.
+ *
+ * `behavioralVectorsVersion` moves with Java's SEMANTICS, per plan :2619 ("A Java semantic change
+ * updates the corresponding vector and `behavioralVectorsVersion` in the same change"): 1.1.0 is the
+ * corpus after amendment A30, where a caller's range string is parsed with lokalized-java's own
+ * registry-backed `parseLanguageRanges` rather than the JDK's `LanguageRange.parse`, which moved two
+ * recorded answers.
  *
  * The one thing this driver DOES assert is the seed table published in plan section 8.3. That table
  * was written by hand, so it is treated as a claim to be checked, not as truth.
@@ -331,7 +336,7 @@ if (seed.problems.length > 0) {
 
 const corpus = {
   formatVersion: 1,
-  behavioralVectorsVersion: "1.0.0",
+  behavioralVectorsVersion: "1.1.0",
   oracle: {
     implementation: "lokalized-java",
     javaVersion,

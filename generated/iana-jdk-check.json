@@ -1,0 +1,99 @@
+{
+  "formatVersion": 1,
+  "note": "Written by tools/iana-oracle/build.mjs --write (npm run iana:jdk-check) on the pinned JDK 21, only when every gate passes. NOT fingerprinted. tools/iana-oracle/generate.mjs --check (npm run check:iana-registry, no JDK) requires artifact.sha256 and every tools[].sha256 to be current and every mismatch count to be zero, rebuilds the probe space from probeSpace.extraKeys and requires its count, its sha256 and model.mjs's refusal count over it, and requires JDK 21, libraryRegionVariantOrder.equal, a non-zero jdkParseDiffers and the librarySourcesSha256 of generated/behavioral-vectors.json.",
+  "artifact": {
+    "path": "generated/iana-language-equivalences.json",
+    "sha256": "2398b866e6739ae81d9484da929567e68e8255fe31aefe5bf2ef25846c611462"
+  },
+  "tools": [
+    {
+      "path": "tools/iana-oracle/build.mjs",
+      "sha256": "a6b7549892db5ca6630fc323ef0d051d341677f12f8ce6e15ebb4f994affade4"
+    },
+    {
+      "path": "tools/iana-oracle/candidates.mjs",
+      "sha256": "f42533463dc68c8269344311872fcea42ef3306c871036358b250ef4a9be8c18"
+    },
+    {
+      "path": "tools/iana-oracle/library/com/lokalized/IanaCheckProbe.java",
+      "sha256": "fbcf3e8b8bf6d47660722694b71893d004c2c8a26ed9a0e98a37b62c6d82b8e0"
+    },
+    {
+      "path": "tools/iana-oracle/model.mjs",
+      "sha256": "14d2564429f289dbb9d94cf2e6e2840922c7d96d4231641c5d617d065303d19a"
+    }
+  ],
+  "oracle": {
+    "jdkVersion": "21.0.11",
+    "jdkVendor": "Amazon.com Inc.",
+    "jdkRuntimeVersion": "21.0.11+10-LTS",
+    "libraryVersion": "3.1.0-SNAPSHOT",
+    "librarySourcesSha256": "db1f440a5641e419cf1f1a2d8fd89b2f6d7b63d65b9ee0316a0a7f83a76fa1e0"
+  },
+  "probeSpace": {
+    "probes": 116658,
+    "sha256": "83cc5812f8a650429434dcf09f14a31603d992638870555370f86d90fdb67820",
+    "cldrDerived": 115469,
+    "artifactMembers": 781,
+    "libraryKeys": 781,
+    "jdkKeys": 769,
+    "extraKeys": [],
+    "compoundClassHeaders": 738,
+    "orderedPairProbes": 364,
+    "grammarProbes": 66,
+    "recipe": "candidates.mjs probeSpace(artifact, extraKeys): the sorted, de-duplicated union of cldrCandidates(), every artifact member, extraKeys, classHeaders(artifact), orderedPairProbes(artifact) and grammarProbes(); sha256 is over JSON.stringify of that array"
+  },
+  "results": {
+    "table": {
+      "keys": 781,
+      "classes": 369,
+      "regionVariantPairs": 14,
+      "differences": 0
+    },
+    "registryConstants": {
+      "equal": true
+    },
+    "libraryRegionVariantOrder": {
+      "equal": true
+    },
+    "jdkRegionVariantOrder": {
+      "equal": true
+    },
+    "vendoredCopies": [
+      {
+        "path": "src/build/resources/iana/language-subtag-registry.txt",
+        "equal": true
+      }
+    ],
+    "libraryDefault": {
+      "probes": 116658,
+      "refused": 339,
+      "refusalClasses": [
+        "java.lang.ArrayIndexOutOfBoundsException",
+        "java.lang.IllegalArgumentException"
+      ],
+      "mismatches": 0
+    },
+    "libraryJdkMode": {
+      "probes": 116658,
+      "mismatchesAgainstJdkParse": 0
+    },
+    "jdkParseDiffers": {
+      "probes": 26,
+      "firstRanges": [
+        "bh",
+        "bih",
+        "dyl",
+        "enm",
+        "mgp",
+        "mrd",
+        "mrh",
+        "sgn-dyl",
+        "sgn-zhk",
+        "shl",
+        "yol",
+        "zhk"
+      ]
+    }
+  }
+}

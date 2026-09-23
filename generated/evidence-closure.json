@@ -4,14 +4,14 @@
   "measuredWith": "tools/evidence-closure.mjs",
   "inputs": {
     "registrySha256": "649fabc4a99cac5798747ed17af05752d63388813ce4b54e084a74b632952136",
-    "corpusSha256": "d39620811c5d867424261f5edca9bd3dbd355d113e7e5a38709cfd496dbb7868",
-    "toolSha256": "95238d6c10ca849778d5d53853e79bc93a4dd2ced3cb411a4be58260da581939"
+    "corpusSha256": "1eb74caf8524c0a3b33dca99addb268c86b64eb8321fac03257474ddaa3c9753",
+    "toolSha256": "e5bc9c7bd0a5eb5e5d580c7c3640edf52d271b116c8a45678354d5af4872822f"
   },
   "requirements": 1338,
   "reviewed": 0,
   "notActivatedAtM0": 119,
   "distinctEvidenceIds": 762,
-  "corpusCases": 2379,
+  "corpusCases": 2381,
   "corpusCasesCarryingARequirementId": 0,
   "evidenceIdsWithAProducer": 6,
   "closureEdges": 0,

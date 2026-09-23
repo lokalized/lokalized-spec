@@ -1,0 +1,12 @@
+{
+  "formatVersion": 1,
+  "note": "Rows that extend plan v7 Appendix B's Java public-type disposition table after the plan was frozen. The plan file itself is not edited, because pre-m0/registry-linter.mjs pins its digest; each row names the numbered amendment (planning/M-R-STATUS.md) that decided it. scripts/java-surface-audit.mjs reads Appendix B and these rows together, refuses a row that duplicates an Appendix B row, and fails on a row whose type is no longer public Java API.",
+  "rows": [
+    {
+      "type": "LanguageRangeEquivalents",
+      "amendment": "A30",
+      "since": "lokalized-java 3.1.0",
+      "disposition": "No JavaScript counterpart. lokalized-js always takes IANA language-range equivalences from the pinned registry, which is Java's default IANA_REGISTRY setting, and offers no JDK setting: JavaScript has no JDK, so such a setting could only ever mean JDK 21."
+    }
+  ]
+}

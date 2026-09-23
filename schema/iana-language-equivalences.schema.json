@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lokalized.com/schema/v1/iana-language-equivalences.schema.json",
+  "title": "Lokalized IANA language-range equivalences",
+  "description": "The IANA language-range equivalence data, generated without a JDK by tools/iana-oracle/generate.mjs from a pinned IANA Language Subtag Registry snapshot plus one authored JDK-compatibility input (the ORDER of the region/variant substitutions). lokalized-js consumes it verbatim; lokalized-java does not read it, but derives its own table from its own copy of the same snapshot, and npm run check:iana holds the two equal key for key and pair for pair. Serialized as RFC 8785 JCS: object members sorted by UTF-16 code unit, no insignificant whitespace, no trailing newline, no BOM. HOW A CONSUMER APPLIES IT when parsing a language-range list (lokalized-java 3.1.0's LocaleMatcher#parseLanguageRanges on the default IANA_REGISTRY setting; tools/iana-oracle/model.mjs is the executable statement and generated/IANA-PROVENANCE.md the prose one): remove every space and lowercase; drop a leading 'accept-language:'; split on ',' exactly as java.lang.String#split(\",\") does, so a value with no ',' is ONE member and an EMPTY value is one empty member, refused with 'range=' (not an empty list), while otherwise trailing empty members are dropped (a value of commas only is an empty list) and every other empty member is kept and refused by the range grammar; read an optional ';q=' weight with java.lang.Double#parseDouble's grammar, which must lie in [0.0, 1.0]; skip a range already seen; require java.util.Locale.LanguageRange's grammar; insert the range before the first member of strictly lower weight; then compute its expansions and insert each one not yet seen at (the range's index + 1), so they appear in reverse computation order. The expansions of a range are, in computation order: (a) its region/variant substitution, if any; (b) for the LONGEST hyphen-bounded prefix of the range that is a member of a languageEquivalenceClasses class, every OTHER member of that class in class order with the rest of the range appended unchanged, each immediately followed by that member's own region/variant substitution, if any. A region/variant substitution tries regionVariantEquivalents in array order and applies the FIRST pair whose 'from' occurs in the range (first occurrence only), ends at the range's end or at a hyphen, and does not start after the hyphen that opens the first one-character subtag other than the first subtag; it replaces that occurrence with 'to'. REFUSALS: the value is parsed whole or refused whole, at the first member that fails, with (after the lowercasing and space removal above) java.lang.IllegalArgumentException 'range=<range>' for a range that fails the grammar (an empty range gives 'range='), java.lang.IllegalArgumentException 'weight=\"<text>\" for language range \"<range>\"' for a weight that is not a Double#parseDouble number, java.lang.IllegalArgumentException 'weight=<w> for language range \"<range>\". It must be between 0.0 and 1.0.' for a weight outside [0.0, 1.0] (<w> in java.lang.Double#toString form, such as 2.0 or 1.0E21), and, for a range made only of hyphens, java.lang.ArrayIndexOutOfBoundsException 'Index 0 out of bounds for length 0' - the JDK's own LanguageRange constructor on JDK 17 and 21 (JDK 25 through 27 throw IllegalArgumentException 'range=<range>' instead; the checks pin JDK 21). A weight is read before the range is de-duplicated, so a malformed weight on a repeated range is still refused.",
+  "$comment": "Plan v7 section 5.1 as amended by A30 (planning/M-R-STATUS.md): the registry is the source, the JDK and lokalized-java are checks (npm run check:iana). Supersedes generated/iana-language-range-equivalents.json, the 818-entry expanded closure, which could not carry the order of the region/variant substitutions and could not be regenerated without a JDK-derived probe space.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "formatVersion",
+    "generator",
+    "jdkCompatibility",
+    "languageEquivalenceClasses",
+    "regionVariantEquivalents",
+    "registry",
+    "schema"
+  ],
+  "properties": {
+    "formatVersion": {
+      "const": 1,
+      "description": "Incremented only for a breaking change to this artifact's shape."
+    },
+    "schema": {
+      "const": "lokalized-iana-language-equivalences/1",
+      "description": "The closure schema identifier the IANA lock records as closureSchemaVersion."
+    },
+    "generator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "version"],
+      "properties": {
+        "path": { "const": "tools/iana-oracle/generate.mjs" },
+        "version": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Incremented when a derivation rule changes what the generator emits."
+        }
+      }
+    },
+    "registry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["bytes", "fileDate", "path", "records", "sha256", "source"],
+      "properties": {
+        "path": { "const": "tools/iana-oracle/language-subtag-registry.txt" },
+        "source": { "const": "https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry" },
+        "fileDate": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+          "description": "The snapshot's own File-Date header."
+        },
+        "sha256": { "$ref": "#/$defs/sha256", "description": "SHA-256 of the snapshot's exact bytes." },
+        "bytes": { "type": "integer", "minimum": 1 },
+        "records": { "type": "integer", "minimum": 1, "description": "Records after the File-Date header." }
+      }
+    },
+    "jdkCompatibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "description": "The one authored input: the ORDER in which the region/variant substitutions are tried, matching JDK 21's sun.util.locale.LocaleEquivalentMaps.regionVariantEquivMap. Its exact bytes are hashed here and in the lock.",
+      "properties": {
+        "path": { "const": "tools/iana-oracle/jdk-compatibility.json" },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "languageEquivalenceClasses": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Equivalence classes of lowercase language-namespace tags (language, extlang in both its bare and Prefix-joined forms, grandfathered and redundant). Two tags are equivalent when one names the other as its Preferred-Value, or when they are an extlang subtag and its Prefix-joined form; classes are the transitive closure. Member 0 is the class's only member with no Preferred-Value of its own; the rest follow in the order the registry first names them. Classes are sorted by member 0, bytewise. For any member, its equivalents are the class with that member removed, order preserved.",
+      "items": {
+        "type": "array",
+        "minItems": 2,
+        "uniqueItems": true,
+        "items": { "type": "string", "pattern": "^[a-z0-9]{1,8}(-[a-z0-9]{1,8})*$" }
+      }
+    },
+    "regionVariantEquivalents": {
+      "type": "array",
+      "minItems": 1,
+      "description": "The region and variant substitutions, [from, to], each a hyphen-prefixed lowercase subtag, in the order they are tried. The set is every region or variant record carrying a Preferred-Value, in both directions; the order is jdkCompatibility's.",
+      "items": {
+        "type": "array",
+        "minItems": 2,
+        "maxItems": 2,
+        "items": { "type": "string", "pattern": "^-[a-z0-9]{2,8}$" }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+  }
+}

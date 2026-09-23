@@ -1,10 +1,10 @@
 /*
  * Behavioral-vector oracle for plan v7 M3a.
  *
- * This program does NOT check expectations. It EXECUTES cases against an unmodified
- * lokalized-java 3.0.0 and EMITS what that implementation actually does. The corpus is therefore
- * authoritative by construction: there is no hand-written `expected` block for Java to disagree
- * with, which is the same principle that made the IANA equivalence table zero-divergence.
+ * This program does NOT check expectations. It EXECUTES cases against the pinned lokalized-java
+ * (3.1.0 as of amendment A30; the corpus records which sources in `oracle.librarySourcesSha256`) and
+ * EMITS what that implementation actually does. The corpus is therefore authoritative by
+ * construction: there is no hand-written `expected` block for Java to disagree with.
  *
  * It lives in package com.lokalized only to reuse the library's own JSON parser, so the oracle
  * never introduces a second parser whose bugs could be mistaken for library behavior. Fixture
@@ -472,7 +472,7 @@ public final class VectorOracle {
 					placeholders.put(null, "ignored");
 				}
 
-				TranslationResult result = strings.getResult(key, placeholders, optionsFrom(input));
+				TranslationResult result = strings.getResult(key, placeholders, optionsFrom(strings, input));
 
 				expected.put("result", describeResult(result));
 				if (!OBSERVED_FAILURES.isEmpty()) expected.put("failures", describeObservedFailures(result));
@@ -508,7 +508,7 @@ public final class VectorOracle {
 				Map<String, Object> placeholders = input.get("placeholders") == null
 						? null
 						: decodePlaceholders(input.get("placeholders").asObject());
-				String translation = strings.get(key, placeholders, optionsFrom(input));
+				String translation = strings.get(key, placeholders, optionsFrom(strings, input));
 				expected.put("translation", translation);
 				if (!OBSERVED_FAILURES.isEmpty()) expected.put("failures", describeObservedFailures(null));
 				addCallbackChannels(expected);
@@ -517,7 +517,7 @@ public final class VectorOracle {
 			case "matchFor": {
 				// Two distinct solvers: the single-locale kernel, and the whole-list one the browser
 				// chooser uses. Section 8.3 requires them to agree where both apply.
-				List<Locale.LanguageRange> ranges = languageRangesFrom(input.get("languageRanges"));
+				List<Locale.LanguageRange> ranges = languageRangesFrom(strings, input.get("languageRanges"));
 				// matchFor has no TranslationOptions and therefore no builder: `locale` and `languageRanges`
 				// here select an OVERLOAD, and the ternary below silently prefers ranges. An input carrying
 				// both would record the range overload's answer while reading as though it had asked about
@@ -541,10 +541,12 @@ public final class VectorOracle {
 			case "acceptLanguage": {
 				// The RAW Accept-Language field value as an observation. bestMatchForAcceptLanguage is a DEFAULT
 				// interface method that DefaultStrings does not override, and nothing else in this harness reaches
-				// it: the `matchFor` operation parses its header with Locale.LanguageRange.parse before the library
-				// is entered (languageRangesFrom), which is the exact bypass that left com.lokalized.LocaleMatcher
-				// at 0 of 36 branches. Parsing and normalization are the SUBJECT here, so the string is handed over
-				// untouched.
+				// it: the `matchFor` operation parses its header into a List<LanguageRange> first (languageRangesFrom,
+				// with the library's public parseLanguageRanges since A30 and with Locale.LanguageRange.parse
+				// before it) and then calls matchFor(List), so the HTTP normalization, the 4,096-code-unit bound,
+				// the fail-soft catch and the parsed-list cap are never reached from there. That bypass is what left
+				// com.lokalized.LocaleMatcher at 0 of 36 branches. Parsing and normalization are the SUBJECT here,
+				// so the string is handed over untouched.
 				//
 				// A MISSING `header` key is an authoring mistake, not an observation, and it is signalled with an
 				// Error rather than a RuntimeException ON PURPOSE: main()'s wrapper would turn a RuntimeException
@@ -1007,14 +1009,14 @@ public final class VectorOracle {
 	}
 
 	/** Per-call TranslationOptions. Section 8.3's ingress matrix varies these against the instance. */
-	private static TranslationOptions optionsFrom(JsonObject input) {
+	private static TranslationOptions optionsFrom(LocaleMatcher parser, JsonObject input) {
 		String localeTag = input.getString("locale", null);
 		JsonValue handler = input.get("translationFailureHandler");
 		JsonValue policy = input.get("translationFallbackPolicy");
 		JsonValue bidi = input.get("bidiIsolation");
 
 		JsonValue rangeSpec = input.get("languageRanges");
-		List<Locale.LanguageRange> ranges = languageRangesFrom(rangeSpec);
+		List<Locale.LanguageRange> ranges = languageRangesFrom(parser, rangeSpec);
 		// PRESENT means "will actually be applied to the builder". `"languageRanges": null` is a present
 		// key that sets nothing (languageRangesFrom returns null for it), so it leaves no order to state
 		// -- which is why the two owed-null-options rows carrying a locale beside an explicit null range
@@ -1183,10 +1185,25 @@ public final class VectorOracle {
 	/** What an ambient locale/match supplier returned for the case currently executing. */
 	private static final List<Map<String, Object>> SUPPLIER_CALLS = new ArrayList<>();
 
-	/** Parse an Accept-Language style header, or explicit {range, weight} pairs, into ranges. */
-	private static List<Locale.LanguageRange> languageRangesFrom(JsonValue spec) {
+	/**
+	 * Parse an Accept-Language style header, or explicit {range, weight} pairs, into ranges.
+	 *
+	 * A STRING is parsed the way lokalized-java 3.1.0 tells a caller to parse one: with the library's own
+	 * public LocaleMatcher#parseLanguageRanges, on the instance the case runs against, so the expansion
+	 * follows that instance's LanguageRangeEquivalents setting (the IANA_REGISTRY default: no fixture sets
+	 * it). Until the IANA change (amendment A30) this called java.util.Locale.LanguageRange#parse, the
+	 * running JDK's table, which made two recorded answers a function of the oracle's JDK rather than of
+	 * the library (iana-equivalence.registry-gap.mgp-ranges and .yol-ranges). That caller path is still
+	 * legal Java and still reachable, and the explicit-range cases below keep what it exercised covered.
+	 *
+	 * An ARRAY is a list of explicit ranges, built with the LanguageRange constructor, which expands
+	 * NOTHING: equivalents then come only from inside the library (DefaultStrings'
+	 * addParsedLanguageRangeIdentities), which is what the .mgp-explicit-ranges and .yol-explicit-ranges
+	 * cases pin.
+	 */
+	private static List<Locale.LanguageRange> languageRangesFrom(LocaleMatcher parser, JsonValue spec) {
 		if (spec == null || spec.isNull()) return null;
-		if (spec.isString()) return Locale.LanguageRange.parse(spec.asString());
+		if (spec.isString()) return parser.parseLanguageRanges(spec.asString());
 		List<Locale.LanguageRange> ranges = new ArrayList<>();
 		for (JsonValue element : spec.asArray()) {
 			if (element.isString()) { ranges.add(new Locale.LanguageRange(element.asString())); continue; }
@@ -1210,8 +1227,8 @@ public final class VectorOracle {
 					break;
 				case "match-ranges":
 					// The realistic browser shape: negotiate the ambient locale from Accept-Language.
-					supplied = matcher.matchFor(languageRangesFrom(config.get("ranges")))
-							.getLocale().orElse(matcher.matchFor(languageRangesFrom(config.get("ranges"))).getFallbackLocale());
+					supplied = matcher.matchFor(languageRangesFrom(matcher, config.get("ranges")))
+							.getLocale().orElse(matcher.matchFor(languageRangesFrom(matcher, config.get("ranges"))).getFallbackLocale());
 					break;
 				default:
 					throw new IllegalArgumentException("unknown locale supplier behavior: " + behavior);
@@ -1239,14 +1256,14 @@ public final class VectorOracle {
 			LocaleMatchResult supplied;
 			switch (behavior) {
 				case "match-ranges":
-					supplied = matcher.matchFor(languageRangesFrom(config.get("ranges")));
+					supplied = matcher.matchFor(languageRangesFrom(matcher, config.get("ranges")));
 					break;
 				case "match-locale":
 					supplied = matcher.matchFor(Locale.forLanguageTag(config.getString("locale", null)));
 					break;
 				case "fabricated": {
 					List<Locale.LanguageRange> requested = config.get("ranges") == null
-							? new ArrayList<>() : languageRangesFrom(config.get("ranges"));
+							? new ArrayList<>() : languageRangesFrom(matcher, config.get("ranges"));
 					String localeTag = config.getString("locale", null);
 					String rangeText = config.getString("range", null);
 					List<Locale> considered = new ArrayList<>();
