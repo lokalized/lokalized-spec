@@ -10,7 +10,7 @@
         {
           "id": "CLAIM-SEMANTIC-PARITY",
           "sourceAnchor": "\u00a71",
-          "statement": "Shared required vectors produce the same complete semantic result as lokalized-java 3.1.0 under the pinned data and reference-runtime versions. (Was 3.0.0; the maintainer's decision of 2026-09-20 sets the parity target to 3.1.0, and the recorded corpus has been 3.1.0-SNAPSHOT's since M-R S12. 3.1.0 is not yet released.)"
+          "statement": "Shared required vectors produce the same complete semantic result as lokalized-java 3.1.0 under the pinned data and reference-runtime versions. (Was 3.0.0; the maintainer's decision of 2026-09-20 sets the parity target to 3.1.0, and the recorded corpus has been 3.1.0-SNAPSHOT's since M-R S12. 3.1.0 was released on 2026-09-26, tag 3.1.0 at commit 63b63e4.)"
         },
         {
           "id": "CLAIM-STRICT-DATA",
