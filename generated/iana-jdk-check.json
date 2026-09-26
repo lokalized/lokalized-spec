@@ -27,7 +27,7 @@
     "jdkVersion": "21.0.11",
     "jdkVendor": "Amazon.com Inc.",
     "jdkRuntimeVersion": "21.0.11+10-LTS",
-    "libraryVersion": "3.1.0-SNAPSHOT",
+    "libraryVersion": "3.1.0",
     "librarySourcesSha256": "db1f440a5641e419cf1f1a2d8fd89b2f6d7b63d65b9ee0316a0a7f83a76fa1e0"
   },
   "probeSpace": {
