@@ -1,0 +1,119 @@
+{
+  "formatVersion": 1,
+  "profileId": "whatwg-url-node-26.5.0-ada-4.0.0-unicode-mapping-17.0",
+  "scope": "Frozen Unicode-scalar URL compatibility observations; no strict UTS #46 or whole WHATWG suite conformance claim",
+  "archive": {
+    "path": "generated/url-oracle/manifest-idna-goldens.json.gz",
+    "decodedBytes": 19308094,
+    "decodedSHA256": "7f84ecb403b6e772f00dfa851d7de42e6d9556998dbb0b47feca23c8fff380db",
+    "recipeSHA256": "71d26bf09acb9ca75db16f704241a67d491db5d6b4ffcdd8758830e529972aa3",
+    "qualifiedIDSetSHA256": "c9c6944a8e63b3d92680f19fd53c3a1f4ee871db10efca26183a2ead699a9432",
+    "rows": 56513,
+    "officialScalarInputs": 6389,
+    "propertyDiscriminants": 32203,
+    "normalizationDiscriminants": 17062,
+    "authoredBoundaries": 859,
+    "excludedIllFormedSourceLines": [
+      548,
+      549
+    ]
+  },
+  "oracleRuntimeLockSHA256": "e0fa1af12b31b3750be894db9a892775b672e5d2577923b84e7c83154130cb1d",
+  "files": [
+    {
+      "path": "generated/url-oracle/manifest-idna-goldens.json.gz",
+      "bytes": 731845,
+      "sha256": "325a22caa753d399319dd0572d99f159042ca32acdae9548d5db87a628ba7603"
+    },
+    {
+      "path": "tools/url_oracle/__init__.py",
+      "bytes": 78,
+      "sha256": "ca36072ae1a8bd2729c90fedb2176326c8a7e4bcbb43787f37319e07e108bca4"
+    },
+    {
+      "path": "tools/url_oracle/idna_corpus.py",
+      "bytes": 17422,
+      "sha256": "a73aea78e3351a651adecf6df39126c73076045d5c8aaa2f34b02a93c78b715a"
+    },
+    {
+      "path": "tools/url_oracle/normalization_inputs.py",
+      "bytes": 4848,
+      "sha256": "edae0ccb8c690548f408b19bac754f2494b334b84f3e52b73ec90c3a6a141f4e"
+    },
+    {
+      "path": "tools/url_oracle/oracle_runtime.py",
+      "bytes": 3188,
+      "sha256": "d59ffdbfc27e603869c5ca427e8560ee3171748b3bd1461ba44c2f492fe3f84c"
+    },
+    {
+      "path": "tools/url_oracle/property_inputs.py",
+      "bytes": 6858,
+      "sha256": "3888740e1828ca393dc0ca14834b610fbd230c696b6be5396a37e3cdc499e2b5"
+    },
+    {
+      "path": "tools/url_oracle/reference/IDNA-Compatibility/LICENSE-MIT.txt",
+      "bytes": 1071,
+      "sha256": "af0d7d2cef91fc243cf4ad98570b03d1f26f5e0227cad0f5f4a7376e2feb3160"
+    },
+    {
+      "path": "tools/url_oracle/reference/IDNA-Compatibility/normalization-profile.json",
+      "bytes": 234866,
+      "sha256": "9cb7782123a2f08f8a69a8ec702ff7910cff69cd03773e6d665d79ed5a4b327c"
+    },
+    {
+      "path": "tools/url_oracle/reference/IDNA-Compatibility/oracle-runtime-lock.json",
+      "bytes": 2048,
+      "sha256": "e0fa1af12b31b3750be894db9a892775b672e5d2577923b84e7c83154130cb1d"
+    },
+    {
+      "path": "tools/url_oracle/reference/IDNA-Compatibility/property-profile.json",
+      "bytes": 121910,
+      "sha256": "84ae2c73b06823e54716dff80f7f539e588a676e7ff8529424046fe34f7a1098"
+    },
+    {
+      "path": "tools/url_oracle/reference/Unicode-17.0.0/DerivedBidiClass.txt",
+      "bytes": 173433,
+      "sha256": "4867b4b7f0731ed1bfcd34cc6251211ff1542541fce0734b6fbda139ee80b3a4"
+    },
+    {
+      "path": "tools/url_oracle/reference/Unicode-17.0.0/DerivedJoiningType.txt",
+      "bytes": 40635,
+      "sha256": "f39ebe974825d6736aee15582250307aa532b2cfab3caf3f86bd23fddc9c5c4d"
+    },
+    {
+      "path": "tools/url_oracle/reference/Unicode-17.0.0/DerivedNormalizationProps.txt",
+      "bytes": 1377582,
+      "sha256": "71fd6a206a2c0cdd41feb6b7f656aa31091db45e9cedc926985d718397f9e488"
+    },
+    {
+      "path": "tools/url_oracle/reference/Unicode-17.0.0/IdnaMappingTable.txt",
+      "bytes": 787378,
+      "sha256": "87f05505dc026fdb2bff16132bdc68a8014675836882a9a2b1844540ad3be382"
+    },
+    {
+      "path": "tools/url_oracle/reference/Unicode-17.0.0/IdnaTestV2.txt",
+      "bytes": 775973,
+      "sha256": "beb5d0be20e896189b03209a82fdc34f06351502bbd4b8e2523583fc2954d9cf"
+    },
+    {
+      "path": "tools/url_oracle/reference/Unicode-17.0.0/LICENSE.txt",
+      "bytes": 1995,
+      "sha256": "e7a93b009565cfce55919a381437ac4db883e9da2126fa28b91d12732bc53d96"
+    },
+    {
+      "path": "tools/url_oracle/reference/Unicode-17.0.0/NormalizationTest.txt",
+      "bytes": 2827429,
+      "sha256": "5019ffd530751a741900c849c0e010332f142a3612234639bd200b82138a87db"
+    },
+    {
+      "path": "tools/url_oracle/reference/Unicode-17.0.0/UnicodeData.txt",
+      "bytes": 2198209,
+      "sha256": "2e1efc1dcb59c575eedf5ccae60f95229f706ee6d031835247d843c11d96470c"
+    },
+    {
+      "path": "tools/url_oracle/unicode_inputs.py",
+      "bytes": 3580,
+      "sha256": "04e06e02816fb41799f766bc407d683df4846d7f5b34fa90bff70e316d461350"
+    }
+  ]
+}

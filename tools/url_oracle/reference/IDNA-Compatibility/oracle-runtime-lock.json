@@ -1,0 +1,49 @@
+{
+  "formatVersion": 1,
+  "scope": "Development URL oracle executable plus actual loaded libnode, Ada and ICU engine/data images; excludes the operating system and unrelated Node services",
+  "platform": "macOS arm64",
+  "nodeVersion": "v26.5.0",
+  "nodeExecutableSHA256": "87026f4b570ee090c0e0b48e8c6586ede31952695aac2b0021cc67e44987d511",
+  "nodeVersions": {
+    "unicode": "17.0",
+    "icu": "78.3",
+    "ada": "4.0.0"
+  },
+  "libraries": [
+    {
+      "name": "libada.4.0.0.dylib",
+      "loadedPath": "/opt/homebrew/Cellar/ada-url/4.0.0/lib/libada.4.0.0.dylib",
+      "realPath": "/opt/homebrew/Cellar/ada-url/4.0.0/lib/libada.4.0.0.dylib",
+      "bytes": 393120,
+      "sha256": "875a4ce73549e611b8183126248a2ba0f5837cae6460a612e0ea5de45b61d94c"
+    },
+    {
+      "name": "libicudata.78.3.dylib",
+      "loadedPath": "/opt/homebrew/Cellar/icu4c@78/78.3/lib/libicudata.78.3.dylib",
+      "realPath": "/opt/homebrew/Cellar/icu4c@78/78.3/lib/libicudata.78.3.dylib",
+      "bytes": 33371136,
+      "sha256": "cd7bfc3af59bc6766d4fa50c7afe50b2ec009dd665b23bcc6b467978e22acf77"
+    },
+    {
+      "name": "libicui18n.78.3.dylib",
+      "loadedPath": "/opt/homebrew/Cellar/icu4c@78/78.3/lib/libicui18n.78.3.dylib",
+      "realPath": "/opt/homebrew/Cellar/icu4c@78/78.3/lib/libicui18n.78.3.dylib",
+      "bytes": 3168704,
+      "sha256": "b950df7ced46bf344ed5970c50a3c751f310ad61c4a1ec170a748127aea84bf0"
+    },
+    {
+      "name": "libicuuc.78.3.dylib",
+      "loadedPath": "/opt/homebrew/Cellar/icu4c@78/78.3/lib/libicuuc.78.3.dylib",
+      "realPath": "/opt/homebrew/Cellar/icu4c@78/78.3/lib/libicuuc.78.3.dylib",
+      "bytes": 1859408,
+      "sha256": "a78b3424a391c7afad52c0d69df9cdb7818b6c20f909a14d193ae0c66a5c1119"
+    },
+    {
+      "name": "libnode.147.dylib",
+      "loadedPath": "/opt/homebrew/Cellar/node/26.5.0_1/lib/libnode.147.dylib",
+      "realPath": "/opt/homebrew/Cellar/node/26.5.0_1/lib/libnode.147.dylib",
+      "bytes": 75114032,
+      "sha256": "cfd5898773d3eb8753083185b40c77b073d28feb1665d91cae4cf0aef9d23c85"
+    }
+  ]
+}
