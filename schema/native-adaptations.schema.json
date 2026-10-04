@@ -1,0 +1,409 @@
+{
+  "$defs": {
+    "filenameAttribution": {
+      "additionalProperties": false,
+      "properties": {
+        "filenameRule": {
+          "additionalProperties": false,
+          "properties": {
+            "authoredCandidatesInByteOrder": {
+              "items": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "minItems": 2,
+              "type": "array",
+              "uniqueItems": true
+            },
+            "category": {
+              "enum": [
+                "native-competing-invalid-json-filenames",
+                "native-aggregate-file-cap-diagnostic-order",
+                "native-extensionless-json-alias-diagnostic-order"
+              ]
+            },
+            "differentChannels": {
+              "const": [
+                "failureMessage.filename"
+              ]
+            },
+            "equalChannels": {
+              "const": [
+                "locales",
+                "keysByLocale",
+                "failed",
+                "failureType",
+                "warnings"
+              ]
+            },
+            "maximumLocalizedStringsFiles": {
+              "minimum": 1,
+              "type": "integer"
+            },
+            "messageTemplate": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "nativeControls": {
+              "items": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "minItems": 1,
+              "type": "array",
+              "uniqueItems": true
+            },
+            "nativeFilename": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "referenceFilename": {
+              "minLength": 1,
+              "type": "string"
+            }
+          },
+          "required": [
+            "category",
+            "nativeFilename",
+            "referenceFilename",
+            "messageTemplate",
+            "authoredCandidatesInByteOrder",
+            "maximumLocalizedStringsFiles",
+            "equalChannels",
+            "differentChannels",
+            "nativeControls"
+          ],
+          "type": "object"
+        },
+        "fixtureID": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "id": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "inputSHA256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "kind": {
+          "const": "native-filename-attribution"
+        },
+        "notReplayedObservationChannels": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 0,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "operation": {
+          "enum": [
+            "construct",
+            "get",
+            "getResult",
+            "load",
+            "loadClasspath",
+            "loadClasspathResources"
+          ]
+        },
+        "partition": {
+          "enum": [
+            "requiredPortableIds",
+            "informationalIds"
+          ]
+        },
+        "referenceObservationSHA256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "operation",
+        "partition",
+        "fixtureID",
+        "inputSHA256",
+        "referenceObservationSHA256",
+        "notReplayedObservationChannels",
+        "kind",
+        "filenameRule"
+      ],
+      "type": "object"
+    },
+    "jvmCarrier": {
+      "additionalProperties": false,
+      "properties": {
+        "carrierRule": {
+          "additionalProperties": false,
+          "properties": {
+            "category": {
+              "enum": [
+                "jvm-classpath-discovery",
+                "jvm-classpath-resource-resolution"
+              ]
+            },
+            "nativeAPI": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "nativeControls": {
+              "items": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "minItems": 1,
+              "type": "array",
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "category",
+            "nativeAPI",
+            "nativeControls"
+          ],
+          "type": "object"
+        },
+        "fixtureID": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "id": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "inputSHA256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "kind": {
+          "const": "informational-jvm-carrier"
+        },
+        "notReplayedObservationChannels": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 0,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "operation": {
+          "enum": [
+            "construct",
+            "get",
+            "getResult",
+            "load",
+            "loadClasspath",
+            "loadClasspathResources"
+          ]
+        },
+        "partition": {
+          "enum": [
+            "requiredPortableIds",
+            "informationalIds"
+          ]
+        },
+        "referenceObservationSHA256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "operation",
+        "partition",
+        "fixtureID",
+        "inputSHA256",
+        "referenceObservationSHA256",
+        "notReplayedObservationChannels",
+        "kind",
+        "carrierRule"
+      ],
+      "type": "object"
+    },
+    "typeBoundary": {
+      "additionalProperties": false,
+      "properties": {
+        "fixtureID": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "guards": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "category": {
+                "enum": [
+                  "callback-null-configuration",
+                  "catalog-null-shape",
+                  "tiebreaker-null-shape",
+                  "placeholder-name-null",
+                  "phonetic-unmapped-null-return"
+                ]
+              },
+              "inputPath": {
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": [
+              "category",
+              "inputPath"
+            ],
+            "type": "object"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "id": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "inputSHA256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "kind": {
+          "const": "nonoptional-api-boundary"
+        },
+        "notReplayedObservationChannels": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 0,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "operation": {
+          "enum": [
+            "construct",
+            "get",
+            "getResult",
+            "load",
+            "loadClasspath",
+            "loadClasspathResources"
+          ]
+        },
+        "partition": {
+          "enum": [
+            "requiredPortableIds",
+            "informationalIds"
+          ]
+        },
+        "referenceObservationSHA256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "requiredEvidence": {
+          "additionalProperties": false,
+          "properties": {
+            "adjacentRuntimeControls": {
+              "items": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "minItems": 1,
+              "type": "array",
+              "uniqueItems": true
+            },
+            "negativeConsumers": {
+              "items": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "minItems": 1,
+              "type": "array",
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "negativeConsumers",
+            "adjacentRuntimeControls"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "id",
+        "operation",
+        "partition",
+        "fixtureID",
+        "inputSHA256",
+        "referenceObservationSHA256",
+        "notReplayedObservationChannels",
+        "kind",
+        "guards",
+        "requiredEvidence"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "https://lokalized.com/schema/native-adaptations.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "corpusSHA256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "formatVersion": {
+      "const": 1
+    },
+    "implementationFamily": {
+      "const": "swift"
+    },
+    "limits": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "minItems": 4,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "originalObservationsModified": {
+      "const": false
+    },
+    "policyVersion": {
+      "const": "1.0.0"
+    },
+    "profileID": {
+      "const": "swift-native-local-v1"
+    },
+    "records": {
+      "items": {
+        "oneOf": [
+          {
+            "$ref": "#/$defs/typeBoundary"
+          },
+          {
+            "$ref": "#/$defs/filenameAttribution"
+          },
+          {
+            "$ref": "#/$defs/jvmCarrier"
+          }
+        ]
+      },
+      "maxItems": 184,
+      "minItems": 184,
+      "type": "array"
+    }
+  },
+  "required": [
+    "formatVersion",
+    "policyVersion",
+    "profileID",
+    "implementationFamily",
+    "corpusSHA256",
+    "originalObservationsModified",
+    "records",
+    "limits"
+  ],
+  "title": "Lokalized versioned native adaptation profile",
+  "type": "object"
+}

@@ -21,12 +21,19 @@ const specDirectory = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const vendorDirectory = join(specDirectory, "vendor/lokalized-java/src/build/resources/cldr");
 
 const CASES = [
+  { artifact: "v1.1.json", schema: "manifest-normalization.schema.json", dir: join(specDirectory, "generated/manifest-normalization") },
+  { artifact: "v1.1.json", schema: "diagnostic-text.schema.json", dir: join(specDirectory, "generated/diagnostic-text") },
   { artifact: "cldr-locale-data.json", schema: "cldr-locale-data.schema.json", dir: vendorDirectory },
   { artifact: "cldr-conformance-vectors.json", schema: "cldr-conformance-vectors.schema.json", dir: vendorDirectory },
   // Not a vendored CLDR artifact: this one is produced here by the Java behavioral oracle.
   { artifact: "behavioral-vectors.json", schema: "behavioral-vectors.schema.json", dir: join(specDirectory, "generated") },
   // Nor this: generated here, with no JDK, from the pinned IANA registry (tools/iana-oracle/generate.mjs).
   { artifact: "iana-language-equivalences.json", schema: "iana-language-equivalences.schema.json", dir: join(specDirectory, "generated") },
+  { artifact: "swift-native-v1.json", schema: "native-adaptations.schema.json", dir: join(specDirectory, "conformance") },
+  { artifact: "swift-manifest-v1.json", schema: "manifest-native-adaptations.schema.json", dir: join(specDirectory, "conformance") },
+  // Preserve the historical archive bytes and their recorded digest; its checker
+  // independently validates the recipe, provenance and identity JCS encodings.
+  { artifact: "manifest-contract-vectors.json", schema: "manifest-contract-vectors.schema.json", dir: join(specDirectory, "generated/manifest-contract"), schemaDir: join(specDirectory, "generated/manifest-contract"), canonicalRequired: false },
 ];
 
 /** RFC 8785 requires sorted members, no insignificant whitespace, and no trailing newline. */
@@ -154,19 +161,19 @@ async function ianaStructureProblems(artifact) {
 const ajv = new Ajv2020({ allErrors: true, strict: true });
 let failed = 0;
 
-for (const { artifact, schema, dir } of CASES) {
-  const schemaJson = JSON.parse(await readFile(join(specDirectory, "schema", schema), "utf8"));
+for (const { artifact, schema, dir, schemaDir = join(specDirectory, "schema"), canonicalRequired = true } of CASES) {
+  const schemaJson = JSON.parse(await readFile(join(schemaDir, schema), "utf8"));
   const rawBytes = await readFile(join(dir, artifact));
   const parsed = JSON.parse(rawBytes.toString("utf8"));
 
   const validate = ajv.compile(schemaJson);
   const valid = validate(parsed);
-  const canonical = canonicalizationProblems(rawBytes, parsed);
+  const canonical = canonicalRequired ? canonicalizationProblems(rawBytes, parsed) : [];
   // Only on a schema-valid artifact: the structural reader assumes the shape the schema guarantees.
   const structure = valid && artifact === "iana-language-equivalences.json" ? await ianaStructureProblems(parsed) : [];
 
   if (valid && canonical.length === 0 && structure.length === 0) {
-    console.log(`ok    ${artifact}  (${rawBytes.length.toLocaleString()} bytes, schema + JCS${artifact === "iana-language-equivalences.json" ? " + class structure against the registry" : ""})`);
+    console.log(`ok    ${artifact}  (${rawBytes.length.toLocaleString()} bytes, schema${canonicalRequired ? " + JCS" : "; frozen bytes checked by check:manifest-contract"}${artifact === "iana-language-equivalences.json" ? " + class structure against the registry" : ""})`);
     continue;
   }
 

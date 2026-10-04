@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lokalized.com/schema/manifest-normalization.schema.json",
+  "title": "Manifest normalization amendment 1.1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "formatVersion",
+    "profileID",
+    "profileVersion",
+    "wireFormatVersion",
+    "archiveSHA256",
+    "rule",
+    "archiveCorrections",
+    "cases"
+  ],
+  "properties": {
+    "formatVersion": {
+      "const": 1
+    },
+    "profileID": {
+      "const": "manifest-normalization-v1.1"
+    },
+    "profileVersion": {
+      "const": "1.1.0"
+    },
+    "wireFormatVersion": {
+      "const": 1
+    },
+    "archiveSHA256": {
+      "const": "6356098bbde353a66886e9552c45efe7ec6353697cf26be2141d3e9f4811d50a"
+    },
+    "rule": {
+      "type": "string"
+    },
+    "archiveCorrections": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "operation",
+          "input",
+          "historicalExpected",
+          "historicalExpectedSHA256",
+          "expected"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^m7a\\."
+          },
+          "operation": {
+            "type": "string"
+          },
+          "input": {
+            "type": "object"
+          },
+          "historicalExpected": {
+            "type": "object"
+          },
+          "historicalExpectedSHA256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "expected": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "cases": {
+      "type": "array",
+      "minItems": 35,
+      "maxItems": 35,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "operation",
+          "input",
+          "expected"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^m8k\\."
+          },
+          "operation": {
+            "enum": [
+              "normalize",
+              "roundTrip",
+              "validateStringsManifest",
+              "parseStringsManifest"
+            ]
+          },
+          "input": {
+            "type": "object"
+          },
+          "expected": {
+            "type": "object"
+          }
+        }
+      }
+    }
+  }
+}

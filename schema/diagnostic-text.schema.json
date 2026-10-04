@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lokalized.com/schema/diagnostic-text.schema.json",
+  "title": "Lokalized diagnostic text profile 1.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "formatVersion",
+    "profileID",
+    "profileVersion",
+    "budgets",
+    "rule",
+    "scope",
+    "cases"
+  ],
+  "properties": {
+    "formatVersion": {
+      "const": 1
+    },
+    "profileID": {
+      "const": "diagnostic-text-v1.1"
+    },
+    "profileVersion": {
+      "const": "1.1.0"
+    },
+    "budgets": {
+      "const": {
+        "pathUTF16Units": 4096,
+        "memberUTF16Units": 256
+      }
+    },
+    "rule": {
+      "type": "string"
+    },
+    "scope": {
+      "type": "string"
+    },
+    "cases": {
+      "type": "array",
+      "minItems": 36,
+      "maxItems": 36,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "door",
+          "document",
+          "source",
+          "expected"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^diagnostic\\.v1\\.1\\."
+          },
+          "door": {
+            "enum": [
+              "catalog",
+              "manifest"
+            ]
+          },
+          "document": {
+            "type": "string"
+          },
+          "source": {
+            "const": "diagnostic-profile.json"
+          },
+          "expected": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "message",
+              "path",
+              "memberDisplay"
+            ],
+            "properties": {
+              "message": {
+                "type": "string"
+              },
+              "path": {
+                "type": "string"
+              },
+              "memberDisplay": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

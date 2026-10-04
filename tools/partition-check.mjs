@@ -29,6 +29,11 @@
  * repository with no implementation in it can check: it catches a misauthored case before a JVM
  * round trip and in a clone that has no port beside it.
  *
+ * NATIVE COVERAGE EXTENSION: NATIVE-ADAPTATIONS.md separately permits explicitly versioned,
+ * per-case native source/representation boundaries backed by compiler and adjacent runtime
+ * evidence. These are never runtime-exact passes. The operation rule here remains unchanged:
+ * absent JVM carriers stay informational and cannot become required native mappings.
+ *
  *   node tools/partition-check.mjs
  */
 import { readFileSync, readdirSync } from "node:fs";

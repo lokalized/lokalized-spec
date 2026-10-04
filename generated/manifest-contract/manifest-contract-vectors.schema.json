@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Development-only JS manifest validation, identity, and planning observations",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["formatVersion", "scope", "jsCommit", "buildIdentity", "cases"],
+  "properties": {
+    "formatVersion": {"const": 1},
+    "scope": {"const": "js-manifest-validation-identity-planning"},
+    "jsCommit": {"const": "617670da887b0c684e2589882447b6b93297f2f7"},
+    "buildIdentity": {"type": "object"},
+    "cases": {"type": "array", "items": {"$ref": "#/$defs/case"}}
+  },
+  "$defs": {
+    "case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "operation", "input", "expected"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^m7a\\.[a-zA-Z0-9_.-]+$"},
+        "operation": {"enum": ["validateStringsManifest", "parseStringsManifest", "localeConfigurationForManifest", "computeCatalogIdentity", "identityForManifest", "chain", "fetchSet", "wholeManifestPlan"]},
+        "input": {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "manifestJSON": {"type": "string"}, "identityInputJSON": {"type": "string"},
+            "carrier": {"enum": ["text", "bytes"]}, "text": {"type": "string"},
+            "documentBase64": {"type": "string", "contentEncoding": "base64"},
+            "optionsJSON": {"type": "string"}, "lookupLocale": {"type": ["string", "null"]}
+          }
+        },
+        "expected": {
+          "oneOf": [
+            {"type": "object", "additionalProperties": false, "required": ["outcome", "value"], "properties": {"outcome": {"const": "returned"}, "value": {}}},
+            {"type": "object", "additionalProperties": false, "required": ["outcome", "error"], "properties": {"outcome": {"const": "threw"}, "error": {"$ref": "#/$defs/error"}}}
+          ]
+        }
+      }
+    },
+    "error": {
+      "type": "object", "additionalProperties": false, "required": ["name", "message"],
+      "properties": {
+        "name": {"type": "string"}, "message": {"type": "string"}, "code": {"type": "string"},
+        "source": {"type": "string"}, "line": {"type": ["integer", "null"]},
+        "column": {"type": ["integer", "null"]}, "path": {"type": ["string", "null"]},
+        "cause": {"$ref": "#/$defs/error"}
+      }
+    }
+  }
+}

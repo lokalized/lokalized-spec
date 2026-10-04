@@ -7,6 +7,24 @@
       "amendment": "A30",
       "since": "lokalized-java 3.1.0",
       "disposition": "No JavaScript counterpart. lokalized-js always takes IANA language-range equivalences from the pinned registry, which is Java's default IANA_REGISTRY setting, and offers no JDK setting: JavaScript has no JDK, so such a setting could only ever mean JDK 21."
+    },
+    {
+      "type": "TranslationFallbackEvent",
+      "amendment": "A35",
+      "since": "lokalized-java 3.1.1",
+      "disposition": "JavaScript and Swift counterparts retain TranslationFallbackEvent: key, lookupLocale, localeMatchResult, attemptedLocales, resolvedLocale and ordered precedingFailures. Java getters map to readonly JavaScript properties and immutable Swift values. The event describes a successful later-candidate translation without retaining rendered text or placeholder values; observer execution is synchronous before lookup returns. This row records existing API coverage, not a new shared-corpus runtime claim."
+    },
+    {
+      "type": "TranslationFallbackObserver",
+      "amendment": "A35",
+      "since": "lokalized-java 3.1.1",
+      "disposition": "JavaScript and Swift counterparts retain TranslationFallbackObserver and the translationFallbackObserver construction/per-call option name. Java observe(event) maps to a JavaScript callback and a Swift throwing callback wrapper with observe(_:). Original observer exceptions/errors propagate; the observer does not control candidate continuation. Existing port tests qualify behavior separately from the frozen behavioral corpus, which has no observer cases."
+    },
+    {
+      "type": "TranslationFallbackEvent.PrecedingFailure",
+      "amendment": "A35",
+      "since": "lokalized-java 3.1.1",
+      "disposition": "JavaScript and Swift expose PrecedingFailure as a standalone immutable diagnostic value rather than a nested Java class. Its locale, reason and cause correspond to Java getters; failures retain attempted-candidate order and causes retain their native reference identity. Java Locale values map to JavaScript serialized tags and Swift LocaleTag. Naming follows native public type conventions without changing the shared fields or adding frozen-corpus passes."
     }
   ]
 }

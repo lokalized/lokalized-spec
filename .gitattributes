@@ -1,3 +1,16 @@
 # Preserve the exact bytes recorded by the shared URL oracle source lock.
 generated/url-oracle/** -text
 tools/url_oracle/** -text
+conformance/swift-native-v1.json -text
+schema/native-adaptations.schema.json -text
+tools/native_adaptations/** -text
+generated/manifest-contract/** -text
+tools/manifest_contracts/** -text
+conformance/swift-manifest-v1.json -text
+schema/manifest-native-adaptations.schema.json -text
+generated/diagnostic-text/** -text
+tools/diagnostic_text/** -text
+schema/diagnostic-text.schema.json -text
+generated/manifest-normalization/** -text
+tools/manifest_normalization/** -text
+schema/manifest-normalization.schema.json -text

@@ -1,0 +1,170 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Swift native manifest conformance adaptations, version 1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "formatVersion",
+    "profileID",
+    "profileVersion",
+    "scope",
+    "vectorsSHA256",
+    "lockSHA256",
+    "runtimeIDs",
+    "runtimeIDsSHA256",
+    "nativeAdaptations",
+    "nativeAdaptationIDsSHA256",
+    "runtimeProjectionRules",
+    "runtimeControls",
+    "limits"
+  ],
+  "properties": {
+    "formatVersion": {
+      "const": 1
+    },
+    "profileID": {
+      "const": "swift-native-manifest-v1"
+    },
+    "profileVersion": {
+      "const": "1.0.0"
+    },
+    "scope": {
+      "type": "string"
+    },
+    "vectorsSHA256": {
+      "type": "string"
+    },
+    "lockSHA256": {
+      "type": "string"
+    },
+    "runtimeIDs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true,
+      "minItems": 468,
+      "maxItems": 468
+    },
+    "runtimeIDsSHA256": {
+      "type": "string"
+    },
+    "nativeAdaptations": {
+      "type": "array",
+      "minItems": 31,
+      "maxItems": 31,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "operation",
+          "inputSHA256",
+          "referenceObservationSHA256",
+          "notReplayedObservationChannels",
+          "category",
+          "kind",
+          "rationale",
+          "source",
+          "sourceSHA256",
+          "expectation",
+          "diagnosticFamily",
+          "diagnosticToken",
+          "adjacentRuntimeControls"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "operation": {
+            "type": "string"
+          },
+          "inputSHA256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "referenceObservationSHA256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "notReplayedObservationChannels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          },
+          "category": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "native-source-boundary",
+              "native-unicode-carrier",
+              "native-default-format-version"
+            ]
+          },
+          "rationale": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          },
+          "sourceSHA256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "expectation": {
+            "enum": [
+              "refused",
+              "accepted"
+            ]
+          },
+          "diagnosticFamily": {
+            "enum": [
+              "type",
+              "missing",
+              "argument",
+              "unicode",
+              "none"
+            ]
+          },
+          "diagnosticToken": {
+            "type": "string"
+          },
+          "adjacentRuntimeControls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          }
+        }
+      }
+    },
+    "nativeAdaptationIDsSHA256": {
+      "type": "string"
+    },
+    "runtimeProjectionRules": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "runtimeControls": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "limits": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    }
+  }
+}

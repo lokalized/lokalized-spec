@@ -1,0 +1,3469 @@
+{
+  "formatVersion": 1,
+  "status": "reference-inventory",
+  "java": {
+    "commit": "491346ba50df65e1e51791f21246ff8bc47e44e9",
+    "files": [
+      {
+        "path": "pom.xml",
+        "sha256": "537ac3f2c2a996214b8c5289241f2095dd6ae853d7bb8930051bebcc88173617"
+      },
+      {
+        "path": "src/main/java/com/lokalized/Animacy.java",
+        "sha256": "6b269f17062cc945bcf221dd28ec0f7db0ccd779fdbc2c369377aa7cb0bb3bbf"
+      },
+      {
+        "path": "src/main/java/com/lokalized/BidiIsolation.java",
+        "sha256": "63b2d12421cb21803362ff404208230f4addc57b632ffe9576d7b0b66606bbe0"
+      },
+      {
+        "path": "src/main/java/com/lokalized/BidiUtils.java",
+        "sha256": "21d36d4fcd8e4c06e51249fd5f7c631d582ff882b7fcfbff40df321ee920ac32"
+      },
+      {
+        "path": "src/main/java/com/lokalized/Cardinality.java",
+        "sha256": "c6d90c70ac557f59b3f7feba2626950893601aa6947bac8b271d839ecfbc5c41"
+      },
+      {
+        "path": "src/main/java/com/lokalized/CardinalityRange.java",
+        "sha256": "755723864196291f6e2c93aa53a830b4d797033a3c896006768aad5d71d2e4ca"
+      },
+      {
+        "path": "src/main/java/com/lokalized/CharSequenceUtils.java",
+        "sha256": "682b4dd5cf8ed5f1c8b05fdd0403cd624b39c9fb177a11a42ad6c632a54c34a1"
+      },
+      {
+        "path": "src/main/java/com/lokalized/Classifier.java",
+        "sha256": "51a6dbfa538dddd08a8964d641765e37a2e33e5a37b575fd1cd576b84dbc2a44"
+      },
+      {
+        "path": "src/main/java/com/lokalized/CldrLocaleData.java",
+        "sha256": "cc15d95cee6eab0e17c3d0221249cba344d77e4639e85e163fa3aefaa1d4f49f"
+      },
+      {
+        "path": "src/main/java/com/lokalized/CldrPluralRules.java",
+        "sha256": "85892df1e26ce30b3a7202173fac26a79fc57c597384f3d4b6580e76f06a2494"
+      },
+      {
+        "path": "src/main/java/com/lokalized/Clusivity.java",
+        "sha256": "33b66c5bcd9ce0654fb77ecd827323f89ed49b3e5ac52954312ef5607685c1d1"
+      },
+      {
+        "path": "src/main/java/com/lokalized/DefaultStrings.java",
+        "sha256": "263c774327c4d08da7a0c01c625b7f2b05d37f7a9ae05a44505b142ef906a63f"
+      },
+      {
+        "path": "src/main/java/com/lokalized/DefaultTranslationFailure.java",
+        "sha256": "bf6432650d96fcca18ccc764bc197f6fc5b286a8e556d3c603d73344706f474f"
+      },
+      {
+        "path": "src/main/java/com/lokalized/Definiteness.java",
+        "sha256": "2364ff5c88234782073c48332a2ae4d1460d0ad6c931075d1a2388d27aa4fb1c"
+      },
+      {
+        "path": "src/main/java/com/lokalized/Diagnostics.java",
+        "sha256": "d44a74fe011d14c33075af2bedee3d02ce83065a319b3f13c3e78d71b86c5efb"
+      },
+      {
+        "path": "src/main/java/com/lokalized/ExpressionEvaluationException.java",
+        "sha256": "8cbe05cb68e5704e2423929c82b104503d081449d8f5fee41f51afab6366136e"
+      },
+      {
+        "path": "src/main/java/com/lokalized/ExpressionEvaluator.java",
+        "sha256": "abb312af0e9bde83c374d7e0dcec8ee190a4bf59da477b0b4557c17f1d4aed26"
+      },
+      {
+        "path": "src/main/java/com/lokalized/ExpressionTokenizer.java",
+        "sha256": "b7d370a260ca366e0e6ef32d992159e72e08100a7c113513aa7052030af76941"
+      },
+      {
+        "path": "src/main/java/com/lokalized/Formality.java",
+        "sha256": "e2ea630ded8d694b09ff8ea83ec60ba5fb6447a5b94e5315121e286985ea67dd"
+      },
+      {
+        "path": "src/main/java/com/lokalized/Gender.java",
+        "sha256": "b30752f61372bba9f7d9f937550c4c06a6804997e8627f50796d7fc76bd6063f"
+      },
+      {
+        "path": "src/main/java/com/lokalized/GeneratedCldrLocaleData.java",
+        "sha256": "3a89e4308d192a622779996cf4cffb9f1c9902b18911e571a1800b5fa9c7ecc7"
+      },
+      {
+        "path": "src/main/java/com/lokalized/GeneratedCldrPluralData.java",
+        "sha256": "ff6ab987efcf58c403d18ee58a78350d7e097b76bf9fb1a957e3630ff14641b1"
+      },
+      {
+        "path": "src/main/java/com/lokalized/GrammaticalCase.java",
+        "sha256": "bfeee76ecb8846ae7482ab2f9c0e0b3ec47d2924d7f657d4a5568c9a65c23ee3"
+      },
+      {
+        "path": "src/main/java/com/lokalized/IanaLanguageEquivalents.java",
+        "sha256": "9d11a1ce46ba506c4b4286bc804919ab31b22179d882d99047f6f75b1c680992"
+      },
+      {
+        "path": "src/main/java/com/lokalized/LanguageForm.java",
+        "sha256": "b05be66be1a939e0aebf4aaef5fe4ca6b721c48500dbf100ae3d4897d97b160a"
+      },
+      {
+        "path": "src/main/java/com/lokalized/LanguageRangeEquivalents.java",
+        "sha256": "d7b836765f2a624b3be474634e87d00a0443033c79e5866178782dd9a1de269b"
+      },
+      {
+        "path": "src/main/java/com/lokalized/LocaleMatchResult.java",
+        "sha256": "2504393a539e6c8ac2d0bac45bf372fa52bd84dcc3fc2cc7ebf3763208da61e9"
+      },
+      {
+        "path": "src/main/java/com/lokalized/LocaleMatchType.java",
+        "sha256": "c499bada4ae490716a64c6540b121d4dbbb8ebad07e4e2103e6a340133e53d7a"
+      },
+      {
+        "path": "src/main/java/com/lokalized/LocaleMatcher.java",
+        "sha256": "bb14d1af97c7ec22d5f9a54f6934174b180f50e77b67275817e7ec61f90fdb82"
+      },
+      {
+        "path": "src/main/java/com/lokalized/LocaleUtils.java",
+        "sha256": "d8ade7d5655d6a73fc101b68fea84641ecfdde14ebbc4bff6f828c289a56ca43"
+      },
+      {
+        "path": "src/main/java/com/lokalized/LocalizedString.java",
+        "sha256": "df06ca70ec07237d9778240e8182ec32b2d6d9e24dce41fa9f0483f5ae55a503"
+      },
+      {
+        "path": "src/main/java/com/lokalized/LocalizedStringLoader.java",
+        "sha256": "4d075c02700ef333c300bbc647bf5eacf3b1248dd2c4ae36e6d27601864d3ac8"
+      },
+      {
+        "path": "src/main/java/com/lokalized/LocalizedStringLoadingException.java",
+        "sha256": "59f502cee58339eb7eb270155d1a6a883817ece57793c9f98ba9c9acc7f0ad9e"
+      },
+      {
+        "path": "src/main/java/com/lokalized/LocalizedStringLoadingOptions.java",
+        "sha256": "ebc83510c79277dbb30c78c4c7050d0937df156f1d4d22bae9dfc83cd3129eca"
+      },
+      {
+        "path": "src/main/java/com/lokalized/LocalizedStringUtils.java",
+        "sha256": "293fe7625f4ac9624bc9cefa59a814e3f07f68b65bff47d6ebb01b5394b0fae8"
+      },
+      {
+        "path": "src/main/java/com/lokalized/LocalizedStringValidator.java",
+        "sha256": "6d5454faf7b3d52ae8ac189e812428cdd7f5b550af8023fdaa9e0fdaeae629a1"
+      },
+      {
+        "path": "src/main/java/com/lokalized/LocalizedStringWarning.java",
+        "sha256": "662006de4427a1a4c89aa1268d53fde107868e183dcb01b9c91adccf0c846b41"
+      },
+      {
+        "path": "src/main/java/com/lokalized/LocalizedStringWarningHandler.java",
+        "sha256": "ea390fd7eb3848954efa6ef35107b890cfb4448114c6895f95c6a9c471366a14"
+      },
+      {
+        "path": "src/main/java/com/lokalized/Maps.java",
+        "sha256": "19dab57f2b1f925eca68f3d692137f3fb4fa55b88f3678e2462d6b3b5eb810fd"
+      },
+      {
+        "path": "src/main/java/com/lokalized/MinimalJson.java",
+        "sha256": "d4c2024afd25160b9ec41eefcf9a443cbb9b4b2a496cc8da3b2ea11a9a968f39"
+      },
+      {
+        "path": "src/main/java/com/lokalized/MissingTranslationException.java",
+        "sha256": "0e239f63cf0b72e27e73d86117cd2221dae474d013ef319b4d1a423182967060"
+      },
+      {
+        "path": "src/main/java/com/lokalized/NumberUtils.java",
+        "sha256": "dcd5fd5a6ec49009e71c0d2bb660cf4ae7cc47d0eeebf0e07c8b0178b6756d5a"
+      },
+      {
+        "path": "src/main/java/com/lokalized/Ordinality.java",
+        "sha256": "5535c89183dc968a2273ea9c849299c5a4929fe394678df3a67854defad5af1a"
+      },
+      {
+        "path": "src/main/java/com/lokalized/Phonetic.java",
+        "sha256": "722b9c1d7a26cf06fe4a9db9378b62815642e53463b68b1e75a2babf42d157d2"
+      },
+      {
+        "path": "src/main/java/com/lokalized/PhoneticResolver.java",
+        "sha256": "6bf6233e8f83d31c6a4130100bca4433b6083179fc5fcf8fae660a1b4cf3f07b"
+      },
+      {
+        "path": "src/main/java/com/lokalized/PluralOperands.java",
+        "sha256": "55275db59270750754d096eb9a0e4190aeef4629ac3581ad08400c758e13bd9a"
+      },
+      {
+        "path": "src/main/java/com/lokalized/Range.java",
+        "sha256": "9dba1a2559bac509385d7d29109f3370493020a33c4edb78cf71f1dc0003b4dd"
+      },
+      {
+        "path": "src/main/java/com/lokalized/Sets.java",
+        "sha256": "08375cb8fc164f2e24bd6fc5cbaa7df16c673d81a49a959a5eed481177dbabe7"
+      },
+      {
+        "path": "src/main/java/com/lokalized/StringInterpolator.java",
+        "sha256": "8581b461946932200ed2fd7b601d13c175c822fcc69e0dc92ef3f9d69ac1b1ce"
+      },
+      {
+        "path": "src/main/java/com/lokalized/Strings.java",
+        "sha256": "2479b680dd856fcff7cb69e23c5d7ab75e64a644ea8d540689ae67762f99af60"
+      },
+      {
+        "path": "src/main/java/com/lokalized/Token.java",
+        "sha256": "a68e67719b8ff89ebecb0a9835f955eda7bf12e585db30fa0140976a5558ae3c"
+      },
+      {
+        "path": "src/main/java/com/lokalized/TokenType.java",
+        "sha256": "7eb5bf58a0e698f63f2c048d7dffeb4dcc0590b893f0f5029509772989bf6d64"
+      },
+      {
+        "path": "src/main/java/com/lokalized/TranslationFailure.java",
+        "sha256": "57b6f26544fd136a2a7750f996a7ae88e50a567074f32f1ebcdee83e959fd4ad"
+      },
+      {
+        "path": "src/main/java/com/lokalized/TranslationFailureHandler.java",
+        "sha256": "eeacb78f98108d50d27d16fb203fbdf3bd601d12b33fcc796778cb7236c168da"
+      },
+      {
+        "path": "src/main/java/com/lokalized/TranslationFailureReason.java",
+        "sha256": "5f56e5db8975d9b027e41952cf7fa447ca0fa02e4c60646793de43cd3f0d58e1"
+      },
+      {
+        "path": "src/main/java/com/lokalized/TranslationFailureResponse.java",
+        "sha256": "b743dcd129fce1562cefb7e9902822c3ade2d371bc4f14936de36d67dfefaf29"
+      },
+      {
+        "path": "src/main/java/com/lokalized/TranslationFallbackEvent.java",
+        "sha256": "552c2b4b51ef8d2d7ed5e8b19c0ba505e9924427208421f15f3814c5df2e97fc"
+      },
+      {
+        "path": "src/main/java/com/lokalized/TranslationFallbackObserver.java",
+        "sha256": "31e9ba27e8d3cca1c53470127f344aec49167f4cebd4d4e99ca288e97e25db17"
+      },
+      {
+        "path": "src/main/java/com/lokalized/TranslationFallbackPolicy.java",
+        "sha256": "5f6c5be6e86b06b681c3d11d054ce0789cb7036b88b684ba285fcdc2b33a9358"
+      },
+      {
+        "path": "src/main/java/com/lokalized/TranslationOptions.java",
+        "sha256": "f09a688d8b8ecc246528056cc3ae743039490943f129d8877545fa657f82c8ca"
+      },
+      {
+        "path": "src/main/java/com/lokalized/TranslationResult.java",
+        "sha256": "520f6130d701059a19ec01fe04e7a8fa46e9b99b32d482ee484c7d8148f2b3af"
+      },
+      {
+        "path": "src/main/java/com/lokalized/TranslationResultStatus.java",
+        "sha256": "3556cb119035a4337ee4465d65de808f4006921d81922e388ff0927689722b58"
+      },
+      {
+        "path": "src/main/java/com/lokalized/TranslationRuntimeLimits.java",
+        "sha256": "f5813015b76e4009b20a0c39ddd492d1e76f185194a0120a70a6b3579b055066"
+      },
+      {
+        "path": "src/main/java/com/lokalized/UnsupportedLocaleException.java",
+        "sha256": "c1e45f6d3b9bbe834a9e8c07afef4f9d2ef5ce51cef3d74e8f020cbc87adc068"
+      },
+      {
+        "path": "src/main/java/com/lokalized/package-info.java",
+        "sha256": "26c386195c7546b5072b48951ded4255194da34c9f10bacc5c4c5541ef6e3692"
+      }
+    ],
+    "sourceSha256": "e521b29e265dddc84a2d05e50e00cd4d1547249abbc3e2a2bb486738a26e3670",
+    "version": "3.1.1",
+    "method": "fresh isolated javac --release 9; javap -public -constants; only externally public enclosing types",
+    "compiler": "javac 21.0.11",
+    "compileOnlyInputs": [
+      {
+        "name": "jspecify-1.0.1.jar",
+        "sha256": "070d75f261fe4c5b8202508366715f7f2d4660f88c8ef7e6d3575e48c9683b66",
+        "role": "compile-only annotation"
+      },
+      {
+        "name": "jsr305-3.0.2.jar",
+        "sha256": "766ad2a0783f2687962c8ad74ceecc38a28b9f72a2d085ee438b7813e928d0c7",
+        "role": "compile-only annotation"
+      }
+    ],
+    "types": [
+      {
+        "name": "com.lokalized.Animacy",
+        "declaration": "public final class com.lokalized.Animacy extends java.lang.Enum<com.lokalized.Animacy> implements com.lokalized.LanguageForm",
+        "members": [
+          "public static final com.lokalized.Animacy ANIMATE;",
+          "public static final com.lokalized.Animacy INANIMATE;",
+          "public static com.lokalized.Animacy[] values();",
+          "public static com.lokalized.Animacy valueOf(java.lang.String);"
+        ]
+      },
+      {
+        "name": "com.lokalized.BidiIsolation",
+        "declaration": "public final class com.lokalized.BidiIsolation extends java.lang.Enum<com.lokalized.BidiIsolation>",
+        "members": [
+          "public static final com.lokalized.BidiIsolation NONE;",
+          "public static final com.lokalized.BidiIsolation ALWAYS;",
+          "public static final com.lokalized.BidiIsolation RTL_LOCALES;",
+          "public static com.lokalized.BidiIsolation[] values();",
+          "public static com.lokalized.BidiIsolation valueOf(java.lang.String);"
+        ]
+      },
+      {
+        "name": "com.lokalized.Cardinality",
+        "declaration": "public final class com.lokalized.Cardinality extends java.lang.Enum<com.lokalized.Cardinality> implements com.lokalized.LanguageForm",
+        "members": [
+          "public static final com.lokalized.Cardinality ZERO;",
+          "public static final com.lokalized.Cardinality ONE;",
+          "public static final com.lokalized.Cardinality TWO;",
+          "public static final com.lokalized.Cardinality FEW;",
+          "public static final com.lokalized.Cardinality MANY;",
+          "public static final com.lokalized.Cardinality OTHER;",
+          "public static com.lokalized.Cardinality[] values();",
+          "public static com.lokalized.Cardinality valueOf(java.lang.String);",
+          "public static com.lokalized.Cardinality forNumber(java.lang.Number, java.util.Locale);",
+          "public static com.lokalized.Cardinality forNumber(java.lang.Number, java.lang.Integer, java.util.Locale);",
+          "public static com.lokalized.Cardinality forOperands(com.lokalized.PluralOperands, java.util.Locale);",
+          "public static com.lokalized.Cardinality forRange(com.lokalized.Cardinality, com.lokalized.Cardinality, java.util.Locale);",
+          "public static java.util.SortedSet<com.lokalized.Cardinality> supportedCardinalitiesForLocale(java.util.Locale);",
+          "public static java.util.SortedMap<com.lokalized.Cardinality, com.lokalized.Range<java.lang.Integer>> exampleIntegerValuesForLocale(java.util.Locale);",
+          "public static java.util.SortedMap<com.lokalized.Cardinality, com.lokalized.Range<java.math.BigDecimal>> exampleDecimalValuesForLocale(java.util.Locale);",
+          "public static java.util.SortedSet<java.lang.String> getSupportedLocaleTags();"
+        ]
+      },
+      {
+        "name": "com.lokalized.Classifier",
+        "declaration": "public final class com.lokalized.Classifier extends java.lang.Enum<com.lokalized.Classifier> implements com.lokalized.LanguageForm",
+        "members": [
+          "public static final com.lokalized.Classifier GENERAL;",
+          "public static final com.lokalized.Classifier PERSON;",
+          "public static final com.lokalized.Classifier ANIMAL;",
+          "public static final com.lokalized.Classifier LONG_THIN;",
+          "public static final com.lokalized.Classifier FLAT;",
+          "public static final com.lokalized.Classifier BOUND;",
+          "public static final com.lokalized.Classifier MACHINE;",
+          "public static final com.lokalized.Classifier VEHICLE;",
+          "public static com.lokalized.Classifier[] values();",
+          "public static com.lokalized.Classifier valueOf(java.lang.String);"
+        ]
+      },
+      {
+        "name": "com.lokalized.Clusivity",
+        "declaration": "public final class com.lokalized.Clusivity extends java.lang.Enum<com.lokalized.Clusivity> implements com.lokalized.LanguageForm",
+        "members": [
+          "public static final com.lokalized.Clusivity INCLUSIVE;",
+          "public static final com.lokalized.Clusivity EXCLUSIVE;",
+          "public static com.lokalized.Clusivity[] values();",
+          "public static com.lokalized.Clusivity valueOf(java.lang.String);"
+        ]
+      },
+      {
+        "name": "com.lokalized.Definiteness",
+        "declaration": "public final class com.lokalized.Definiteness extends java.lang.Enum<com.lokalized.Definiteness> implements com.lokalized.LanguageForm",
+        "members": [
+          "public static final com.lokalized.Definiteness DEFINITE;",
+          "public static final com.lokalized.Definiteness INDEFINITE;",
+          "public static final com.lokalized.Definiteness CONSTRUCT;",
+          "public static com.lokalized.Definiteness[] values();",
+          "public static com.lokalized.Definiteness valueOf(java.lang.String);"
+        ]
+      },
+      {
+        "name": "com.lokalized.ExpressionEvaluationException",
+        "declaration": "public class com.lokalized.ExpressionEvaluationException extends java.lang.RuntimeException",
+        "members": [
+          "public com.lokalized.ExpressionEvaluationException(java.lang.String);",
+          "public com.lokalized.ExpressionEvaluationException(java.lang.String, java.lang.Throwable);"
+        ]
+      },
+      {
+        "name": "com.lokalized.Formality",
+        "declaration": "public final class com.lokalized.Formality extends java.lang.Enum<com.lokalized.Formality> implements com.lokalized.LanguageForm",
+        "members": [
+          "public static final com.lokalized.Formality CASUAL;",
+          "public static final com.lokalized.Formality INFORMAL;",
+          "public static final com.lokalized.Formality FORMAL;",
+          "public static final com.lokalized.Formality HUMBLE;",
+          "public static final com.lokalized.Formality HONORIFIC;",
+          "public static com.lokalized.Formality[] values();",
+          "public static com.lokalized.Formality valueOf(java.lang.String);"
+        ]
+      },
+      {
+        "name": "com.lokalized.Gender",
+        "declaration": "public final class com.lokalized.Gender extends java.lang.Enum<com.lokalized.Gender> implements com.lokalized.LanguageForm",
+        "members": [
+          "public static final com.lokalized.Gender MASCULINE;",
+          "public static final com.lokalized.Gender FEMININE;",
+          "public static final com.lokalized.Gender COMMON;",
+          "public static final com.lokalized.Gender NEUTER;",
+          "public static com.lokalized.Gender[] values();",
+          "public static com.lokalized.Gender valueOf(java.lang.String);"
+        ]
+      },
+      {
+        "name": "com.lokalized.GrammaticalCase",
+        "declaration": "public final class com.lokalized.GrammaticalCase extends java.lang.Enum<com.lokalized.GrammaticalCase> implements com.lokalized.LanguageForm",
+        "members": [
+          "public static final com.lokalized.GrammaticalCase NOMINATIVE;",
+          "public static final com.lokalized.GrammaticalCase ACCUSATIVE;",
+          "public static final com.lokalized.GrammaticalCase GENITIVE;",
+          "public static final com.lokalized.GrammaticalCase DATIVE;",
+          "public static final com.lokalized.GrammaticalCase INSTRUMENTAL;",
+          "public static final com.lokalized.GrammaticalCase LOCATIVE;",
+          "public static final com.lokalized.GrammaticalCase PREPOSITIONAL;",
+          "public static final com.lokalized.GrammaticalCase VOCATIVE;",
+          "public static final com.lokalized.GrammaticalCase ABLATIVE;",
+          "public static com.lokalized.GrammaticalCase[] values();",
+          "public static com.lokalized.GrammaticalCase valueOf(java.lang.String);"
+        ]
+      },
+      {
+        "name": "com.lokalized.LanguageForm",
+        "declaration": "public interface com.lokalized.LanguageForm",
+        "members": []
+      },
+      {
+        "name": "com.lokalized.LanguageRangeEquivalents",
+        "declaration": "public final class com.lokalized.LanguageRangeEquivalents extends java.lang.Enum<com.lokalized.LanguageRangeEquivalents>",
+        "members": [
+          "public static final com.lokalized.LanguageRangeEquivalents IANA_REGISTRY;",
+          "public static final com.lokalized.LanguageRangeEquivalents JDK;",
+          "public static com.lokalized.LanguageRangeEquivalents[] values();",
+          "public static com.lokalized.LanguageRangeEquivalents valueOf(java.lang.String);"
+        ]
+      },
+      {
+        "name": "com.lokalized.LocaleMatchResult",
+        "declaration": "public final class com.lokalized.LocaleMatchResult implements java.io.Serializable",
+        "members": [
+          "public com.lokalized.LocaleMatchResult(java.util.List<java.util.Locale$LanguageRange>, java.util.Locale, java.util.Locale$LanguageRange, java.lang.Double, com.lokalized.LocaleMatchType, java.util.Locale, java.util.List<java.util.Locale>);",
+          "public java.util.List<java.util.Locale$LanguageRange> getRequestedLanguageRanges();",
+          "public java.util.Optional<java.util.Locale> getLocale();",
+          "public java.util.Optional<java.util.Locale$LanguageRange> getLanguageRange();",
+          "public java.util.Optional<java.lang.Double> getEffectiveWeight();",
+          "public com.lokalized.LocaleMatchType getMatchType();",
+          "public java.util.Locale getFallbackLocale();",
+          "public java.util.List<java.util.Locale> getConsideredLocales();",
+          "public java.lang.Boolean isMatch();",
+          "public boolean equals(java.lang.Object);",
+          "public int hashCode();",
+          "public java.lang.String toString();"
+        ]
+      },
+      {
+        "name": "com.lokalized.LocaleMatchType",
+        "declaration": "public final class com.lokalized.LocaleMatchType extends java.lang.Enum<com.lokalized.LocaleMatchType>",
+        "members": [
+          "public static final com.lokalized.LocaleMatchType NONE;",
+          "public static final com.lokalized.LocaleMatchType EXACT;",
+          "public static final com.lokalized.LocaleMatchType CANONICAL;",
+          "public static final com.lokalized.LocaleMatchType CLDR_FALLBACK;",
+          "public static final com.lokalized.LocaleMatchType LIKELY_SUBTAG;",
+          "public static final com.lokalized.LocaleMatchType EXTENDED_RANGE;",
+          "public static final com.lokalized.LocaleMatchType PRIMARY_LANGUAGE;",
+          "public static final com.lokalized.LocaleMatchType WILDCARD;",
+          "public static com.lokalized.LocaleMatchType[] values();",
+          "public static com.lokalized.LocaleMatchType valueOf(java.lang.String);"
+        ]
+      },
+      {
+        "name": "com.lokalized.LocaleMatcher",
+        "declaration": "public interface com.lokalized.LocaleMatcher",
+        "members": [
+          "public static final java.lang.Integer MAXIMUM_LANGUAGE_RANGES;",
+          "public default com.lokalized.LocaleMatchResult matchFor(java.util.Locale);",
+          "public abstract com.lokalized.LocaleMatchResult matchFor(java.util.List<java.util.Locale$LanguageRange>);",
+          "public abstract java.util.Locale bestMatchFor(java.util.Locale);",
+          "public abstract java.util.Locale bestMatchFor(java.util.List<java.util.Locale$LanguageRange>);",
+          "public default java.util.Locale bestMatchForAcceptLanguage(java.lang.String);",
+          "public default java.util.List<java.util.Locale$LanguageRange> parseLanguageRanges(java.lang.String);"
+        ]
+      },
+      {
+        "name": "com.lokalized.LocalizedString",
+        "declaration": "public final class com.lokalized.LocalizedString",
+        "members": [
+          "public java.lang.String toString();",
+          "public boolean equals(java.lang.Object);",
+          "public int hashCode();",
+          "public java.lang.String getKey();",
+          "public java.util.Optional<java.lang.String> getTranslation();",
+          "public java.util.Optional<java.lang.String> getCommentary();",
+          "public java.util.Map<java.lang.String, com.lokalized.LocalizedString$PlaceholderDefinition> getPlaceholderDefinitions();",
+          "public java.util.List<com.lokalized.LocalizedString> getAlternatives();"
+        ]
+      },
+      {
+        "name": "com.lokalized.LocalizedString$Builder",
+        "declaration": "public class com.lokalized.LocalizedString$Builder",
+        "members": [
+          "public com.lokalized.LocalizedString$Builder(java.lang.String);",
+          "public com.lokalized.LocalizedString$Builder translation(java.lang.String);",
+          "public com.lokalized.LocalizedString$Builder commentary(java.lang.String);",
+          "public com.lokalized.LocalizedString$Builder placeholderDefinitions(java.util.Map<java.lang.String, ? extends com.lokalized.LocalizedString$PlaceholderDefinition>);",
+          "public com.lokalized.LocalizedString$Builder alternatives(java.util.List<com.lokalized.LocalizedString>);",
+          "public com.lokalized.LocalizedString build();"
+        ]
+      },
+      {
+        "name": "com.lokalized.LocalizedString$ExpressionAlternative",
+        "declaration": "public final class com.lokalized.LocalizedString$ExpressionAlternative",
+        "members": [
+          "public com.lokalized.LocalizedString$ExpressionAlternative(java.lang.String, java.lang.String);",
+          "public java.lang.String toString();",
+          "public boolean equals(java.lang.Object);",
+          "public int hashCode();",
+          "public java.lang.String getExpression();",
+          "public java.lang.String getTranslation();"
+        ]
+      },
+      {
+        "name": "com.lokalized.LocalizedString$ExpressionTranslation",
+        "declaration": "public final class com.lokalized.LocalizedString$ExpressionTranslation extends com.lokalized.LocalizedString$PlaceholderDefinition",
+        "members": [
+          "public com.lokalized.LocalizedString$ExpressionTranslation(java.lang.String);",
+          "public com.lokalized.LocalizedString$ExpressionTranslation(java.lang.String, java.util.List<com.lokalized.LocalizedString$ExpressionAlternative>);",
+          "public java.lang.String toString();",
+          "public boolean equals(java.lang.Object);",
+          "public int hashCode();",
+          "public java.lang.String getTranslation();",
+          "public java.util.List<com.lokalized.LocalizedString$ExpressionAlternative> getAlternatives();"
+        ]
+      },
+      {
+        "name": "com.lokalized.LocalizedString$LanguageFormTranslation",
+        "declaration": "public final class com.lokalized.LocalizedString$LanguageFormTranslation extends com.lokalized.LocalizedString$PlaceholderDefinition",
+        "members": [
+          "public com.lokalized.LocalizedString$LanguageFormTranslation(java.lang.String, java.util.Map<com.lokalized.LanguageForm, java.lang.String>);",
+          "public com.lokalized.LocalizedString$LanguageFormTranslation(com.lokalized.LocalizedString$LanguageFormTranslationRange, java.util.Map<com.lokalized.LanguageForm, java.lang.String>);",
+          "public java.lang.String toString();",
+          "public boolean equals(java.lang.Object);",
+          "public int hashCode();",
+          "public java.util.Optional<java.lang.String> getValue();",
+          "public java.util.Optional<com.lokalized.LocalizedString$LanguageFormTranslationRange> getRange();",
+          "public java.util.Map<com.lokalized.LanguageForm, java.lang.String> getTranslationsByLanguageForm();"
+        ]
+      },
+      {
+        "name": "com.lokalized.LocalizedString$LanguageFormTranslationRange",
+        "declaration": "public final class com.lokalized.LocalizedString$LanguageFormTranslationRange",
+        "members": [
+          "public com.lokalized.LocalizedString$LanguageFormTranslationRange(java.lang.String, java.lang.String);",
+          "public java.lang.String toString();",
+          "public boolean equals(java.lang.Object);",
+          "public int hashCode();",
+          "public java.lang.String getStart();",
+          "public java.lang.String getEnd();"
+        ]
+      },
+      {
+        "name": "com.lokalized.LocalizedString$PlaceholderDefinition",
+        "declaration": "public abstract class com.lokalized.LocalizedString$PlaceholderDefinition",
+        "members": []
+      },
+      {
+        "name": "com.lokalized.LocalizedStringLoader",
+        "declaration": "public final class com.lokalized.LocalizedStringLoader",
+        "members": [
+          "public static java.util.Map<java.util.Locale, java.util.Set<com.lokalized.LocalizedString>> loadFromClasspath(java.lang.String);",
+          "public static java.util.Map<java.util.Locale, java.util.Set<com.lokalized.LocalizedString>> loadFromClasspath(java.lang.String, com.lokalized.LocalizedStringLoadingOptions);",
+          "public static java.util.Map<java.util.Locale, java.util.Set<com.lokalized.LocalizedString>> loadFromClasspath(java.lang.String, com.lokalized.LocalizedStringWarningHandler);",
+          "public static java.util.Map<java.util.Locale, java.util.Set<com.lokalized.LocalizedString>> loadFromClasspath(java.lang.String, com.lokalized.LocalizedStringWarningHandler, com.lokalized.LocalizedStringLoadingOptions);",
+          "public static java.util.Map<java.util.Locale, java.util.Set<com.lokalized.LocalizedString>> loadFromClasspath(java.lang.ClassLoader, java.lang.String);",
+          "public static java.util.Map<java.util.Locale, java.util.Set<com.lokalized.LocalizedString>> loadFromClasspath(java.lang.ClassLoader, java.lang.String, com.lokalized.LocalizedStringLoadingOptions);",
+          "public static java.util.Map<java.util.Locale, java.util.Set<com.lokalized.LocalizedString>> loadFromClasspath(java.lang.ClassLoader, java.lang.String, com.lokalized.LocalizedStringWarningHandler);",
+          "public static java.util.Map<java.util.Locale, java.util.Set<com.lokalized.LocalizedString>> loadFromClasspath(java.lang.ClassLoader, java.lang.String, com.lokalized.LocalizedStringWarningHandler, com.lokalized.LocalizedStringLoadingOptions);",
+          "public static java.util.Map<java.util.Locale, java.util.Set<com.lokalized.LocalizedString>> loadFromClasspathResources(java.util.Map<java.util.Locale, java.lang.String>);",
+          "public static java.util.Map<java.util.Locale, java.util.Set<com.lokalized.LocalizedString>> loadFromClasspathResources(java.util.Map<java.util.Locale, java.lang.String>, com.lokalized.LocalizedStringLoadingOptions);",
+          "public static java.util.Map<java.util.Locale, java.util.Set<com.lokalized.LocalizedString>> loadFromClasspathResources(java.util.Map<java.util.Locale, java.lang.String>, com.lokalized.LocalizedStringWarningHandler);",
+          "public static java.util.Map<java.util.Locale, java.util.Set<com.lokalized.LocalizedString>> loadFromClasspathResources(java.util.Map<java.util.Locale, java.lang.String>, com.lokalized.LocalizedStringWarningHandler, com.lokalized.LocalizedStringLoadingOptions);",
+          "public static java.util.Map<java.util.Locale, java.util.Set<com.lokalized.LocalizedString>> loadFromClasspathResources(java.lang.ClassLoader, java.util.Map<java.util.Locale, java.lang.String>);",
+          "public static java.util.Map<java.util.Locale, java.util.Set<com.lokalized.LocalizedString>> loadFromClasspathResources(java.lang.ClassLoader, java.util.Map<java.util.Locale, java.lang.String>, com.lokalized.LocalizedStringLoadingOptions);",
+          "public static java.util.Map<java.util.Locale, java.util.Set<com.lokalized.LocalizedString>> loadFromClasspathResources(java.lang.ClassLoader, java.util.Map<java.util.Locale, java.lang.String>, com.lokalized.LocalizedStringWarningHandler);",
+          "public static java.util.Map<java.util.Locale, java.util.Set<com.lokalized.LocalizedString>> loadFromClasspathResources(java.lang.ClassLoader, java.util.Map<java.util.Locale, java.lang.String>, com.lokalized.LocalizedStringWarningHandler, com.lokalized.LocalizedStringLoadingOptions);",
+          "public static java.util.Map<java.util.Locale, java.util.Set<com.lokalized.LocalizedString>> loadFromFilesystem(java.nio.file.Path);",
+          "public static java.util.Map<java.util.Locale, java.util.Set<com.lokalized.LocalizedString>> loadFromFilesystem(java.nio.file.Path, com.lokalized.LocalizedStringLoadingOptions);",
+          "public static java.util.Map<java.util.Locale, java.util.Set<com.lokalized.LocalizedString>> loadFromFilesystem(java.nio.file.Path, com.lokalized.LocalizedStringWarningHandler);",
+          "public static java.util.Map<java.util.Locale, java.util.Set<com.lokalized.LocalizedString>> loadFromFilesystem(java.nio.file.Path, com.lokalized.LocalizedStringWarningHandler, com.lokalized.LocalizedStringLoadingOptions);",
+          "public static java.util.Set<com.lokalized.LocalizedString> parse(java.nio.file.Path, java.util.Locale);",
+          "public static java.util.Set<com.lokalized.LocalizedString> parse(java.nio.file.Path, java.util.Locale, com.lokalized.LocalizedStringWarningHandler, com.lokalized.LocalizedStringLoadingOptions);",
+          "public static java.util.Set<com.lokalized.LocalizedString> parse(java.io.InputStream, java.util.Locale, java.lang.String);",
+          "public static java.util.Set<com.lokalized.LocalizedString> parse(java.io.InputStream, java.util.Locale, java.lang.String, com.lokalized.LocalizedStringWarningHandler, com.lokalized.LocalizedStringLoadingOptions);",
+          "public static java.util.Set<com.lokalized.LocalizedString> parse(java.io.Reader, java.util.Locale, java.lang.String);",
+          "public static java.util.Set<com.lokalized.LocalizedString> parse(java.io.Reader, java.util.Locale, java.lang.String, com.lokalized.LocalizedStringWarningHandler, com.lokalized.LocalizedStringLoadingOptions);"
+        ]
+      },
+      {
+        "name": "com.lokalized.LocalizedStringLoadingException",
+        "declaration": "public class com.lokalized.LocalizedStringLoadingException extends java.lang.RuntimeException",
+        "members": [
+          "public com.lokalized.LocalizedStringLoadingException(java.lang.String);",
+          "public com.lokalized.LocalizedStringLoadingException(java.lang.String, java.lang.Throwable);"
+        ]
+      },
+      {
+        "name": "com.lokalized.LocalizedStringLoadingOptions",
+        "declaration": "public final class com.lokalized.LocalizedStringLoadingOptions",
+        "members": [
+          "public static final java.lang.Integer DEFAULT_MAXIMUM_INPUT_BYTES;",
+          "public static final java.lang.Integer DEFAULT_MAXIMUM_READER_CHARACTERS;",
+          "public static final java.lang.Integer DEFAULT_MAXIMUM_JSON_NESTING_DEPTH;",
+          "public static final java.lang.Boolean DEFAULT_EXHAUSTIVE_CLASSPATH_SEARCH;",
+          "public static final java.lang.Integer MAXIMUM_JSON_NESTING_DEPTH;",
+          "public static final java.lang.Long DEFAULT_MAXIMUM_TOTAL_INPUT_BYTES;",
+          "public static final java.lang.Integer DEFAULT_MAXIMUM_LOCALIZED_STRINGS_FILES;",
+          "public static final java.lang.Integer DEFAULT_MAXIMUM_TRANSLATION_NODES;",
+          "public static final java.lang.Integer DEFAULT_MAXIMUM_WARNINGS;",
+          "public static final java.lang.Integer DEFAULT_MAXIMUM_DISCOVERY_ENTRIES;",
+          "public static final java.lang.Integer MAXIMUM_DISCOVERY_ENTRIES;",
+          "public static com.lokalized.LocalizedStringLoadingOptions defaults();",
+          "public static com.lokalized.LocalizedStringLoadingOptions$Builder builder();",
+          "public com.lokalized.LocalizedStringLoadingOptions$Builder toBuilder();",
+          "public java.lang.Integer getMaximumInputBytes();",
+          "public java.lang.Integer getMaximumReaderCharacters();",
+          "public java.lang.Integer getMaximumJsonNestingDepth();",
+          "public java.lang.Boolean isExhaustiveClasspathSearchEnabled();",
+          "public java.lang.Long getMaximumTotalInputBytes();",
+          "public java.lang.Integer getMaximumLocalizedStringsFiles();",
+          "public java.lang.Integer getMaximumTranslationNodes();",
+          "public java.lang.Integer getMaximumWarnings();",
+          "public java.lang.Integer getMaximumDiscoveryEntries();",
+          "public boolean equals(java.lang.Object);",
+          "public int hashCode();",
+          "public java.lang.String toString();"
+        ]
+      },
+      {
+        "name": "com.lokalized.LocalizedStringLoadingOptions$Builder",
+        "declaration": "public final class com.lokalized.LocalizedStringLoadingOptions$Builder",
+        "members": [
+          "public com.lokalized.LocalizedStringLoadingOptions$Builder maximumInputBytes(java.lang.Integer);",
+          "public com.lokalized.LocalizedStringLoadingOptions$Builder maximumReaderCharacters(java.lang.Integer);",
+          "public com.lokalized.LocalizedStringLoadingOptions$Builder maximumJsonNestingDepth(java.lang.Integer);",
+          "public com.lokalized.LocalizedStringLoadingOptions$Builder exhaustiveClasspathSearch(java.lang.Boolean);",
+          "public com.lokalized.LocalizedStringLoadingOptions$Builder maximumTotalInputBytes(java.lang.Long);",
+          "public com.lokalized.LocalizedStringLoadingOptions$Builder maximumLocalizedStringsFiles(java.lang.Integer);",
+          "public com.lokalized.LocalizedStringLoadingOptions$Builder maximumTranslationNodes(java.lang.Integer);",
+          "public com.lokalized.LocalizedStringLoadingOptions$Builder maximumWarnings(java.lang.Integer);",
+          "public com.lokalized.LocalizedStringLoadingOptions$Builder maximumDiscoveryEntries(java.lang.Integer);",
+          "public com.lokalized.LocalizedStringLoadingOptions build();"
+        ]
+      },
+      {
+        "name": "com.lokalized.LocalizedStringWarning",
+        "declaration": "public final class com.lokalized.LocalizedStringWarning",
+        "members": [
+          "public com.lokalized.LocalizedStringWarning$Type getType();",
+          "public java.lang.String getSource();",
+          "public java.util.Optional<java.util.Locale> getLocale();",
+          "public java.util.Optional<java.lang.String> getKey();",
+          "public java.util.Optional<java.lang.String> getPlaceholder();",
+          "public java.util.Set<java.lang.String> getMissingLanguageForms();",
+          "public java.lang.String getMessage();",
+          "public java.lang.String toString();",
+          "public boolean equals(java.lang.Object);",
+          "public int hashCode();"
+        ]
+      },
+      {
+        "name": "com.lokalized.LocalizedStringWarning$Type",
+        "declaration": "public final class com.lokalized.LocalizedStringWarning$Type extends java.lang.Enum<com.lokalized.LocalizedStringWarning$Type>",
+        "members": [
+          "public static final com.lokalized.LocalizedStringWarning$Type INCOMPLETE_CARDINALITY_TRANSLATIONS;",
+          "public static final com.lokalized.LocalizedStringWarning$Type INCOMPLETE_ORDINALITY_TRANSLATIONS;",
+          "public static final com.lokalized.LocalizedStringWarning$Type INVALID_CLASSPATH_LOCALE_FILENAME;",
+          "public static com.lokalized.LocalizedStringWarning$Type[] values();",
+          "public static com.lokalized.LocalizedStringWarning$Type valueOf(java.lang.String);"
+        ]
+      },
+      {
+        "name": "com.lokalized.LocalizedStringWarningHandler",
+        "declaration": "public interface com.lokalized.LocalizedStringWarningHandler",
+        "members": [
+          "public abstract void handle(com.lokalized.LocalizedStringWarning);",
+          "public static com.lokalized.LocalizedStringWarningHandler ignore();",
+          "public static com.lokalized.LocalizedStringWarningHandler throwException();"
+        ]
+      },
+      {
+        "name": "com.lokalized.MissingTranslationException",
+        "declaration": "public class com.lokalized.MissingTranslationException extends java.lang.RuntimeException",
+        "members": [
+          "public com.lokalized.MissingTranslationException(java.lang.String, java.lang.String, java.util.Map<java.lang.String, java.lang.Object>, java.util.Locale);",
+          "public com.lokalized.MissingTranslationException(java.lang.String, java.lang.String, java.util.Map<java.lang.String, java.lang.Object>, java.util.Locale, com.lokalized.TranslationFailureReason, java.util.List<java.util.Locale>);",
+          "public com.lokalized.MissingTranslationException(java.lang.String, java.lang.String, java.util.Map<java.lang.String, java.lang.Object>, java.util.Locale, com.lokalized.LocaleMatchResult, com.lokalized.TranslationFailureReason, java.util.List<java.util.Locale>);",
+          "public java.lang.String getKey();",
+          "public java.util.Map<java.lang.String, java.lang.Object> getPlaceholders();",
+          "public java.util.Locale getLookupLocale();",
+          "public java.util.Optional<com.lokalized.LocaleMatchResult> getLocaleMatchResult();",
+          "public com.lokalized.TranslationFailureReason getReason();",
+          "public java.util.List<java.util.Locale> getAttemptedLocales();"
+        ]
+      },
+      {
+        "name": "com.lokalized.Ordinality",
+        "declaration": "public final class com.lokalized.Ordinality extends java.lang.Enum<com.lokalized.Ordinality> implements com.lokalized.LanguageForm",
+        "members": [
+          "public static final com.lokalized.Ordinality ZERO;",
+          "public static final com.lokalized.Ordinality ONE;",
+          "public static final com.lokalized.Ordinality TWO;",
+          "public static final com.lokalized.Ordinality FEW;",
+          "public static final com.lokalized.Ordinality MANY;",
+          "public static final com.lokalized.Ordinality OTHER;",
+          "public static com.lokalized.Ordinality[] values();",
+          "public static com.lokalized.Ordinality valueOf(java.lang.String);",
+          "public static com.lokalized.Ordinality forNumber(java.lang.Number, java.util.Locale);",
+          "public static com.lokalized.Ordinality forOperands(com.lokalized.PluralOperands, java.util.Locale);",
+          "public static java.util.SortedSet<com.lokalized.Ordinality> supportedOrdinalitiesForLocale(java.util.Locale);",
+          "public static java.util.SortedMap<com.lokalized.Ordinality, com.lokalized.Range<java.lang.Integer>> exampleIntegerValuesForLocale(java.util.Locale);",
+          "public static java.util.SortedSet<java.lang.String> getSupportedLocaleTags();"
+        ]
+      },
+      {
+        "name": "com.lokalized.Phonetic",
+        "declaration": "public final class com.lokalized.Phonetic extends java.lang.Enum<com.lokalized.Phonetic> implements com.lokalized.LanguageForm",
+        "members": [
+          "public static final com.lokalized.Phonetic VOWEL;",
+          "public static final com.lokalized.Phonetic CONSONANT;",
+          "public static final com.lokalized.Phonetic H_SILENT;",
+          "public static final com.lokalized.Phonetic H_ASPIRATED;",
+          "public static final com.lokalized.Phonetic S_IMPURE;",
+          "public static final com.lokalized.Phonetic Z;",
+          "public static final com.lokalized.Phonetic GN;",
+          "public static final com.lokalized.Phonetic PS;",
+          "public static final com.lokalized.Phonetic PN;",
+          "public static final com.lokalized.Phonetic X;",
+          "public static final com.lokalized.Phonetic GLIDE_Y;",
+          "public static final com.lokalized.Phonetic GLIDE_W;",
+          "public static final com.lokalized.Phonetic STRESSED_A;",
+          "public static final com.lokalized.Phonetic SOLAR;",
+          "public static final com.lokalized.Phonetic LUNAR;",
+          "public static final com.lokalized.Phonetic OTHER;",
+          "public static com.lokalized.Phonetic[] values();",
+          "public static com.lokalized.Phonetic valueOf(java.lang.String);"
+        ]
+      },
+      {
+        "name": "com.lokalized.PhoneticResolver",
+        "declaration": "public interface com.lokalized.PhoneticResolver",
+        "members": [
+          "public abstract com.lokalized.Phonetic resolve(java.lang.String, java.util.Locale);"
+        ]
+      },
+      {
+        "name": "com.lokalized.PluralOperands",
+        "declaration": "public final class com.lokalized.PluralOperands",
+        "members": [
+          "public static final java.lang.Integer MAXIMUM_NUMBER_PRECISION;",
+          "public static final java.lang.Integer MAXIMUM_ABSOLUTE_NUMBER_SCALE;",
+          "public static final java.lang.Integer MAXIMUM_VISIBLE_DECIMAL_PLACES;",
+          "public static final java.lang.Integer MAXIMUM_COMPACT_EXPONENT;",
+          "public static com.lokalized.PluralOperands$Builder forNumber(java.lang.Number);",
+          "public java.math.BigDecimal getNumber();",
+          "public java.lang.Integer getCompactExponent();",
+          "public java.lang.String toString();",
+          "public boolean equals(java.lang.Object);",
+          "public int hashCode();"
+        ]
+      },
+      {
+        "name": "com.lokalized.PluralOperands$Builder",
+        "declaration": "public final class com.lokalized.PluralOperands$Builder",
+        "members": [
+          "public com.lokalized.PluralOperands$Builder visibleDecimalPlaces(java.lang.Integer);",
+          "public com.lokalized.PluralOperands$Builder compactExponent(java.lang.Integer);",
+          "public com.lokalized.PluralOperands$Builder runtimeLimits(com.lokalized.TranslationRuntimeLimits);",
+          "public com.lokalized.PluralOperands build();"
+        ]
+      },
+      {
+        "name": "com.lokalized.Range",
+        "declaration": "public final class com.lokalized.Range<T> implements java.lang.Iterable<T>",
+        "members": [
+          "public static <T> com.lokalized.Range<T> ofInfiniteValues(java.util.Collection<T>);",
+          "public static <T> com.lokalized.Range<T> ofInfiniteValues(T...);",
+          "public static <T> com.lokalized.Range<T> ofFiniteValues(java.util.Collection<T>);",
+          "public static <T> com.lokalized.Range<T> ofFiniteValues(T...);",
+          "public static <T> com.lokalized.Range<T> emptyFiniteRange();",
+          "public static <T> com.lokalized.Range<T> emptyInfiniteRange();",
+          "public java.util.Iterator<T> iterator();",
+          "public java.lang.String toString();",
+          "public boolean equals(java.lang.Object);",
+          "public int hashCode();",
+          "public java.util.List<T> getValues();",
+          "public java.lang.Boolean isInfinite();"
+        ]
+      },
+      {
+        "name": "com.lokalized.Strings",
+        "declaration": "public interface com.lokalized.Strings extends com.lokalized.LocaleMatcher",
+        "members": [
+          "public abstract java.lang.String get(java.lang.String);",
+          "public abstract java.lang.String get(java.lang.String, com.lokalized.TranslationOptions);",
+          "public abstract java.lang.String get(java.lang.String, java.util.Map<java.lang.String, java.lang.Object>);",
+          "public abstract java.lang.String get(java.lang.String, java.util.Map<java.lang.String, java.lang.Object>, com.lokalized.TranslationOptions);",
+          "public default com.lokalized.TranslationResult getResult(java.lang.String);",
+          "public default com.lokalized.TranslationResult getResult(java.lang.String, com.lokalized.TranslationOptions);",
+          "public default com.lokalized.TranslationResult getResult(java.lang.String, java.util.Map<java.lang.String, java.lang.Object>);",
+          "public abstract com.lokalized.TranslationResult getResult(java.lang.String, java.util.Map<java.lang.String, java.lang.Object>, com.lokalized.TranslationOptions);",
+          "public abstract java.util.Set<java.util.Locale> getSupportedLocales();",
+          "public abstract java.util.Set<java.lang.String> getKeysForLocale(java.util.Locale);",
+          "public abstract java.util.Set<java.lang.String> getMissingKeys(java.util.Locale, java.util.Locale);",
+          "public static com.lokalized.Strings$Builder withFallbackLocale(java.util.Locale);"
+        ]
+      },
+      {
+        "name": "com.lokalized.Strings$Builder",
+        "declaration": "public class com.lokalized.Strings$Builder",
+        "members": [
+          "public com.lokalized.Strings$Builder localizedStringSupplier(java.util.function.Supplier<java.util.Map<java.util.Locale, ? extends java.lang.Iterable<com.lokalized.LocalizedString>>>);",
+          "public com.lokalized.Strings$Builder localeSupplier(java.util.function.Function<com.lokalized.LocaleMatcher, java.util.Locale>);",
+          "public com.lokalized.Strings$Builder localeMatchSupplier(java.util.function.Function<com.lokalized.LocaleMatcher, com.lokalized.LocaleMatchResult>);",
+          "public com.lokalized.Strings$Builder tiebreakerLocalesByLanguageCode(java.util.Map<java.lang.String, java.util.List<java.util.Locale>>);",
+          "public com.lokalized.Strings$Builder phoneticResolver(com.lokalized.PhoneticResolver);",
+          "public com.lokalized.Strings$Builder translationFailureHandler(com.lokalized.TranslationFailureHandler);",
+          "public com.lokalized.Strings$Builder translationFallbackPolicy(com.lokalized.TranslationFallbackPolicy);",
+          "public com.lokalized.Strings$Builder translationFallbackObserver(com.lokalized.TranslationFallbackObserver);",
+          "public com.lokalized.Strings$Builder runtimeLimits(com.lokalized.TranslationRuntimeLimits);",
+          "public com.lokalized.Strings$Builder bidiIsolation(com.lokalized.BidiIsolation);",
+          "public com.lokalized.Strings$Builder languageRangeEquivalents(com.lokalized.LanguageRangeEquivalents);",
+          "public com.lokalized.Strings build();"
+        ]
+      },
+      {
+        "name": "com.lokalized.TranslationFailure",
+        "declaration": "public interface com.lokalized.TranslationFailure",
+        "members": [
+          "public default java.lang.String getMessage();",
+          "public abstract java.lang.String getKey();",
+          "public abstract java.util.Locale getLookupLocale();",
+          "public default java.util.Optional<com.lokalized.LocaleMatchResult> getLocaleMatchResult();",
+          "public abstract java.util.List<java.util.Locale> getAttemptedLocales();",
+          "public abstract java.util.Map<java.lang.String, java.lang.Object> getPlaceholders();",
+          "public abstract com.lokalized.TranslationFailureReason getReason();",
+          "public abstract java.util.Optional<java.lang.Throwable> getCause();"
+        ]
+      },
+      {
+        "name": "com.lokalized.TranslationFailureHandler",
+        "declaration": "public interface com.lokalized.TranslationFailureHandler",
+        "members": [
+          "public abstract com.lokalized.TranslationFailureResponse handle(com.lokalized.TranslationFailure);",
+          "public static com.lokalized.TranslationFailureHandler returnKey();",
+          "public static com.lokalized.TranslationFailureHandler returnKey(java.util.function.Consumer<? super com.lokalized.TranslationFailure>);",
+          "public static com.lokalized.TranslationFailureHandler throwException();"
+        ]
+      },
+      {
+        "name": "com.lokalized.TranslationFailureReason",
+        "declaration": "public final class com.lokalized.TranslationFailureReason extends java.lang.Enum<com.lokalized.TranslationFailureReason>",
+        "members": [
+          "public static final com.lokalized.TranslationFailureReason MISSING_TRANSLATION;",
+          "public static final com.lokalized.TranslationFailureReason NO_MATCHING_ALTERNATIVE;",
+          "public static final com.lokalized.TranslationFailureReason RESOLUTION_FAILURE;",
+          "public static com.lokalized.TranslationFailureReason[] values();",
+          "public static com.lokalized.TranslationFailureReason valueOf(java.lang.String);"
+        ]
+      },
+      {
+        "name": "com.lokalized.TranslationFailureResponse",
+        "declaration": "public final class com.lokalized.TranslationFailureResponse",
+        "members": [
+          "public static com.lokalized.TranslationFailureResponse returnKey();",
+          "public static com.lokalized.TranslationFailureResponse returnString(java.lang.String);",
+          "public static com.lokalized.TranslationFailureResponse throwException();"
+        ]
+      },
+      {
+        "name": "com.lokalized.TranslationFallbackEvent",
+        "declaration": "public final class com.lokalized.TranslationFallbackEvent",
+        "members": [
+          "public com.lokalized.TranslationFallbackEvent(com.lokalized.TranslationResult, java.util.List<com.lokalized.TranslationFallbackEvent$PrecedingFailure>);",
+          "public java.lang.String getKey();",
+          "public java.util.Locale getLookupLocale();",
+          "public java.util.Optional<com.lokalized.LocaleMatchResult> getLocaleMatchResult();",
+          "public java.util.List<java.util.Locale> getAttemptedLocales();",
+          "public java.util.Locale getResolvedLocale();",
+          "public java.util.List<com.lokalized.TranslationFallbackEvent$PrecedingFailure> getPrecedingFailures();",
+          "public java.lang.String toString();"
+        ]
+      },
+      {
+        "name": "com.lokalized.TranslationFallbackEvent$PrecedingFailure",
+        "declaration": "public final class com.lokalized.TranslationFallbackEvent$PrecedingFailure",
+        "members": [
+          "public com.lokalized.TranslationFallbackEvent$PrecedingFailure(java.util.Locale, com.lokalized.TranslationFailureReason, java.lang.Throwable);",
+          "public java.util.Locale getLocale();",
+          "public com.lokalized.TranslationFailureReason getReason();",
+          "public java.util.Optional<java.lang.Throwable> getCause();",
+          "public java.lang.String toString();"
+        ]
+      },
+      {
+        "name": "com.lokalized.TranslationFallbackObserver",
+        "declaration": "public interface com.lokalized.TranslationFallbackObserver",
+        "members": [
+          "public abstract void observe(com.lokalized.TranslationFallbackEvent);"
+        ]
+      },
+      {
+        "name": "com.lokalized.TranslationFallbackPolicy",
+        "declaration": "public interface com.lokalized.TranslationFallbackPolicy",
+        "members": [
+          "public abstract java.lang.Boolean shouldTryNextLocale(com.lokalized.TranslationFailureReason, java.util.Locale, java.lang.Throwable);",
+          "public static com.lokalized.TranslationFallbackPolicy fallbackOnMissingTranslationOrNoMatchingAlternative();",
+          "public static com.lokalized.TranslationFallbackPolicy fallbackOnAnyFailure();",
+          "public static com.lokalized.TranslationFallbackPolicy neverFallback();"
+        ]
+      },
+      {
+        "name": "com.lokalized.TranslationOptions",
+        "declaration": "public final class com.lokalized.TranslationOptions",
+        "members": [
+          "public static com.lokalized.TranslationOptions none();",
+          "public static com.lokalized.TranslationOptions forLocale(java.util.Locale);",
+          "public static com.lokalized.TranslationOptions forLanguageRanges(java.util.List<java.util.Locale$LanguageRange>);",
+          "public static com.lokalized.TranslationOptions$Builder builder();",
+          "public java.util.Optional<java.util.Locale> getLocale();",
+          "public java.util.Optional<java.util.List<java.util.Locale$LanguageRange>> getLanguageRanges();",
+          "public java.util.Optional<com.lokalized.BidiIsolation> getBidiIsolation();",
+          "public java.util.Optional<com.lokalized.TranslationFailureHandler> getTranslationFailureHandler();",
+          "public java.util.Optional<com.lokalized.TranslationFallbackPolicy> getTranslationFallbackPolicy();",
+          "public java.util.Optional<com.lokalized.TranslationFallbackObserver> getTranslationFallbackObserver();",
+          "public com.lokalized.TranslationOptions$Builder toBuilder();",
+          "public java.lang.String toString();",
+          "public boolean equals(java.lang.Object);",
+          "public int hashCode();"
+        ]
+      },
+      {
+        "name": "com.lokalized.TranslationOptions$Builder",
+        "declaration": "public final class com.lokalized.TranslationOptions$Builder",
+        "members": [
+          "public com.lokalized.TranslationOptions$Builder locale(java.util.Locale);",
+          "public com.lokalized.TranslationOptions$Builder languageRanges(java.util.List<java.util.Locale$LanguageRange>);",
+          "public com.lokalized.TranslationOptions$Builder bidiIsolation(com.lokalized.BidiIsolation);",
+          "public com.lokalized.TranslationOptions$Builder translationFailureHandler(com.lokalized.TranslationFailureHandler);",
+          "public com.lokalized.TranslationOptions$Builder translationFallbackPolicy(com.lokalized.TranslationFallbackPolicy);",
+          "public com.lokalized.TranslationOptions$Builder translationFallbackObserver(com.lokalized.TranslationFallbackObserver);",
+          "public com.lokalized.TranslationOptions build();"
+        ]
+      },
+      {
+        "name": "com.lokalized.TranslationResult",
+        "declaration": "public final class com.lokalized.TranslationResult",
+        "members": [
+          "public com.lokalized.TranslationResult(java.lang.String, java.lang.String, java.util.Locale, java.util.Locale, java.util.List<java.util.Locale>, com.lokalized.TranslationResultStatus, com.lokalized.TranslationFailureReason, java.lang.Throwable);",
+          "public com.lokalized.TranslationResult(java.lang.String, java.lang.String, java.util.Locale, com.lokalized.LocaleMatchResult, java.util.Locale, java.util.List<java.util.Locale>, com.lokalized.TranslationResultStatus, com.lokalized.TranslationFailureReason, java.lang.Throwable);",
+          "public java.lang.String getKey();",
+          "public java.lang.String getTranslation();",
+          "public java.util.Locale getLookupLocale();",
+          "public java.util.Optional<com.lokalized.LocaleMatchResult> getLocaleMatchResult();",
+          "public java.util.Optional<java.util.Locale> getResolvedLocale();",
+          "public java.util.List<java.util.Locale> getAttemptedLocales();",
+          "public com.lokalized.TranslationResultStatus getStatus();",
+          "public java.util.Optional<com.lokalized.TranslationFailureReason> getFailureReason();",
+          "public java.util.Optional<java.lang.Throwable> getCause();",
+          "public java.lang.Boolean isFallback();",
+          "public java.lang.String toString();"
+        ]
+      },
+      {
+        "name": "com.lokalized.TranslationResultStatus",
+        "declaration": "public final class com.lokalized.TranslationResultStatus extends java.lang.Enum<com.lokalized.TranslationResultStatus>",
+        "members": [
+          "public static final com.lokalized.TranslationResultStatus TRANSLATED;",
+          "public static final com.lokalized.TranslationResultStatus RETURNED_KEY;",
+          "public static final com.lokalized.TranslationResultStatus RETURNED_STRING;",
+          "public static com.lokalized.TranslationResultStatus[] values();",
+          "public static com.lokalized.TranslationResultStatus valueOf(java.lang.String);"
+        ]
+      },
+      {
+        "name": "com.lokalized.TranslationRuntimeLimits",
+        "declaration": "public final class com.lokalized.TranslationRuntimeLimits",
+        "members": [
+          "public static final java.lang.Integer DEFAULT_MAXIMUM_NUMBER_PRECISION;",
+          "public static final java.lang.Integer DEFAULT_MAXIMUM_ABSOLUTE_NUMBER_SCALE;",
+          "public static final java.lang.Integer DEFAULT_MAXIMUM_VISIBLE_DECIMAL_PLACES;",
+          "public static final java.lang.Integer DEFAULT_MAXIMUM_COMPACT_EXPONENT;",
+          "public static final java.lang.Integer DEFAULT_MAXIMUM_EXPRESSION_CHARACTERS;",
+          "public static final java.lang.Integer DEFAULT_MAXIMUM_EXPRESSION_TOKENS;",
+          "public static final java.lang.Integer DEFAULT_MAXIMUM_EXPRESSION_NESTING_DEPTH;",
+          "public static final java.lang.Integer DEFAULT_MAXIMUM_GENERATED_PLACEHOLDER_DEPTH;",
+          "public static final java.lang.Integer DEFAULT_MAXIMUM_INTERPOLATED_OUTPUT_CHARACTERS;",
+          "public static final java.lang.Integer DEFAULT_MAXIMUM_GENERATED_EXPANSION_CHARACTERS;",
+          "public static final java.lang.Integer MAXIMUM_NUMBER_PRECISION;",
+          "public static final java.lang.Integer MAXIMUM_ABSOLUTE_NUMBER_SCALE;",
+          "public static final java.lang.Integer MAXIMUM_VISIBLE_DECIMAL_PLACES;",
+          "public static final java.lang.Integer MAXIMUM_COMPACT_EXPONENT;",
+          "public static final java.lang.Integer MAXIMUM_EXPRESSION_CHARACTERS;",
+          "public static final java.lang.Integer MAXIMUM_EXPRESSION_TOKENS;",
+          "public static final java.lang.Integer MAXIMUM_EXPRESSION_NESTING_DEPTH;",
+          "public static final java.lang.Integer MAXIMUM_GENERATED_PLACEHOLDER_DEPTH;",
+          "public static final java.lang.Integer MAXIMUM_INTERPOLATED_OUTPUT_CHARACTERS;",
+          "public static final java.lang.Integer MAXIMUM_GENERATED_EXPANSION_CHARACTERS;",
+          "public static com.lokalized.TranslationRuntimeLimits defaults();",
+          "public static com.lokalized.TranslationRuntimeLimits$Builder builder();",
+          "public com.lokalized.TranslationRuntimeLimits$Builder toBuilder();",
+          "public java.lang.Integer getMaximumNumberPrecision();",
+          "public java.lang.Integer getMaximumAbsoluteNumberScale();",
+          "public java.lang.Integer getMaximumVisibleDecimalPlaces();",
+          "public java.lang.Integer getMaximumCompactExponent();",
+          "public java.lang.Integer getMaximumExpressionCharacters();",
+          "public java.lang.Integer getMaximumExpressionTokens();",
+          "public java.lang.Integer getMaximumExpressionNestingDepth();",
+          "public java.lang.Integer getMaximumGeneratedPlaceholderDepth();",
+          "public java.lang.Integer getMaximumInterpolatedOutputCharacters();",
+          "public java.lang.Integer getMaximumGeneratedExpansionCharacters();",
+          "public boolean equals(java.lang.Object);",
+          "public int hashCode();",
+          "public java.lang.String toString();"
+        ]
+      },
+      {
+        "name": "com.lokalized.TranslationRuntimeLimits$Builder",
+        "declaration": "public final class com.lokalized.TranslationRuntimeLimits$Builder",
+        "members": [
+          "public com.lokalized.TranslationRuntimeLimits$Builder maximumNumberPrecision(java.lang.Integer);",
+          "public com.lokalized.TranslationRuntimeLimits$Builder maximumAbsoluteNumberScale(java.lang.Integer);",
+          "public com.lokalized.TranslationRuntimeLimits$Builder maximumVisibleDecimalPlaces(java.lang.Integer);",
+          "public com.lokalized.TranslationRuntimeLimits$Builder maximumCompactExponent(java.lang.Integer);",
+          "public com.lokalized.TranslationRuntimeLimits$Builder maximumExpressionCharacters(java.lang.Integer);",
+          "public com.lokalized.TranslationRuntimeLimits$Builder maximumExpressionTokens(java.lang.Integer);",
+          "public com.lokalized.TranslationRuntimeLimits$Builder maximumExpressionNestingDepth(java.lang.Integer);",
+          "public com.lokalized.TranslationRuntimeLimits$Builder maximumGeneratedPlaceholderDepth(java.lang.Integer);",
+          "public com.lokalized.TranslationRuntimeLimits$Builder maximumInterpolatedOutputCharacters(java.lang.Integer);",
+          "public com.lokalized.TranslationRuntimeLimits$Builder maximumGeneratedExpansionCharacters(java.lang.Integer);",
+          "public com.lokalized.TranslationRuntimeLimits build();"
+        ]
+      },
+      {
+        "name": "com.lokalized.UnsupportedLocaleException",
+        "declaration": "public class com.lokalized.UnsupportedLocaleException extends java.lang.RuntimeException",
+        "members": [
+          "public com.lokalized.UnsupportedLocaleException(java.util.Locale);",
+          "public java.util.Locale getLocale();"
+        ]
+      }
+    ]
+  },
+  "javascript": {
+    "commit": "617670da887b0c684e2589882447b6b93297f2f7",
+    "files": [
+      {
+        "path": "package.json",
+        "sha256": "5cfcb9d2b0d66f1116444ea6ee2daaf868e75bc40369c517a5d844d9efa8db14"
+      },
+      {
+        "path": "src/core/index.js",
+        "sha256": "2f7304cd3efe4f9867524627cfe3ab3ad2f9f231710d59492b356b91afe3fe3f"
+      },
+      {
+        "path": "src/data/aliases-language.js",
+        "sha256": "4f846ce66dae0145aa416917ce261bd3cac5fb1220926125020c50c6af759431"
+      },
+      {
+        "path": "src/data/aliases-region.js",
+        "sha256": "b9e09e24cc94ca6e7491db91b4c99ce68f3bda302355cff064e931ad8e7afc23"
+      },
+      {
+        "path": "src/data/aliases-script.js",
+        "sha256": "63e9176837b91c5b11ba7f99a63acf3415b7652303263af740341f10d1dfbbd3"
+      },
+      {
+        "path": "src/data/aliases-variant.js",
+        "sha256": "48b21d6d07048e18fd5161a6710daa5e0a6f428ce18c6d8b47e7a4b6a9709f4d"
+      },
+      {
+        "path": "src/data/cardinal-ranges.js",
+        "sha256": "239d09fb8e3ff04d4888dd9cae4079fe426d45077d71df33d951f47dc8318f4a"
+      },
+      {
+        "path": "src/data/cardinal.js",
+        "sha256": "5809b50f8e460f37fc3d6f3348b808dd0982c67ae1ac98f6f8509b42d2e8f55f"
+      },
+      {
+        "path": "src/data/iana-identity-equivalents.js",
+        "sha256": "37c9593879b7524d09d964a01437b6627060a91e9d6e14a80e47945607b347f4"
+      },
+      {
+        "path": "src/data/iana-range-equivalents.js",
+        "sha256": "05c84939c6dd237eef6fbcd8cb60baf50dbd92dc37688c138a018b912bca01ea"
+      },
+      {
+        "path": "src/data/likely-subtags.js",
+        "sha256": "39f74c6df391730bdc86903349823c35d7a002895654ec4285aff24f5640f821"
+      },
+      {
+        "path": "src/data/ordinal-rules.js",
+        "sha256": "d68f2d39a0c2b017e490332b373ac42780f4faa5f8e2f29b63db57ecdea61bac"
+      },
+      {
+        "path": "src/data/ordinal.js",
+        "sha256": "a4533b65f4fd75deded0e2542a9cb4a3b778aade8641a35175475a2704f18811"
+      },
+      {
+        "path": "src/data/parents.js",
+        "sha256": "4b77d0497efbbf6fdc631cbbd327beec88d206517499b1e17a417b6adb54a177"
+      },
+      {
+        "path": "src/data/provenance.js",
+        "sha256": "7a0f5d8cd4f32cd8a2023e8f7a19c69a00ff5d4067c5f233e03be77b5fb9c377"
+      },
+      {
+        "path": "src/data/ranges.js",
+        "sha256": "772fdbf4f8fd64365dd7837d3b47654176b450fa206b7f96a7423392bb229567"
+      },
+      {
+        "path": "src/data/rtl.js",
+        "sha256": "a00dd6f28e8edcd1ad2b499603f9daad9e3f7eb4d59119276f79e35962103a08"
+      },
+      {
+        "path": "src/data/valid-languages.js",
+        "sha256": "a48a4f8cb2965c5c14651826a027da2e49a93ac6ff55c1c735490787b6cd50ac"
+      },
+      {
+        "path": "src/data/valid-regions.js",
+        "sha256": "04184c038a8ca871a17caa38b96fe3addbefe61184fb302b096bb14bc42153b5"
+      },
+      {
+        "path": "src/data/valid-scripts.js",
+        "sha256": "136649aa8c7984f7cee18e50e0aca3e70be5410f891d1f0daf75e3baf45c76b0"
+      },
+      {
+        "path": "src/data/valid-variants.js",
+        "sha256": "71fb1d36222742475344c22fbf6521fab66fe5e8bffda29257772e12d8426466"
+      },
+      {
+        "path": "src/index.js",
+        "sha256": "99898eea6c3378149f022bf74608b02a5078b1370f21575dbe94b9fba350881e"
+      },
+      {
+        "path": "src/internal/bidi.js",
+        "sha256": "1262de1fbbda69c12c399906711f0ed2a025f7eb56bf33406fcec9a58915a5bd"
+      },
+      {
+        "path": "src/internal/catalog.js",
+        "sha256": "64af92e17a3d0f6708d06699930d78693ff82da40aca5a738e9f07c1f0d94497"
+      },
+      {
+        "path": "src/internal/configuration-error.js",
+        "sha256": "0aa7e4ece3476ca7ef40c76798398952919f10aaf25d8665bd64fc71164882ae"
+      },
+      {
+        "path": "src/internal/expression-tokenizer.js",
+        "sha256": "a93929459814cf6254999f7c0e1529193a59867ac7b9809089b7261d4da07a07"
+      },
+      {
+        "path": "src/internal/expression.js",
+        "sha256": "fba98871f8e3f58d015000ab37e89472487c6eda9179fefd320f9da0c4b1451f"
+      },
+      {
+        "path": "src/internal/interpolate.js",
+        "sha256": "6726965968fcb3e3e6ebef2b026286969b2f07fb2d42f7cfe9ccf1dd96ff4801"
+      },
+      {
+        "path": "src/internal/jcs.js",
+        "sha256": "212cec13563bda389614679086af364a4eb01f4571b9e4e2f4916333abbdbd1d"
+      },
+      {
+        "path": "src/internal/json-parse.js",
+        "sha256": "8ff222492da77cd54d17d2c90511b85a7a659d786f8f0ae326c53598d7d9b2be"
+      },
+      {
+        "path": "src/internal/loaded-input.js",
+        "sha256": "3411a1c58f682d7907e4f504505d4577e1ca94735c081ce4495250a08a82830d"
+      },
+      {
+        "path": "src/internal/locale-cldr.js",
+        "sha256": "8576e30315a9dae101fa70f08afc1b35e700ab0a1fcfe09f4bb8a0a85814dacf"
+      },
+      {
+        "path": "src/internal/locale-jdk-tag.js",
+        "sha256": "83560b5edd9ab0377b5b965c79a29a69794247e37df6fa07ed168866fd310812"
+      },
+      {
+        "path": "src/internal/locale.js",
+        "sha256": "d7788f0c9fa39379be92dea3bfa172e4c2da9e06da1f028644f9a2c389e7be1e"
+      },
+      {
+        "path": "src/internal/lokalized-error.js",
+        "sha256": "9e5fa610d6c0aacf7f0501c304bb36a88e9e83e3aa8f22455828acb2b9bf65eb"
+      },
+      {
+        "path": "src/internal/parse-diagnostics.js",
+        "sha256": "47592b79af421223d641db384f7699d99ce7f7306869ffc6869aa00b63b225fb"
+      },
+      {
+        "path": "src/internal/parse-file.js",
+        "sha256": "37c448ee1743e181033a601bceb7813b988608f7248d43c5d07383ed0ce37bb3"
+      },
+      {
+        "path": "src/internal/parse-warnings.js",
+        "sha256": "ca3b91ec2e5d7d6e896a0ce0ae8566ee6c575c8af561bd07b6cd3c366a7aabe9"
+      },
+      {
+        "path": "src/internal/plural.js",
+        "sha256": "154bf7dc813dd64d79297a9487df950af09dc317f0a2b15ac34340be0dda5203"
+      },
+      {
+        "path": "src/internal/resolution-error.js",
+        "sha256": "a34c855608c3841526a9e1908c8699740cf8f731ee84c7dadded2f69371e9743"
+      },
+      {
+        "path": "src/internal/runtime-metadata.js",
+        "sha256": "76619a7020039006e762c4ab38f13ac5c7e8c1c877ed6bbef767fa70dfc6123f"
+      },
+      {
+        "path": "src/internal/sha256.js",
+        "sha256": "cd168540a286b03b2394b1d0d6d2967239a133b73b517e770bdd294c376ef5bd"
+      },
+      {
+        "path": "src/load/fetch-loader.js",
+        "sha256": "75c8bb4b7d31022e915c253772ce1ee6e6cf0459439e3f69a103c6d37dd1c205"
+      },
+      {
+        "path": "src/load/identity.js",
+        "sha256": "441aef0d9bf9d1ae2886b74c538ddf52dea4ae3b1ae53b28bd62263a9585deee"
+      },
+      {
+        "path": "src/load/index.js",
+        "sha256": "7ac8148c8c16885a4845a32d37229739f6deda42e614c7dfeafa3b48aa13f299"
+      },
+      {
+        "path": "src/load/manifest.js",
+        "sha256": "dcedcc4c203d39efa908b7e713b3faac648057d0cdb1aba098927ecd59866339"
+      },
+      {
+        "path": "src/load/planning.js",
+        "sha256": "f62aacf6ea55b7094e99d02ebece9f8cdf0552fe026570dcce28a057286d5eb5"
+      },
+      {
+        "path": "src/load/run-plan.js",
+        "sha256": "ac4e9f8ef7a6900c522059087320423b67da35ec573801b6a2faed96c9c20c9c"
+      },
+      {
+        "path": "src/negotiate/index.js",
+        "sha256": "1e0259a723bd645cda534a5dc7b7d545d1da65e1bd4fedee7baec50f4551b85c"
+      },
+      {
+        "path": "src/node/directory.js",
+        "sha256": "4ec14db7a86226e38bae17b2c5ea6698c583329e0fae9bb8965bbd2d3dbba960"
+      },
+      {
+        "path": "src/node/discovery.js",
+        "sha256": "d414489709900fb9f3f36ebc7c596d3389f7ecf7f9f038006bc299acbf71543b"
+      },
+      {
+        "path": "src/node/file-loader.js",
+        "sha256": "f78627a4de8fdd73bddfa34f0ba6debbc90a0cd10b456b85e058c7c49540d65b"
+      },
+      {
+        "path": "src/node/index.js",
+        "sha256": "313c6980f74e35cb91a1195e91da825160301535e50dbb995bef59d789702fa7"
+      },
+      {
+        "path": "src/node/manifest-directory.js",
+        "sha256": "707155d06e2a171d938f4de1e30a6bccabfc1a031f335bb678c5d7e781e55aeb"
+      },
+      {
+        "path": "src/parse/index.js",
+        "sha256": "6b08b60c0716e9b203560e003fc02affd0b423d0a81488fec6497fb58457ffc9"
+      },
+      {
+        "path": "src/ssr/index.js",
+        "sha256": "221fc6aa2c286916c92b32851df5a69e6f06188c0340d93f59e704f16136c925"
+      },
+      {
+        "path": "types/core/index.d.ts",
+        "sha256": "1517be1d2e31fe026f69c9c6b3379c9104ffad8ed2ffe67bf297535c2f0677e4"
+      },
+      {
+        "path": "types/data/aliases-language.d.ts",
+        "sha256": "64fe91db8cfa65b0251f35ecc6ce67326854c03b009e87bc5a25376e2376f1e6"
+      },
+      {
+        "path": "types/data/aliases-region.d.ts",
+        "sha256": "64fe91db8cfa65b0251f35ecc6ce67326854c03b009e87bc5a25376e2376f1e6"
+      },
+      {
+        "path": "types/data/aliases-script.d.ts",
+        "sha256": "64fe91db8cfa65b0251f35ecc6ce67326854c03b009e87bc5a25376e2376f1e6"
+      },
+      {
+        "path": "types/data/aliases-variant.d.ts",
+        "sha256": "64fe91db8cfa65b0251f35ecc6ce67326854c03b009e87bc5a25376e2376f1e6"
+      },
+      {
+        "path": "types/data/cardinal-ranges.d.ts",
+        "sha256": "b9a4cb5d307600bd0b0e6f3bdca7f6a578b35f243e28de9b25d4b99f2f83adf0"
+      },
+      {
+        "path": "types/data/cardinal.d.ts",
+        "sha256": "80b22d6a43569dbf390244706daf1e06c8fecb24fdeb93c149ba3482eb26ca25"
+      },
+      {
+        "path": "types/data/iana-identity-equivalents.d.ts",
+        "sha256": "7e498fc32967a3d120c8c90855ce6ff1a84156e1f8519006bf2a22fa53844cf5"
+      },
+      {
+        "path": "types/data/iana-range-equivalents.d.ts",
+        "sha256": "ffa57c9adf2a324bab5a74e9a876efd5c76181c3e9193a972c3af6990d40afb5"
+      },
+      {
+        "path": "types/data/likely-subtags.d.ts",
+        "sha256": "64fe91db8cfa65b0251f35ecc6ce67326854c03b009e87bc5a25376e2376f1e6"
+      },
+      {
+        "path": "types/data/ordinal-rules.d.ts",
+        "sha256": "80b22d6a43569dbf390244706daf1e06c8fecb24fdeb93c149ba3482eb26ca25"
+      },
+      {
+        "path": "types/data/ordinal.d.ts",
+        "sha256": "99a7cb0545ee9a3709f8edd04b3ecdfcf7fc5ee744f243786e907a3920322db6"
+      },
+      {
+        "path": "types/data/parents.d.ts",
+        "sha256": "64fe91db8cfa65b0251f35ecc6ce67326854c03b009e87bc5a25376e2376f1e6"
+      },
+      {
+        "path": "types/data/provenance.d.ts",
+        "sha256": "411f8e988dc960cc4d33378f6e241337d61a27489b27d186e09fa0f1425717b6"
+      },
+      {
+        "path": "types/data/ranges.d.ts",
+        "sha256": "cbaf377877c605af4ae057fcf196e401ca5eb17c2dca2e2c0abfb22a8ecb6c31"
+      },
+      {
+        "path": "types/data/rtl.d.ts",
+        "sha256": "5a8d5941c8ae0c27bafde75b4cac2be7b7d96884d1d73883f01b0d9ed46dd786"
+      },
+      {
+        "path": "types/data/valid-languages.d.ts",
+        "sha256": "5a8d5941c8ae0c27bafde75b4cac2be7b7d96884d1d73883f01b0d9ed46dd786"
+      },
+      {
+        "path": "types/data/valid-regions.d.ts",
+        "sha256": "5a8d5941c8ae0c27bafde75b4cac2be7b7d96884d1d73883f01b0d9ed46dd786"
+      },
+      {
+        "path": "types/data/valid-scripts.d.ts",
+        "sha256": "5a8d5941c8ae0c27bafde75b4cac2be7b7d96884d1d73883f01b0d9ed46dd786"
+      },
+      {
+        "path": "types/data/valid-variants.d.ts",
+        "sha256": "5a8d5941c8ae0c27bafde75b4cac2be7b7d96884d1d73883f01b0d9ed46dd786"
+      },
+      {
+        "path": "types/index.d.ts",
+        "sha256": "d31d01329722e954212e327075344ceb79eab77e19dce1e591fa52c4ce0f0b40"
+      },
+      {
+        "path": "types/internal/bidi.d.ts",
+        "sha256": "1c66d69409e8ccaa80c743c700737b6d392b8588d48b7d19186848ffb6297c8e"
+      },
+      {
+        "path": "types/internal/catalog.d.ts",
+        "sha256": "19c861f7747757d3d5b2db395845b88c71ef787bca5ab24e90677154e6a44fa6"
+      },
+      {
+        "path": "types/internal/configuration-error.d.ts",
+        "sha256": "58027bfb4b8dbc022a34712c7282b09ce5d4a42cde3d70e6d14c94cd6017be52"
+      },
+      {
+        "path": "types/internal/expression-tokenizer.d.ts",
+        "sha256": "492e8bb65ae97f3061a5c82f36c62497a84479659561ec8b0e4d9c491d2bacd0"
+      },
+      {
+        "path": "types/internal/expression.d.ts",
+        "sha256": "37bfd6b1441110e6d0a508e3edae9301c52ac4180aac09e7a8c79341f53b7c20"
+      },
+      {
+        "path": "types/internal/interpolate.d.ts",
+        "sha256": "521d4548cdb705a2a04f5e7259a94d2e5d49e3de2b3249beb29dcac8843608a2"
+      },
+      {
+        "path": "types/internal/jcs.d.ts",
+        "sha256": "4a88bc2202b4e02cc6f54460a6acfc88cb79f4378b488740860cabdc27527dfe"
+      },
+      {
+        "path": "types/internal/json-parse.d.ts",
+        "sha256": "f204d79ca74144de5609e175c15478fe71de0ff68a12401dc819dd70f2fb0b45"
+      },
+      {
+        "path": "types/internal/loaded-input.d.ts",
+        "sha256": "4b3883594a00c891ee03cd88e5b36705030f231340dec94a2670d98f5c995354"
+      },
+      {
+        "path": "types/internal/locale-cldr.d.ts",
+        "sha256": "e7838d63ace09e2472d8c15b505ac066043f2ace112438035b919c4ab853281b"
+      },
+      {
+        "path": "types/internal/locale-jdk-tag.d.ts",
+        "sha256": "7ed8f259c66b8039f9ef4c241fbcc8c4425f30e84ebd7d80ddb0c171f1cd15fd"
+      },
+      {
+        "path": "types/internal/locale.d.ts",
+        "sha256": "000ca4be9ca2428d63cf46a0ad432f6979fdc325b31dd48fde7ff84e6e4ff777"
+      },
+      {
+        "path": "types/internal/lokalized-error.d.ts",
+        "sha256": "3651e8820b087a613f69c971f58ae4163c671103c2086a7030958ffd22ec0a6e"
+      },
+      {
+        "path": "types/internal/parse-diagnostics.d.ts",
+        "sha256": "3d8aa841a15ce734ea346fe5349421e8e9cb80afdf8e180fb33dbd2cd6d6d2f4"
+      },
+      {
+        "path": "types/internal/parse-file.d.ts",
+        "sha256": "a17182e263b958f465049dd1ddd8b29fc26ab16c78d10a75d2a27c263168b0b5"
+      },
+      {
+        "path": "types/internal/parse-warnings.d.ts",
+        "sha256": "66cd02534791ed6f68e62006d90446a78655e6b8d45b82e2e04f695d2b59ea5f"
+      },
+      {
+        "path": "types/internal/plural.d.ts",
+        "sha256": "9723bbd5f9e91bb04c1d8a857205160b562d651817abb1393c2ea8421d09cb0e"
+      },
+      {
+        "path": "types/internal/resolution-error.d.ts",
+        "sha256": "f4711364abbb0702263d408f111a30a7c2a53b7a2a4b5b9a580cef756c2fbe2b"
+      },
+      {
+        "path": "types/internal/runtime-metadata.d.ts",
+        "sha256": "2c491a6c02683886124a98249419f244fedfe9414343ec662725fcdaec7271f1"
+      },
+      {
+        "path": "types/internal/sha256.d.ts",
+        "sha256": "3d4fa131a35bc2af5ca1f8ba6e858f6a9d34fc9cbcfcdcc0e55e064f3cf6f153"
+      },
+      {
+        "path": "types/internal/verified-load.d.ts",
+        "sha256": "e5f90ddd79a84fd6e2070ac21f5d27f60d7e112b114cbe599ad78703299f5323"
+      },
+      {
+        "path": "types/load/fetch-loader.d.ts",
+        "sha256": "ae72632e0440e5a6b2194bd1d420d821f681e9eabb16f11d9940f83ce886cf8e"
+      },
+      {
+        "path": "types/load/identity.d.ts",
+        "sha256": "87026f3dc18ada98cb20089737a7c438f832c77bf8272a8b44405c941145a161"
+      },
+      {
+        "path": "types/load/index.d.ts",
+        "sha256": "4c233307d4906d018fa4847699e6088dd3986ff1a3a697392826a22533aeeff6"
+      },
+      {
+        "path": "types/load/manifest.d.ts",
+        "sha256": "2f64d955c26afc9037cbb7737c0d584989f250b21819b3692474c022304698fb"
+      },
+      {
+        "path": "types/load/planning.d.ts",
+        "sha256": "4291717885bdf2c53db8d60b3d2fde85e9babfea288ad4982acd8df4bc88a931"
+      },
+      {
+        "path": "types/load/run-plan.d.ts",
+        "sha256": "ddac055162754c4ac1cb7f03fc649145f9696569ed19a115a49ffb377b6361ac"
+      },
+      {
+        "path": "types/negotiate/index.d.ts",
+        "sha256": "9f3a19b518ebe6a9910b364e517e749ccf0da30dc338a1111bc60cd7338bc66c"
+      },
+      {
+        "path": "types/node/directory.d.ts",
+        "sha256": "4ba07aace7a867bc87a73a8151419d274ed6943eac86899c02bd02ad4a1477d7"
+      },
+      {
+        "path": "types/node/discovery.d.ts",
+        "sha256": "167f09138d7b3731b20108cb3328051631e083641442e2b13a863a159fdf2a13"
+      },
+      {
+        "path": "types/node/file-loader.d.ts",
+        "sha256": "44a416718fd31a661ff4f031d6c11ba162d78c428d534de032ff0bea1b5b5e9c"
+      },
+      {
+        "path": "types/node/index.d.ts",
+        "sha256": "e8c39e938a547acdf0c9118fbe96a2a1280db3505420a9ca1da979c55aea1e26"
+      },
+      {
+        "path": "types/node/manifest-directory.d.ts",
+        "sha256": "b373db959a5d63b7b07e43c0073cf58ee99a2a5898342a60c2d7c1964f53bb58"
+      },
+      {
+        "path": "types/parse/index.d.ts",
+        "sha256": "8707cf93dec233c4eff3900a7b38c6669c233b03ec264b0bb8484879f34a462c"
+      },
+      {
+        "path": "types/ssr/index.d.ts",
+        "sha256": "588b4c752c2e670005993337b5fda371cfcf69704bb93bcae5050cdf72800fbe"
+      }
+    ],
+    "sourceSha256": "c35cc8d709b81ef4606d491772be77dd615ae918ae9cc5ccfbefd64b98fa2882",
+    "version": "1.0.0-rc.2",
+    "entries": [
+      {
+        "entryPoint": ".",
+        "runtimeSource": "./src/index.js",
+        "declarationEntry": "./types/index.d.ts",
+        "runtimeSymbols": [
+          "ANIMACY_ANIMATE",
+          "ANIMACY_INANIMATE",
+          "CARDINALITY_FEW",
+          "CARDINALITY_MANY",
+          "CARDINALITY_ONE",
+          "CARDINALITY_OTHER",
+          "CARDINALITY_TWO",
+          "CARDINALITY_ZERO",
+          "CASE_ABLATIVE",
+          "CASE_ACCUSATIVE",
+          "CASE_DATIVE",
+          "CASE_GENITIVE",
+          "CASE_INSTRUMENTAL",
+          "CASE_LOCATIVE",
+          "CASE_NOMINATIVE",
+          "CASE_PREPOSITIONAL",
+          "CASE_VOCATIVE",
+          "CLASSIFIER_ANIMAL",
+          "CLASSIFIER_BOUND",
+          "CLASSIFIER_FLAT",
+          "CLASSIFIER_GENERAL",
+          "CLASSIFIER_LONG_THIN",
+          "CLASSIFIER_MACHINE",
+          "CLASSIFIER_PERSON",
+          "CLASSIFIER_VEHICLE",
+          "CLUSIVITY_EXCLUSIVE",
+          "CLUSIVITY_INCLUSIVE",
+          "DEFINITENESS_CONSTRUCT",
+          "DEFINITENESS_DEFINITE",
+          "DEFINITENESS_INDEFINITE",
+          "FORMALITY_CASUAL",
+          "FORMALITY_FORMAL",
+          "FORMALITY_HONORIFIC",
+          "FORMALITY_HUMBLE",
+          "FORMALITY_INFORMAL",
+          "GENDER_COMMON",
+          "GENDER_FEMININE",
+          "GENDER_MASCULINE",
+          "GENDER_NEUTER",
+          "ORDINALITY_FEW",
+          "ORDINALITY_MANY",
+          "ORDINALITY_ONE",
+          "ORDINALITY_OTHER",
+          "ORDINALITY_TWO",
+          "ORDINALITY_ZERO",
+          "PHONETIC_CONSONANT",
+          "PHONETIC_GLIDE_W",
+          "PHONETIC_GLIDE_Y",
+          "PHONETIC_GN",
+          "PHONETIC_H_ASPIRATED",
+          "PHONETIC_H_SILENT",
+          "PHONETIC_LUNAR",
+          "PHONETIC_OTHER",
+          "PHONETIC_PN",
+          "PHONETIC_PS",
+          "PHONETIC_SOLAR",
+          "PHONETIC_STRESSED_A",
+          "PHONETIC_S_IMPURE",
+          "PHONETIC_VOWEL",
+          "PHONETIC_X",
+          "PHONETIC_Z",
+          "cardinalityForNumber",
+          "cardinalityForOperands",
+          "chooseBrowserLocale",
+          "chooseLocaleForPreferredLanguages",
+          "createStrings",
+          "decimal",
+          "getSupportedCardinalityLocaleTags",
+          "pluralOperands",
+          "supportedCardinalitiesForLocale"
+        ],
+        "declarations": [
+          {
+            "name": "ANIMACY_ANIMATE",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 84,
+            "declaration": "export const ANIMACY_ANIMATE: Readonly<{ $lokalized: \"language-form\"; axis: \"animacy\"; name: \"ANIMACY_ANIMATE\"; renderName: \"ANIMATE\"; }>;"
+          },
+          {
+            "name": "ANIMACY_INANIMATE",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 90,
+            "declaration": "export const ANIMACY_INANIMATE: Readonly<{ $lokalized: \"language-form\"; axis: \"animacy\"; name: \"ANIMACY_INANIMATE\"; renderName: \"INANIMATE\"; }>;"
+          },
+          {
+            "name": "Animacy",
+            "kind": "type",
+            "declarationSource": "types/index.d.ts",
+            "line": 465,
+            "declaration": "export type Animacy = import(\"./core/index.js\").Animacy;"
+          },
+          {
+            "name": "BidiIsolation",
+            "kind": "type",
+            "declarationSource": "types/index.d.ts",
+            "line": 481,
+            "declaration": "export type BidiIsolation = import(\"./core/index.js\").BidiIsolation;"
+          },
+          {
+            "name": "CARDINALITY_FEW",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 114,
+            "declaration": "export const CARDINALITY_FEW: Readonly<{ $lokalized: \"language-form\"; axis: \"cardinality\"; name: \"CARDINALITY_FEW\"; renderName: \"FEW\"; }>;"
+          },
+          {
+            "name": "CARDINALITY_MANY",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 120,
+            "declaration": "export const CARDINALITY_MANY: Readonly<{ $lokalized: \"language-form\"; axis: \"cardinality\"; name: \"CARDINALITY_MANY\"; renderName: \"MANY\"; }>;"
+          },
+          {
+            "name": "CARDINALITY_ONE",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 102,
+            "declaration": "export const CARDINALITY_ONE: Readonly<{ $lokalized: \"language-form\"; axis: \"cardinality\"; name: \"CARDINALITY_ONE\"; renderName: \"ONE\"; }>;"
+          },
+          {
+            "name": "CARDINALITY_OTHER",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 126,
+            "declaration": "export const CARDINALITY_OTHER: Readonly<{ $lokalized: \"language-form\"; axis: \"cardinality\"; name: \"CARDINALITY_OTHER\"; renderName: \"OTHER\"; }>;"
+          },
+          {
+            "name": "CARDINALITY_TWO",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 108,
+            "declaration": "export const CARDINALITY_TWO: Readonly<{ $lokalized: \"language-form\"; axis: \"cardinality\"; name: \"CARDINALITY_TWO\"; renderName: \"TWO\"; }>;"
+          },
+          {
+            "name": "CARDINALITY_ZERO",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 96,
+            "declaration": "export const CARDINALITY_ZERO: Readonly<{ $lokalized: \"language-form\"; axis: \"cardinality\"; name: \"CARDINALITY_ZERO\"; renderName: \"ZERO\"; }>;"
+          },
+          {
+            "name": "CASE_ABLATIVE",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 180,
+            "declaration": "export const CASE_ABLATIVE: Readonly<{ $lokalized: \"language-form\"; axis: \"grammatical-case\"; name: \"CASE_ABLATIVE\"; renderName: \"ABLATIVE\"; }>;"
+          },
+          {
+            "name": "CASE_ACCUSATIVE",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 138,
+            "declaration": "export const CASE_ACCUSATIVE: Readonly<{ $lokalized: \"language-form\"; axis: \"grammatical-case\"; name: \"CASE_ACCUSATIVE\"; renderName: \"ACCUSATIVE\"; }>;"
+          },
+          {
+            "name": "CASE_DATIVE",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 150,
+            "declaration": "export const CASE_DATIVE: Readonly<{ $lokalized: \"language-form\"; axis: \"grammatical-case\"; name: \"CASE_DATIVE\"; renderName: \"DATIVE\"; }>;"
+          },
+          {
+            "name": "CASE_GENITIVE",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 144,
+            "declaration": "export const CASE_GENITIVE: Readonly<{ $lokalized: \"language-form\"; axis: \"grammatical-case\"; name: \"CASE_GENITIVE\"; renderName: \"GENITIVE\"; }>;"
+          },
+          {
+            "name": "CASE_INSTRUMENTAL",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 156,
+            "declaration": "export const CASE_INSTRUMENTAL: Readonly<{ $lokalized: \"language-form\"; axis: \"grammatical-case\"; name: \"CASE_INSTRUMENTAL\"; renderName: \"INSTRUMENTAL\"; }>;"
+          },
+          {
+            "name": "CASE_LOCATIVE",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 162,
+            "declaration": "export const CASE_LOCATIVE: Readonly<{ $lokalized: \"language-form\"; axis: \"grammatical-case\"; name: \"CASE_LOCATIVE\"; renderName: \"LOCATIVE\"; }>;"
+          },
+          {
+            "name": "CASE_NOMINATIVE",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 132,
+            "declaration": "export const CASE_NOMINATIVE: Readonly<{ $lokalized: \"language-form\"; axis: \"grammatical-case\"; name: \"CASE_NOMINATIVE\"; renderName: \"NOMINATIVE\"; }>;"
+          },
+          {
+            "name": "CASE_PREPOSITIONAL",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 168,
+            "declaration": "export const CASE_PREPOSITIONAL: Readonly<{ $lokalized: \"language-form\"; axis: \"grammatical-case\"; name: \"CASE_PREPOSITIONAL\"; renderName: \"PREPOSITIONAL\"; }>;"
+          },
+          {
+            "name": "CASE_VOCATIVE",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 174,
+            "declaration": "export const CASE_VOCATIVE: Readonly<{ $lokalized: \"language-form\"; axis: \"grammatical-case\"; name: \"CASE_VOCATIVE\"; renderName: \"VOCATIVE\"; }>;"
+          },
+          {
+            "name": "CLASSIFIER_ANIMAL",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 198,
+            "declaration": "export const CLASSIFIER_ANIMAL: Readonly<{ $lokalized: \"language-form\"; axis: \"classifier\"; name: \"CLASSIFIER_ANIMAL\"; renderName: \"ANIMAL\"; }>;"
+          },
+          {
+            "name": "CLASSIFIER_BOUND",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 216,
+            "declaration": "export const CLASSIFIER_BOUND: Readonly<{ $lokalized: \"language-form\"; axis: \"classifier\"; name: \"CLASSIFIER_BOUND\"; renderName: \"BOUND\"; }>;"
+          },
+          {
+            "name": "CLASSIFIER_FLAT",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 210,
+            "declaration": "export const CLASSIFIER_FLAT: Readonly<{ $lokalized: \"language-form\"; axis: \"classifier\"; name: \"CLASSIFIER_FLAT\"; renderName: \"FLAT\"; }>;"
+          },
+          {
+            "name": "CLASSIFIER_GENERAL",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 186,
+            "declaration": "export const CLASSIFIER_GENERAL: Readonly<{ $lokalized: \"language-form\"; axis: \"classifier\"; name: \"CLASSIFIER_GENERAL\"; renderName: \"GENERAL\"; }>;"
+          },
+          {
+            "name": "CLASSIFIER_LONG_THIN",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 204,
+            "declaration": "export const CLASSIFIER_LONG_THIN: Readonly<{ $lokalized: \"language-form\"; axis: \"classifier\"; name: \"CLASSIFIER_LONG_THIN\"; renderName: \"LONG_THIN\"; }>;"
+          },
+          {
+            "name": "CLASSIFIER_MACHINE",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 222,
+            "declaration": "export const CLASSIFIER_MACHINE: Readonly<{ $lokalized: \"language-form\"; axis: \"classifier\"; name: \"CLASSIFIER_MACHINE\"; renderName: \"MACHINE\"; }>;"
+          },
+          {
+            "name": "CLASSIFIER_PERSON",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 192,
+            "declaration": "export const CLASSIFIER_PERSON: Readonly<{ $lokalized: \"language-form\"; axis: \"classifier\"; name: \"CLASSIFIER_PERSON\"; renderName: \"PERSON\"; }>;"
+          },
+          {
+            "name": "CLASSIFIER_VEHICLE",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 228,
+            "declaration": "export const CLASSIFIER_VEHICLE: Readonly<{ $lokalized: \"language-form\"; axis: \"classifier\"; name: \"CLASSIFIER_VEHICLE\"; renderName: \"VEHICLE\"; }>;"
+          },
+          {
+            "name": "CLUSIVITY_EXCLUSIVE",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 240,
+            "declaration": "export const CLUSIVITY_EXCLUSIVE: Readonly<{ $lokalized: \"language-form\"; axis: \"clusivity\"; name: \"CLUSIVITY_EXCLUSIVE\"; renderName: \"EXCLUSIVE\"; }>;"
+          },
+          {
+            "name": "CLUSIVITY_INCLUSIVE",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 234,
+            "declaration": "export const CLUSIVITY_INCLUSIVE: Readonly<{ $lokalized: \"language-form\"; axis: \"clusivity\"; name: \"CLUSIVITY_INCLUSIVE\"; renderName: \"INCLUSIVE\"; }>;"
+          },
+          {
+            "name": "Cardinality",
+            "kind": "type",
+            "declarationSource": "types/index.d.ts",
+            "line": 466,
+            "declaration": "export type Cardinality = import(\"./core/index.js\").Cardinality;"
+          },
+          {
+            "name": "Classifier",
+            "kind": "type",
+            "declarationSource": "types/index.d.ts",
+            "line": 462,
+            "declaration": "export type Classifier = import(\"./core/index.js\").Classifier;"
+          },
+          {
+            "name": "Clusivity",
+            "kind": "type",
+            "declarationSource": "types/index.d.ts",
+            "line": 464,
+            "declaration": "export type Clusivity = import(\"./core/index.js\").Clusivity;"
+          },
+          {
+            "name": "CreateStringsOptions",
+            "kind": "type",
+            "declarationSource": "types/index.d.ts",
+            "line": 470,
+            "declaration": "export type CreateStringsOptions = import(\"./core/index.js\").CreateStringsOptions;"
+          },
+          {
+            "name": "DEFINITENESS_CONSTRUCT",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 258,
+            "declaration": "export const DEFINITENESS_CONSTRUCT: Readonly<{ $lokalized: \"language-form\"; axis: \"definiteness\"; name: \"DEFINITENESS_CONSTRUCT\"; renderName: \"CONSTRUCT\"; }>;"
+          },
+          {
+            "name": "DEFINITENESS_DEFINITE",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 246,
+            "declaration": "export const DEFINITENESS_DEFINITE: Readonly<{ $lokalized: \"language-form\"; axis: \"definiteness\"; name: \"DEFINITENESS_DEFINITE\"; renderName: \"DEFINITE\"; }>;"
+          },
+          {
+            "name": "DEFINITENESS_INDEFINITE",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 252,
+            "declaration": "export const DEFINITENESS_INDEFINITE: Readonly<{ $lokalized: \"language-form\"; axis: \"definiteness\"; name: \"DEFINITENESS_INDEFINITE\"; renderName: \"INDEFINITE\"; }>;"
+          },
+          {
+            "name": "Definiteness",
+            "kind": "type",
+            "declarationSource": "types/index.d.ts",
+            "line": 461,
+            "declaration": "export type Definiteness = import(\"./core/index.js\").Definiteness;"
+          },
+          {
+            "name": "FORMALITY_CASUAL",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 264,
+            "declaration": "export const FORMALITY_CASUAL: Readonly<{ $lokalized: \"language-form\"; axis: \"formality\"; name: \"FORMALITY_CASUAL\"; renderName: \"CASUAL\"; }>;"
+          },
+          {
+            "name": "FORMALITY_FORMAL",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 276,
+            "declaration": "export const FORMALITY_FORMAL: Readonly<{ $lokalized: \"language-form\"; axis: \"formality\"; name: \"FORMALITY_FORMAL\"; renderName: \"FORMAL\"; }>;"
+          },
+          {
+            "name": "FORMALITY_HONORIFIC",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 288,
+            "declaration": "export const FORMALITY_HONORIFIC: Readonly<{ $lokalized: \"language-form\"; axis: \"formality\"; name: \"FORMALITY_HONORIFIC\"; renderName: \"HONORIFIC\"; }>;"
+          },
+          {
+            "name": "FORMALITY_HUMBLE",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 282,
+            "declaration": "export const FORMALITY_HUMBLE: Readonly<{ $lokalized: \"language-form\"; axis: \"formality\"; name: \"FORMALITY_HUMBLE\"; renderName: \"HUMBLE\"; }>;"
+          },
+          {
+            "name": "FORMALITY_INFORMAL",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 270,
+            "declaration": "export const FORMALITY_INFORMAL: Readonly<{ $lokalized: \"language-form\"; axis: \"formality\"; name: \"FORMALITY_INFORMAL\"; renderName: \"INFORMAL\"; }>;"
+          },
+          {
+            "name": "Formality",
+            "kind": "type",
+            "declarationSource": "types/index.d.ts",
+            "line": 463,
+            "declaration": "export type Formality = import(\"./core/index.js\").Formality;"
+          },
+          {
+            "name": "GENDER_COMMON",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 306,
+            "declaration": "export const GENDER_COMMON: Readonly<{ $lokalized: \"language-form\"; axis: \"gender\"; name: \"GENDER_COMMON\"; renderName: \"COMMON\"; }>;"
+          },
+          {
+            "name": "GENDER_FEMININE",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 300,
+            "declaration": "export const GENDER_FEMININE: Readonly<{ $lokalized: \"language-form\"; axis: \"gender\"; name: \"GENDER_FEMININE\"; renderName: \"FEMININE\"; }>;"
+          },
+          {
+            "name": "GENDER_MASCULINE",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 294,
+            "declaration": "export const GENDER_MASCULINE: Readonly<{ $lokalized: \"language-form\"; axis: \"gender\"; name: \"GENDER_MASCULINE\"; renderName: \"MASCULINE\"; }>;"
+          },
+          {
+            "name": "GENDER_NEUTER",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 312,
+            "declaration": "export const GENDER_NEUTER: Readonly<{ $lokalized: \"language-form\"; axis: \"gender\"; name: \"GENDER_NEUTER\"; renderName: \"NEUTER\"; }>;"
+          },
+          {
+            "name": "Gender",
+            "kind": "type",
+            "declarationSource": "types/index.d.ts",
+            "line": 459,
+            "declaration": "export type Gender = import(\"./core/index.js\").Gender;"
+          },
+          {
+            "name": "GrammaticalCase",
+            "kind": "type",
+            "declarationSource": "types/index.d.ts",
+            "line": 460,
+            "declaration": "export type GrammaticalCase = import(\"./core/index.js\").GrammaticalCase;"
+          },
+          {
+            "name": "LanguageForm",
+            "kind": "type",
+            "declarationSource": "types/index.d.ts",
+            "line": 458,
+            "declaration": "export type LanguageForm = import(\"./core/index.js\").LanguageForm;"
+          },
+          {
+            "name": "LocaleMatchResult",
+            "kind": "type",
+            "declarationSource": "types/index.d.ts",
+            "line": 479,
+            "declaration": "export type LocaleMatchResult = import(\"./core/index.js\").LocaleMatchResult;"
+          },
+          {
+            "name": "LocaleMatchType",
+            "kind": "type",
+            "declarationSource": "types/index.d.ts",
+            "line": 480,
+            "declaration": "export type LocaleMatchType = import(\"./core/index.js\").LocaleMatchType;"
+          },
+          {
+            "name": "LocalizedStringWarning",
+            "kind": "type",
+            "declarationSource": "types/index.d.ts",
+            "line": 483,
+            "declaration": "export type LocalizedStringWarning = import(\"./core/index.js\").LocalizedStringWarning;"
+          },
+          {
+            "name": "LocalizedStringWarningHandler",
+            "kind": "type",
+            "declarationSource": "types/index.d.ts",
+            "line": 484,
+            "declaration": "export type LocalizedStringWarningHandler = import(\"./core/index.js\").LocalizedStringWarningHandler;"
+          },
+          {
+            "name": "ORDINALITY_FEW",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 336,
+            "declaration": "export const ORDINALITY_FEW: Readonly<{ $lokalized: \"language-form\"; axis: \"ordinality\"; name: \"ORDINALITY_FEW\"; renderName: \"FEW\"; }>;"
+          },
+          {
+            "name": "ORDINALITY_MANY",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 342,
+            "declaration": "export const ORDINALITY_MANY: Readonly<{ $lokalized: \"language-form\"; axis: \"ordinality\"; name: \"ORDINALITY_MANY\"; renderName: \"MANY\"; }>;"
+          },
+          {
+            "name": "ORDINALITY_ONE",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 324,
+            "declaration": "export const ORDINALITY_ONE: Readonly<{ $lokalized: \"language-form\"; axis: \"ordinality\"; name: \"ORDINALITY_ONE\"; renderName: \"ONE\"; }>;"
+          },
+          {
+            "name": "ORDINALITY_OTHER",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 348,
+            "declaration": "export const ORDINALITY_OTHER: Readonly<{ $lokalized: \"language-form\"; axis: \"ordinality\"; name: \"ORDINALITY_OTHER\"; renderName: \"OTHER\"; }>;"
+          },
+          {
+            "name": "ORDINALITY_TWO",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 330,
+            "declaration": "export const ORDINALITY_TWO: Readonly<{ $lokalized: \"language-form\"; axis: \"ordinality\"; name: \"ORDINALITY_TWO\"; renderName: \"TWO\"; }>;"
+          },
+          {
+            "name": "ORDINALITY_ZERO",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 318,
+            "declaration": "export const ORDINALITY_ZERO: Readonly<{ $lokalized: \"language-form\"; axis: \"ordinality\"; name: \"ORDINALITY_ZERO\"; renderName: \"ZERO\"; }>;"
+          },
+          {
+            "name": "Ordinality",
+            "kind": "type",
+            "declarationSource": "types/index.d.ts",
+            "line": 467,
+            "declaration": "export type Ordinality = import(\"./core/index.js\").Ordinality;"
+          },
+          {
+            "name": "PHONETIC_CONSONANT",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 360,
+            "declaration": "export const PHONETIC_CONSONANT: Readonly<{ $lokalized: \"language-form\"; axis: \"phonetic\"; name: \"PHONETIC_CONSONANT\"; renderName: \"CONSONANT\"; }>;"
+          },
+          {
+            "name": "PHONETIC_GLIDE_W",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 420,
+            "declaration": "export const PHONETIC_GLIDE_W: Readonly<{ $lokalized: \"language-form\"; axis: \"phonetic\"; name: \"PHONETIC_GLIDE_W\"; renderName: \"GLIDE_W\"; }>;"
+          },
+          {
+            "name": "PHONETIC_GLIDE_Y",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 414,
+            "declaration": "export const PHONETIC_GLIDE_Y: Readonly<{ $lokalized: \"language-form\"; axis: \"phonetic\"; name: \"PHONETIC_GLIDE_Y\"; renderName: \"GLIDE_Y\"; }>;"
+          },
+          {
+            "name": "PHONETIC_GN",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 390,
+            "declaration": "export const PHONETIC_GN: Readonly<{ $lokalized: \"language-form\"; axis: \"phonetic\"; name: \"PHONETIC_GN\"; renderName: \"GN\"; }>;"
+          },
+          {
+            "name": "PHONETIC_H_ASPIRATED",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 372,
+            "declaration": "export const PHONETIC_H_ASPIRATED: Readonly<{ $lokalized: \"language-form\"; axis: \"phonetic\"; name: \"PHONETIC_H_ASPIRATED\"; renderName: \"H_ASPIRATED\"; }>;"
+          },
+          {
+            "name": "PHONETIC_H_SILENT",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 366,
+            "declaration": "export const PHONETIC_H_SILENT: Readonly<{ $lokalized: \"language-form\"; axis: \"phonetic\"; name: \"PHONETIC_H_SILENT\"; renderName: \"H_SILENT\"; }>;"
+          },
+          {
+            "name": "PHONETIC_LUNAR",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 438,
+            "declaration": "export const PHONETIC_LUNAR: Readonly<{ $lokalized: \"language-form\"; axis: \"phonetic\"; name: \"PHONETIC_LUNAR\"; renderName: \"LUNAR\"; }>;"
+          },
+          {
+            "name": "PHONETIC_OTHER",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 444,
+            "declaration": "export const PHONETIC_OTHER: Readonly<{ $lokalized: \"language-form\"; axis: \"phonetic\"; name: \"PHONETIC_OTHER\"; renderName: \"OTHER\"; }>;"
+          },
+          {
+            "name": "PHONETIC_PN",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 402,
+            "declaration": "export const PHONETIC_PN: Readonly<{ $lokalized: \"language-form\"; axis: \"phonetic\"; name: \"PHONETIC_PN\"; renderName: \"PN\"; }>;"
+          },
+          {
+            "name": "PHONETIC_PS",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 396,
+            "declaration": "export const PHONETIC_PS: Readonly<{ $lokalized: \"language-form\"; axis: \"phonetic\"; name: \"PHONETIC_PS\"; renderName: \"PS\"; }>;"
+          },
+          {
+            "name": "PHONETIC_SOLAR",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 432,
+            "declaration": "export const PHONETIC_SOLAR: Readonly<{ $lokalized: \"language-form\"; axis: \"phonetic\"; name: \"PHONETIC_SOLAR\"; renderName: \"SOLAR\"; }>;"
+          },
+          {
+            "name": "PHONETIC_STRESSED_A",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 426,
+            "declaration": "export const PHONETIC_STRESSED_A: Readonly<{ $lokalized: \"language-form\"; axis: \"phonetic\"; name: \"PHONETIC_STRESSED_A\"; renderName: \"STRESSED_A\"; }>;"
+          },
+          {
+            "name": "PHONETIC_S_IMPURE",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 378,
+            "declaration": "export const PHONETIC_S_IMPURE: Readonly<{ $lokalized: \"language-form\"; axis: \"phonetic\"; name: \"PHONETIC_S_IMPURE\"; renderName: \"S_IMPURE\"; }>;"
+          },
+          {
+            "name": "PHONETIC_VOWEL",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 354,
+            "declaration": "export const PHONETIC_VOWEL: Readonly<{ $lokalized: \"language-form\"; axis: \"phonetic\"; name: \"PHONETIC_VOWEL\"; renderName: \"VOWEL\"; }>;"
+          },
+          {
+            "name": "PHONETIC_X",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 408,
+            "declaration": "export const PHONETIC_X: Readonly<{ $lokalized: \"language-form\"; axis: \"phonetic\"; name: \"PHONETIC_X\"; renderName: \"X\"; }>;"
+          },
+          {
+            "name": "PHONETIC_Z",
+            "kind": "const",
+            "declarationSource": "types/index.d.ts",
+            "line": 384,
+            "declaration": "export const PHONETIC_Z: Readonly<{ $lokalized: \"language-form\"; axis: \"phonetic\"; name: \"PHONETIC_Z\"; renderName: \"Z\"; }>;"
+          },
+          {
+            "name": "Phonetic",
+            "kind": "type",
+            "declarationSource": "types/index.d.ts",
+            "line": 468,
+            "declaration": "export type Phonetic = import(\"./core/index.js\").Phonetic;"
+          },
+          {
+            "name": "PhoneticResolver",
+            "kind": "type",
+            "declarationSource": "types/index.d.ts",
+            "line": 482,
+            "declaration": "export type PhoneticResolver = import(\"./core/index.js\").PhoneticResolver;"
+          },
+          {
+            "name": "Strings",
+            "kind": "type",
+            "declarationSource": "types/index.d.ts",
+            "line": 469,
+            "declaration": "export type Strings = import(\"./core/index.js\").Strings;"
+          },
+          {
+            "name": "TaggedLanguageFormValue",
+            "kind": "type",
+            "declarationSource": "types/index.d.ts",
+            "line": 457,
+            "declaration": "export type TaggedLanguageFormValue<A extends import(\"./core/index.js\").LanguageFormAxis, N extends import(\"./core/index.js\").LanguageFormName, R extends string = string> = import(\"./core/index.js\").TaggedLanguageFormValue<A, N, R>;"
+          },
+          {
+            "name": "TranslationFailure",
+            "kind": "type",
+            "declarationSource": "types/index.d.ts",
+            "line": 474,
+            "declaration": "export type TranslationFailure = import(\"./core/index.js\").TranslationFailure;"
+          },
+          {
+            "name": "TranslationFailureHandler",
+            "kind": "type",
+            "declarationSource": "types/index.d.ts",
+            "line": 476,
+            "declaration": "export type TranslationFailureHandler = import(\"./core/index.js\").TranslationFailureHandler;"
+          },
+          {
+            "name": "TranslationFailureReason",
+            "kind": "type",
+            "declarationSource": "types/index.d.ts",
+            "line": 475,
+            "declaration": "export type TranslationFailureReason = import(\"./core/index.js\").TranslationFailureReason;"
+          },
+          {
+            "name": "TranslationFailureResponse",
+            "kind": "type",
+            "declarationSource": "types/index.d.ts",
+            "line": 477,
+            "declaration": "export type TranslationFailureResponse = import(\"./core/index.js\").TranslationFailureResponse;"
+          },
+          {
+            "name": "TranslationFallbackPolicy",
+            "kind": "type",
+            "declarationSource": "types/index.d.ts",
+            "line": 478,
+            "declaration": "export type TranslationFallbackPolicy = import(\"./core/index.js\").TranslationFallbackPolicy;"
+          },
+          {
+            "name": "TranslationOptions",
+            "kind": "type",
+            "declarationSource": "types/index.d.ts",
+            "line": 471,
+            "declaration": "export type TranslationOptions = import(\"./core/index.js\").TranslationOptions;"
+          },
+          {
+            "name": "TranslationResult",
+            "kind": "type",
+            "declarationSource": "types/index.d.ts",
+            "line": 472,
+            "declaration": "export type TranslationResult = import(\"./core/index.js\").TranslationResult;"
+          },
+          {
+            "name": "TranslationResultStatus",
+            "kind": "type",
+            "declarationSource": "types/index.d.ts",
+            "line": 473,
+            "declaration": "export type TranslationResultStatus = import(\"./core/index.js\").TranslationResultStatus;"
+          },
+          {
+            "name": "cardinalityForNumber",
+            "kind": "function",
+            "declarationSource": "types/index.d.ts",
+            "line": 36,
+            "declaration": "export function cardinalityForNumber(value: number | bigint | Readonly<{ $lokalized: string; value: string; }>, locale: string): Readonly<{ $lokalized: \"language-form\"; axis: \"cardinality\"; name: import(\"./core/index.js\").CardinalityFormName; renderName: string; }>;"
+          },
+          {
+            "name": "cardinalityForOperands",
+            "kind": "function",
+            "declarationSource": "types/index.d.ts",
+            "line": 51,
+            "declaration": "export function cardinalityForOperands(value: Readonly<{ $lokalized: string; value: string; }>, locale: string): Readonly<{ $lokalized: \"language-form\"; axis: \"cardinality\"; name: import(\"./core/index.js\").CardinalityFormName; renderName: string; }>;"
+          },
+          {
+            "name": "chooseBrowserLocale",
+            "kind": "function",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 268,
+            "declaration": "export function chooseBrowserLocale(configuration: Parameters<typeof chooseLocaleForPreferredLanguages>[0]): string;"
+          },
+          {
+            "name": "chooseLocaleForPreferredLanguages",
+            "kind": "function",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 248,
+            "declaration": "export function chooseLocaleForPreferredLanguages(configuration: { fallbackLocale: string; supportedLocales: readonly string[]; tiebreakerLocalesByLanguageCode?: Readonly<Record<string, readonly string[]>> | ReadonlyMap<string, readonly string[]> | null; }, languages: Iterable<string>): string;"
+          },
+          {
+            "name": "createStrings",
+            "kind": "function",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 24,
+            "declaration": "export function createStrings(options: CreateStringsOptions): Readonly<{ [CANDIDATE_CHAIN_MEMO_SIZE]: () => number; [CANDIDATE_CHAIN_MEMO_KEYS]: () => readonly string[]; get: (key: string, placeholders?: Readonly<Record<string, unknown>>, callOptions?: TranslationOptions) => string; t: (key: string, placeholders?: Readonly<Record<string, unknown>>, callOptions?: TranslationOptions) => string; getResult: (key: string, placeholders?: Readonly<Record<string, unknown>>, callOptions?: TranslationOptions) => Readonly<{ key: string; translation: string; status: \"translated\"; lookupLocale: string; localeMatchResult: Readonly<Readonly<{ matchType: \"none\" | \"exact\" | \"canonical\" | \"cldr-fallback\" | \"likely-subtag\" | \"extended-range\" | \"primary-language\" | \"wildcard\"; locale: string | null; isMatch: boolean; fallbackLocale: string; consideredLocales: readonly string[]; effectiveWeight: number | null; languageRange: string | import(\"../internal/locale.js\").WeightedLanguageRange | null; requestedLanguageRanges: readonly import(\"../internal/locale.js\").WeightedLanguageRange[]; }>>; resolvedLocale: string; attemptedLocales: readonly string[]; isFallback: boolean; failureReason: null; cause: null; }> | Readonly<{ key: string; translation: string; status: \"returned-key\" | \"returned-string\"; lookupLocale: string; localeMatchResult: Readonly<Readonly<{ matchType: \"none\" | \"exact\" | \"canonical\" | \"cldr-fallback\" | \"likely-subtag\" | \"extended-range\" | \"primary-language\" | \"wildcard\"; locale: string | null; isMatch: boolean; fallbackLocale: string; consideredLocales: readonly string[]; effectiveWeight: number | null; languageRange: string | import(\"../internal/locale.js\").WeightedLanguageRange | null; requestedLanguageRanges: readonly import(\"../internal/locale.js\").WeightedLanguageRange[]; }>>; resolvedLocale: null; attemptedLocales: readonly string[]; isFallback: boolean; failureReason: TranslationFailureReason; cause: unknown; }>; getSupportedLocales: () => readonly string[]; getKeysForLocale: (locale: string) => readonly string[]; getMissingKeys: (sourceLocale: string, targetLocale: string) => readonly string[]; getLocaleConfiguration: () => Readonly<{ fallbackLocale: string; supportedLocales: readonly string[]; tiebreakerLocalesByLanguageCode: Readonly<Record<string, readonly string[]>>; }>; getCatalogIdentity: () => Readonly<{ catalogVersion: string; catalogFingerprint: string; }> | null; isCatalogComplete: () => boolean; getLoadVerification: () => Readonly<Readonly<{ source: \"verified-manifest-v1\" | \"unverified-loaded-v1\"; producerImplementation: \"lokalized-js\"; producerVersion: string; manifestLocaleConfiguration: LocaleConfiguration; catalogIdentity: CatalogIdentity; cldrVersion: string; dataFingerprint: string; ianaRegistryDate: string; ianaDataFingerprint: string; behavioralVectorsVersion: string; localeDataMode: \"pinned\"; cardinalityMode: \"exact\"; coverage: StringsLoadCoverage; plannedLocales: readonly string[]; coveredLocales: readonly string[]; complete: boolean; }>> | null; getWarnings: () => readonly Readonly<{ type: \"INCOMPLETE_CARDINALITY_TRANSLATIONS\" | \"INCOMPLETE_ORDINALITY_TRANSLATIONS\"; source: string; locale: string; key: string; placeholder: string; missingLanguageForms: readonly string[]; message: string; }>[]; getDirectLocaleContext: (locale: string) => Readonly<{ lookupLocale: string; localeMatchResult: Readonly<Readonly<{ matchType: \"none\" | \"exact\" | \"canonical\" | \"cldr-fallback\" | \"likely-subtag\" | \"extended-range\" | \"primary-language\" | \"wildcard\"; locale: string | null; isMatch: boolean; fallbackLocale: string; consideredLocales: readonly string[]; effectiveWeight: number | null; languageRange: string | import(\"../internal/locale.js\").WeightedLanguageRange | null; requestedLanguageRanges: readonly import(\"../internal/locale.js\").WeightedLanguageRange[]; }>>; }>; }>;"
+          },
+          {
+            "name": "decimal",
+            "kind": "function",
+            "declarationSource": "types/index.d.ts",
+            "line": 9,
+            "declaration": "export function decimal(value: string): Readonly<{ $lokalized: \"decimal\"; value: string; }>;"
+          },
+          {
+            "name": "getSupportedCardinalityLocaleTags",
+            "kind": "function",
+            "declarationSource": "types/index.d.ts",
+            "line": 83,
+            "declaration": "export function getSupportedCardinalityLocaleTags(): readonly string[];"
+          },
+          {
+            "name": "pluralOperands",
+            "kind": "function",
+            "declarationSource": "types/index.d.ts",
+            "line": 21,
+            "declaration": "export function pluralOperands(value: string, options?: Readonly<{ visibleDecimalPlaces?: number; compactExponent?: number; }>): Readonly<{ compactExponent?: number | undefined; visibleDecimalPlaces?: number | undefined; $lokalized: \"plural-operands\"; value: string; }>;"
+          },
+          {
+            "name": "supportedCardinalitiesForLocale",
+            "kind": "function",
+            "declarationSource": "types/index.d.ts",
+            "line": 70,
+            "declaration": "export function supportedCardinalitiesForLocale(locale: string): readonly Readonly<{ $lokalized: \"language-form\"; axis: \"cardinality\"; name: import(\"./core/index.js\").CardinalityFormName; renderName: string; }>[];"
+          }
+        ]
+      },
+      {
+        "entryPoint": "./core",
+        "runtimeSource": "./src/core/index.js",
+        "declarationEntry": "./types/core/index.d.ts",
+        "runtimeSymbols": [
+          "ConfigurationError",
+          "ExpressionEvaluationError",
+          "LokalizedError",
+          "MissingTranslationError",
+          "RETURN_KEY",
+          "ResolutionError",
+          "THROW_EXCEPTION",
+          "UnsupportedLocaleError",
+          "behavioralVectorsVersion",
+          "cardinalityMode",
+          "chooseBrowserLocale",
+          "chooseLocaleForPreferredLanguages",
+          "cldrVersion",
+          "createStrings",
+          "dataFingerprint",
+          "forLocale",
+          "forLocaleMatch",
+          "ianaDataFingerprint",
+          "ianaRegistryDate",
+          "localeDataMode",
+          "returnString"
+        ],
+        "declarations": [
+          {
+            "name": "Animacy",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 971,
+            "declaration": "export type Animacy = TaggedLanguageFormValue<\"animacy\", AnimacyFormName, string>;"
+          },
+          {
+            "name": "AnimacyFormName",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 959,
+            "declaration": "export type AnimacyFormName = \"ANIMACY_ANIMATE\" | \"ANIMACY_INANIMATE\";"
+          },
+          {
+            "name": "BidiIsolation",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 637,
+            "declaration": "export type BidiIsolation = import(\"../internal/bidi.js\").BidiIsolation;"
+          },
+          {
+            "name": "BuiltinTranslationFallbackPolicy",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 610,
+            "declaration": "export type BuiltinTranslationFallbackPolicy = \"missing-or-no-match\" | \"any-failure\" | \"never\";"
+          },
+          {
+            "name": "CardinalRangeData",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 932,
+            "declaration": "export type CardinalRangeData = Readonly<{ $lokalized: \"cardinal-range-data\"; provenance: DataProvenance; }>;"
+          },
+          {
+            "name": "Cardinality",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 972,
+            "declaration": "export type Cardinality = TaggedLanguageFormValue<\"cardinality\", CardinalityFormName, string>;"
+          },
+          {
+            "name": "CardinalityFormName",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 960,
+            "declaration": "export type CardinalityFormName = \"CARDINALITY_ZERO\" | \"CARDINALITY_ONE\" | \"CARDINALITY_TWO\" | \"CARDINALITY_FEW\" | \"CARDINALITY_MANY\" | \"CARDINALITY_OTHER\";"
+          },
+          {
+            "name": "CatalogIdentity",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 748,
+            "declaration": "export type CatalogIdentity = Readonly<{ catalogVersion: string; catalogFingerprint: string; }>;"
+          },
+          {
+            "name": "Classifier",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 968,
+            "declaration": "export type Classifier = TaggedLanguageFormValue<\"classifier\", ClassifierFormName, string>;"
+          },
+          {
+            "name": "ClassifierFormName",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 956,
+            "declaration": "export type ClassifierFormName = \"CLASSIFIER_GENERAL\" | \"CLASSIFIER_PERSON\" | \"CLASSIFIER_ANIMAL\" | \"CLASSIFIER_LONG_THIN\" | \"CLASSIFIER_FLAT\" | \"CLASSIFIER_BOUND\" | \"CLASSIFIER_MACHINE\" | \"CLASSIFIER_VEHICLE\";"
+          },
+          {
+            "name": "Clusivity",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 970,
+            "declaration": "export type Clusivity = TaggedLanguageFormValue<\"clusivity\", ClusivityFormName, string>;"
+          },
+          {
+            "name": "ClusivityFormName",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 958,
+            "declaration": "export type ClusivityFormName = \"CLUSIVITY_INCLUSIVE\" | \"CLUSIVITY_EXCLUSIVE\";"
+          },
+          {
+            "name": "ConfigurationError",
+            "kind": "class",
+            "declarationSource": "types/internal/configuration-error.d.ts",
+            "line": 91,
+            "declaration": "export class ConfigurationError extends LokalizedError { static raise(token: symbol, message: string): ConfigurationError; private constructor(); }"
+          },
+          {
+            "name": "CreateStringsOptions",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 608,
+            "declaration": "export type CreateStringsOptions = DirectCreateStringsOptions | LoadedCreateStringsOptions;"
+          },
+          {
+            "name": "DataProvenance",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 905,
+            "declaration": "export type DataProvenance = SourceDataProvenance & Readonly<{ dataFingerprint: string; }>;"
+          },
+          {
+            "name": "Definiteness",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 967,
+            "declaration": "export type Definiteness = TaggedLanguageFormValue<\"definiteness\", DefinitenessFormName, string>;"
+          },
+          {
+            "name": "DefinitenessFormName",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 955,
+            "declaration": "export type DefinitenessFormName = \"DEFINITENESS_DEFINITE\" | \"DEFINITENESS_INDEFINITE\" | \"DEFINITENESS_CONSTRUCT\";"
+          },
+          {
+            "name": "Definition",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 445,
+            "declaration": "export type Definition = import(\"../internal/catalog.js\").Definition;"
+          },
+          {
+            "name": "DirectCreateStringsOptions",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 542,
+            "declaration": "export type DirectCreateStringsOptions = Readonly<{ fallbackLocale: string; localizedStringSupplier: () => Readonly<Record<string, unknown>> | ReadonlyMap<string, unknown>; tiebreakerLocalesByLanguageCode?: Readonly<Record<string, readonly string[]>> | ReadonlyMap<string, readonly string[]> | null; loadingLimits?: import(\"../internal/catalog.js\").ParseLimits; runtimeLimits?: undefined; loaded?: never; catalogIdentity?: CatalogIdentity | null; warningHandler?: LocalizedStringWarningHandler; pluralData?: Readonly<{ ordinal?: unknown; ranges?: unknown; }>; phoneticResolver?: PhoneticResolver; bidiIsolation?: BidiIsolation; translationFallbackPolicy?: BuiltinTranslationFallbackPolicy | TranslationFallbackPolicy; translationFailureHandler?: TranslationFailureHandler; translationFallbackObserver?: TranslationFallbackObserver; }> & (Readonly<{ localeSupplier: () => string; localeMatchSupplier?: null; }> | Readonly<{ localeMatchSupplier: () => LocaleMatchResult; localeSupplier?: null; }>);"
+          },
+          {
+            "name": "DirectLocaleContext",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 862,
+            "declaration": "export type DirectLocaleContext = ReturnType<Strings[\"getDirectLocaleContext\"]>;"
+          },
+          {
+            "name": "ExpressionEvaluationError",
+            "kind": "class",
+            "declarationSource": "types/internal/expression-tokenizer.d.ts",
+            "line": 168,
+            "declaration": "export class ExpressionEvaluationError extends LokalizedError { static raise(token: symbol, message: string, options?: { cause?: unknown; }): ExpressionEvaluationError; private constructor(); }"
+          },
+          {
+            "name": "Formality",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 969,
+            "declaration": "export type Formality = TaggedLanguageFormValue<\"formality\", FormalityFormName, string>;"
+          },
+          {
+            "name": "FormalityFormName",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 957,
+            "declaration": "export type FormalityFormName = \"FORMALITY_CASUAL\" | \"FORMALITY_INFORMAL\" | \"FORMALITY_FORMAL\" | \"FORMALITY_HUMBLE\" | \"FORMALITY_HONORIFIC\";"
+          },
+          {
+            "name": "Gender",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 965,
+            "declaration": "export type Gender = TaggedLanguageFormValue<\"gender\", GenderFormName, string>;"
+          },
+          {
+            "name": "GenderFormName",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 953,
+            "declaration": "export type GenderFormName = \"GENDER_MASCULINE\" | \"GENDER_FEMININE\" | \"GENDER_COMMON\" | \"GENDER_NEUTER\";"
+          },
+          {
+            "name": "GrammaticalCase",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 966,
+            "declaration": "export type GrammaticalCase = TaggedLanguageFormValue<\"grammatical-case\", GrammaticalCaseFormName, string>;"
+          },
+          {
+            "name": "GrammaticalCaseFormName",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 954,
+            "declaration": "export type GrammaticalCaseFormName = \"CASE_NOMINATIVE\" | \"CASE_ACCUSATIVE\" | \"CASE_GENITIVE\" | \"CASE_DATIVE\" | \"CASE_INSTRUMENTAL\" | \"CASE_LOCATIVE\" | \"CASE_PREPOSITIONAL\" | \"CASE_VOCATIVE\" | \"CASE_ABLATIVE\";"
+          },
+          {
+            "name": "LanguageForm",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 978,
+            "declaration": "export type LanguageForm = Gender | GrammaticalCase | Definiteness | Classifier | Formality | Clusivity | Animacy | Cardinality | Ordinality | Phonetic;"
+          },
+          {
+            "name": "LanguageFormAxis",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 964,
+            "declaration": "export type LanguageFormAxis = \"gender\" | \"grammatical-case\" | \"definiteness\" | \"classifier\" | \"formality\" | \"clusivity\" | \"animacy\" | \"cardinality\" | \"ordinality\" | \"phonetic\";"
+          },
+          {
+            "name": "LanguageFormName",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 963,
+            "declaration": "export type LanguageFormName = GenderFormName | GrammaticalCaseFormName | DefinitenessFormName | ClassifierFormName | FormalityFormName | ClusivityFormName | AnimacyFormName | CardinalityFormName | OrdinalityFormName | PhoneticFormName;"
+          },
+          {
+            "name": "LanguageRange",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 875,
+            "declaration": "export type LanguageRange = Readonly<{ range: string; weight: number; }>;"
+          },
+          {
+            "name": "LoadedCreateStringsOptions",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 581,
+            "declaration": "export type LoadedCreateStringsOptions = Readonly<{ loaded: import(\"../load/index.js\").LoadedStrings; fallbackLocale?: never; localizedStringSupplier?: never; tiebreakerLocalesByLanguageCode?: never; catalogIdentity?: never; runtimeLimits?: undefined; warningHandler?: LocalizedStringWarningHandler; pluralData?: Readonly<{ ordinal?: unknown; ranges?: unknown; }>; phoneticResolver?: PhoneticResolver; bidiIsolation?: BidiIsolation; translationFallbackPolicy?: BuiltinTranslationFallbackPolicy | TranslationFallbackPolicy; translationFallbackObserver?: (event: TranslationFallbackEvent) => void; translationFailureHandler?: TranslationFailureHandler; }> & (Readonly<{ localeSupplier: () => string; localeMatchSupplier?: null; }> | Readonly<{ localeMatchSupplier: () => import(\"../internal/locale.js\").LocaleMatchResult; localeSupplier?: null; }>);"
+          },
+          {
+            "name": "LocaleConfiguration",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 778,
+            "declaration": "export type LocaleConfiguration = Readonly<{ fallbackLocale: string; supportedLocales: readonly string[]; tiebreakerLocalesByLanguageCode: Readonly<Record<string, readonly string[]>>; }>;"
+          },
+          {
+            "name": "LocaleMatchResult",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 665,
+            "declaration": "export type LocaleMatchResult = import(\"../internal/locale.js\").LocaleMatchResult;"
+          },
+          {
+            "name": "LocaleMatchType",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 656,
+            "declaration": "export type LocaleMatchType = import(\"../internal/locale.js\").LocaleMatchResult[\"matchType\"];"
+          },
+          {
+            "name": "LocalizedStringWarning",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 446,
+            "declaration": "export type LocalizedStringWarning = import(\"../internal/parse-warnings.js\").LocalizedStringWarning;"
+          },
+          {
+            "name": "LocalizedStringWarningHandler",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 639,
+            "declaration": "export type LocalizedStringWarningHandler = (warning: LocalizedStringWarning) => void;"
+          },
+          {
+            "name": "LokalizedError",
+            "kind": "class",
+            "declarationSource": "types/internal/lokalized-error.d.ts",
+            "line": 53,
+            "declaration": "export class LokalizedError extends Error { protected constructor(); readonly code: LokalizedErrorCode; }"
+          },
+          {
+            "name": "LokalizedErrorCode",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 941,
+            "declaration": "export type LokalizedErrorCode = import(\"../internal/lokalized-error.js\").LokalizedErrorCode;"
+          },
+          {
+            "name": "MissingTranslationError",
+            "kind": "class",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 417,
+            "declaration": "export class MissingTranslationError extends LokalizedError { static raise(token: symbol, message: string, failure: TranslationFailure): MissingTranslationError; private constructor(); readonly failure: TranslationFailure; }"
+          },
+          {
+            "name": "OrdinalData",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 918,
+            "declaration": "export type OrdinalData = Readonly<{ $lokalized: \"ordinal-data\"; provenance: DataProvenance; }>;"
+          },
+          {
+            "name": "Ordinality",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 973,
+            "declaration": "export type Ordinality = TaggedLanguageFormValue<\"ordinality\", OrdinalityFormName, string>;"
+          },
+          {
+            "name": "OrdinalityFormName",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 961,
+            "declaration": "export type OrdinalityFormName = \"ORDINALITY_ZERO\" | \"ORDINALITY_ONE\" | \"ORDINALITY_TWO\" | \"ORDINALITY_FEW\" | \"ORDINALITY_MANY\" | \"ORDINALITY_OTHER\";"
+          },
+          {
+            "name": "Phonetic",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 974,
+            "declaration": "export type Phonetic = TaggedLanguageFormValue<\"phonetic\", PhoneticFormName, string>;"
+          },
+          {
+            "name": "PhoneticFormName",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 962,
+            "declaration": "export type PhoneticFormName = \"PHONETIC_VOWEL\" | \"PHONETIC_CONSONANT\" | \"PHONETIC_H_SILENT\" | \"PHONETIC_H_ASPIRATED\" | \"PHONETIC_S_IMPURE\" | \"PHONETIC_Z\" | \"PHONETIC_GN\" | \"PHONETIC_PS\" | \"PHONETIC_PN\" | \"PHONETIC_X\" | \"PHONETIC_GLIDE_Y\" | \"PHONETIC_GLIDE_W\" | \"PHONETIC_STRESSED_A\" | \"PHONETIC_SOLAR\" | \"PHONETIC_LUNAR\" | \"PHONETIC_OTHER\";"
+          },
+          {
+            "name": "PhoneticResolver",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 638,
+            "declaration": "export type PhoneticResolver = (term: string, locale: string) => Phonetic;"
+          },
+          {
+            "name": "Placeholders",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 940,
+            "declaration": "export type Placeholders = import(\"../internal/interpolate.js\").Placeholders;"
+          },
+          {
+            "name": "PluralDataRuntime",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 982,
+            "declaration": "export type PluralDataRuntime = { ordinalityNameFor?: ((value: unknown, locale: string) => string) | undefined; ordinalCategoryForOperands?: ((operands: import(\"../internal/plural.js\").Operands, locale: string) => string) | undefined; rangeCardinalityNameFor?: ((startName: string, endName: string, locale: string) => string) | undefined; };"
+          },
+          {
+            "name": "PrecedingFailure",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 692,
+            "declaration": "export type PrecedingFailure = Readonly<{ locale: string; reason: TranslationFailureReason; cause: unknown; }>;"
+          },
+          {
+            "name": "RETURN_KEY",
+            "kind": "const",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 296,
+            "declaration": "export const RETURN_KEY: Readonly<{ action: \"return-key\"; }>;"
+          },
+          {
+            "name": "ResolutionError",
+            "kind": "class",
+            "declarationSource": "types/internal/resolution-error.d.ts",
+            "line": 29,
+            "declaration": "export class ResolutionError extends LokalizedError { static raise(token: symbol, code: \"RESOLUTION_INVALID_ARGUMENT\" | \"RESOLUTION_INVALID_STATE\", message: string, options?: { cause?: unknown; thrownValue?: \"null\" | \"undefined\"; }): ResolutionError; private constructor(); readonly thrownValue: \"null\" | \"undefined\" | undefined; }"
+          },
+          {
+            "name": "SourceDataProvenance",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 889,
+            "declaration": "export type SourceDataProvenance = Readonly<{ formatVersion: number; cldrVersion: string; generatorVersion: string; inputsSha256: string; }>;"
+          },
+          {
+            "name": "Strings",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 823,
+            "declaration": "export type Strings = ReturnType<typeof createStrings>;"
+          },
+          {
+            "name": "StringsLoadCoverage",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 762,
+            "declaration": "export type StringsLoadCoverage = Readonly<{ kind: \"lookup\"; lookupLocale: string; }> | Readonly<{ kind: \"entire-manifest\"; }>;"
+          },
+          {
+            "name": "StringsLoadVerification",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 793,
+            "declaration": "export type StringsLoadVerification = Readonly<{ source: \"verified-manifest-v1\" | \"unverified-loaded-v1\"; producerImplementation: \"lokalized-js\"; producerVersion: string; manifestLocaleConfiguration: LocaleConfiguration; catalogIdentity: CatalogIdentity; cldrVersion: string; dataFingerprint: string; ianaRegistryDate: string; ianaDataFingerprint: string; behavioralVectorsVersion: string; localeDataMode: \"pinned\"; cardinalityMode: \"exact\"; coverage: StringsLoadCoverage; plannedLocales: readonly string[]; coveredLocales: readonly string[]; complete: boolean; }>;"
+          },
+          {
+            "name": "THROW_EXCEPTION",
+            "kind": "const",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 299,
+            "declaration": "export const THROW_EXCEPTION: Readonly<{ action: \"throw\"; }>;"
+          },
+          {
+            "name": "TaggedLanguageFormValue",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 947,
+            "declaration": "export type TaggedLanguageFormValue<A extends LanguageFormAxis, N extends LanguageFormName, R extends string = string> = Readonly<{ $lokalized: \"language-form\"; axis: A; name: N; renderName: R; }>;"
+          },
+          {
+            "name": "TranslationFailure",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 674,
+            "declaration": "export type TranslationFailure = Readonly<{ key: string; lookupLocale: string; localeMatchResult: Readonly<LocaleMatchResult>; attemptedLocales: readonly string[]; placeholders: Readonly<Record<string, unknown>>; reason: TranslationFailureReason; cause: unknown; message: string; }>;"
+          },
+          {
+            "name": "TranslationFailureHandler",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 635,
+            "declaration": "export type TranslationFailureHandler = (failure: TranslationFailure) => TranslationFailureResponse;"
+          },
+          {
+            "name": "TranslationFailureReason",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 609,
+            "declaration": "export type TranslationFailureReason = \"missing-translation\" | \"no-matching-alternative\" | \"resolution-failure\";"
+          },
+          {
+            "name": "TranslationFailureResponse",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 612,
+            "declaration": "export type TranslationFailureResponse = { action: \"return-key\"; } | { action: \"return-string\"; translation: string; } | { action: \"throw\"; };"
+          },
+          {
+            "name": "TranslationFallbackEvent",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 705,
+            "declaration": "export type TranslationFallbackEvent = Readonly<{ key: string; lookupLocale: string; localeMatchResult: Readonly<LocaleMatchResult>; attemptedLocales: readonly string[]; resolvedLocale: string; precedingFailures: readonly PrecedingFailure[]; }>;"
+          },
+          {
+            "name": "TranslationFallbackObserver",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 721,
+            "declaration": "export type TranslationFallbackObserver = (event: TranslationFallbackEvent) => void;"
+          },
+          {
+            "name": "TranslationFallbackPolicy",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 611,
+            "declaration": "export type TranslationFallbackPolicy = (reason: TranslationFailureReason, attemptedLocale: string, cause: unknown) => boolean;"
+          },
+          {
+            "name": "TranslationOptions",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 730,
+            "declaration": "export type TranslationOptions = Readonly<{ locale?: string; localeMatchResult?: LocaleMatchResult; bidiIsolation?: BidiIsolation; translationFallbackPolicy?: BuiltinTranslationFallbackPolicy | TranslationFallbackPolicy | null; translationFailureHandler?: TranslationFailureHandler | null; translationFallbackObserver?: TranslationFallbackObserver | null; }>;"
+          },
+          {
+            "name": "TranslationResult",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 836,
+            "declaration": "export type TranslationResult = ReturnType<Strings[\"getResult\"]>;"
+          },
+          {
+            "name": "TranslationResultStatus",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 849,
+            "declaration": "export type TranslationResultStatus = TranslationResult[\"status\"];"
+          },
+          {
+            "name": "UnsupportedLocaleError",
+            "kind": "class",
+            "declarationSource": "types/internal/plural.d.ts",
+            "line": 201,
+            "declaration": "export class UnsupportedLocaleError extends LokalizedError { static raise(token: symbol, localeTag: string, role?: \"source\" | \"target\"): UnsupportedLocaleError; private constructor(); readonly locale: string; role: \"source\" | \"target\" | undefined; }"
+          },
+          {
+            "name": "WeightedLanguageRange",
+            "kind": "type",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 636,
+            "declaration": "export type WeightedLanguageRange = import(\"../internal/locale.js\").WeightedLanguageRange;"
+          },
+          {
+            "name": "behavioralVectorsVersion",
+            "kind": "const",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 412,
+            "declaration": "export const behavioralVectorsVersion: string;"
+          },
+          {
+            "name": "cardinalityMode",
+            "kind": "const",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 414,
+            "declaration": "export const cardinalityMode: \"exact\";"
+          },
+          {
+            "name": "chooseBrowserLocale",
+            "kind": "function",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 268,
+            "declaration": "export function chooseBrowserLocale(configuration: Parameters<typeof chooseLocaleForPreferredLanguages>[0]): string;"
+          },
+          {
+            "name": "chooseLocaleForPreferredLanguages",
+            "kind": "function",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 248,
+            "declaration": "export function chooseLocaleForPreferredLanguages(configuration: { fallbackLocale: string; supportedLocales: readonly string[]; tiebreakerLocalesByLanguageCode?: Readonly<Record<string, readonly string[]>> | ReadonlyMap<string, readonly string[]> | null; }, languages: Iterable<string>): string;"
+          },
+          {
+            "name": "cldrVersion",
+            "kind": "const",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 410,
+            "declaration": "export const cldrVersion: string;"
+          },
+          {
+            "name": "createStrings",
+            "kind": "function",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 24,
+            "declaration": "export function createStrings(options: CreateStringsOptions): Readonly<{ [CANDIDATE_CHAIN_MEMO_SIZE]: () => number; [CANDIDATE_CHAIN_MEMO_KEYS]: () => readonly string[]; get: (key: string, placeholders?: Readonly<Record<string, unknown>>, callOptions?: TranslationOptions) => string; t: (key: string, placeholders?: Readonly<Record<string, unknown>>, callOptions?: TranslationOptions) => string; getResult: (key: string, placeholders?: Readonly<Record<string, unknown>>, callOptions?: TranslationOptions) => Readonly<{ key: string; translation: string; status: \"translated\"; lookupLocale: string; localeMatchResult: Readonly<Readonly<{ matchType: \"none\" | \"exact\" | \"canonical\" | \"cldr-fallback\" | \"likely-subtag\" | \"extended-range\" | \"primary-language\" | \"wildcard\"; locale: string | null; isMatch: boolean; fallbackLocale: string; consideredLocales: readonly string[]; effectiveWeight: number | null; languageRange: string | import(\"../internal/locale.js\").WeightedLanguageRange | null; requestedLanguageRanges: readonly import(\"../internal/locale.js\").WeightedLanguageRange[]; }>>; resolvedLocale: string; attemptedLocales: readonly string[]; isFallback: boolean; failureReason: null; cause: null; }> | Readonly<{ key: string; translation: string; status: \"returned-key\" | \"returned-string\"; lookupLocale: string; localeMatchResult: Readonly<Readonly<{ matchType: \"none\" | \"exact\" | \"canonical\" | \"cldr-fallback\" | \"likely-subtag\" | \"extended-range\" | \"primary-language\" | \"wildcard\"; locale: string | null; isMatch: boolean; fallbackLocale: string; consideredLocales: readonly string[]; effectiveWeight: number | null; languageRange: string | import(\"../internal/locale.js\").WeightedLanguageRange | null; requestedLanguageRanges: readonly import(\"../internal/locale.js\").WeightedLanguageRange[]; }>>; resolvedLocale: null; attemptedLocales: readonly string[]; isFallback: boolean; failureReason: TranslationFailureReason; cause: unknown; }>; getSupportedLocales: () => readonly string[]; getKeysForLocale: (locale: string) => readonly string[]; getMissingKeys: (sourceLocale: string, targetLocale: string) => readonly string[]; getLocaleConfiguration: () => Readonly<{ fallbackLocale: string; supportedLocales: readonly string[]; tiebreakerLocalesByLanguageCode: Readonly<Record<string, readonly string[]>>; }>; getCatalogIdentity: () => Readonly<{ catalogVersion: string; catalogFingerprint: string; }> | null; isCatalogComplete: () => boolean; getLoadVerification: () => Readonly<Readonly<{ source: \"verified-manifest-v1\" | \"unverified-loaded-v1\"; producerImplementation: \"lokalized-js\"; producerVersion: string; manifestLocaleConfiguration: LocaleConfiguration; catalogIdentity: CatalogIdentity; cldrVersion: string; dataFingerprint: string; ianaRegistryDate: string; ianaDataFingerprint: string; behavioralVectorsVersion: string; localeDataMode: \"pinned\"; cardinalityMode: \"exact\"; coverage: StringsLoadCoverage; plannedLocales: readonly string[]; coveredLocales: readonly string[]; complete: boolean; }>> | null; getWarnings: () => readonly Readonly<{ type: \"INCOMPLETE_CARDINALITY_TRANSLATIONS\" | \"INCOMPLETE_ORDINALITY_TRANSLATIONS\"; source: string; locale: string; key: string; placeholder: string; missingLanguageForms: readonly string[]; message: string; }>[]; getDirectLocaleContext: (locale: string) => Readonly<{ lookupLocale: string; localeMatchResult: Readonly<Readonly<{ matchType: \"none\" | \"exact\" | \"canonical\" | \"cldr-fallback\" | \"likely-subtag\" | \"extended-range\" | \"primary-language\" | \"wildcard\"; locale: string | null; isMatch: boolean; fallbackLocale: string; consideredLocales: readonly string[]; effectiveWeight: number | null; languageRange: string | import(\"../internal/locale.js\").WeightedLanguageRange | null; requestedLanguageRanges: readonly import(\"../internal/locale.js\").WeightedLanguageRange[]; }>>; }>; }>;"
+          },
+          {
+            "name": "dataFingerprint",
+            "kind": "const",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 411,
+            "declaration": "export const dataFingerprint: string;"
+          },
+          {
+            "name": "forLocale",
+            "kind": "function",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 194,
+            "declaration": "export function forLocale(locale: string): Readonly<{ locale: string; }>;"
+          },
+          {
+            "name": "forLocaleMatch",
+            "kind": "function",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 285,
+            "declaration": "export function forLocaleMatch(localeMatchResult: LocaleMatchResult): Readonly<{ localeMatchResult: LocaleMatchResult; }>;"
+          },
+          {
+            "name": "ianaDataFingerprint",
+            "kind": "const",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 416,
+            "declaration": "export const ianaDataFingerprint: string;"
+          },
+          {
+            "name": "ianaRegistryDate",
+            "kind": "const",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 415,
+            "declaration": "export const ianaRegistryDate: string;"
+          },
+          {
+            "name": "localeDataMode",
+            "kind": "const",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 413,
+            "declaration": "export const localeDataMode: \"pinned\";"
+          },
+          {
+            "name": "returnString",
+            "kind": "function",
+            "declarationSource": "types/core/index.d.ts",
+            "line": 12,
+            "declaration": "export function returnString(translation: string): Readonly<{ action: \"return-string\"; translation: string; }>;"
+          }
+        ]
+      },
+      {
+        "entryPoint": "./parse",
+        "runtimeSource": "./src/parse/index.js",
+        "declarationEntry": "./types/parse/index.d.ts",
+        "runtimeSymbols": [
+          "StringsParseError",
+          "defineCatalog",
+          "defineLocalizedString",
+          "mergeParsedStringsFiles",
+          "parseStrings"
+        ],
+        "declarations": [
+          {
+            "name": "Definition",
+            "kind": "type",
+            "declarationSource": "types/parse/index.d.ts",
+            "line": 85,
+            "declaration": "export type Definition = import(\"../internal/catalog.js\").Definition;"
+          },
+          {
+            "name": "LocalizedStringInput",
+            "kind": "type",
+            "declarationSource": "types/parse/index.d.ts",
+            "line": 135,
+            "declaration": "export type LocalizedStringInput = Readonly<{ key: string; translation?: string; commentary?: string; placeholders?: Readonly<Record<string, PlaceholderDefinitionInput>>; alternatives?: readonly WholeMessageAlternativeInput[]; }>;"
+          },
+          {
+            "name": "LocalizedStringNodeInput",
+            "kind": "type",
+            "declarationSource": "types/parse/index.d.ts",
+            "line": 94,
+            "declaration": "export type LocalizedStringNodeInput = import(\"../internal/catalog.js\").LocalizedStringNodeInput;"
+          },
+          {
+            "name": "LocalizedStringWarning",
+            "kind": "type",
+            "declarationSource": "types/parse/index.d.ts",
+            "line": 95,
+            "declaration": "export type LocalizedStringWarning = import(\"../internal/parse-warnings.js\").LocalizedStringWarning;"
+          },
+          {
+            "name": "ParseStringsOptions",
+            "kind": "type",
+            "declarationSource": "types/parse/index.d.ts",
+            "line": 107,
+            "declaration": "export type ParseStringsOptions = Readonly<{ locale: string; source?: string; limits?: StringsLoadingLimits; warningHandler?: (warning: LocalizedStringWarning) => void; pluralData?: Readonly<{ ordinal?: unknown; ranges?: unknown; }>; }>;"
+          },
+          {
+            "name": "ParsedCatalogLimits",
+            "kind": "type",
+            "declarationSource": "types/parse/index.d.ts",
+            "line": 92,
+            "declaration": "export type ParsedCatalogLimits = Pick<StringsLoadingLimits, \"maximumLocalizedStringsFiles\" | \"maximumTranslationNodes\" | \"maximumWarnings\">;"
+          },
+          {
+            "name": "ParsedStringsFile",
+            "kind": "type",
+            "declarationSource": "types/parse/index.d.ts",
+            "line": 124,
+            "declaration": "export type ParsedStringsFile = Readonly<{ $lokalized: \"parsed-strings-file\"; locale: string; sources: readonly string[]; strings: readonly LocalizedStringInput[]; originsByKey: Readonly<Record<string, readonly string[]>>; warnings: readonly LocalizedStringWarning[]; }>;"
+          },
+          {
+            "name": "PlaceholderDefinition",
+            "kind": "type",
+            "declarationSource": "types/parse/index.d.ts",
+            "line": 93,
+            "declaration": "export type PlaceholderDefinition = import(\"../internal/catalog.js\").PlaceholderDefinition;"
+          },
+          {
+            "name": "PlaceholderDefinitionInput",
+            "kind": "type",
+            "declarationSource": "types/parse/index.d.ts",
+            "line": 158,
+            "declaration": "export type PlaceholderDefinitionInput = Readonly<{ kind: \"language-form\"; value?: string; range?: Readonly<{ start: string; end: string; }>; translations: Readonly<Record<string, string>>; }> | Readonly<{ kind: \"expression\"; translation: string; alternatives?: readonly Readonly<{ expression: string; translation: string; }>[]; }>;"
+          },
+          {
+            "name": "StringsLoadingLimits",
+            "kind": "type",
+            "declarationSource": "types/parse/index.d.ts",
+            "line": 86,
+            "declaration": "export type StringsLoadingLimits = import(\"../internal/catalog.js\").ParseLimits;"
+          },
+          {
+            "name": "StringsParseError",
+            "kind": "class",
+            "declarationSource": "types/internal/parse-diagnostics.d.ts",
+            "line": 48,
+            "declaration": "export class StringsParseError extends LokalizedError { static raise(token: symbol, message: string, details: Parameters<typeof parseError>[1] & { cause?: unknown; }): StringsParseError; private constructor(); readonly source: string; readonly line: number | null; readonly column: number | null; readonly path: string | null; }"
+          },
+          {
+            "name": "WholeMessageAlternativeInput",
+            "kind": "type",
+            "declarationSource": "types/parse/index.d.ts",
+            "line": 145,
+            "declaration": "export type WholeMessageAlternativeInput = Readonly<{ expression: string; translation?: string; commentary?: string; placeholders?: Readonly<Record<string, PlaceholderDefinitionInput>>; alternatives?: readonly WholeMessageAlternativeInput[]; }>;"
+          },
+          {
+            "name": "defineCatalog",
+            "kind": "function",
+            "declarationSource": "types/parse/index.d.ts",
+            "line": 47,
+            "declaration": "export function defineCatalog(inputs: readonly LocalizedStringInput[]): readonly Readonly<LocalizedStringInput>[];"
+          },
+          {
+            "name": "defineLocalizedString",
+            "kind": "function",
+            "declarationSource": "types/parse/index.d.ts",
+            "line": 35,
+            "declaration": "export function defineLocalizedString(input: LocalizedStringInput): Readonly<LocalizedStringInput>;"
+          },
+          {
+            "name": "mergeParsedStringsFiles",
+            "kind": "function",
+            "declarationSource": "types/parse/index.d.ts",
+            "line": 81,
+            "declaration": "export function mergeParsedStringsFiles(files: readonly ParsedStringsFile[], options?: Readonly<{ limits?: ParsedCatalogLimits; }>): ParsedStringsFile;"
+          },
+          {
+            "name": "parseStrings",
+            "kind": "function",
+            "declarationSource": "types/parse/index.d.ts",
+            "line": 11,
+            "declaration": "export function parseStrings(input: string | Uint8Array, options: ParseStringsOptions): ParsedStringsFile;"
+          }
+        ]
+      },
+      {
+        "entryPoint": "./load",
+        "runtimeSource": "./src/load/index.js",
+        "declarationEntry": "./types/load/index.d.ts",
+        "runtimeSymbols": [
+          "DigestUnavailableError",
+          "LocalizedStringLoadingError",
+          "chain",
+          "computeCatalogIdentity",
+          "fetchSet",
+          "loadEntireManifest",
+          "loadStrings",
+          "localeConfigurationForManifest",
+          "parseStringsManifest",
+          "validateStringsManifest"
+        ],
+        "declarations": [
+          {
+            "name": "CatalogIdentityInputV1",
+            "kind": "type",
+            "declarationSource": "types/load/index.d.ts",
+            "line": 98,
+            "declaration": "export type CatalogIdentityInputV1 = { formatVersion: 1; catalogVersion: string; resolvedFallbackLocale: string; localeToSha256: Readonly<Record<string, string>>; tiebreakerLocalesByLanguageCode: Readonly<Record<string, readonly string[]>>; };"
+          },
+          {
+            "name": "DigestUnavailableError",
+            "kind": "class",
+            "declarationSource": "types/load/fetch-loader.d.ts",
+            "line": 116,
+            "declaration": "export class DigestUnavailableError extends LokalizedError { static raise(token: symbol, message: string): DigestUnavailableError; private constructor(); }"
+          },
+          {
+            "name": "FetchEntry",
+            "kind": "type",
+            "declarationSource": "types/load/index.d.ts",
+            "line": 84,
+            "declaration": "export type FetchEntry = { locale: string; url: string; sha256: string; expectedDecodedBytes?: number | undefined; };"
+          },
+          {
+            "name": "LoadFailure",
+            "kind": "type",
+            "declarationSource": "types/load/index.d.ts",
+            "line": 113,
+            "declaration": "export type LoadFailure = { locale: string; url: string; stage: \"fetch\" | \"read\" | \"limit\" | \"digest\" | \"decode\" | \"parse\" | \"validate\"; cause: unknown; };"
+          },
+          {
+            "name": "LoadStringsOptions",
+            "kind": "type",
+            "declarationSource": "types/load/index.d.ts",
+            "line": 32,
+            "declaration": "export type LoadStringsOptions = Readonly<{ fetch?: (url: string, init: RequestInit) => Promise<Response>; signal?: AbortSignal; request?: Readonly<{ mode?: \"cors\" | \"same-origin\"; credentials?: \"omit\" | \"same-origin\" | \"include\"; }>; partialFailure?: PartialFailurePolicy; limits?: import(\"../parse/index.js\").StringsLoadingLimits; }>;"
+          },
+          {
+            "name": "LoadedStrings",
+            "kind": "type",
+            "declarationSource": "types/load/index.d.ts",
+            "line": 126,
+            "declaration": "export type LoadedStrings = { catalogs: Readonly<Record<string, ParsedStringsFile>>; tiebreakerLocalesByLanguageCode: Readonly<Record<string, readonly string[]>>; fallbackLocale: string; manifestLocaleConfiguration: Readonly<{ fallbackLocale: string; supportedLocales: readonly string[]; tiebreakerLocalesByLanguageCode: Readonly<Record<string, readonly string[]>>; }>; catalogIdentity: import(\"../core/index.js\").CatalogIdentity; cldrVersion: string; dataFingerprint: string; loadingLimits: StringsLoadingLimits; coverage: import(\"../core/index.js\").StringsLoadCoverage; requestedFiles: readonly FetchEntry[]; failures: readonly LoadFailure[]; warnings: readonly LocalizedStringWarning[]; complete: boolean; };"
+          },
+          {
+            "name": "LocalizedStringLoadingError",
+            "kind": "class",
+            "declarationSource": "types/load/run-plan.d.ts",
+            "line": 93,
+            "declaration": "export class LocalizedStringLoadingError extends LokalizedError { static raise(token: symbol, message: string, failures: readonly LoadFailure[]): LocalizedStringLoadingError; private constructor(); readonly failures: readonly LoadFailure[]; }"
+          },
+          {
+            "name": "LocalizedStringWarning",
+            "kind": "type",
+            "declarationSource": "types/load/index.d.ts",
+            "line": 4,
+            "declaration": "export type LocalizedStringWarning = import(\"../internal/parse-warnings.js\").LocalizedStringWarning;"
+          },
+          {
+            "name": "ParsedStringsFile",
+            "kind": "type",
+            "declarationSource": "types/load/index.d.ts",
+            "line": 2,
+            "declaration": "export type ParsedStringsFile = import(\"../parse/index.js\").ParsedStringsFile;"
+          },
+          {
+            "name": "PartialFailurePolicy",
+            "kind": "type",
+            "declarationSource": "types/load/index.d.ts",
+            "line": 11,
+            "declaration": "export type PartialFailurePolicy = \"reject\" | \"allow-partial\";"
+          },
+          {
+            "name": "StringsLoadingLimits",
+            "kind": "type",
+            "declarationSource": "types/load/index.d.ts",
+            "line": 3,
+            "declaration": "export type StringsLoadingLimits = import(\"../parse/index.js\").StringsLoadingLimits;"
+          },
+          {
+            "name": "StringsManifestV1",
+            "kind": "type",
+            "declarationSource": "types/load/index.d.ts",
+            "line": 48,
+            "declaration": "export type StringsManifestV1 = { formatVersion: 1; catalogVersion: string; catalogFingerprint: string; cldrVersion: string; dataFingerprint: string; behavioralVectorsVersion: string; localeDataMode: \"pinned\"; cardinalityMode: \"exact\"; ianaRegistryDate: string; ianaDataFingerprint: string; fallbackLocale: string; baseUrl: string; files: Readonly<Record<string, Readonly<{ url: string; sha256: string; decodedBytes?: number; }>>>; tiebreakerLocalesByLanguageCode: Readonly<Record<string, readonly string[]>>; };"
+          },
+          {
+            "name": "chain",
+            "kind": "function",
+            "declarationSource": "types/load/planning.d.ts",
+            "line": 16,
+            "declaration": "export function chain(manifest: StringsManifestV1, lookupLocale: string, options?: { limits?: import(\"../internal/catalog.js\").ParseLimits; }): readonly string[];"
+          },
+          {
+            "name": "computeCatalogIdentity",
+            "kind": "function",
+            "declarationSource": "types/load/identity.d.ts",
+            "line": 13,
+            "declaration": "export function computeCatalogIdentity(input: CatalogIdentityInputV1): Readonly<CatalogIdentity>;"
+          },
+          {
+            "name": "fetchSet",
+            "kind": "function",
+            "declarationSource": "types/load/planning.d.ts",
+            "line": 33,
+            "declaration": "export function fetchSet(manifest: StringsManifestV1, lookupLocale: string, options?: { limits?: import(\"../internal/catalog.js\").ParseLimits; }): readonly FetchEntry[];"
+          },
+          {
+            "name": "loadEntireManifest",
+            "kind": "function",
+            "declarationSource": "types/load/fetch-loader.d.ts",
+            "line": 53,
+            "declaration": "export function loadEntireManifest(manifest: StringsManifestV1, options?: LoadStringsOptions): Promise<Readonly<{ coverage: Readonly<{ kind: \"entire-manifest\"; }>; catalogs: Readonly<Record<string, Readonly<{ $lokalized: \"parsed-strings-file\"; locale: string; sources: readonly string[]; strings: readonly import(\"../parse/index.js\").LocalizedStringInput[]; originsByKey: Readonly<Record<string, readonly string[]>>; warnings: readonly import(\"../parse/index.js\").LocalizedStringWarning[]; }>>>; tiebreakerLocalesByLanguageCode: Readonly<Record<string, readonly string[]>>; fallbackLocale: string; manifestLocaleConfiguration: Readonly<{ fallbackLocale: string; supportedLocales: readonly string[]; tiebreakerLocalesByLanguageCode: Readonly<Record<string, readonly string[]>>; }>; catalogIdentity: Readonly<{ catalogVersion: string; catalogFingerprint: string; }>; cldrVersion: string; dataFingerprint: string; loadingLimits: Readonly<{ maximumInputBytes: number; maximumReaderCharacters: number; maximumJsonNestingDepth: number; maximumTotalInputBytes: number; maximumLocalizedStringsFiles: number; maximumTranslationNodes: number; maximumWarnings: number; }>; requestedFiles: readonly import(\"./index.js\").FetchEntry[]; failures: readonly import(\"./index.js\").LoadFailure[]; warnings: readonly Readonly<{ type: \"INCOMPLETE_CARDINALITY_TRANSLATIONS\" | \"INCOMPLETE_ORDINALITY_TRANSLATIONS\"; source: string; locale: string; key: string; placeholder: string; missingLanguageForms: readonly string[]; message: string; }>[]; complete: boolean; }>>;"
+          },
+          {
+            "name": "loadStrings",
+            "kind": "function",
+            "declarationSource": "types/load/fetch-loader.d.ts",
+            "line": 4,
+            "declaration": "export function loadStrings(manifest: StringsManifestV1, lookupLocale: string, options?: LoadStringsOptions): Promise<Readonly<{ coverage: Readonly<{ kind: \"lookup\"; lookupLocale: string; }>; catalogs: Readonly<Record<string, Readonly<{ $lokalized: \"parsed-strings-file\"; locale: string; sources: readonly string[]; strings: readonly import(\"../parse/index.js\").LocalizedStringInput[]; originsByKey: Readonly<Record<string, readonly string[]>>; warnings: readonly import(\"../parse/index.js\").LocalizedStringWarning[]; }>>>; tiebreakerLocalesByLanguageCode: Readonly<Record<string, readonly string[]>>; fallbackLocale: string; manifestLocaleConfiguration: Readonly<{ fallbackLocale: string; supportedLocales: readonly string[]; tiebreakerLocalesByLanguageCode: Readonly<Record<string, readonly string[]>>; }>; catalogIdentity: Readonly<{ catalogVersion: string; catalogFingerprint: string; }>; cldrVersion: string; dataFingerprint: string; loadingLimits: Readonly<{ maximumInputBytes: number; maximumReaderCharacters: number; maximumJsonNestingDepth: number; maximumTotalInputBytes: number; maximumLocalizedStringsFiles: number; maximumTranslationNodes: number; maximumWarnings: number; }>; requestedFiles: readonly import(\"./index.js\").FetchEntry[]; failures: readonly import(\"./index.js\").LoadFailure[]; warnings: readonly Readonly<{ type: \"INCOMPLETE_CARDINALITY_TRANSLATIONS\" | \"INCOMPLETE_ORDINALITY_TRANSLATIONS\"; source: string; locale: string; key: string; placeholder: string; missingLanguageForms: readonly string[]; message: string; }>[]; complete: boolean; }>>;"
+          },
+          {
+            "name": "localeConfigurationForManifest",
+            "kind": "function",
+            "declarationSource": "types/load/manifest.d.ts",
+            "line": 29,
+            "declaration": "export function localeConfigurationForManifest(manifest: StringsManifestV1, options?: { limits?: import(\"../internal/catalog.js\").ParseLimits; }): Readonly<{ fallbackLocale: string; supportedLocales: readonly string[]; tiebreakerLocalesByLanguageCode: Readonly<Record<string, readonly string[]>>; }>;"
+          },
+          {
+            "name": "parseStringsManifest",
+            "kind": "function",
+            "declarationSource": "types/load/manifest.d.ts",
+            "line": 43,
+            "declaration": "export function parseStringsManifest(input: string | Uint8Array, options?: { limits?: import(\"../internal/catalog.js\").ParseLimits; source?: string; }): Readonly<StringsManifestV1>;"
+          },
+          {
+            "name": "validateStringsManifest",
+            "kind": "function",
+            "declarationSource": "types/load/manifest.d.ts",
+            "line": 19,
+            "declaration": "export function validateStringsManifest(input: unknown, options?: { limits?: import(\"../internal/catalog.js\").ParseLimits; }): Readonly<StringsManifestV1>;"
+          }
+        ]
+      },
+      {
+        "entryPoint": "./ssr",
+        "runtimeSource": "./src/ssr/index.js",
+        "declarationEntry": "./types/ssr/index.d.ts",
+        "runtimeSymbols": [
+          "createSsrStamp",
+          "validateSsrStamp"
+        ],
+        "declarations": [
+          {
+            "name": "LokalizedSsrStampV1",
+            "kind": "type",
+            "declarationSource": "types/ssr/index.d.ts",
+            "line": 53,
+            "declaration": "export type LokalizedSsrStampV1 = Readonly<{ formatVersion: 1; producerImplementation: \"lokalized-js\"; producerVersion: string; catalogVersion: string; catalogFingerprint: string; cldrVersion: string; dataFingerprint: string; ianaRegistryDate: string; ianaDataFingerprint: string; behavioralVectorsVersion: string; localeDataMode: \"pinned\" | \"host-intl\"; cardinalityMode: \"exact\" | \"host-intl\"; lookupLocale: string; localeMatchResult: SsrLocaleMatchV1; }>;"
+          },
+          {
+            "name": "SsrLocaleContext",
+            "kind": "type",
+            "declarationSource": "types/ssr/index.d.ts",
+            "line": 72,
+            "declaration": "export type SsrLocaleContext = Readonly<{ kind: \"locale\"; locale: string; }> | Readonly<{ kind: \"locale-match\"; localeMatchResult: SsrLocaleMatchV1; }>;"
+          },
+          {
+            "name": "SsrLocaleMatchV1",
+            "kind": "type",
+            "declarationSource": "types/ssr/index.d.ts",
+            "line": 46,
+            "declaration": "export type SsrLocaleMatchV1 = Readonly<{ locale: string | null; matchType: import(\"../core/index.js\").LocaleMatchType; }>;"
+          },
+          {
+            "name": "createSsrStamp",
+            "kind": "function",
+            "declarationSource": "types/ssr/index.d.ts",
+            "line": 8,
+            "declaration": "export function createSsrStamp(strings: Pick<import(\"../core/index.js\").Strings, \"getLoadVerification\" | \"getCatalogIdentity\" | \"isCatalogComplete\" | \"getLocaleConfiguration\" | \"getSupportedLocales\" | \"getDirectLocaleContext\">, context: SsrLocaleContext | ReturnType<import(\"../core/index.js\").Strings[\"getResult\"]>): LokalizedSsrStampV1;"
+          },
+          {
+            "name": "validateSsrStamp",
+            "kind": "function",
+            "declarationSource": "types/ssr/index.d.ts",
+            "line": 30,
+            "declaration": "export function validateSsrStamp(stamp: LokalizedSsrStampV1, strings: Pick<import(\"../core/index.js\").Strings, \"getLoadVerification\" | \"getCatalogIdentity\" | \"isCatalogComplete\" | \"getLocaleConfiguration\" | \"getSupportedLocales\" | \"getDirectLocaleContext\">, expectedContext: SsrLocaleContext | ReturnType<import(\"../core/index.js\").Strings[\"getResult\"]>): void;"
+          }
+        ]
+      },
+      {
+        "entryPoint": "./negotiate",
+        "runtimeSource": "./src/negotiate/index.js",
+        "declarationEntry": "./types/negotiate/index.d.ts",
+        "runtimeSymbols": [
+          "createLocaleMatcher",
+          "forAcceptLanguage",
+          "forLanguageRanges",
+          "ianaDataFingerprint",
+          "ianaRegistryDate",
+          "parseLanguageRanges"
+        ],
+        "declarations": [
+          {
+            "name": "DirectLocaleMatcher",
+            "kind": "type",
+            "declarationSource": "types/negotiate/index.d.ts",
+            "line": 280,
+            "declaration": "export type DirectLocaleMatcher = Pick<ReturnType<typeof createLocaleMatcher>, \"matchFor\" | \"bestMatchFor\">;"
+          },
+          {
+            "name": "LanguageRange",
+            "kind": "type",
+            "declarationSource": "types/negotiate/index.d.ts",
+            "line": 252,
+            "declaration": "export type LanguageRange = import(\"../core/index.js\").LanguageRange;"
+          },
+          {
+            "name": "LocaleConfiguration",
+            "kind": "type",
+            "declarationSource": "types/negotiate/index.d.ts",
+            "line": 238,
+            "declaration": "export type LocaleConfiguration = Readonly<{ fallbackLocale: string; supportedLocales: readonly string[]; tiebreakerLocalesByLanguageCode?: Readonly<Record<string, readonly string[]>> | ReadonlyMap<string, readonly string[]>; }>;"
+          },
+          {
+            "name": "LocaleMatchResult",
+            "kind": "type",
+            "declarationSource": "types/negotiate/index.d.ts",
+            "line": 262,
+            "declaration": "export type LocaleMatchResult = import(\"../core/index.js\").LocaleMatchResult;"
+          },
+          {
+            "name": "LocaleMatcher",
+            "kind": "type",
+            "declarationSource": "types/negotiate/index.d.ts",
+            "line": 270,
+            "declaration": "export type LocaleMatcher = ReturnType<typeof createLocaleMatcher>;"
+          },
+          {
+            "name": "WeightedLanguageRange",
+            "kind": "type",
+            "declarationSource": "types/negotiate/index.d.ts",
+            "line": 215,
+            "declaration": "export type WeightedLanguageRange = import(\"../internal/locale.js\").WeightedLanguageRange;"
+          },
+          {
+            "name": "createLocaleMatcher",
+            "kind": "function",
+            "declarationSource": "types/negotiate/index.d.ts",
+            "line": 62,
+            "declaration": "export function createLocaleMatcher(configuration: LocaleConfiguration): Readonly<{ matchFor: (locale: string) => Readonly<{ matchType: \"none\" | \"exact\" | \"canonical\" | \"cldr-fallback\" | \"likely-subtag\" | \"extended-range\" | \"primary-language\" | \"wildcard\"; locale: string | null; isMatch: boolean; fallbackLocale: string; consideredLocales: readonly string[]; effectiveWeight: number | null; languageRange: string | import(\"../internal/locale.js\").WeightedLanguageRange | null; requestedLanguageRanges: readonly import(\"../internal/locale.js\").WeightedLanguageRange[]; }>; bestMatchFor: (locale: string) => string; matchForLanguageRanges: (ranges: Iterable<Readonly<{ range: string; weight?: number; }>>) => import(\"../internal/locale.js\").LocaleMatchResult; bestMatchForLanguageRanges: (ranges: Iterable<Readonly<{ range: string; weight?: number; }>>) => string; bestMatchForAcceptLanguage: (acceptLanguage: string | null | undefined) => string; }>;"
+          },
+          {
+            "name": "forAcceptLanguage",
+            "kind": "function",
+            "declarationSource": "types/negotiate/index.d.ts",
+            "line": 188,
+            "declaration": "export function forAcceptLanguage(negotiator: LocaleMatcher, acceptLanguage: string | null | undefined): Readonly<{ localeMatchResult: import(\"../internal/locale.js\").LocaleMatchResult; }>;"
+          },
+          {
+            "name": "forLanguageRanges",
+            "kind": "function",
+            "declarationSource": "types/negotiate/index.d.ts",
+            "line": 160,
+            "declaration": "export function forLanguageRanges(negotiator: LocaleMatcher, ranges: Iterable<Readonly<{ range: string; weight?: number; }>>): Readonly<{ localeMatchResult: import(\"../internal/locale.js\").LocaleMatchResult; }>;"
+          },
+          {
+            "name": "ianaDataFingerprint",
+            "kind": "const",
+            "declarationSource": "types/negotiate/index.d.ts",
+            "line": 214,
+            "declaration": "export const ianaDataFingerprint: string;"
+          },
+          {
+            "name": "ianaRegistryDate",
+            "kind": "const",
+            "declarationSource": "types/negotiate/index.d.ts",
+            "line": 212,
+            "declaration": "export const ianaRegistryDate: string;"
+          },
+          {
+            "name": "parseLanguageRanges",
+            "kind": "function",
+            "declarationSource": "types/negotiate/index.d.ts",
+            "line": 52,
+            "declaration": "export function parseLanguageRanges(header: string): readonly WeightedLanguageRange[];"
+          }
+        ]
+      },
+      {
+        "entryPoint": "./node",
+        "runtimeSource": "./src/node/index.js",
+        "declarationEntry": "./types/node/index.d.ts",
+        "runtimeSymbols": [
+          "createStringsManifestFromDirectory",
+          "loadEntireManifestFromFiles",
+          "loadStringsFromDirectory",
+          "loadStringsFromFiles",
+          "readStringsFromDirectory",
+          "readStringsManifest"
+        ],
+        "declarations": [
+          {
+            "name": "DirectoryManifestOptions",
+            "kind": "type",
+            "declarationSource": "types/node/index.d.ts",
+            "line": 20,
+            "declaration": "export type DirectoryManifestOptions = import(\"./manifest-directory.js\").DirectoryManifestOptions;"
+          },
+          {
+            "name": "LoadStringsFromDirectoryOptions",
+            "kind": "type",
+            "declarationSource": "types/node/index.d.ts",
+            "line": 14,
+            "declaration": "export type LoadStringsFromDirectoryOptions = import(\"./file-loader.js\").LoadStringsFromDirectoryOptions;"
+          },
+          {
+            "name": "LoadStringsFromFilesOptions",
+            "kind": "type",
+            "declarationSource": "types/node/index.d.ts",
+            "line": 8,
+            "declaration": "export type LoadStringsFromFilesOptions = import(\"./file-loader.js\").LoadStringsFromFilesOptions;"
+          },
+          {
+            "name": "createStringsManifestFromDirectory",
+            "kind": "function",
+            "declarationSource": "types/node/manifest-directory.d.ts",
+            "line": 28,
+            "declaration": "export function createStringsManifestFromDirectory(directory: string | URL, options: DirectoryManifestOptions): Promise<Readonly<StringsManifestV1>>;"
+          },
+          {
+            "name": "loadEntireManifestFromFiles",
+            "kind": "function",
+            "declarationSource": "types/node/file-loader.d.ts",
+            "line": 75,
+            "declaration": "export function loadEntireManifestFromFiles(manifest: StringsManifestV1, options?: LoadStringsFromFilesOptions): Promise<Readonly<{ coverage: Readonly<{ kind: \"entire-manifest\"; }>; catalogs: Readonly<Record<string, Readonly<{ $lokalized: \"parsed-strings-file\"; locale: string; sources: readonly string[]; strings: readonly import(\"../parse/index.js\").LocalizedStringInput[]; originsByKey: Readonly<Record<string, readonly string[]>>; warnings: readonly import(\"../parse/index.js\").LocalizedStringWarning[]; }>>>; tiebreakerLocalesByLanguageCode: Readonly<Record<string, readonly string[]>>; fallbackLocale: string; manifestLocaleConfiguration: Readonly<{ fallbackLocale: string; supportedLocales: readonly string[]; tiebreakerLocalesByLanguageCode: Readonly<Record<string, readonly string[]>>; }>; catalogIdentity: Readonly<{ catalogVersion: string; catalogFingerprint: string; }>; cldrVersion: string; dataFingerprint: string; loadingLimits: Readonly<{ maximumInputBytes: number; maximumReaderCharacters: number; maximumJsonNestingDepth: number; maximumTotalInputBytes: number; maximumLocalizedStringsFiles: number; maximumTranslationNodes: number; maximumWarnings: number; }>; requestedFiles: readonly import(\"../load/index.js\").FetchEntry[]; failures: readonly import(\"../load/index.js\").LoadFailure[]; warnings: readonly Readonly<{ type: \"INCOMPLETE_CARDINALITY_TRANSLATIONS\" | \"INCOMPLETE_ORDINALITY_TRANSLATIONS\"; source: string; locale: string; key: string; placeholder: string; missingLanguageForms: readonly string[]; message: string; }>[]; complete: boolean; }>>;"
+          },
+          {
+            "name": "loadStringsFromDirectory",
+            "kind": "function",
+            "declarationSource": "types/node/file-loader.d.ts",
+            "line": 159,
+            "declaration": "export function loadStringsFromDirectory(directory: string | URL, options: LoadStringsFromDirectoryOptions): Promise<Readonly<{ coverage: Readonly<{ kind: \"entire-manifest\"; }>; catalogs: Readonly<Record<string, Readonly<{ $lokalized: \"parsed-strings-file\"; locale: string; sources: readonly string[]; strings: readonly import(\"../parse/index.js\").LocalizedStringInput[]; originsByKey: Readonly<Record<string, readonly string[]>>; warnings: readonly import(\"../parse/index.js\").LocalizedStringWarning[]; }>>>; tiebreakerLocalesByLanguageCode: Readonly<Record<string, readonly string[]>>; fallbackLocale: string; manifestLocaleConfiguration: Readonly<{ fallbackLocale: string; supportedLocales: readonly string[]; tiebreakerLocalesByLanguageCode: Readonly<Record<string, readonly string[]>>; }>; catalogIdentity: Readonly<{ catalogVersion: string; catalogFingerprint: string; }>; cldrVersion: string; dataFingerprint: string; loadingLimits: Readonly<{ maximumInputBytes: number; maximumReaderCharacters: number; maximumJsonNestingDepth: number; maximumTotalInputBytes: number; maximumLocalizedStringsFiles: number; maximumTranslationNodes: number; maximumWarnings: number; }>; requestedFiles: readonly import(\"../load/index.js\").FetchEntry[]; failures: readonly import(\"../load/index.js\").LoadFailure[]; warnings: readonly Readonly<{ type: \"INCOMPLETE_CARDINALITY_TRANSLATIONS\" | \"INCOMPLETE_ORDINALITY_TRANSLATIONS\"; source: string; locale: string; key: string; placeholder: string; missingLanguageForms: readonly string[]; message: string; }>[]; complete: boolean; }>>;"
+          },
+          {
+            "name": "loadStringsFromFiles",
+            "kind": "function",
+            "declarationSource": "types/node/file-loader.d.ts",
+            "line": 22,
+            "declaration": "export function loadStringsFromFiles(manifest: StringsManifestV1, lookupLocale: string, options?: LoadStringsFromFilesOptions): Promise<Readonly<{ coverage: Readonly<{ kind: \"lookup\"; lookupLocale: string; }>; catalogs: Readonly<Record<string, Readonly<{ $lokalized: \"parsed-strings-file\"; locale: string; sources: readonly string[]; strings: readonly import(\"../parse/index.js\").LocalizedStringInput[]; originsByKey: Readonly<Record<string, readonly string[]>>; warnings: readonly import(\"../parse/index.js\").LocalizedStringWarning[]; }>>>; tiebreakerLocalesByLanguageCode: Readonly<Record<string, readonly string[]>>; fallbackLocale: string; manifestLocaleConfiguration: Readonly<{ fallbackLocale: string; supportedLocales: readonly string[]; tiebreakerLocalesByLanguageCode: Readonly<Record<string, readonly string[]>>; }>; catalogIdentity: Readonly<{ catalogVersion: string; catalogFingerprint: string; }>; cldrVersion: string; dataFingerprint: string; loadingLimits: Readonly<{ maximumInputBytes: number; maximumReaderCharacters: number; maximumJsonNestingDepth: number; maximumTotalInputBytes: number; maximumLocalizedStringsFiles: number; maximumTranslationNodes: number; maximumWarnings: number; }>; requestedFiles: readonly import(\"../load/index.js\").FetchEntry[]; failures: readonly import(\"../load/index.js\").LoadFailure[]; warnings: readonly Readonly<{ type: \"INCOMPLETE_CARDINALITY_TRANSLATIONS\" | \"INCOMPLETE_ORDINALITY_TRANSLATIONS\"; source: string; locale: string; key: string; placeholder: string; missingLanguageForms: readonly string[]; message: string; }>[]; complete: boolean; }>>;"
+          },
+          {
+            "name": "readStringsFromDirectory",
+            "kind": "function",
+            "declarationSource": "types/node/directory.d.ts",
+            "line": 14,
+            "declaration": "export function readStringsFromDirectory(directory: string, options?: { limits?: import(\"../internal/catalog.js\").ParseLimits; maximumDiscoveryEntries?: number; pluralData?: Readonly<{ ordinal?: unknown; ranges?: unknown; }>; warningHandler?: (warning: import(\"../internal/parse-warnings.js\").LocalizedStringWarning) => void; }): { catalogs: Record<string, ParsedStringsFile>; warnings: readonly unknown[]; };"
+          },
+          {
+            "name": "readStringsManifest",
+            "kind": "function",
+            "declarationSource": "types/node/file-loader.d.ts",
+            "line": 12,
+            "declaration": "export function readStringsManifest(path: string | URL, options?: { signal?: AbortSignal; limits?: import(\"../internal/catalog.js\").ParseLimits; }): Promise<Readonly<StringsManifestV1>>;"
+          }
+        ]
+      },
+      {
+        "entryPoint": "./data/ordinal",
+        "runtimeSource": "./src/data/ordinal.js",
+        "declarationEntry": "./types/data/ordinal.d.ts",
+        "runtimeSymbols": [
+          "getSupportedOrdinalityLocaleTags",
+          "ordinalData",
+          "ordinalityForNumber",
+          "ordinalityForOperands",
+          "supportedOrdinalitiesForLocale"
+        ],
+        "declarations": [
+          {
+            "name": "Ordinality",
+            "kind": "type",
+            "declarationSource": "types/data/ordinal.d.ts",
+            "line": 65,
+            "declaration": "export type Ordinality = import(\"../core/index.js\").Ordinality;"
+          },
+          {
+            "name": "getSupportedOrdinalityLocaleTags",
+            "kind": "function",
+            "declarationSource": "types/data/ordinal.d.ts",
+            "line": 52,
+            "declaration": "export function getSupportedOrdinalityLocaleTags(): readonly string[];"
+          },
+          {
+            "name": "ordinalData",
+            "kind": "const",
+            "declarationSource": "types/data/ordinal.d.ts",
+            "line": 58,
+            "declaration": "export const ordinalData: Readonly<{ $lokalized: \"ordinal-data\"; provenance: Readonly<{ cldrVersion: string; dataFingerprint: string; }>; }>;"
+          },
+          {
+            "name": "ordinalityForNumber",
+            "kind": "function",
+            "declarationSource": "types/data/ordinal.d.ts",
+            "line": 12,
+            "declaration": "export function ordinalityForNumber(value: number | bigint | Readonly<{ $lokalized: string; value: string; }>, locale: string): Ordinality;"
+          },
+          {
+            "name": "ordinalityForOperands",
+            "kind": "function",
+            "declarationSource": "types/data/ordinal.d.ts",
+            "line": 26,
+            "declaration": "export function ordinalityForOperands(value: Readonly<{ $lokalized: string; value: string; }>, locale: string): Ordinality;"
+          },
+          {
+            "name": "supportedOrdinalitiesForLocale",
+            "kind": "function",
+            "declarationSource": "types/data/ordinal.d.ts",
+            "line": 40,
+            "declaration": "export function supportedOrdinalitiesForLocale(locale: string): readonly Ordinality[];"
+          }
+        ]
+      },
+      {
+        "entryPoint": "./data/ranges",
+        "runtimeSource": "./src/data/ranges.js",
+        "declarationEntry": "./types/data/ranges.d.ts",
+        "runtimeSymbols": [
+          "cardinalRangeData",
+          "cardinalityForRange"
+        ],
+        "declarations": [
+          {
+            "name": "Cardinality",
+            "kind": "type",
+            "declarationSource": "types/data/ranges.d.ts",
+            "line": 43,
+            "declaration": "export type Cardinality = import(\"../core/index.js\").Cardinality;"
+          },
+          {
+            "name": "cardinalRangeData",
+            "kind": "const",
+            "declarationSource": "types/data/ranges.d.ts",
+            "line": 36,
+            "declaration": "export const cardinalRangeData: Readonly<{ $lokalized: \"cardinal-range-data\"; provenance: Readonly<{ cldrVersion: string; dataFingerprint: string; }>; }>;"
+          },
+          {
+            "name": "cardinalityForRange",
+            "kind": "function",
+            "declarationSource": "types/data/ranges.d.ts",
+            "line": 24,
+            "declaration": "export function cardinalityForRange(start: Cardinality, end: Cardinality, locale: string): Cardinality;"
+          }
+        ]
+      }
+    ]
+  },
+  "inventorySha256": "41a9424592ce7b22b0d909ad6192dcb77b782e02e7f4e4d3099c34f0158ee9ed"
+}
