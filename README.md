@@ -21,5 +21,13 @@ nested duplicate-member messages shared by Java, JS and Swift.
 locale spelling stable across validation, identity and planning, with explicit
 historical amendments and fingerprint migration.
 
+[Fallback-observer profile 1.0.0](FALLBACK-OBSERVER.md) adds portable event,
+candidate-order and callback-precedence cases without rewriting the frozen
+Java 3.1.0 behavioral corpus.
+
+[Exact Unicode identifier profile 1.0.0](EXACT-IDENTIFIERS.md) pins distinct
+composed/decomposed catalog keys and placeholders, identifier category/scalar
+boundaries and exact refusal diagnostics across Java, JavaScript and Swift.
+
 [Oracle replay inputs](ORACLE-REPLAY.md) distinguish the current Java surface
 inventory from the historical Java build used by frozen behavioral/IANA checks.

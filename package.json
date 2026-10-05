@@ -15,7 +15,7 @@
     "check:schemas": "node scripts/validate-artifacts.mjs",
     "check:url-oracle": "python3 tools/check-url-oracle.py --check && python3 tools/test-url-oracle.py",
     "check:partitions": "node tools/partition-check.mjs",
-    "check": "npm run check:snapshot && npm run check:allowlist && npm run check:documentation-topics && npm run check:parity-obligations && npm run check:surface && npm run check:schemas && npm run check:partitions && npm run check:native-adaptations && npm run check:diagnostic-text && npm run check:manifest-normalization && npm run check:manifest-contract && npm run check:registry && npm run check:iana-registry && npm run check:iana && npm run check:selection && npm run check:datalock && npm run check:archive && npm run check:vectors && npm run check:evidence && npm run check:coverage && npm run check:url-oracle",
+    "check": "npm run check:snapshot && npm run check:allowlist && npm run check:documentation-topics && npm run check:parity-obligations && npm run check:surface && npm run check:schemas && npm run check:partitions && npm run check:native-adaptations && npm run check:diagnostic-text && npm run check:manifest-normalization && npm run check:manifest-contract && npm run check:fallback-observer && npm run check:exact-identifier && npm run check:registry && npm run check:iana-registry && npm run check:iana && npm run check:selection && npm run check:datalock && npm run check:archive && npm run check:vectors && npm run check:evidence && npm run check:coverage && npm run check:url-oracle",
     "check:registry": "node pre-m0/registry-linter.mjs",
     "check:m0": "node scripts/check-m0.mjs",
     "iana:generate": "node tools/iana-oracle/generate.mjs --write",
@@ -33,7 +33,9 @@
     "check:native-adaptations": "python3 tools/check-native-adaptations.py --check && python3 tools/test-native-adaptations.py",
     "check:manifest-contract": "python3 tools/check-manifest-contract.py --check && python3 tools/check-manifest-native-policy.py && python3 tools/test-manifest-contract.py",
     "check:diagnostic-text": "python3 tools/check-diagnostic-text.py && python3 tools/test-diagnostic-text.py",
-    "check:manifest-normalization": "python3 tools/check-manifest-normalization.py && python3 tools/test-manifest-normalization.py"
+    "check:manifest-normalization": "python3 tools/check-manifest-normalization.py && python3 tools/test-manifest-normalization.py",
+    "check:fallback-observer": "python3 tools/check_fallback_observer.py && python3 tools/test_fallback_observer.py",
+    "check:exact-identifier": "python3 tools/check_exact_identifier.py && python3 tools/test_exact_identifier.py"
   },
   "devDependencies": {
     "ajv": "^8.17.1"
